@@ -1,0 +1,662 @@
+<?php
+
+class Employees extends Controller {
+
+    public function __construct() {
+        parent::__construct();
+    }
+
+    public function index($id=null){
+
+        if( !empty($id) ){
+
+            $item = $this->model->get($id);
+            if( empty($item) ) $this->errro();
+            
+            $this->view->setData('item', $item);
+            $this->view->render("employees/profile/display");
+        }
+        else{
+           $this->error();
+        }
+
+    }
+
+    public function add() {
+        if( empty($this->me) || $this->format!='json' ) $this->error();
+
+        $this->view->setData('dealer', $this->model->query('dealer')->lists() );
+        $this->view->setData('prefixName', $this->model->query('system')->_prefixName());
+        $this->view->setData('city', $this->model->query('system')->city());
+        $this->view->setData('department', $this->model->department() );
+        $this->view->setData('position', $this->model->position() );
+
+        $this->view->setPage('path','Themes/manage/forms/employees');
+        $this->view->render("add");
+    }
+
+    public function edit($id=null) {
+        if( empty($this->me) || $this->format!='json' ) $this->error();
+
+        $item = $this->model->get($id);
+
+        if( empty($item) ) $this->error();
+
+        $this->view->setData('dealer', $this->model->query('dealer')->lists() );
+        $this->view->setData('prefixName', $this->model->query('system')->_prefixName());
+        $this->view->setData('city', $this->model->query('system')->city() );
+        $this->view->setData('department', $this->model->department() );
+        $this->view->setData('position', $this->model->position() );
+
+        $this->view->item = $item;
+        $this->view->setPage('path','Themes/manage/forms/employees');
+        $this->view->render("add");
+    }
+
+    public function save() {
+        if( empty($_POST) ) $this->error();
+
+        $id = isset($_POST['id']) ? $_POST['id']: null;
+        if( !empty($id) ){
+            $item = $this->model->get($id);
+            if( empty($item) ) $this->error();
+        }
+
+        try {
+            $form = new Form();
+            $form   ->post('emp_dealer_id')->val('is_empty')
+                    ->post('emp_username')->val('username')
+                    ->post('emp_dep_id')->val('is_empty')
+                    ->post('emp_pos_id')
+                    ->post('emp_prefix_name')
+                    ->post('emp_first_name')->val('is_empty')
+                    ->post('emp_last_name')->val('is_empty')
+                    ->post('emp_phone_number')
+                    ->post('emp_email')
+                    ->post('emp_line_id')
+                    ->post('emp_notes');
+
+            $form->submit();
+            $postData = $form->fetch();
+
+            if( empty($item) ){
+                $postData['emp_password'] = $_POST['emp_password'];
+                if( empty($postData['emp_password']) ){
+                    $arr['error']['emp_password'] = 'กรุณากรอกรหัสผ่าน';
+                }else if( strlen($postData['emp_password']) < 6 ){
+                    $arr['error']['emp_password'] = 'รหัสผ่านของคุณมีจำนวนต่ำกว่า 6 ตัวอักษร';
+                }
+            }
+
+            $has_user = true;
+            if( !empty($id) ){
+                if( $postData['emp_username'] == $item['username'] ){
+                    $has_user = false;
+                }
+            }
+
+            if( $this->model->is_user($postData['emp_username']) && $has_user == true ){
+                $arr['error']['emp_username'] = "มี Username นี้อยู่ในระบบแล้ว";
+            }
+
+            /**/
+            /* SET Address */
+            /**/
+            // foreach ($_POST['address'] as $key => $value) {
+
+            //     if( empty($value) && $key != 'village' && $key !='street' && $key != 'alley'){
+            //         $arr['error']['emp_address'] = 'กรอกข้อมูลที่อยู่ให้ครบถ้วน';
+            //     }
+
+            //     if( $key == 'zip' ){
+            //         if( strlen($value) != '5' ){
+            //             $arr['error']['emp_address'] = 'กรอกข้อมูลที่อยู่ให้ครบถ้วน';
+            //         }
+            //     }
+            // }
+
+            $futureDate = date('Y-m-d',strtotime(date("Y-m-d", mktime()) . " -6 year"));
+            $birthday = date("{$_POST['birthday']['year']}-{$_POST['birthday']['month']}-{$_POST['birthday']['date']}");
+            if( strtotime($birthday) > strtotime($futureDate) ){
+                $arr['error']['birthday'] = 'วันเกิดไม่ถูกต้อง';
+            }
+
+            $postData['emp_username'] = trim($postData['emp_username']);
+            $postData['emp_first_name'] = trim($postData['emp_first_name']);
+            $postData['emp_last_name'] = trim($postData['emp_last_name']);
+            $postData['emp_address'] = json_encode($_POST['address']);
+            $postData['emp_city_id'] = $_POST['address']['city'];
+            $postData['emp_zip'] = $_POST['address']['zip'];
+            $postData['emp_birthday'] = $birthday;
+
+            if( empty($arr['error']) ){
+
+                if( !empty($item) ){
+                    $this->model->update( $id, $postData );
+                }
+                else{
+                    $this->model->insert( $postData );
+                    $id = $postData['id'];
+                }
+
+                if( !empty($_FILES['image']) ){
+
+                    if( !empty($item['image_id']) ){
+                        $this->model->query('media')->del($item['image_id']);
+                        $this->model->update( $id, array('emp_image_id'=>0 ) );
+                    }
+                    
+                    $media = array(
+                        'media_album_id' => 1,
+                        'media_type' => 'jpg'
+                    );
+
+                    $this->model->query('media')->set( $_FILES['image'], $media );
+                    $item['image_id'] = $media['media_id'];
+                    $this->model->update( $id, array('emp_image_id'=>$item['image_id'] ) );
+                    
+                }
+
+                // resize 
+                if( !empty($_POST['cropimage']) && !empty($item['image_id']) ){
+                    $this->model->query('media')->resize($item['image_id'], $_POST['cropimage']);
+                }
+
+                $arr['message'] = 'บันทึกเรียบร้อย';
+                $arr['url'] = 'refresh';
+            }
+
+        } catch (Exception $e) {
+            $arr['error'] = $this->_getError($e->getMessage());
+
+            if( !empty($arr['error']['emp_first_name']) ){
+                $arr['error']['name'] = $arr['error']['emp_first_name'];
+            } else if( !empty($arr['error']['emp_last_name']) ){
+                $arr['error']['name'] = $arr['error']['emp_last_name'];
+            }
+        }
+
+        echo json_encode($arr);
+    }
+
+    // update Emp
+    public function password($id='')  {
+        $id = isset($_REQUEST['id']) ? $_REQUEST['id']: $id;
+        if( empty($this->me) || empty($id) || $this->format!='json' ) $this->error();
+
+        $item = $this->model->get($id);
+        if( empty($item) ) $this->error();
+
+        if( !empty($_POST) ){
+            try {
+                $form = new Form();
+                $form   ->post('password_new')->val('password')
+                        ->post('password_confirm')->val('password');
+
+                $form->submit();
+                $dataPost = $form->fetch();
+
+                if( $dataPost['password_new']!=$dataPost['password_confirm'] ){
+                    $arr['error']['password_confirm'] = 'รหัสผ่านไม่ตรงกัน';
+                }
+
+                if( empty($arr['error']) ){
+
+                    // update
+                    $this->model->update($item['id'], array(
+                        'emp_password' => Hash::create('sha256', $dataPost['password_new'], HASH_PASSWORD_KEY )
+                    ));
+
+                    $arr['message'] = "แก้ไขข้อมูลเรียบร้อย";
+                }
+
+            } catch (Exception $e) {
+                $arr['error'] = $this->_getError($e->getMessage());
+            }
+
+            echo json_encode($arr);
+        }
+        else{
+            $this->view->setData('item', $item );
+            
+            $this->view->setPage('path','Themes/manage/forms/employees');
+            $this->view->render("change_password");
+        }
+    }
+    public function display($id=null, $status=null) {
+        $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : $id;
+        $status = isset($_REQUEST['status']) ? $_REQUEST['status'] : $status;
+        if( empty($this->me) || empty($id) || empty($status) ) $this->error();
+
+        $item = $this->model->get($id);
+        if( empty($item) ) $this->error();
+
+        if (!empty($_POST)) {
+
+            $this->model->update($id, array('emp_display'=>$status));
+
+            $arr['message'] = 'Saved';
+            $arr['url'] = 'refresh';
+            echo json_encode($arr);
+        }
+        else{
+            $this->view->item = $item;
+            $this->view->status = $status;
+
+            $this->view->setPage('path', "Themes/{$this->view->getPage('theme')}/forms/employees/");
+            $this->view->render("change_display");
+        }
+    }
+
+
+    public function del($id=null) {
+        $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : $id;
+        if( empty($this->me) || empty($id) ) $this->error();
+
+        $item = $this->model->get($id);
+        if( empty($item) ) $this->error();
+
+        if (!empty($_POST)) {
+
+            if ($item['permit']['del']) {
+
+                if( !empty($item['image_id']) ){
+                    $this->model->query('media')->del($item['image_id']);
+                }
+
+                $this->model->delete($id);
+                $arr['message'] = 'ลบข้อมูลเรียบร้อย';
+            } else {
+                $arr['message'] = 'ไม่สามารถลบข้อมูลได้';
+            }
+
+            $arr['url'] = isset($_REQUEST['next']) ? $_REQUEST['next']:'refresh';
+            echo json_encode($arr);
+        }
+        else{
+            $this->view->item = $item;
+            $this->view->setPage('path','Themes/manage/forms/employees');
+            $this->view->render("del");
+        }
+    }
+
+    public function del_image_profile($id=null)
+    {
+        $id = isset($_REQUEST['id']) ? $_REQUEST['id']: $id;
+        if( empty($this->me) || $this->format!='json' || empty($id) ) $this->error();
+
+        $item = $this->model->get($id);
+        if( empty($item) ) $this->error();
+
+        if( !empty($_POST) ){
+
+            $this->model->query('media')->del($item['image_id']);
+            $this->model->update( $id, array('emp_image_id'=>0 ) );
+
+            $arr['message'] = "ลบเรียบร้อย";
+            $arr['status'] = 1;
+            echo json_encode($arr);
+        }
+        else{
+            $this->view->id = $id;
+            $this->view->setPage('path','Themes/manage/forms/employees');
+            $this->view->render("del_image_profile");
+        }
+    }
+
+
+
+    /**/
+    /* department */
+    /**/
+    public function add_department(){
+        if( empty($this->me) || $this->format!='json' ) $this->error();
+
+        $this->view->setData('pageMenu', $this->model->query('system')->pageMenu());
+
+        $this->view->setPage('path','Themes/manage/forms/department');
+        $this->view->render("add");
+    }
+    public function edit_department($id=null){
+        $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : $id;
+        if( empty($this->me) || empty($id) || $this->format!='json' ) $this->error();
+
+        $item = $this->model->get_department($id);
+        if( empty($item) ) $this->error();
+        // print_r($item); die;
+
+        $this->view->setData('item', $item);
+        $this->view->setPage('path','Themes/manage/forms/department');
+        $this->view->render("add");
+    }
+    public function save_department(){
+        if( empty($this->me) || empty($_POST) || $this->format!='json' ) $this->error();
+
+        if( isset($_REQUEST['id']) ){
+            $id = $_REQUEST['id'];
+
+            $item = $this->model->get_department($id);
+            if( empty($item) ) $this->error();
+        }
+
+        try {
+            $form = new Form();
+            $form   ->post('dep_name')->val('is_empty')
+                    ->post('dep_notes');
+
+            $form->submit();
+            $postData = $form->fetch();
+
+            $has_name = true;
+            if( !empty($id) ){
+                if( $postData['dep_name'] == $item['name'] ){
+                    $has_name = false;
+                }
+            }
+
+            if( $this->model->is_name($postData['dep_name']) && $has_name == true ){
+                $arr['error']['dep_name'] = "มีชื่อนี้อยู่ในระบบแล้ว";
+            }
+
+            if( empty($arr['error']) ){
+
+                $postData['dep_is_admin'] = isset($_POST['dep_is_admin']) ? $_POST['dep_is_admin']:'';
+                $postData['dep_is_sale'] = isset($_POST['dep_is_sale']) ? $_POST['dep_is_sale']:'';
+                $postData['dep_is_tec'] = isset($_POST['dep_is_tec']) ? $_POST['dep_is_tec']:'';
+                $postData['dep_is_service'] = isset($_POST['dep_is_service']) ? $_POST['dep_is_service']:'';
+
+                if( !empty($item) ){
+                    $this->model->update_department( $id, $postData );
+                }
+                else{
+                    $this->model->insert_department( $postData );
+                }
+
+                $arr['url'] = 'refresh';
+                $arr['message'] = 'บันทึกเรียบร้อย';
+            }
+
+        } catch (Exception $e) {
+            $arr['error'] = $this->_getError($e->getMessage());
+        }
+
+        echo json_encode($arr);
+    }
+    
+    public function edit_permit_dep($id=null){
+        $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : $id;
+        if( empty($this->me) || empty($id) || $this->format!='json' ) $this->error();
+
+        $item = $this->model->get_department($id);
+        if( empty($item) ) $this->error();
+
+        $this->view->setData('pageMenu', $this->model->query('system')->pageMenu());
+        $this->view->setData('item', $item);
+
+        $this->view->setPage('path','Themes/manage/forms/department');
+        $this->view->render("permission");
+    }
+    
+    public function save_permit_department(){
+        if( empty($this->me) || empty($_POST) || $this->format!='json' ) $this->error();
+
+        if( isset($_REQUEST['id']) ){
+            $id = $_REQUEST['id'];
+
+            $item = $this->model->get_department($id);
+            if( empty($item) ) $this->error();
+        }
+         try {
+
+            if( empty($_POST['dep_permission']) ){
+                $arr['error']['dep_permission'] = 'กรุณาเลือกฟังข์ชั่นสำหรับเข้าใช้งาน';
+            }
+
+            if( empty($arr['error']) ){
+
+                $postData['dep_permission'] = json_encode($_POST['dep_permission']);
+                $this->model->update_department( $id, $postData );
+
+                $arr['url'] = 'refresh';
+                $arr['message'] = 'กำหนดสิทธิ์เรียบร้อย';
+            }
+
+        } catch (Exception $e) {
+            $arr['error'] = $this->_getError($e->getMessage());
+        }
+
+        echo json_encode($arr);
+    }
+    public function del_department($id=null){
+        $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : $id;
+        if( empty($this->me) || empty($id) || $this->format!='json' ) $this->error();
+        
+        $item = $this->model->get_department($id);
+        if( empty($item) ) $this->error();
+
+        if (!empty($_POST)) {
+
+            if ( !empty($item['permit']['del']) ) {
+                $this->model->delete_department($id);
+
+                $arr['message'] = 'ลบข้อมูลเรียบร้อย';
+                $arr['url'] = isset($_REQUEST['next'])? $_REQUEST['next'] : 'refresh';
+            } else {
+                $arr['message'] = 'ไม่สามารถลบข้อมูลได้';
+            }
+
+            if( isset($_REQUEST['callback']) ){
+                $arr['callback'] = $_REQUEST['callback'];
+            }
+
+            echo json_encode($arr);
+        }
+        else{
+            $this->view->setData('item', $item);
+            $this->view->setPage('path','Themes/manage/forms/department');
+            $this->view->render("del");
+        }   
+    }
+    // end: department
+
+
+    /**/
+    /* Position */
+    /**/
+    public function add_position(){
+        if( empty($this->me) || $this->format!='json' ) $this->error();
+
+        $this->view->setData('department', $this->model->department() );
+        $this->view->setPage('path','Themes/manage/forms/position');
+        $this->view->render("add");
+    }
+    public function edit_position($id=null){
+        $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : $id;
+        if( empty($this->me) || empty($id) || $this->format!='json' ) $this->error();
+
+        $item = $this->model->get_position($id);
+        if( empty($item) ) $this->error();
+
+        $this->view->setData('department', $this->model->department() );
+        $this->view->setData('item', $item);
+        $this->view->setPage('path','Themes/manage/forms/position');
+        $this->view->render("add");
+    }
+    public function save_position(){
+        if( empty($this->me) || empty($_POST) || $this->format!='json' ) $this->error();
+
+        if( isset($_REQUEST['id']) ){
+            $id = $_REQUEST['id'];
+
+            $item = $this->model->get_position($id);
+            if( empty($item) ) $this->error();
+        }
+
+        try {
+            $form = new Form();
+            $form   ->post('pos_name')->val('is_empty')
+                    ->post('pos_dep_id')
+                    ->post('pos_notes');
+
+            $form->submit();
+            $postData = $form->fetch();
+
+            if( empty($arr['error']) ){
+
+                if( !empty($item) ){
+                    $this->model->update_position( $id, $postData );
+                }
+                else{
+                    $this->model->insert_position( $postData );
+                }
+
+                $arr['url'] = 'refresh';
+                $arr['message'] = 'บันทึกเรียบร้อย';
+            }
+
+        } catch (Exception $e) {
+            $arr['error'] = $this->_getError($e->getMessage());
+        }
+
+        echo json_encode($arr);
+    }
+    public function del_position($id=null){
+        $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : $id;
+        if( empty($this->me) || empty($id) || $this->format!='json' ) $this->error();
+        
+        $item = $this->model->get_position($id);
+        if( empty($item) ) $this->error();
+
+        if (!empty($_POST)) {
+
+            if ( !empty($item['permit']['del']) ) {
+                $this->model->delete_position($id);
+
+                $arr['message'] = 'ลบข้อมูลเรียบร้อย';
+                $arr['url'] = isset($_REQUEST['next'])? $_REQUEST['next'] : 'refresh';
+            } else {
+                $arr['message'] = 'ไม่สามารถลบข้อมูลได้';
+            }
+
+            if( isset($_REQUEST['callback']) ){
+                $arr['callback'] = $_REQUEST['callback'];
+            }
+
+            echo json_encode($arr);
+        }
+        else{
+            $this->view->setData('item', $item);
+            $this->view->setPage('path','Themes/manage/forms/position');
+            $this->view->render("del");
+        }   
+    }
+    // end: position
+
+    public function edit_basic($id=null){
+
+        if( empty($this->me) || empty($id) ) $this->error();
+
+        $item = $this->model->query('employees')->get($id);
+
+        if( empty($item) ) $this->error();
+
+        $this->view->setData('item', $item);
+        $this->view->setData('prefixName', $this->model->query('system')->_prefixName());
+        $this->view->setData('department', $this->model->query('employees')->department());
+        $this->view->setData('position', $this->model->query('employees')->position());
+        $this->view->render('sales/forms/edit_basic_dialog');
+    }
+
+    public function edit_contact($id=null)
+    {
+        if( empty($this->me) || empty($id) ) $this->error();
+
+        $item = $this->model->query('employees')->get($id);
+
+        if( empty($item) ) $this->error();
+
+        $this->view->setData('item', $item);
+        $this->view->setData('city', $this->model->query('system')->city());
+        $this->view->render('sales/forms/edit_contact_dialog');
+    }
+
+    public function update()
+    {
+        if( empty($this->me) || empty($_POST) ) $this->error();
+
+        $id = isset($_POST['id']) ? $_POST['id']: null;
+        if( empty($id) ) $this->eror();
+
+        $item = $this->model->query('employees')->get($id);
+        if( empty($item) ) $this->error();
+
+        if( $_POST['section'] == 'basic' ){
+            
+            try{
+
+                $form = new Form();
+                $form   ->post('emp_prefix_name')->val('is_empty')
+                        ->post('emp_first_name')->val('is_empty')
+                        ->post('emp_last_name')->val('is_empty');
+
+                $form->submit();
+                $postData = $form->fetch();
+
+                $futureDate = date('Y-m-d',strtotime(date("Y-m-d", mktime()) . " -6 year"));
+                $birthday = date("{$_POST['birthday']['year']}-{$_POST['birthday']['month']}-{$_POST['birthday']['date']}");
+                if( strtotime($birthday) > strtotime($futureDate) ){
+                    $arr['error']['birthday'] = 'วันเกิดไม่ถูกต้อง';
+                }
+
+                $postData['emp_first_name'] = trim($postData['emp_first_name']);
+                $postData['emp_last_name'] = trim($postData['emp_last_name']);
+                $postData['emp_birthday'] = $birthday;
+
+            }catch (Exception $e) {
+                $arr['error'] = $this->_getError($e->getMessage());
+            }
+        }
+        elseif( $_POST['section'] == 'contact' ){
+
+            try{
+
+                $form = new Form();
+                $form   ->post('emp_phone_number')
+                        ->post('emp_email')
+                        ->post('emp_line_id')
+                        ->post('emp_notes');
+
+                $form->submit();
+                $postData = $form->fetch();
+
+                foreach ($_POST['address'] as $key => $value) {
+                if( empty($value) && $key != 'village' && $key !='street' && $key != 'alley') {
+                    $arr['error']['emp_address'] = 'กรุณากรอกข้อมูลในช่องที่มีเครื่องหมาย * ให้ครบถ้วน';
+                    }
+                }
+
+                if( !empty($_POST['address']['zip']) && strlen($_POST['address']['zip']) != 5 ){
+                    $arr['error']['emp_address'] = 'กรุณากรอกรหัสไปรษณีย์ให้ครบ 5 หลัก';
+                }
+
+                $postData['emp_address'] = json_encode($_POST['address']);
+                $postData['emp_city_id'] = $_POST['address']['city'];
+                $postData['emp_zip'] = $_POST['address']['zip'];
+
+            }catch (Exception $e) {
+                $arr['error'] = $this->_getError($e->getMessage());
+            }
+        }
+        else{
+            $this->error();
+        }
+
+        if( empty($arr['error']) ){
+            $this->model->query('employees')->update( $id, $postData );
+            $arr['message'] = 'บันทึกข้อมูลเรียบร้อย';
+            $arr['url'] = 'refresh';
+        }
+
+        echo json_encode($arr);
+    }
+}

@@ -1,0 +1,79 @@
+<?php
+
+$form = new Form();
+$form = $form->create()
+		->url(URL."settings/company?run=1")
+		->addClass('js-submit-form form-insert')
+		->method('post');
+
+$form  	->field("name")
+		->label('ชื่อบริษัท')
+		->addClass('inputtext')
+		->required(true)
+		->autocomplete("off")
+		->value( !empty($this->system['name']) ? $this->system['name']:'' );
+
+$form  	->field("title")
+		->label('ชื่อบริษัทภาษาอังกฤษ')
+		->addClass('inputtext')
+		->required(true)
+		->autocomplete("off")
+		->value( !empty($this->system['title']) ? $this->system['title']:'' );
+
+$form  	->field("address")
+		->label('ที่อยู่')
+		->type('textarea')
+		->addClass('inputtext')
+		->autocomplete("off")
+		->attr('data-plugins', 'autosize')
+		->value( !empty($this->system['address']) ? $this->system['address']:'');
+
+$form  	->field("phone")
+		->label('หมายเลขโทรศัพท์')
+		->addClass('inputtext')
+		->autocomplete("off")
+		->value( !empty($this->system['phone']) ? $this->system['phone']:'');
+
+$form  	->field("mobile_phone")
+		->label('โทรศัพท์เคลื่อนที่')
+		->addClass('inputtext')
+		->autocomplete("off")
+		->value( !empty($this->system['mobile_phone']) ? $this->system['mobile_phone']:'');
+
+$form  	->field("fax")
+		->label('แฟกซ์')
+		->addClass('inputtext')
+		->autocomplete("off")
+		->value( !empty($this->system['fax']) ? $this->system['fax']:'');
+
+$form  	->field("license")
+		->label('License No.')
+		->addClass('inputtext')
+		->autocomplete("off")
+		->value( !empty($this->system['license']) ? $this->system['license']:'');
+
+$form  	->field("email")
+		->label('อีเมล')
+		->addClass('inputtext')
+		->autocomplete("off")
+		->value( !empty($this->system['email']) ? $this->system['email']:'');
+
+$form  	->submit()
+		->addClass("btn-submit btn btn-blue")
+		->value("บันทึก");
+
+
+?><div class="pal" style="max-width: 720px">
+
+<div class="setting-header cleafix">
+	<div class="setting-title">ข้อมูลบริษัท</div>
+	<!-- <div class="setting-description">เปลี่ยนการตั้งค่าข้อมูลบริษัท</div> -->
+</div>
+
+<hr class="setting-hr">
+
+<section class="setting-section" style="max-width: 320px">
+<?=$form->html()?>
+</section>
+
+</div>

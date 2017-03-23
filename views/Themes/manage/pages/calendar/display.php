@@ -1,0 +1,1 @@
+<div data-plugins="calendar"></div>
