@@ -8,8 +8,30 @@ class customers_model extends Model
     }
 
     private $_objName = "customers";
-    private $_table = "customers LEFT JOIN city ON customers.cus_city_id = city.city_id";
-    private $_field = "cus_id, cus_prefix_name, cus_first_name, cus_last_name, cus_nickname,  cus_created, cus_updated, cus_birthday, cus_card_id, cus_phone, cus_email, cus_lineID, cus_bookmark, cus_address, cus_zip, cus_city_id, city_name, cus_emp_id";
+    private $_table = "customers 
+                       LEFT JOIN city ON customers.cus_city_id = city.city_id
+                       LEFT JOIN countries ON customers.cus_country_id = countries.country_id";
+    private $_field = "cus_id
+                       , cus_prefix_name
+                       , cus_first_name
+                       , cus_last_name
+                       , cus_nickname
+                       , cus_created
+                       , cus_updated
+                       , cus_birthday
+                       , cus_card_id
+                       , cus_phone
+                       , cus_email
+                       , cus_lineID
+                       , cus_bookmark
+                       , cus_address
+                       , cus_zip
+                       , cus_city_id
+                       , cus_country_id
+                       , cus_emp_id
+
+                       , city_name
+                       , country_name";
     private $_cutNamefield = "cus_";
 
     private function _setDate($data) {
@@ -224,6 +246,10 @@ class customers_model extends Model
             $data['address']['city_name'] = $this->query('system')->city_name($data['address']['city']);
         }
 
+        if( !empty($data['country_id']) ){
+            $data['country_name'] = $this->query('system')->country_name( $data['country_id'] );
+        }
+
         $data['fullname'] = "{$data['prefix_name_th']}{$data['first_name']} {$data['last_name']}";
 
         $data['initials'] = $this->fn->q('text')->initials( $data['first_name'] );
@@ -364,5 +390,11 @@ class customers_model extends Model
     {
         $this->db->delete('customers_notes', "`note_id`={$id}" );
     }
-    
+
+    /**/
+    /* Check */
+    /**/
+    public function is_name( $first_name=null , $last_name=null ){
+        return $this->db->count('customers', "cus_first_name=':first_name' AND cus_last_name=':last_name'", array(':first_name'=>$first_name , ':last_name'=>$last_name) );
+    }
 }

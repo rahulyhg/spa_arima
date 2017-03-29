@@ -3,11 +3,11 @@
 date_default_timezone_set("Asia/Bangkok");
 
 // Always provide a TRAILING SLASH (/) AFTER A PATH
-define('URL', 'http://localhost/mg/');
+define('URL', 'http://localhost/spa/');
 
 define('DB_TYPE', 'mysql');
 define('DB_HOST', 'localhost');
-define('DB_NAME', 'mg');
+define('DB_NAME', 'spa');
 define('DB_USER', 'root');
 define('DB_PASS', '');
 

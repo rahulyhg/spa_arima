@@ -12,9 +12,9 @@ $form   ->field("name")
         ->text( $this->fn->q('form')->fullname( !empty($this->item)?$this->item:array(), array('field_first_name'=>'cus_', 'prefix_name'=>$this->prefixName) ) );
 
 // birthday
-$form   ->field("birthday")
-        ->label('วันเกิด')
-        ->text( $this->fn->q('form')->birthday( !empty($this->item)?$this->item:array(), array('field_first_name'=>'cus_') ) );
+// $form   ->field("birthday")
+//         ->label('วันเกิด')
+//         ->text( $this->fn->q('form')->birthday( !empty($this->item)?$this->item:array(), array('field_first_name'=>'cus_') ) );
 
 $form   ->field("cus_card_id")
         ->label('หมายเลขบัตรประจำตัวประชาชน')

@@ -4,6 +4,7 @@ $a = array();
 // $a[] = array('label'=>'เบอร์มือถือ', 'key' => 'phone');
 // $a[] = array('label'=>'Line ID', 'key' => 'lineID');
 // $a[] = array('label'=>'email', 'key' => 'email');
+$a[] = array('label'=>'ประเทศ', 'key'=>'country_name');
 $a[] = array('label'=>'ที่อยู่', 'key'=>'address');
 
 // $a[] = array('label'=>'จังหวัด', 'key' => 'city_name');

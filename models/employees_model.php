@@ -183,8 +183,10 @@ class Employees_Model extends Model{
         if( !empty($data['image_id']) ){
             $image = $this->query('media')->get($data['image_id']);
 
-            $data['image_arr'] = $image;
-            $data['image_url'] = $image['url'];
+            if( !empty($image) ){
+                $data['image_arr'] = $image;
+                $data['image_url'] = $image['url'];
+            }
         }
 
         if( !empty($data['address']) ){
@@ -223,14 +225,12 @@ class Employees_Model extends Model{
 
         return $c;
     }
-    public function is_name($text) {
-
-        $c = $this->db->count($this->_objType, "{$this->_cutNamefield}name='{$text}'");
-        if( $c==0 ){
-            $c = $this->db->count("users", "emp_name='{$text}'");
-        }
-
-        return $c;
+    
+    /**/
+    /* Check */
+    /**/
+    public function is_name( $first_name=null , $last_name=null ){
+        return $this->db->count( 'employees', "emp_first_name=':first_name' AND emp_last_name=':last_name'", array(':first_name'=>$first_name , ':last_name'=>$last_name) );
     }
 
     public function is_checkpass($id, $old_pass) {
