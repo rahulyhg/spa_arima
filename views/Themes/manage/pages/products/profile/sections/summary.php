@@ -21,7 +21,7 @@
 
             <tr>
                 <td class="label"><span class="fcr">ต้องสั่งเพิ่ม</span></td>
-                <td class="data"><?=(!empty($this->item['amount_reservation'])?$this->item['amount_reservation']:'-')?></td>
+                <td class="data"><?=(!empty($this->item['order_total'])?$this->item['order_total']:'-')?></td>
             </tr>
 
            <!--  <tr>

@@ -5,8 +5,10 @@
 			<li><a class="btn js-refresh"><i class="icon-refresh"></i></a></li>
 			<li><h2><?=$this->item['name']?></h2></li>
 			<li class="divider"></li>
-			
+
+			<?php if( !empty($this->permit['stocks']['add']) ) { ?>
 			<li><a class="btn btn-blue" href="<?=URL?>products/create?model_id=<?=$this->item['id']?>"><i class="icon-plus mrs"></i><span>เพิ่มสินค้าใหม่</span></a></li>
+			<?php } ?>
 
 		</ul>
 		<ul class="rfloat SettingCol-headerActions clearfix">

@@ -76,6 +76,7 @@ class Models extends Controller {
                     $id = $postData['id'];
             	}
 
+                // set color
                 if( !empty($colors) ){
                     $_colors = !empty($item['colors']) ? $item['colors']: array();
 
@@ -101,6 +102,49 @@ class Models extends Controller {
                     }
                     
                 }
+                // end: if color
+
+                // upload image cover
+                if( !empty($_FILES['image_cover']) ){
+                    $userfile = $_FILES['image_cover'];
+
+                    // set Album
+                    $album_options = array(
+                        'album_obj_type' => 'public',
+                        'album_obj_id' => 1,
+                    );
+                    $album = $this->model->query('media')->searchAlbum( $album_options );
+
+                    if( empty($album) ){
+
+                        $this->model->query('media')->setAlbum( $album_options );
+                        $album = $album_options;
+                    }
+
+                    // set Media
+                    $media = array(
+                        'media_album_id' => $album['album_id'],
+                        'media_type' => isset($_REQUEST['media_type']) ? $_REQUEST['media_type']: strtolower(substr(strrchr($userfile['name'],"."),1))
+                    );
+                    $media_options = array(
+                        'folder' => $album['album_id'],
+                    );
+
+                    $this->model->query('media')->set( $_FILES['image_cover'], $media , $media_options);
+
+                    // update id image to Model
+                    if( !empty($media['media_id']) ){
+
+                        // remove delete image old
+                        if( !empty($item['image_cover']) ){
+                            $this->model->query('media')->del($item['image_cover']);
+                        }
+
+                        $item['image_cover'] = $media['media_id'];
+                        $this->model->update( $id, array('model_image_cover'=>$media['media_id'] ) );
+                    }
+                }
+                // end: if upload image cover 
 
                 $arr['message'] = 'บันทึกเรียบร้อย';
                 $arr['url'] = 'refresh';
@@ -141,5 +185,27 @@ class Models extends Controller {
             $this->view->render("del");
         }
 	}
+         public function del_image_cover($id=null)
+    {
+        $id = isset($_REQUEST['id']) ? $_REQUEST['id']: $id;
+        if( empty($this->me) || $this->format!='json' || empty($id) ) $this->error();
+
+        $item = $this->model->get($id);
+        if( empty($item) ) $this->error();
+
+        if( !empty($_POST) ){
+            $this->model->query('media')->del($item['image_cover']);
+            $this->model->update( $id, array('model_image_cover'=>0 ) );
+
+            $arr['message'] = "ลบเรียบร้อย";
+            $arr['status'] = 1;
+            echo json_encode($arr);
+        }
+        else{
+            $this->view->id = $id;
+            $this->view->setPage('path','Themes/manage/forms/models');
+            $this->view->render('del_image_cover');
+        }
+    }
 
 }

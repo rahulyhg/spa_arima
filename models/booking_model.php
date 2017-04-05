@@ -44,6 +44,7 @@ class Booking_Model extends Model
         , b.book_status
         , b.book_updated
         , b.book_pro_price
+        , b.book_date_finish
 
         , b.book_sale_id AS sale_id
         , sale.emp_prefix_name AS sale_prefix_name
@@ -55,6 +56,7 @@ class Booking_Model extends Model
         , sale.emp_line_id AS sale_line_id
         , dep.dep_is_sale AS sale_dep_is_sale
         , city.city_name as sale_city_name
+        , sale.emp_image_id as sale_image_id
 
         , c.cus_id
         , c.cus_prefix_name
@@ -82,6 +84,7 @@ class Booking_Model extends Model
     private $_cutNamefield = "book_";
 
     public function lists( $options=array() ) {
+     
 
         $options = array_merge(array(
             'pager' => isset($_REQUEST['pager'])? $_REQUEST['pager']:1,
@@ -129,35 +132,74 @@ class Booking_Model extends Model
             }
         }
 
-        if( !empty($_REQUEST['status']) ){
-            $options['status'] = $_REQUEST['status'];
+        if( !empty($_REQUEST['status']) || !empty($options['status']) ){
+            $options['status'] = !empty($_REQUEST['status']) ? $_REQUEST['status'] : $options['status'];
 
             $where_str .= !empty( $where_str ) ? " AND ":'';
             $where_str .= "book_status=:status";
             $where_arr[':status'] = $options['status'];
         }
 
-        if( !empty($_REQUEST['period_start']) && !empty($_REQUEST['period_end']) ){
-
-            $options['period_start'] = date("Y-m-d 00:00:00", strtotime($_REQUEST['period_start']));
-            $options['period_end'] = date("Y-m-d 23:59:59", strtotime($_REQUEST['period_end']));
+        if( !empty($_REQUEST['pay_type']) || !empty($options['pay_type']) ){
+            $options['pay_type'] = !empty($_REQUEST['pay_type']) ? $_REQUEST['pay_type'] : $options['pay_type'];
 
             $where_str .= !empty( $where_str ) ? " AND ":'';
-            $where_str .= "book_date BETWEEN :startDate AND :endDate";
-            $where_arr[':startDate'] = $options['period_start'];
-            $where_arr[':endDate'] = $options['period_end'];
+            $where_str .= "book_pay_type=:pay_type";
+            $where_arr[':pay_type'] = $options['pay_type'];
         }
 
-        if( !empty($_REQUEST['sale']) ){
-            $options['sale'] = $_REQUEST['sale'];
+        if( ( !empty($_REQUEST['period_start']) && !empty($_REQUEST['period_end']) ) || ( !empty($options['period_start']) && !empty($options['period_end']) ) ){
 
+            $period_start = !empty($options['period_start']) ? $options['period_start'] : $_REQUEST['period_start'];
+            $period_end = !empty($options['period_end']) ? $options['period_end'] : $_REQUEST['period_end'];
+
+            $where_str .= !empty( $where_str ) ? " AND ":'';
+            // if( !empty($options['finish']) ){
+            //     $where_str .= "(book_date_finish BETWEEN :startDate AND :endDate)";
+            // }
+            // else{
+            //     $where_str .= "(book_date BETWEEN :startDate AND :endDate)";
+            // }
+            $where_str .= "(book_date BETWEEN :startDate AND :endDate)";
+            $where_arr[':startDate'] = $period_start;
+            $where_arr[':endDate'] = $period_end;
+        }
+
+        if( !empty($_REQUEST['sale']) or !empty($options['sale']) ){  
+            $options['sale'] = !empty($_REQUEST['sale'])?$_REQUEST['sale']:$options['sale'];     
             $where_str .= !empty( $where_str ) ? " AND ":'';
             $where_str .= "book_sale_id=:sale";
             $where_arr[':sale'] = $options['sale'];
+         
+        }
+        
+        if( !empty($_REQUEST['customer']) or !empty($options['customer']) ){  
+            $options['customer'] = !empty($_REQUEST['customer'])?$_REQUEST['customer']:$options['customer'];     
+            $where_str .= !empty( $where_str ) ? " AND ":'';
+            $where_str .= "book_cus_id=:customer";
+            $where_arr[':customer'] = $options['customer'];
+        }
+
+        if( isset($options['dashboard']) ){
+
+            /* SUM ON DATABASE */
+            $total_net_price = $this->db->select("SELECT sum(book_net_price) AS sum_net_price FROM {$this->_objName} WHERE {$where_str}", $where_arr);
+            $total_finance = $this->db->select("SELECT sum(book_finance_amount) AS sum_finance FROM {$this->_objName} WHERE {$where_str}" , $where_arr);
+            $total_pro_price = $this->db->select("SELECT sum(book_pro_price) AS sum_pro_price FROM {$this->_objName} WHERE {$where_str}" , $where_arr);
+
+            /* SET DATA */
+            $net_price = !empty($total_net_price[0]['sum_net_price']) ? $total_net_price[0]['sum_net_price'] : 0;
+            $finance = !empty($total_finance[0]['sum_finance']) ? $total_finance[0]['sum_finance'] : 0;
+            $pro_price = !empty($total_pro_price[0]['sum_pro_price']) ? $total_pro_price[0]['sum_pro_price'] : 0;
+
+            /* SENT DATA */
+            $arr['total_net_price'] = $net_price;
+            $arr['total_finance'] = $finance;
+            $arr['total_pro_price'] = $pro_price;
         }
 
         $arr['total'] = $this->db->count($this->_table, $where_str, $where_arr);
-
+        
         $where_str = !empty($where_str) ? "WHERE {$where_str}":'';
         $orderby = $this->orderby( $this->_cutNamefield.$options['sort'], $options['dir'] );
         $limit = $this->limited( $options['limit'], $options['pager'] );
@@ -193,48 +235,44 @@ class Booking_Model extends Model
     }
     public function buildFrag($results, $options=array()) {
         $data = array();
-
-        $view_stype = !empty($options['view_stype']) ? $options['view_stype']:'convert';
-        if( !in_array($view_stype, array('bucketed', 'convert')) ) $view_stype = 'convert';
-
         foreach ($results as $key => $value) {
             if( empty($value) ) continue;
-            $data[] = $this->{$view_stype}($value);
+            $data[] = $this->convert($value , $options);
         }
         return $data;
     }
     public function bucketed($data){
 
         $prefix = '';
-        foreach ($this->query('customers')->prefixName() as $key => $value) {
-            if( $value['id']==$data['cus_prefix_name'] ){
+        foreach ($this->query('system')->_prefixNameCustomer() as $key => $value) {
+            if( $value['id']==$data['cus']['prefix_name'] ){
                 $prefix = $value['name'];
                 break;
             }
         }
 
-        $text = "{$prefix}{$data['cus_first_name']} {$data['cus_last_name']}";
+        $text = "{$prefix}{$data['cus']['first_name']} {$data['cus']['last_name']}";
 
         $status = array(
-            'id' => $data['status_id'],
-            'name' => $data['status_label'],
-            'color' => $data['status_color'],
+            'id' => $data['status']['id'],
+            'name' => $data['status']['name'],
+            'color' => $data['status']['color'],
         );
 
-        $category = $data['product_name'];
+        $category = $data['product']['name'];
 
         $subtext = '';
-        $a = array('cus_phone', 'cus_email', 'cus_lineID');
+        $a = array('phone', 'email', 'lineID');
         foreach ($a as $key) {
-            if( !empty($data[$key]) ) {
+            if( !empty($data['cus'][$key]) ) {
                 $subtext .= !empty($subtext) ?', ':'';
-                $subtext .= $data[$key];
+                $subtext .= $data['cus'][$key];
             }
         }
 
         return array(
-            'id'=> $data['book_id'],
-            'created' => $data['book_created'],
+            'id'=> $data['id'],
+            'created' => $data['created'],
             'options' => array(
                 'time' => 'disabled'
                 ),
@@ -252,7 +290,6 @@ class Booking_Model extends Model
         if( empty($data['is_convert']) ){
             $data = $this->_convert( $data );
         }
-
         $data['status'] = $this->getStatus( $data['status'] );
 
         if( !empty($data['pay_type']) ){
@@ -282,23 +319,32 @@ class Booking_Model extends Model
             $data['accessory'] = $this->listsAccessory( $data['id'] );
         }
 
-        if( !empty($options['conditions'])  ){
-            $data['conditions'] = $this->listsConditions( $data['id'] );
+        $data['insurance'] = $this->get_insurance( $data['id'] );
 
-            $data['conditions'][] = array(
-                // 'name' => 'ค่ารถยนต์/Car price',
-                'value' => $data['product']['price'],
-                'keyword' => 'carprice',
-                'type' => 'income'
-            );
-            
+        if( !empty($options['conditions'])  ){
+            $data['conditions'] = $this->listsConditions( $data['id'] );            
             // print_r($data['conditions']); die;
         }
-
-        $data['insurance'] = $this->get_insurance( $data['id'] );
         
+          if( $data['sale']['image_id'] != 0 ){
+            $image = $this->query('media')->get($data['sale']['image_id']);
+            
+            if(!empty( $image)){
+            
+            $data['sale']['image_arr'] = $image;
+            $data['sale']['image_url'] = $image['quad_url'];
+            
+            }
+        } 
+
         $data['permit']['del'] = true;
-        return $data;
+
+        $view_stype = !empty($options['view_stype']) ? $options['view_stype']:'convert';
+        if( !in_array($view_stype, array('bucketed', 'convert')) ) $view_stype = 'convert';
+
+        return $view_stype=='bucketed' 
+               ? $this->bucketed( $data )
+               : $data;
     }
 
     private function _setDate($data){
@@ -412,6 +458,7 @@ class Booking_Model extends Model
         condition_name as name,
         condition_income as income,
         condition_lock as has_lock,
+        condition_is_cal as is_cal,
         condition_keyword as keyword
     ";
     public function conditions(){
@@ -482,9 +529,22 @@ class Booking_Model extends Model
         return $data;
     }
 
+    /**/
+    /* Search */
+    /**/
     public function lists_vin( $pro_id , $color_id ){
 
         return $this->db->select("SELECT item_pro_id AS pro_id , item_id AS id , item_color AS color , item_vin AS vin , item_engine AS engine FROM products_items WHERE item_pro_id={$pro_id} AND item_color={$color_id} AND item_status='standby' ORDER By item_id ASC");
+    }
+
+    public function check_vin( $vin , $engine ){
+        
+        return $this->db->select("SELECT item_pro_id AS pro_id , item_act_id AS act_id , item_id AS id , item_color AS color_id , item_vin AS vin , item_engine AS engine , item_status AS status FROM products_items WHERE item_vin='{$vin}' AND item_engine='{$engine}' LIMIT 1 ");
+    }
+
+    public function search_model( $name ){
+
+        return $this->db->select("SELECT model_id AS id , model_name AS name FROM products_models WHERE model_name='{$name}'");
     }
 
     /**/
@@ -535,11 +595,17 @@ class Booking_Model extends Model
     }
 
     /**/
-    /* Customer */
+    /* Search Customer */
     /**/
     public function search_customer($first_name, $last_name){
 
         $data = $this->db->select("SELECT * FROM customers WHERE cus_first_name='{$first_name}' AND cus_last_name='{$last_name}'");
+
+        return $data;
+    }
+
+    public function search_sale( $first_name ){
+        $data = $this->db->select("SELECT * FROM employees WHERE emp_first_name LIKE '%{$first_name}%'");
 
         return $data;
     }
@@ -599,6 +665,10 @@ class Booking_Model extends Model
 
         $data  = $this->db->select("SELECT {$select_insurance} FROM booking_insurance WHERE ins_book_id={$id}");
 
+        if( empty($data) ){
+            $data[0] = array();
+        }
+
         return $data[0];
     }
 
@@ -655,9 +725,20 @@ class Booking_Model extends Model
         $this->db->insert('booking_condition', $post);
     }
 
+    public function up_condition( $book_id , $name , $data ){
+        $post['con_value'] = $data['value'];
+
+        $this->db->update('booking_condition', $post ,"`con_book_id`={$book_id} AND `con_name`={$name}"); 
+    }
+
     public function del_condition($id){
 
         $this->db->delete( 'booking_condition', "`con_book_id`={$id}", $this->db->count('booking_condition', '`con_book_id`={$id}') );
+    }
+
+    public function search_condition( $book_id , $name ){
+
+        return $this->db->select("SELECT con_book_id AS book_id , con_name AS name , con_value AS value , con_type AS type , con_has_etc AS has_etc FROM booking_condition WHERE con_book_id={$book_id} AND con_name={$name} AND con_has_etc=0");
     }
 
     /**/
@@ -836,15 +917,25 @@ class Booking_Model extends Model
 
         if( $data['type_form'] == 'save' ){
 
+
+            if( !empty($data['book']['pay_type_options']['down_payment_price']) ){
+                $data['payment']['income']['paydown'] = $data['book']['pay_type_options']['down_payment_price'];
+            }
+
+
             /* SET DATA BOOK */
             $book = array();
             foreach ($data['book'] as $key => $value) {
                 $book['book_'.$key] = $value;
             }
+
+            $book['book_finance_amount'] = '';
+
             if( !empty($data['book']['deposit_type_options']) ){
                 $book['book_deposit_type_options'] = json_encode($data['book']['deposit_type_options']);
             }
             if( !empty($data['book']['pay_type_options']) ){
+                $book['book_finance_amount'] = $data['book']['pay_type_options']['finance_amount'];
                 $book['book_pay_type_options'] = json_encode($data['book']['pay_type_options']);
             }
             $book['book_note'] = '';
@@ -935,11 +1026,16 @@ class Booking_Model extends Model
             if( !empty($id) ){
 
                 /* SET DATA INSURENCE */
+                $pay_insurence = 0;
                 foreach ($data['insurence'] as $key => $value) {
 
-                // if( empty($value) && $key != 'sure'){
-                //      $arr['error']['book_insurence'] = 'กรุณากรอกข้อมูลประกันภัยให้ครบถ้วน';
-                // }
+
+                    if( $key=='premium' ){
+                        $pay_insurence = $value;
+                    }
+                    // if( empty($value) && $key != 'sure'){
+                    //      $arr['error']['book_insurence'] = 'กรุณากรอกข้อมูลประกันภัยให้ครบถ้วน';
+                    // }
                     if( empty($value) ) continue;
                     $ins['ins_'.$key] = $value;
                 }
@@ -958,10 +1054,10 @@ class Booking_Model extends Model
                         'cost'=>$value['cost'],
                         'rate'=>$value['rate'],
                         'has_etc'=>$value['has_etc'],
-                        'FOC'=>(!empty($value['FOC'])? '1':'0'),
+                        'FOC'=>(!empty($value['foc'])? '1':'0'),
                         );
 
-                    if( empty($value['FOC']) ){
+                    if( empty($value['foc']) ){
                         $accessory_price = $accessory_price + $value['value'];
                     }
                     $this->set_accessory($acc, $id);
@@ -969,80 +1065,97 @@ class Booking_Model extends Model
 
                 /* SET Payment Income (Booking Conditions) */
                 $price_income = 0;
-                foreach ($data['payment']['income'] as $key => $value) {
 
-                    if( $key=='name' || $key=='value' ) continue;
+                for( $i=0; $i<count($data['payment']['income']['name']); $i++ ){
 
-                    if( empty($value) ) continue;
-
-                    $income = array(
-                        'name'=>$key,
-                        'value'=>$value,
-                        'type'=>'income',
-                        'has_etc'=>0,
-                        );
-                    $price_income = $price_income+$value;
-                    $this->set_condition($income, $id);
-                }
-                /* SET Payment Income ETC */
-                for($i=0;$i<count($data['payment']['income']['name']);$i++){
                     if( empty($data['payment']['income']['value'][$i]) ) continue;
 
-                    $income_etc = array(
+                    $income = array(
                         'name'=>$data['payment']['income']['name'][$i],
                         'value'=>$data['payment']['income']['value'][$i],
                         'type'=>'income',
-                        'has_etc'=>1,
-                        );
+                        'has_etc'=>!is_numeric($data['payment']['income']['name'][$i])? 1:0
+                    );
+
                     $price_income = $price_income+$data['payment']['income']['value'][$i];
-                    $this->set_condition($income_etc, $id);
+                    $this->set_condition($income, $id);
                 }
 
                 /*SET Payment LESS */
-                $price_lass = 0;
-                foreach ($data['payment']['less'] as $key => $value) {
-                    if( $key=='name' || $key=='value' ) continue;
+                $price_less = 0;
 
-                    if( empty($value) ) continue;
+                for( $i=0; $i<count($data['payment']['less']['name']); $i++ ){
 
-                    $lass = array(
-                        'name'=>$key,
-                        'value'=>$value,
-                        'type'=>'less',
-                        'has_etc'=>0,
-                        );
-
-                    $price_lass = $price_lass + $value;
-                    $this->set_condition($lass, $id);
-                }
-                /* SET Payment LESS ETC */
-                for($i=0;$i<count($data['payment']['less']['name']);$i++){
                     if( empty($data['payment']['less']['value'][$i]) ) continue;
 
-                    $less_etc = array(
+                    $less = array(
                         'name'=>$data['payment']['less']['name'][$i],
                         'value'=>$data['payment']['less']['value'][$i],
                         'type'=>'less',
-                        'has_etc'=>1,
-                        );
+                        'has_etc'=>!is_numeric($data['payment']['less']['name'][$i])? 1:0
+                    );
 
-                    $price_lass = $price_lass + $data['payment']['less']['value'][$i];
-                    $this->set_condition($less_etc, $id);
+                    $price_less = $price_less+$data['payment']['less']['value'][$i];
+                    $this->set_condition($less, $id);
                 }
 
                 /* UPDATE Accessory Price Booking */
 
-                $net_price = $price_income - $price_lass;
+                $net_price = $price_income - $price_less;
 
                 $book['book_pro_price'] = $book['book_net_price'];
-                $book['book_net_price'] = $book['book_net_price'] + $accessory_price + $net_price;
+                $book['book_net_price'] = $net_price - $book['book_net_price'];
                 $book['book_accessory_price'] = $accessory_price;
 
                 $this->update( $id, $book );
 
+                $event = array(
+                    'event_title'=>'นัดหมายส่งมอบรถ',
+                    'event_location'=>'โชว์รูม',
+                    'event_start'=>$book['book_due'],
+                    'event_emp_id'=>$data['me']
+                );
+
+                $this->query('events')->insert( $event );
+
+                $eventJoin[] = array(
+                    'event_id'=>$event['event_id'],
+                    'obj_id'=>$id,
+                    'obj_type'=>'booking'
+                );
+
+                $eventJoin[] = array(
+                    'event_id'=>$event['event_id'],
+                    'obj_id'=>$book['book_cus_id'],
+                    'obj_type'=>'customers'
+                );
+
+                $eventJoin[] = array(
+                    'event_id'=>$event['event_id'],
+                    'obj_id'=>$book['book_sale_id'],
+                    'obj_type'=>'employees'
+                );
+
+                foreach ($eventJoin as $key => $value) {
+                    $this->query('events')->insertJoinEvent( $value );
+                }
+
                 $data['message'] = 'บันทึกข้อมูลใบจองเรียบร้อยแล้ว';
-                $data['url'] = URL.'booking';
+                $data['url'] = URL.'booking/'.$id;
             }
         }
+    }
+
+    /**/
+    /* Summary */
+    /**/
+    public function summary(){
+
+        $sum['total'] = $this->db->count($this->_table);
+        $sum['total_booking'] = $this->db->count($this->_table, "book_status='booking'");
+        $sum['total_cancel'] = $this->db->count($this->_table, "book_status='cancel'");
+        $sum['total_finish'] = $this->db->count($this->_table, "book_status='finish'");
+
+        return $sum;
     }
 }

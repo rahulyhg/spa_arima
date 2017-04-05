@@ -66,10 +66,18 @@ if( !empty($this->results['lists']) ){
                 '<span class="btn btn-status" style="min-width:120px;background-color:'.$item['status_arr']['color'].';color:#fff">'.$item['status_arr']['name'].'</span>'.
             '</td>'.
             '<td class="actions whitespace">';
-            if( $this->me['id'] == $item['act']['emp_id'] || $this->me['dep_is_admin'] ){
-                    $tr.='<span class="gbtn"><a data-plugins="dialog" href="'.URL.'products/edit_item/'.$item['id'].'" class="btn btn-no-padding"><i class="icon-pencil"></i></a></span>'.
-                    '<span class="gbtn"><a data-plugins="dialog" href="'.URL.'products/del_item/'.$item['id'].'" class="btn btn-no-padding"><i class="icon-trash"></i></a></span>';
+
+            if( $item['status_arr']['id'] != 'sold' ){
+
+                if( $this->me['id'] == $item['act']['emp_id'] || !empty($this->permit['stocks']['edit']) ){
+                    $tr .='<span class="gbtn"><a data-plugins="dialog" href="'.URL.'products/edit_item/'.$item['id'].'" class="btn btn-no-padding"><i class="icon-pencil"></i></a></span>';
                 }
+
+                if( $this->me['id'] == $item['act']['emp_id'] || !empty($this->permit['stocks']['del']) ){
+                    $tr .='<span class="gbtn"><a data-plugins="dialog" href="'.URL.'products/del_item/'.$item['id'].'" class="btn btn-no-padding"><i class="icon-trash"></i></a></span>';
+                }
+            }
+
             $tr.='</td>'.
         '</tr>';
         

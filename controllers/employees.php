@@ -70,7 +70,7 @@ class Employees extends Controller {
                     ->post('emp_pos_id')
                     ->post('emp_prefix_name')
                     ->post('emp_first_name')->val('is_empty')
-                    ->post('emp_last_name')->val('is_empty')
+                    ->post('emp_last_name')
                     ->post('emp_phone_number')
                     ->post('emp_email')
                     ->post('emp_line_id')
@@ -78,10 +78,6 @@ class Employees extends Controller {
 
             $form->submit();
             $postData = $form->fetch();
-
-            $postData['emp_username'] = trim($postData['emp_username']);
-            $postData['emp_first_name'] = trim($postData['emp_first_name']);
-            $postData['emp_last_name'] = trim($postData['emp_last_name']);
 
             if( empty($item) ){
                 $postData['emp_password'] = $_POST['emp_password'];
@@ -109,7 +105,7 @@ class Employees extends Controller {
             }
 
             if( $this->model->is_name( $postData['emp_first_name'] , $postData['emp_last_name'] ) && $has_name == true ){
-                $arr['error']['name'] = 'มี ชื่อ-นามสกุล นี้อยู่ในระบบแล้ว';
+                $arr['error']['emp_name'] = "มีชื่อ-นามสกุลนี้ ในระบบแล้ว";
             }
 
             /**/
@@ -134,6 +130,9 @@ class Employees extends Controller {
                 $arr['error']['birthday'] = 'วันเกิดไม่ถูกต้อง';
             }
 
+            $postData['emp_username'] = trim($postData['emp_username']);
+            $postData['emp_first_name'] = trim($postData['emp_first_name']);
+            $postData['emp_last_name'] = trim($postData['emp_last_name']);
             $postData['emp_address'] = json_encode($_POST['address']);
             $postData['emp_city_id'] = $_POST['address']['city'];
             $postData['emp_zip'] = $_POST['address']['zip'];
@@ -149,19 +148,43 @@ class Employees extends Controller {
                     $id = $postData['id'];
                 }
 
-                if( !empty($_FILES['image']) ){
+                if( !empty($_FILES['file1']) ){
 
                     if( !empty($item['image_id']) ){
                         $this->model->query('media')->del($item['image_id']);
                         $this->model->update( $id, array('emp_image_id'=>0 ) );
                     }
-                    
-                    $media = array(
-                        'media_album_id' => 1,
-                        'media_type' => 'jpg'
-                    );
 
-                    $this->model->query('media')->set( $_FILES['image'], $media );
+                    $album = array('album_id'=>1);
+                    
+                    if( empty($structure) ){
+                        $structure = WWW_UPLOADS . $album['album_id'];
+                        if( !is_dir( $structure ) ){
+                            mkdir($structure, 0777, true);
+                        }
+                    }
+
+                    /**/
+                    /* set Media */
+                    /**/
+                    $media = array(
+                        'media_album_id' => $album['album_id'],
+                        'media_type' => isset($_REQUEST['media_type']) ? $_REQUEST['media_type']: strtolower(substr(strrchr($_FILES['file1']['name'],"."),1))
+                        );
+
+                    $options = array(
+
+                        'dir' => $structure.DS,
+                        'url' => UPLOADS.$album['album_id'].'/',
+                        );
+
+                    if( isset($_REQUEST['minimize']) ){
+                        $options['minimize'] = explode(',', $_REQUEST['minimize']);
+                    }
+                    
+                    $options['has_quad'] = true;
+
+                    $this->model->query('media')->upload_picture( $_FILES['file1'], $media , $options );
                     $item['image_id'] = $media['media_id'];
                     $this->model->update( $id, array('emp_image_id'=>$item['image_id'] ) );
                     
@@ -257,7 +280,6 @@ class Employees extends Controller {
             $this->view->render("change_display");
         }
     }
-
 
     public function del($id=null) {
         $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : $id;
@@ -393,50 +415,6 @@ class Employees extends Controller {
         echo json_encode($arr);
     }
     
-    public function edit_permit_dep($id=null){
-        $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : $id;
-        if( empty($this->me) || empty($id) || $this->format!='json' ) $this->error();
-
-        $item = $this->model->get_department($id);
-        if( empty($item) ) $this->error();
-
-        $this->view->setData('pageMenu', $this->model->query('system')->pageMenu());
-        $this->view->setData('item', $item);
-
-        $this->view->setPage('path','Themes/manage/forms/department');
-        $this->view->render("permission");
-    }
-    
-    public function save_permit_department(){
-        if( empty($this->me) || empty($_POST) || $this->format!='json' ) $this->error();
-
-        if( isset($_REQUEST['id']) ){
-            $id = $_REQUEST['id'];
-
-            $item = $this->model->get_department($id);
-            if( empty($item) ) $this->error();
-        }
-         try {
-
-            if( empty($_POST['dep_permission']) ){
-                $arr['error']['dep_permission'] = 'กรุณาเลือกฟังข์ชั่นสำหรับเข้าใช้งาน';
-            }
-
-            if( empty($arr['error']) ){
-
-                $postData['dep_permission'] = json_encode($_POST['dep_permission']);
-                $this->model->update_department( $id, $postData );
-
-                $arr['url'] = 'refresh';
-                $arr['message'] = 'กำหนดสิทธิ์เรียบร้อย';
-            }
-
-        } catch (Exception $e) {
-            $arr['error'] = $this->_getError($e->getMessage());
-        }
-
-        echo json_encode($arr);
-    }
     public function del_department($id=null){
         $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : $id;
         if( empty($this->me) || empty($id) || $this->format!='json' ) $this->error();
@@ -665,6 +643,209 @@ class Employees extends Controller {
             $this->model->query('employees')->update( $id, $postData );
             $arr['message'] = 'บันทึกข้อมูลเรียบร้อย';
             $arr['url'] = 'refresh';
+        }
+
+        echo json_encode($arr);
+    }
+
+    public function setdata($id='', $field=null)
+    {
+        if( empty($id) || empty($field) || empty($this->me) ) $this->error();
+
+        $item = $this->model->get( $id );
+
+        if( empty($item) ) $this->error();
+
+        if( isset($_REQUEST['has_image_remove']) && !empty($item['image_id']) ){
+            $this->model->query('media')->del( $item['image_id'] );
+        }
+
+        $data[$field] = isset($_REQUEST['value'])? $_REQUEST['value']:'';
+        $this->model->update($id, $data);
+
+        $arr['message'] = 'บันทึกเรียบร้อย';
+        echo json_encode($arr);
+    }
+
+    /**/
+    /* Note */
+    /**/
+    public function notes(){
+        if( empty($this->me) || $this->format!='json') $this->error();
+        echo json_encode($this->model->query('notes')->notes());
+    }
+
+    public function save_note(){
+        if( empty($this->me) || empty($_POST) || $this->format!='json') $this->error();
+
+
+        if( empty($_POST['text']) || empty($_POST['obj_id']) ){
+
+            $arr['message'] = array('text'=>'กรุณากรอกข้อมูลให้ครบ!', 'bg'=>'red', 'auto'=>1, 'load'=>1) ;
+            $arr['error'] = 1;
+        }
+        else{
+            $data = array(
+                'note_text' => $_POST['text'],
+                'note_date' => date('Y-m-d H:s:i'),
+                'note_emp_id' => $this->me['id'],
+                'note_obj_id' => $_POST['obj_id'],
+                'note_obj_type' => 'employees',
+                );
+            $this->model->query('notes')->save_note( $data );
+
+            $arr['data'] = $data;
+
+            $arr['message'] = 'บันทึกเรียบร้อย';
+            $arr['url'] = 'refresh';
+
+        }
+
+        echo json_encode( $arr );
+    }
+
+    public function del_note($id=null) {
+        $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : $id;
+        if( empty($this->me) || empty($id) || $this->format!='json' ) $this->error();
+        
+        $item = $this->model->query('notes')->get_note($id);
+        if( empty($item) ) $this->error();
+
+        if (!empty($_POST)) {
+
+            if ($item['permit']['del']) {
+                $this->model->query('notes')->deleteNote($id);
+                $arr['message'] = 'ลบข้อมูลเรียบร้อย';
+            } else {
+                $arr['message'] = 'ไม่สามารถลบข้อมูลได้';
+            }
+
+            if( isset($_REQUEST['callback']) ){
+                $arr['callback'] = $_REQUEST['callback'];
+            }
+            $arr['url'] = 'refresh';
+            echo json_encode($arr);
+        }
+        else{
+            $this->view->setData('item', $item);
+            $this->view->setPage('path', 'Themes/manage/forms/notes');
+            $this->view->render("del_note");
+        }
+    }
+
+    public function edit_note(){
+        $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : $id;
+        if( empty($this->me) || empty($id) || $this->format!='json' ) $this->error();
+
+        $item = $this->model->query('notes')->get_note($id);
+        if( empty($item) ) $this->error();
+
+        if (!empty($_POST)) {
+
+            try {
+                $form = new Form();
+                $form   ->post('note_text')->val('is_empty');
+
+                $form->submit();
+                $postData = $form->fetch();  
+                
+                if( empty($arr['error']) ){
+
+                    $this->model->query('notes')->updateNote($id, $postData );
+                    
+                    $arr['message'] = 'บันทึกเรียบร้อย';
+
+                    $arr['url'] = 'refresh';
+                    $arr['text'] = $postData['note_text'];
+                }
+
+            } catch (Exception $e) {
+                $arr['error'] = $this->_getError($e->getMessage());
+            }
+
+            echo json_encode($arr);
+        }
+        else{
+            $this->view->setData('item', $item);
+            $this->view->setPage('path', 'Themes/manage/forms/notes');
+            $this->view->render("get_note");
+        }
+    }
+
+    public function edit_permit($id=null, $type=null){
+        $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : $id;
+        $type = isset($_REQUEST['type']) ? $_REQUEST['type'] : $type;
+
+        if( empty($this->me) || empty($id) || $this->format!='json' ) $this->error();
+
+        if( $type == 'employees' ){
+            $item = $this->model->get($id);
+        }
+
+        if( $type == 'department' ){
+            $item = $this->model->get_department($id);
+        }
+
+        if( $type == 'position' ){
+            $item = $this->model->get_position($id);
+        }
+
+        if( empty($item) ) $this->error();
+
+        $this->view->setData('pageMenu', $this->model->query('system')->pageMenu());
+        $this->view->setData('item', $item);
+
+        $this->view->setPage('path','Themes/manage/forms/permission');
+        $this->view->render("permission");
+    }
+    
+    public function save_permit(){
+        if( empty($this->me) || empty($_POST) || $this->format!='json' ) $this->error();
+
+        if( isset($_REQUEST['id']) || isset($_REQUEST['type']) ){
+            $id = $_REQUEST['id'];
+            $type = $_REQUEST['type'];
+
+            if( $type == 'employees' ){
+                $item = $this->model->get($id);
+            }
+
+            if( $type == 'department' ){
+                $item = $this->model->get_department($id);
+            }
+
+            if( $type == 'position' ){
+                $item = $this->model->get_position($id);
+            }
+
+            if( empty($item) ) $this->error();
+        }
+
+        try {
+
+            if( empty($arr['error']) ){
+
+                if( $type == 'employees' ){
+                    $postData['emp_permission'] = json_encode($_POST['permission']);
+                    $this->model->update( $id , $postData );
+                }
+
+                if( $type == 'department' ){
+                    $postData['dep_permission'] = json_encode($_POST['permission']);
+                    $this->model->update_department( $id, $postData );
+                }
+
+                if( $type == 'position' ){
+                    $postData['pos_permission'] = json_encode($_POST['permission']);
+                    $this->model->update_position( $id , $postData );
+                }
+
+                $arr['url'] = 'refresh';
+                $arr['message'] = 'กำหนดสิทธิ์เรียบร้อย';
+            }
+
+        } catch (Exception $e) {
+            $arr['error'] = $this->_getError($e->getMessage());
         }
 
         echo json_encode($arr);

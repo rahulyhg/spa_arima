@@ -18,14 +18,12 @@ if( !empty($this->results['lists']) ){
             }
         }
 
-
         if( !empty($item['image_url']) ){
-            $image = $this->fn->imageBox($item['image_url'], 48);
+            $image = '<div class="lfloat mrm"><img class="img" src="'.$item['image_url'].'"style="width: 114px;"></div>';
         }
         else{
             $image = '<div class="avatar lfloat no-avatar mrm"><div class="initials"><i class="icon-car"></i></div></div>';
         }
-
 
         $booking = !empty($item['total_booking'])
             ? $item['total_booking']
@@ -47,8 +45,8 @@ if( !empty($this->results['lists']) ){
 
             '<td class="name">'.
 
-                '<div class="anchor clearfix">'.
-                    $image.
+                '<div class="anchor clearfix"><a class="fwb" href="'.URL .'stocks/'.$item['id'].'">'.
+                    $image.'</a>'.
                     
                     '<div class="content"><div class="spacer"></div><div class="massages">'.
 

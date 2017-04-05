@@ -1,3 +1,16 @@
+window.onbeforeunload = function (event) {
+    /*var message = 'Important: Please click on \'Save\' button to leave this page.';
+
+    if (typeof event == 'undefined') {
+        event = window.event;
+    }
+    if (event) {
+        event.returnValue = message;
+    }
+
+    return message;*/
+};
+
 var Dialog = {
 	load: function (url, getData, options, callback) {
 		Event.showMsg({ load:true });
@@ -171,10 +184,26 @@ var Dialog = {
 			self.settings.onForm( self.$pop.find('.model-content')[0] );
 		}
 
+		var is_focus = false;
+		self.$dialog.find('.model-content').mouseover(function () {
+			is_focus = true;
+		}).mouseenter(function () {
+			is_focus = true;
+		}).mouseleave(function () {
+			is_focus = false;
+		});
+
+
+		if( self.settings.is_close_bg ){
+			self.$dialog.click(function () {
+				if( !is_focus ){
+					self.close();
+				}	
+			});
+		}
 
 		// save 
 		$.data( self.$dialog[0], self );
-		
 
 		// 
 		self.resize();

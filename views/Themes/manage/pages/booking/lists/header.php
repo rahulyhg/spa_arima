@@ -10,21 +10,23 @@
 			</ul>
 
 			<ul class="lfloat listpage2-actions_status">
-				<li class="item"><label class="label">จอง</label><div class="data">4</div></li>
+				<li class="item"><label class="label">จอง</label><div class="data"><?=$this->summary['total_booking']?></div></li>
 				
-				<li class="item"><label class="label">ถอนจอง</label><div class="data">-</div></li>
+				<li class="item"><label class="label">ถอนจอง</label><div class="data"><?=$this->summary['total_cancel']?></div></li>
 
-				<li class="item"><label class="label">ส่งหมอบ</label><div class="data">-</div></li>
-				<li class="item"><label class="label">รวมทั้งหมด</label><div class="data"><a>3</a></div></li>
+				<li class="item"><label class="label">ส่งหมอบ</label><div class="data"><?=$this->summary['total_finish']?></div></li>
+				<li class="item"><label class="label">รวมทั้งหมด</label><div class="data"><a><?=$this->summary['total']?></a></div></li>
 
 			</ul>
 
 			<ul class="rfloat" style="margin-top: 4px">
 				<li class="mt">
+				<?php if( !empty($this->permit['booking']['add']) ) { ?>
 					<span class="group-btn">
 						<a href="<?=URL?>booking/create" class="btn btn-blue" data-plugins="dialog"><i class="icon-plus mrs"></i>เพิ่มการจอง</a>
 						<!-- <a class="btn btn-blue"><i class="icon-ellipsis-v"></i></a> -->
 					</span>
+				<?php } ?>
 				</li>
 				<!-- <li class="divider"></li>
 				<li class="mt">

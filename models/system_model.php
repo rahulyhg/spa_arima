@@ -111,29 +111,16 @@ class System_Model extends Model{
     public function pageMenu()
     {
         $a = array();
-        
-        $a[] = array('id'=>'1','key'=>'dashboard','name'=>'Dashboard');
-        $a[] = array('id'=>'2','key'=>'calendar','name'=>'นัดหมาย');
-        $a[] = array('id'=>'3','key'=>'customers','name'=>'ประวัติลูกค้า');
-        $a[] = array('id'=>'4','key'=>'booking','name'=>'รายการจองรถยนต์');
-        $a[] = array('id'=>'5','key'=>'products','name'=>'สต็อกรถยนต์');
-        $a[] = array('id'=>'6','key'=>'sales','name'=>'Sales');
-        $a[] = array('id'=>'7','key'=>'services','name'=>'งานบริการ');
-        $a[] = array('id'=>'8','key'=>'reports','name'=>'รายงาน');
-        $a[] = array('id'=>'9','key'=>'settings','sub'=>'company','name'=>'รายละเอียดของบริษัท');
-        $a[] = array('id'=>'10','key'=>'settings','sub'=>'dealer','name'=>'Dealer');
-        $a[] = array('id'=>'11','key'=>'settings','sub'=>'my','name'=>'โปรไฟล์');
-        $a[] = array('id'=>'12','key'=>'settings','sub'=>'accounts','page'=>'department','name'=>'แผนก');
-        $a[] = array('id'=>'13','key'=>'settings','sub'=>'accounts','page'=>'position','name'=>'ตำแหน่ง');
-        $a[] = array('id'=>'14','key'=>'settings','sub'=>'accounts','page'=>'employees','name'=>'พนักงาน');
-        $a[] = array('id'=>'15','key'=>'settings','sub'=>'brands','name'=>'Brands');
-        $a[] = array('id'=>'16','key'=>'settings','sub'=>'models','name'=>'Models');
-        $a[] = array('id'=>'17','key'=>'settings','sub'=>'accessory','name'=>'ชุดแต่ง');
-        $a[] = array('id'=>'18','key'=>'settings','sub'=>'accessory','page'=>'stores','name'=>'ตัวแทนจำหน่ายชุดแต่ง');
-        $a[] = array('id'=>'19','key'=>'settings','sub'=>'booking','page'=>'status','name'=>'สถานะ');
-        $a[] = array('id'=>'20','key'=>'settings','sub'=>'booking','page'=>'conditions','name'=>'เงื่อนไข');
-        $a[] = array('id'=>'21','key'=>'settings','sub'=>'booking','page'=>'cus_refer','name'=>'แหล่งที่มาของลูกค้า');
 
+        $a[] = array('key'=>'dashboard', 'name'=>'Dashboard');
+        // $a[] = array('key'=>'calendar', 'name'=>'นัดหมาย');
+        $a[] = array('key'=>'customers', 'name'=>'ประวัติลูกค้า');
+        $a[] = array('key'=>'booking', 'name'=>'รายการจองรถยนต์');
+        $a[] = array('key'=>'stocks', 'name'=>'สต็อกรถยนต์');
+        $a[] = array('key'=>'sales', 'name'=>'Sales');
+        $a[] = array('key'=>'services', 'name'=>'งานบริการ');
+        $a[] = array('key'=>'reports', 'name'=>'รายงาน');
+        
         return $a;
     }
 
@@ -142,22 +129,6 @@ class System_Model extends Model{
     }
     public function city_name($id) {
         $sth = $this->db->prepare("SELECT city_name as name FROM city WHERE city_id=:id LIMIT 1");
-        $sth->execute( array( ':id' => $id ) );
-
-        $text = '';
-        if( $sth->rowCount()==1 ){
-            $fdata = $sth->fetch( PDO::FETCH_ASSOC );
-            $text = $fdata['name'];
-        }
-
-        return $text;
-    }
-
-    public function country(){
-        return $this->db->select("SELECT country_id AS id, country_name AS name FROM countries ORDER By country_name ASC");
-    }
-    public function country_name($id){
-        $sth = $this->db->prepare("SELECT country_name AS name FROM countries WHERE country_id=:id LIMIT 1");
         $sth->execute( array( ':id' => $id ) );
 
         $text = '';
@@ -190,7 +161,7 @@ class System_Model extends Model{
     /**/
     public function _prefixName($options=array()){
 
-        $a['-'] = array('id'=>'', 'name'=> '-');
+        //$a['-'] = array('id'=>'', 'name'=> '-');
         $a['Mr.'] = array('id'=>'Mr.', 'name'=> 'นาย');
         $a['Mrs.'] = array('id'=>'Mrs.', 'name'=> 'นาง');
         $a['Ms.'] = array('id'=>'Ms.', 'name'=> 'น.ส.');
@@ -200,7 +171,7 @@ class System_Model extends Model{
 
     public function _prefixNameCustomer($options=array()){
 
-        $a['-'] = array('id'=>'', 'name'=> '-');
+        //$a['-'] = array('id'=>'', 'name'=> '-');
         $a['Mr.'] = array('id'=>'Mr.', 'name'=> 'นาย');
         $a['Mrs.'] = array('id'=>'Mrs.', 'name'=> 'นาง');
         $a['Ms.'] = array('id'=>'Ms.', 'name'=> 'น.ส.');

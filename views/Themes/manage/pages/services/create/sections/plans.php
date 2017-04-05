@@ -20,10 +20,18 @@ $form   ->field("event_detail")
         ->addClass('inputtext')
         ->value('');
 
-$form   ->field("event_when")
-        ->type('date')
-        ->name('event[when]')
+$form   ->field("event_start")
+        ->type('datetime-local')
+        ->name('event[start]')
         ->label( 'วันที่' )
+        ->autocomplete('off')
+        ->addClass('inputtext')
+        ->value('');
+
+$form   ->field("event_end")
+        ->type('datetime-local')
+        ->name('event[end]')
+        ->label( 'สิ้นสุด' )
         ->autocomplete('off')
         ->addClass('inputtext')
         ->value('');

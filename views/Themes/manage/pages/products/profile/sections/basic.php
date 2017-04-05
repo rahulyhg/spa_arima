@@ -13,7 +13,9 @@
     <section class="mbl">
         <header class="clearfix">
             <h2 class="title">ข้อมูลสินค้า</h2>
+            <?php if( !empty($this->permit['stocks']['edit']) ) { ?>
             <a class="btn-icon btn-edit" data-plugins="dialog" href="<?=URL?>products/edit/<?=$this->item['id']?>"><i class="icon-pencil"></i></a>
+            <?php } ?>
         </header>
 
         <table cellspacing="0"><tbody><?php

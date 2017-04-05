@@ -1359,6 +1359,8 @@ if ( typeof Object.create !== 'function' ) {
 		setCalendar: function(){
 			
 			var self = this;
+
+			
 			self.is_loading = true;
  			var theDate = new Date( self.date.theDate );
 
@@ -1579,6 +1581,11 @@ if ( typeof Object.create !== 'function' ) {
 				self.date.theDate.setHours(0, 0, 0, 0);
 
 				self.getSlected();
+
+				
+				if( typeof self.options.onChange === 'function' ){
+					self.options.onChange( self );
+				}
 			});
 
 			$('td.prev, td.next', self.$calendar).click(function(e){
@@ -1592,6 +1599,9 @@ if ( typeof Object.create !== 'function' ) {
 
 				e.stopPropagation();
 			});
+
+
+
 		},
 		
 		getOffset: function(){
@@ -1896,6 +1906,8 @@ if ( typeof Object.create !== 'function' ) {
 
 			var offset = self.$elem.offset();
 			if( self.options.settings.parent ){
+
+				
 
 				offset.$parent = self.$elem.closest( self.options.settings.parent );
 				var parentoffset = offset.$parent.offset();
@@ -2753,14 +2765,12 @@ if ( typeof Object.create !== 'function' ) {
 				if( self.$parent.hasClass('active') || self.$parent.find('>.content, [rel]').css('display')=='block' ){
 					
 					self.$parent.find('>.content, [rel]').slideUp( 200, function() {
-						console.log( 1 );
 					    self.$parent.removeClass('active');
 					});
 				}
 				else{
 					
 					self.$parent.find('>.content, [rel]').slideDown( 200, function() {
-						console.log( 0 );
 					    self.$parent.addClass('active');
 					});
 				}

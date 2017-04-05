@@ -9,7 +9,7 @@ class Bootstrap {
     private $_modelPath = 'models/'; // Always include trailing slash
     private $_errorFile = 'error.php';
     private $_defaultFile = 'index.php';
-    private $_itemsPath = array('customers','sales','products', 'booking', 'services', 'cars','stocks', 'employees');
+    private $_itemsPath = array('customers','sales','products', 'booking', 'services', 'cars','stocks', 'employees', 'events');
     
     /**
      * Starts the Bootstrap

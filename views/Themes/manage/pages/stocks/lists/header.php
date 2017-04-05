@@ -8,22 +8,24 @@
                 </li>
 
                 <ul class="lfloat listpage2-actions_status">
-                    <li class="item"><label class="label">ยอดจอง</label><div class="data">4</div></li>
+                    <li class="item"><label class="label">ยอดจอง</label><div class="data"><?=$this->sum['total_reservation']==0 ? '-' : $this->sum['total_reservation']?></div></li>
                     
-                    <li class="item"><label class="label">คงเหลือ</label><div class="data">6</div></li>
+                    <li class="item"><label class="label">คงเหลือ</label><div class="data"><?=$this->sum['total_balance']==0 ? '-' : $this->sum['total_balance']?></div></li>
 
-                    <li class="item"><label class="label">รวม</label><div class="data">10</div></li>
+                    <li class="item"><label class="label">รวม</label><div class="data"><?=$this->sum['total_total']==0 ? '-' : $this->sum['total_total']?></div></li>
 
-                    <li class="item"><label class="label"><span class="fcr">ต้องสั่งเพิ่ม</span></label><div class="data">3</div></li>
+                    <li class="item"><label class="label"><span class="fcr">ต้องสั่งเพิ่ม</span></label><div class="data"><?=$this->sum['total_order']==0 ? '-' : $this->sum['total_order']?></div></li>
 
                 </ul>
 
             </ul>
 
+            <?php if( !empty($this->permit['stocks']['add']) ) { ?>
             <ul class="rfloat" ref="control">
                 <li class="mt"><a class="btn btn-blue" href="<?=URL?>products/create"><i class="icon-plus mrs"></i><span>เพิ่มสินค้าใหม่</span></a></li>
                 
             </ul>
+            <?php } ?>
         </div>
 
         <div class="clearfix pbm">

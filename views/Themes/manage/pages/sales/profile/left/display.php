@@ -26,13 +26,16 @@ $dropdown = array();
     );
 }*/
 // $dropdown[] = array( 'type' => 'separator');
-if( !empty($this->permit['sales']['del']) ){
+if( !empty($this->permit['sales']['edit']) ){
 
     $dropdown[] = array(
         'text' => 'เปลี่ยนรหัสผ่าน',
         'href' => URL.'employees/password/'.$this->item['id'],
         'attr' => array('data-plugins'=>'dialog'),
     );
+}
+
+if( !empty($this->permit['sales']['del']) ){
 
     $dropdown[] = array(
         'text' => 'ลบ',
@@ -53,7 +56,13 @@ if( !empty($dropdown) ){
     $dropdown = '';
 }
 
-
+$image = '';
+if( !empty($this->item['image_arr']) ){
+    $image = '<div class="avatar lfloat mrm"><img class="img" src="'.$this->item['image_url'].'" alt="'.$this->item['fullname'].'"></div>';
+}
+else{
+    $image = '<div class="avatar lfloat no-avatar mrm"><div class="initials"><i class="icon-user"></i></div></div>';
+}
 ?><div class="profile-left" role="left" data-width="340">
 
 	<div role="leftHeader">
@@ -65,7 +74,9 @@ if( !empty($dropdown) ){
             </div>
 
             <div class="anchor clearfix">
-                <div class="lfloat mrm avatar no-avatar"><div class="initials"><i class="icon-user"></i></div></div>
+
+                <?=$image?>
+                
                 <div class="content"><div class="spacer"></div><div class="massages">
                     <h3 class="fullname"><?=$this->item['fullname']?></h3>
                     <div class="subname fsm"><?=$subname?></div>

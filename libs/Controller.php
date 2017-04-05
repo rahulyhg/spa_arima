@@ -79,6 +79,19 @@ class Controller {
         }
 
         $permit = $this->model->permit( $permit_id );
+
+        if( !empty($this->me['permission']) ){
+
+            foreach ($permit as $key => $value) {
+                
+                if( !empty($this->me['permission'][ $key ]) ){
+                    $permit[$key] = array_merge($value, $this->me['permission'][ $key ]);
+                }
+            }
+
+        }
+
+        // print_r($permit); die;
         
         $this->permit = $permit;
         $this->view->setData('permit', $this->permit);
@@ -264,6 +277,7 @@ class Controller {
             $this->view->setData('next', $next);
         }
 
+        $this->view->setPage('title',  $this->system['title'] );
         $this->view->setData('redirect', $redirect);
         $this->view->setPage('name', $this->lang->getCode()=='th'?'เข้าสู่ระบบ': 'Login');
         $this->view->setPage('theme', 'login');

@@ -2,41 +2,53 @@
 
 $title = 'พนักงาน';
 
+$options = array(
+    'url' => URL.'media/set',
+    'data' => array(
+        'album_name'=>'my', 
+        'minimize'=> array(128,128),
+        'has_quad'=> true,
+     ),
+    'autosize' => true,
+    'show'=>'quad_url',
+    'remove' => true
+);
+
+if( !empty($this->item['id']) ){
+    $options['setdata_url'] = URL.'employees/setdata/'.$this->item['id'].'/emp_image_id/?has_image_remove';
+}
+
+$image_url = '';
+$hasfile = false;
+if( !empty($this->item['image_url']) ){
+    $hasfile = true;
+    $image_url = '<img class="img" src="'.$this->item['image_url'].'?rand='.rand(100, 1).'">';
+
+    $options['remove_url'] = URL.'media/del/'.$this->item['image_id'];
+    
+}
+
+$picture_box = '<div class="anchor"><div class="clearfix">'.
+
+        '<div class="ProfileImageComponent lfloat size80 radius mrm is-upload'.($hasfile ? ' has-file':' has-empty').'" data-plugins="uploadProfile" data-options="'.$this->fn->stringify( $options ).'">'.
+            '<div class="ProfileImageComponent_image">'.$image_url.'</div>'.
+            '<div class="ProfileImageComponent_overlay"><i class="icon-camera"></i></div>'.
+            '<div class="ProfileImageComponent_empty"><i class="icon-camera"></i></div>'.
+            '<div class="ProfileImageComponent_uploader"><div class="loader-spin-wrap"><div class="loader-spin"></div></div></div>'.
+            '<button type="button" class="ProfileImageComponent_remove"><i class="icon-remove"></i></button>'.
+        '</div>'.
+    '</div>'.
+
+'</div>';
+
 $form = new Form();
 $form = $form->create()
 	// set From
 	->elem('div')
-    ->style('horizontal')
-	->addClass('form-insert');
+	->addClass('form-insert form-emp');
 
-// $form   ->field("image")
-//         ->text('<div class="profile-cover image-cover" data-plugins="imageCover" data-options="'.(
-//         !empty($this->item['image_arr']) 
-//             ? $this->fn->stringify( array_merge( 
-//                 array( 
-//                     'scaledX'=> 250,
-//                     'scaledY'=> 250,
-//                     'action_url' => URL.'employees/del_image_profile/'.$this->item['id'],
-//                     // 'top_url' => IMAGES_PRODUCTS
-//                 ), $this->item['image_arr'] ) )
-//             : $this->fn->stringify( array( 
-//                     'scaledX'=> 250,
-//                     'scaledY'=> 250
-//                 ) )
-//             ).'" style="margin-top: 0px; margin-left: -23%;">
-//         <div class="loader">
-//         <div class="progress-bar medium"><span class="bar blue" style="width:0"></span></div>
-//         </div>
-//         <div class="preview"></div>
-//         <div class="dropzone">
-//             <div class="dropzone-text">
-//                 <div class="dropzone-icon"><i class="icon-picture-o img"></i></div>
-//                 <div class="dropzone-title">เพิ่มรูปโฆษณา</div>
-//             </div>
-//             <div class="media-upload"><input type="file" accept="image/*" name="image"></div>
-//         </div>
-        
-// </div>');
+$form   ->field("image")
+        ->text( $picture_box );
 
 // Dealer
 if( count($this->dealer['lists'])==1 ){
@@ -178,6 +190,6 @@ else{
 $arr['button'] = '<button type="submit" class="btn btn-primary btn-submit"><span class="btn-text">Save</span></button>';
 $arr['bottom_msg'] = '<a class="btn" role="dialog-close"><span class="btn-text">Cancel</span></a>';
 
-$arr['width'] = 625;
+$arr['width'] = 550;
 
 echo json_encode($arr);

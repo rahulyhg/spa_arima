@@ -56,6 +56,35 @@ else{
             ->label('Brand')
             ->text( $brand );  
 }
+$form   ->field("image")
+        ->text('<div class="profile-cover image-cover" data-plugins="imageCover" data-options="'.(
+        !empty($this->item['image_arr']) 
+            ? $this->fn->stringify( array_merge( 
+                array( 
+                    'scaledX'=> 1180,
+                    'scaledY'=> 640,
+                    'action_url' => URL.'models/del_image_cover/'.$this->item['id'],
+                    // 'top_url' => IMAGES_PRODUCTS
+                ), $this->item['image_arr'] ) )
+            : $this->fn->stringify( array( 
+                    'scaledX'=> 1180,
+                    'scaledY'=> 640
+                ) )
+            ).'"style="width: 329px;height: 201px; margin-left:43px;margin-top:0px">
+        <div class="loader">
+        <div class="progress-bar medium"><span class="bar blue" style="width:0"></span></div>
+        </div>
+        <div class="preview"></div>
+        <div class="dropzone">
+            <div class="dropzone-text">
+                <div class="dropzone-icon"><i class="icon-picture-o img"></i></div>
+                <div class="dropzone-title">เพิ่มรูปรถ</div>
+            </div>
+            <div class="media-upload"><input type="file" accept="image/*" name="image_cover"></div>
+        </div>
+        
+</div>');
+
 
 $form 	->field("model_name")
     	->label('Name*')
@@ -89,5 +118,5 @@ else{
 # fotter: button
 $arr['button'] = '<button type="submit" class="btn btn-primary btn-submit"><span class="btn-text">Save</span></button>';
 $arr['bottom_msg'] = '<a class="btn" role="dialog-close"><span class="btn-text">Cancel</span></a>';
-
+ $arr['height'] = 500;
 echo json_encode($arr);

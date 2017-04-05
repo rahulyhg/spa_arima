@@ -28,8 +28,9 @@ if( !empty($this->results['lists']) ){
         }
 
 
+        $image = '';
         if( !empty($item['image_url']) ){
-            $image = $this->fn->imageBox($item['image_url'], 48);
+            $image = '<div class="avatar lfloat mrm"><img class="img" src="'.$item['image_url'].'" alt="'.$item['fullname'].'"></div>';
         }
         else{
             $image = '<div class="avatar lfloat no-avatar mrm"><div class="initials"><i class="icon-user"></i></div></div>';
@@ -47,30 +48,11 @@ if( !empty($this->results['lists']) ){
             ? $item['total_cancel']
             : '-';
 
-
         $subtext = '';
-        $express = '';
-        if( !empty($item['phone_number']) ){
+        if( !empty($item['pos_name']) ){
             $subtext .= !empty($subtext) ? ', ':'';
-            $subtext.='<i class="icon-phone mrs"></i>'. $item['phone_number'];
-
-            $express .= '<a href="tel:'.$item['phone_number'].'" class="btn-icon btn-border mrs"><i class="icon-phone"></i></a>';
+            $subtext.= 'ตำแหน่ง: '.$item['pos_name'];
         }
-
-        if( !empty($item['email']) ){
-            $subtext .= !empty($subtext) ? ', ':'';
-            $subtext.='<i class="icon-envelope-o mrs"></i>'. $item['email'];
-
-             $express .= '<a href="mailto:'.$item['email'].'" class="btn-icon btn-border mrs"><i class="icon-envelope"></i></a>';
-        }
-
-        if( !empty($item['line_id']) ){
-            $subtext .= !empty($subtext) ? ', ':'';
-            $subtext .= '<a target="_blank" href="http://line.me/ti/p/~'.$item['line_id'].'"><i class="mls icon-external-link"></i> '.$item['line_id'].'</a>';
-
-            $express .= '<a class="btn-icon btn-border" href="line:'.$item['line_id'].'">Line</a>';
-        }
-        
         
 
  
@@ -95,7 +77,7 @@ if( !empty($this->results['lists']) ){
 
             '</td>'.
                 
-            '<td class="content">'.$item['pos_name'].'</td>'.
+            '<td class="content">'.(!empty($item['phone_number']) ? $item['phone_number'] : '-').'</td>'.
                 
              '<td class="status">'. $booking.'</td>'.
                 

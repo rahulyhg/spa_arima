@@ -9,7 +9,9 @@ $a[] = array('label'=>'Dealer', 'key'=>'dealer', 'value'=>'name');
 <section class="mbl">
 	<header class="clearfix">
 		<h2 class="title"><i class="icon-user-circle-o mrs"></i>พนักงานขาย</h2>
+		<?php if( !empty($this->permit['booking']['edit']) || $this->me['id'] == $this->item['sale']['id'] ) { ?>
 		<a data-plugins="dialog" href="<?=URL?>booking/change_sale/<?=$this->item['id']?>" class="btn-icon btn-edit"><i class="icon-pencil"></i></a>
+		<?php } ?>
 	</header>
 	
 	<table cellspacing="0"><tbody><?php

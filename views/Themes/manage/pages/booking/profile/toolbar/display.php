@@ -27,7 +27,11 @@ $options = $this->fn->stringify( array(
 	<ul class="ProfileToolbar_status">
 		<li class="item">
 			<label class="label">สถานะ</label>
+			
+			<?php if( !empty($this->permit['booking']['edit']) || $this->me['id'] == $this->item['sale']['id']  ) { ?>
 			<a class="" data-plugins="dropdown" data-options="<?=$options?>"><i class="icon-caret-down"></i></a>
+			<?php } ?>
+
 			<div class="data"><?php
 
 			echo '<span class="ui-status-icon mrs" style="background-color:'.$this->item['status']['color'].'"></span><span>' . $this->item['status']['name'].'</span>';

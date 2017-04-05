@@ -6,7 +6,9 @@
 			<li><h2><?=$this->item['name']?></h2></li>
 			<li class="divider"></li>
 			
+			<?php if( !empty($this->permit['stocks']['add']) ){ ?>
 			<li><a class="btn btn-blue" data-plugins="dialog" href="<?=URL?>products/add_item/<?=$this->item['id']?>"><i class="icon-plus mrs"></i><span>เพิ่มจำนวนสินค้า</span></a></li>
+			<?php } ?>
 
 		</ul>
 		<ul class="rfloat SettingCol-headerActions clearfix">

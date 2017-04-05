@@ -1,9 +1,14 @@
 <?php
+
 $top = array();
 
-$top[] = array('text'=>'แก้ไข','href'=>URL.'models/edit/'.$this->item['id'],'attr'=> array('data-plugins'=>'dialog'),'icon'=>'pencil');
+if( !empty($this->permit['models']['edit']) ){
+    $top[] = array('text'=>'แก้ไข','href'=>URL.'models/edit/'.$this->item['id'],'attr'=> array('data-plugins'=>'dialog'),'icon'=>'pencil');
+}
 
-$top[] = array('text' => 'ลบ','href' => URL.'models/del/'.$this->item['id'],'attr' => array('data-plugins'=>'dialog'),'icon' => 'remove');
+if( !empty($this->permit['models']['del']) && !empty($this->item['permit']['del']) ){
+    $top[] = array('text' => 'ลบ','href' => URL.'models/del/'.$this->item['id'],'attr' => array('data-plugins'=>'dialog'),'icon' => 'remove');
+}
 
 $updated ='';
 //if( $this->item['updated']!='0000-00-00 00:00:00' ){
@@ -24,7 +29,25 @@ $updated ='';
             </div>
         </div>
         <div class="mhl pbl">
-            <div class="anchor clearfix"><div class="avatar lfloat no-avatar mrm"><div class="initials"><i class="icon-car"></i></div></div><div class="content"><div class="spacer"></div><div class="massages"><div class="fullname"><?=$this->item['name']?></div><div class="subname fsm"></div></div></div></div><?=$updated?>
+                 <div class="anchor clearfix">
+                <?php 
+                if( !empty($this->item['image_url']) ){
+            $image = '<div class="lfloat mrm"><img class="img" src="'.$this->item['image_url'].'"style="width: 114px;margin-top:-9px"></div>';
+        }
+        else{
+            $image = '<div class="avatar lfloat no-avatar mrm"><div class="initials"><i class="icon-user"></i></div></div>';
+        }
+                ?>
+               <?=$image?>
+                <div class="content">
+                    <div class="spacer"></div>
+                    <div class="massages">
+                        <div class="fullname"><?=$this->item['name']?>
+                        </div><div class="subname fsm">
+                            
+                        </div>
+                            
+                    </div></div></div><?=$updated?>
         </div>
     </div>
     <!-- end: .profile-left-header -->

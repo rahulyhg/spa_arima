@@ -7,7 +7,6 @@ if( !empty($this->results['lists']) ){
     $seq = 0;
     foreach ($this->results['lists'] as $i => $item) { 
 
-
         // $item = $item;
         $cls = $i%2 ? 'even' : "odd";
         // set Name    
@@ -42,7 +41,7 @@ if( !empty($this->results['lists']) ){
 
             // รถ
             '<td class="name">'. 
-                '<strong class="fsm">'.$item['pro']['name'].'</strong>'.
+                '<strong class="fsm"><a class="fwb" href="'.URL .'services/'.$item['id'].'">'.$item['pro']['name'].'</a></strong>'.
                 '<div class="fcg">'. $disc .'</div>'.
             '</td>'.
 
@@ -72,13 +71,13 @@ if( !empty($this->results['lists']) ){
             // รายการซ่อม
             '<td class="qty"><div class="tac">'. 
                 ( !empty($item['total_list']) 
-                    ? '<a href="'.URL.'services/listing/'.$item['id'].'" data-plugins="dialog">'.$item['total_list'].' รายการ</a>'
+                    ? $item['total_list'].' รายการ'
                     : '-'
                 ).
             '</div></td>'.
             
             // ราคาซ่อม
-            '<td class="price"><a href="'.URL.'services/listing/'.$item['id'].'" data-plugins="dialog">'. number_format($item['total_price'], 0) .'</a></td>'.                
+            '<td class="price">'. number_format($item['total_price'], 0) .'</td>'.                
                  
             // status
             '<td class="status">'.( $item['status']['id']=='due'? '<i class="icon-check"></i>':'' ).'</td>'.

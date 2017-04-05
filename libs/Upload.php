@@ -25,7 +25,7 @@ class Upload {
         );
     }
 
-    public function quad($path, $max_size = array(950, 950)) {
+    public function quad($path, $max_size = array(950, 950), $options=array()) {
         list($width, $height) = getimagesize($path);
 
         if( $width > $height && $width < $max_size[0] ){
@@ -35,13 +35,18 @@ class Upload {
             $max_size = array($height, $height);
         }
 
-        if( $width > $height ){
-            $desired[0] = $max_size[0];
-            $desired[1] = round( ( $max_size[0]*$height ) / $width );
-        }
-        else{
-            $desired[1] = $max_size[1];
-            $desired[0] = round( ( $max_size[1]*$width ) / $height );
+        $desired[0] = $width;
+        $desired[1] = $height;
+
+        if( isset($options['full']) ){
+            if( $width > $height ){
+                $desired[0] = $max_size[0];
+                $desired[1] = round( ( $max_size[0]*$height ) / $width );
+            }
+            else{
+                $desired[1] = $max_size[1];
+                $desired[0] = round( ( $max_size[1]*$width ) / $height );
+            }
         }
 
         $dst = array(0,0);
@@ -69,7 +74,6 @@ class Upload {
             case 'jpg':  case 'jpeg': imagejpeg($imageNew, $path); break;
             case 'png': imagepng($imageNew, $path, 0); break;
         }
-
     }
 
     public function minimize($path, $max_size = array(950, 950)){
@@ -99,7 +103,6 @@ class Upload {
                 case 'png': imagepng($new_img, $path, 0); break;
             }
         }
-
     }
 
     public function imageToJpg($originalImage, $outputImage, $quality=100) {
@@ -107,6 +110,10 @@ class Upload {
 
             $imageTmp = $this->import( $originalImage );
             imagejpeg($imageTmp, $outputImage, 100);
+
+            /*$final = imagecreatetruecolor($tn_w, $tn_h);
+            $backgroundColor = imagecolorallocate($final, 255, 255, 255);*/
+
             imagedestroy($imageTmp);
             unlink($originalImage);
         }
@@ -178,6 +185,7 @@ class Upload {
 
     // 
     public function copies($source, $dest){
+        //print_r($dest); die;
         return copy($source, $dest);
     }
 

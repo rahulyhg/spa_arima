@@ -1,5 +1,8 @@
 <?php
 
+if( empty($this->item['pay_type']['options']['supply']) ) 
+	$this->item['pay_type']['options']['supply'] = '';
+
 switch ($this->item['pay_type']['options']['supply']) {
 	case 'ending':
 		$this->item['pay_type']['options']['supply'] = '<span class="mls fcg">ปลายงวด</span>';
@@ -29,7 +32,9 @@ $a[] = array('label'=>'	เดือนละ', 'key'=>'pay_type', 'section'=>'o
 <section class="mbl">
 	<header class="clearfix">
 		<h2 class="title"><i class="icon-credit-card mrs"></i>เงื่อนไขการชำระเงิน</h2>
+		<?php if( !empty($this->permit['booking']['edit']) || $this->me['id'] == $this->item['sale']['id'] ) { ?>
 		<a data-plugins="dialog" href="<?=URL?>booking/update/<?=$this->item['id']?>/payment" class="btn-icon btn-edit"><i class="icon-pencil"></i></a>
+		<?php } ?>
 	</header>
 	
 	<table cellspacing="0"><tbody><?php

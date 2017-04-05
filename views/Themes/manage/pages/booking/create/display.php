@@ -45,9 +45,12 @@ $arr['body'] = '<div class="newOrder" data-plugins="bookingform">'.
 
 			'<div class="newOrder_inputs-footer clearfix">'.
 	    		'<div class="lfloat"><a class="btn btn-link js-prev">กลับ</a></div>'.
-				'<div class="rfloat">
-					<a class="btn btn-blue js-next">ต่อไป</a>
-				</div>'.
+				'<div class="rfloat">'.
+					'<a class="btn btn-blue js-next btn-submit">'.
+						'<span class="btn-text">ต่อไป</span>'.
+						'<div class="loader-spin-wrap"><div class="loader-spin"></div></div>'.
+					'</a>'.
+				'</div>'.
 			'</div>'.
 			// end: newOrder_inputs-footer
 		'</div>'.

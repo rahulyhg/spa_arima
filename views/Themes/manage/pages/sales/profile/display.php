@@ -18,4 +18,5 @@ require 'init.php';
 	</div>
 	<!-- end: content -->
 
-</div></div>
+</div>
+</div>

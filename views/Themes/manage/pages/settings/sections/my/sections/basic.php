@@ -1,10 +1,53 @@
 <?php
 
+$options = array(
+    'url' => URL.'media/set',
+    'data' => array(
+        'album_name'=>'my', 
+        'minimize'=> array(128,128),
+        'has_quad'=> true,
+     ),
+    'autosize' => true,
+    'show'=>'quad_url',
+    'remove' => true
+);
+
+if( !empty($this->me['id']) ){
+    $options['setdata_url'] = URL.'employees/setdata/'.$this->me['id'].'/emp_image_id/?has_image_remove';
+}
+
+$image_url = '';
+$hasfile = false;
+if( !empty($this->me['image_url']) ){
+    $hasfile = true;
+    $image_url = '<img class="img" src="'.$this->me['image_url'].'?rand='.rand(100, 1).'">';
+
+    $options['remove_url'] = URL.'media/del/'.$this->me['image_id'];
+    
+}
+
+$picture_box = '<div class="anchor"><div class="clearfix">'.
+
+        '<div class="ProfileImageComponent lfloat size80 radius mrm is-upload'.($hasfile ? ' has-file':' has-empty').'" data-plugins="uploadProfile" data-options="'.$this->fn->stringify( $options ).'">'.
+            '<div class="ProfileImageComponent_image">'.$image_url.'</div>'.
+            '<div class="ProfileImageComponent_overlay"><i class="icon-camera"></i></div>'.
+            '<div class="ProfileImageComponent_empty"><i class="icon-camera"></i></div>'.
+            '<div class="ProfileImageComponent_uploader"><div class="loader-spin-wrap"><div class="loader-spin"></div></div></div>'.
+            '<button type="button" class="ProfileImageComponent_remove"><i class="icon-remove"></i></button>'.
+        '</div>'.
+    '</div>'.
+
+'</div>';
+
 $form = new Form();
 $form = $form->create()
 		->url(URL."me/updated/basic?run=1")
 		->addClass('js-submit-form form-insert')
 		->method('post');
+
+$form   ->field("image")
+		->label('รูปโปรไฟล์')
+        ->text( $picture_box );
 
 $form   ->field("emp_first_name")
         ->label('ชื่อ-นามสกุล')

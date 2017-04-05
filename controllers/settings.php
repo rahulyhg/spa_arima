@@ -12,8 +12,7 @@ class Settings extends Controller {
 
     public function company() {
 
-        $permit = !empty($this->permit['company']['view']) ? 1:0;
-        if( empty($permit) ) $this->error();
+        if( empty($this->permit['company']['view']) ) $this->error();
         // print_r($this->permit); die;
 
         if( !empty($_POST) && $this->format=='json' ){

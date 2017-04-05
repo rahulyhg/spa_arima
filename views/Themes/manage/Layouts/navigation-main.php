@@ -18,8 +18,11 @@ echo '<div class="navigation-main-content">';
 
 
 $info[] = array('key'=>'dashboard','text'=>'Dashboard','link'=>$url.'dashboard','icon'=>'home');
-$info[] = array('key'=>'notifications','text'=>'การแจ้งเตือน','link'=>$url.'notifications','icon'=>'bell-o');
+//$info[] = array('key'=>'notifications','text'=>'การแจ้งเตือน','link'=>$url.'notifications','icon'=>'bell-o');
 $info[] = array('key'=>'calendar','text'=>'นัดหมาย','link'=>$url.'calendar','icon'=>'calendar');
+foreach ($info as $key => $value) {
+	if( empty($this->permit[$value['key']]['view']) ) unset($info[$key]);
+}
 echo $this->fn->manage_nav($info, $this->getPage('on'));
 
 
@@ -46,6 +49,9 @@ echo $this->fn->manage_nav($sv, $this->getPage('on'));
 
 // $reports[] = array('key'=>'tasks','text'=>'Tasks','link'=>$url.'tasks','icon'=>'check-square-o');
 $reports[] = array('key'=>'reports','text'=>'รายงาน','link'=>$url.'reports','icon'=>'line-chart');
+foreach ($reports as $key => $value) {
+	if( empty($this->permit[$value['key']]['view']) ) unset($reports[$key]);
+}
 echo $this->fn->manage_nav($reports, $this->getPage('on'));
 
 

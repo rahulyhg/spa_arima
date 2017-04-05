@@ -19,23 +19,18 @@ if( !empty($this->item['permit']['del']) ){
 
 	if( $this->status_id == 'finish' ){
 
-		if( empty($this->vin) ){
+		$form   ->field("date_finish")
+        		->name('date_finish')
+				->type('date')
+        		->label('วัน/เดือน/ปี ที่ส่งมอบ')
+        		->autocomplete('off')
+        		->attr('data-plugins', 'datepicker')
+        		->addClass('inputtext')
+        		->placeholder('')
+        		->value( date('Y-m-d') );
 
-			$form 	->field('item_vin')
-					->label('VIN(หมายเลขตัวถัง)')
-					->autocomplete('off')
-					->addClass('inputtext')
-					->value('');
-
-			$form 	->field('item_engine')
-					->label('Engine(หมายเลขเครื่อง)')
-					->autocomplete('off')
-					->addClass('inputtext')
-					->value('');
-		}
-		else{
-
-			$vin = '';
+		if( !empty($this->vin) ){
+			$vin = '<option value="">-</option>';
 			foreach ($this->vin as $key => $value) {
 				$vin .= '<option value="'.$value['id'].'">'.$value['vin'].'</option>';
 			}
@@ -46,6 +41,18 @@ if( !empty($this->item['permit']['del']) ){
 					->label('VIN(หมายเลขตัวถัง')
 					->text( $vin );
 		}
+
+		$form 	->field('item_vin')
+				->label('VIN(หมายเลขตัวถัง)')
+				->autocomplete('off')
+				->addClass('inputtext')
+				->value('');
+
+		$form 	->field('item_engine')
+				->label('Engine(หมายเลขเครื่อง)')
+				->autocomplete('off')
+				->addClass('inputtext')
+				->value('');
 	}
 
 	$form   ->field("note")

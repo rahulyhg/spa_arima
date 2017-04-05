@@ -8,31 +8,8 @@ class customers_model extends Model
     }
 
     private $_objName = "customers";
-    private $_table = "customers 
-                       LEFT JOIN city ON customers.cus_city_id = city.city_id
-                       LEFT JOIN countries ON customers.cus_country_id = countries.country_id";
-    private $_field = "cus_id
-                       , cus_prefix_name
-                       , cus_first_name
-                       , cus_last_name
-                       , cus_nickname
-                       , cus_created
-                       , cus_updated
-                       , cus_birthday
-                       , cus_card_id
-                       , cus_phone
-                       , cus_email
-                       , cus_lineID
-                       , cus_bookmark
-                       , cus_address
-                       , cus_zip
-                       , cus_city_id
-                       , cus_country_id
-                       , cus_emp_id
-                       , cus_level_id
-
-                       , city_name
-                       , country_name";
+    private $_table = "customers LEFT JOIN city ON customers.cus_city_id = city.city_id";
+    private $_field = "cus_id, cus_prefix_name, cus_first_name, cus_last_name, cus_nickname,  cus_created, cus_updated, cus_birthday, cus_card_id, cus_phone, cus_email, cus_lineID, cus_bookmark, cus_address, cus_zip, cus_city_id, city_name, cus_emp_id";
     private $_cutNamefield = "cus_";
 
     private function _setDate($data) {
@@ -158,15 +135,15 @@ class customers_model extends Model
             }
         }
 
-        if( !empty($_REQUEST['period_start']) && !empty($_REQUEST['period_end']) ){
+        if( ( !empty($_REQUEST['period_start']) && !empty($_REQUEST['period_end']) ) || ( !empty($options['period_start']) && !empty($options['period_end']) ) ){
 
-            $options['period_start'] = date("Y-m-d 00:00:00", strtotime($_REQUEST['period_start']));
-            $options['period_end'] = date("Y-m-d 23:59:59", strtotime($_REQUEST['period_end']));
+            $period_start = !empty($options['period_start']) ? $options['period_start'] : $_REQUEST['period_start'];
+            $period_end = !empty($options['period_end']) ? $options['period_end'] : $_REQUEST['period_end'];
 
             $where_str .= !empty( $where_str ) ? " AND ":'';
             $where_str .= "cus_created BETWEEN :startDate AND :endDate";
-            $where_arr[':startDate'] = $options['period_start'];
-            $where_arr[':endDate'] = $options['period_end'];
+            $where_arr[':startDate'] = $period_start;
+            $where_arr[':endDate'] = $period_end;
         }
 
         $arr['total'] = $this->db->count($this->_table, $where_str, $where_arr);
@@ -195,20 +172,15 @@ class customers_model extends Model
             : array();
     }
     public function buildFrag($results, $options=array()) {
+        
         $data = array();
-
-        $view_stype = !empty($options['view_stype']) ? $options['view_stype']:'convert';
-        if( !in_array($view_stype, array('bucketed', 'convert')) ) $view_stype = 'convert';
-
         foreach ($results as $key => $value) {
             if( empty($value) ) continue;
-            $data[] = $this->{$view_stype}($value);
+            $data[] = $this->convert($value, $options);
         }
         return $data;
     }
     public function bucketed($data) {
-        
-        $data = $this->convert( $data );
 
         $text = $data['fullname'];
         // $subtext = 'ทะเบียน: '.$data['plate'];
@@ -221,9 +193,10 @@ class customers_model extends Model
             'text'=> isset($text)?$text:"",
             "category"=>isset($category)?$category:"",
             "subtext"=>isset($subtext)?$subtext:"",
+            "type"=>"customers",
             // "image_url"=>isset($image_url)?$image_url:"",
             // 'status' => isset($status)?$status:"",
-            'data' => $data,
+            // 'data' => $data,
         );
     }
     public function convert($data, $options=array()){
@@ -239,7 +212,7 @@ class customers_model extends Model
         }
 
         if( !empty($data['address']) ){
-
+            
             $data['address'] = json_decode($data['address'], true);
         }
 
@@ -247,8 +220,8 @@ class customers_model extends Model
             $data['address']['city_name'] = $this->query('system')->city_name($data['address']['city']);
         }
 
-        if( !empty($data['country_id']) ){
-            $data['country_name'] = $this->query('system')->country_name( $data['country_id'] );
+        if( empty($data['prefix_name_th']) ){
+            $data['prefix_name_th'] = '';
         }
 
         $data['fullname'] = "{$data['prefix_name_th']}{$data['first_name']} {$data['last_name']}";
@@ -268,9 +241,30 @@ class customers_model extends Model
             }
         }
 
+        $data['total_booking'] = $this->db->count('booking', "book_cus_id={$data['id']} AND book_status='booking'");
+
+        $data['total_car'] = $this->db->count('cars', "car_cus_id={$data['id']}");
+
+        $data['total_cancel'] = $this->db->count('booking', "book_cus_id={$data['id']} AND book_status='cancel'");
+
+        // if( !empty($data['image_id']) ){
+        //     $image = $this->query('media')->get($data['image_id']);
+
+        //     if( !empty($image) ){
+        //         $data['image_arr'] = $image;
+        //         $data['image_url'] = $image['quad_url'];
+        //     }
+        // }
+
         // print_r($data['options']); die;
         $data['permit']['del'] = true;
-        return $data;
+
+        $view_stype = !empty($options['view_stype']) ? $options['view_stype']:'convert';
+        if( !in_array($view_stype, array('bucketed', 'convert')) ) $view_stype = 'convert';
+
+        return $view_stype == 'bucketed' 
+               ? $this->bucketed( $data )
+               : $data;
     }
 
     public function setAddress($str) {
@@ -292,122 +286,10 @@ class customers_model extends Model
         $a[] = array('id'=>'f', 'name'=>'หญิง');
     }
 
-    public function notes( $options=array() ){
-
-        $options = array_merge(array(
-            'pager' => isset($_REQUEST['pager'])? $_REQUEST['pager']:1,
-            'limit' => isset($_REQUEST['limit'])? $_REQUEST['limit']:50,
-
-            'dir' => isset($_REQUEST['sort'])? $_REQUEST['sort']:'ASC',
-            'sort' => isset($_REQUEST['dir'])? $_REQUEST['dir']: 'date', 
-
-            'time'=> isset($_REQUEST['time'])? $_REQUEST['time']:time(),
-            'q' => isset($_REQUEST['q'])? $_REQUEST['q']:'',
-
-            'more' => true
-        ), $options);
-
-
-        $where_str = '';
-        $where_arr = array();
-
-        /*$where_str = "`note_date`<=:d";
-        $where_arr[':d'] = date('Y-m-d H:i:s', $options['time']);*/
-
-
-        if( isset($_REQUEST['cus_id']) ){
-            $options['cus_id'] = $_REQUEST['cus_id'];
-            
-            $where_str .=  !empty($where_str) ? ' AND ':'';
-            $where_str .=  "`note_cus_id`=:cus_id";
-            $where_arr[':cus_id'] = $options['cus_id'];
-        }
-
-
-        $date = date('Y-m-d H:i:s', $options['time']);
-
-        $arr['total'] = $this->db->count('customers_notes', $where_str, $where_arr);
-
-        $where_str = !empty($where_str) ? "WHERE {$where_str}":'';
-        $orderby = $this->orderby( 'note_'.$options['sort'], $options['dir'] );
-        $limit = $this->limited( $options['limit'], $options['pager'] );
-        
-        $arr['lists'] = $this->buildFragNote( $this->db->select("SELECT note_user_id as user_id, note_id as id, note_text as text, note_date as date, u.user_name  FROM customers_notes c INNER JOIN users u ON c.note_user_id=u.user_id {$where_str} {$orderby} {$limit}", $where_arr ) );
-
-        if( ($options['pager']*$options['limit']) >= $arr['total'] ) $options['more'] = false;
-        $arr['options'] = $options;
-
-        // print_r($arr); die;
-        return $arr;
-    }
-
-    public function save_note(&$data)
-    {
-        $this->db->insert( 'customers_notes', $data );
-        $data['note_id'] = $this->db->lastInsertId();
-
-        $data = $this->cut('note_', $data);
-    }
-
-    public function get_note( $id )
-    {
-
-        $sth = $this->db->prepare("SELECT note_user_id as user_id, note_id as id, note_text as text, note_date as date, u.user_name FROM customers_notes c INNER JOIN users u ON c.note_user_id=u.user_id WHERE note_id=:id LIMIT 1");
-        $sth->execute( array(
-            ':id' => $id
-        ) );
-
-        return $sth->rowCount()==1
-            ? $this->convertNote( $sth->fetch( PDO::FETCH_ASSOC ) )
-            : array();
-    }
-    public function buildFragNote($results) {
-        $data = array();
-        foreach ($results as $key => $value) {
-            if( empty($value) ) continue;
-            $data[] = $this->convertNote( $value );
-        }
-        return $data;
-    }
-    public function convertNote($data){
-
-        $data = $this->cut('note_', $data);
-        $data['permit']['del'] = true;
-
-        if( !empty($data['user_name']) ){
-
-            $data['poster'] = $data['user_name'];
-        }
-
-        return $data;
-
-    }
-
-    public function updateNote($id, $data)
-    {
-        $this->db->update('customers_notes', $data, "`note_id`={$id}" );
-    }
-    public function deleteNote($id)
-    {
-        $this->db->delete('customers_notes', "`note_id`={$id}" );
-    }
-
     /**/
     /* Check */
     /**/
     public function is_name( $first_name=null , $last_name=null ){
         return $this->db->count('customers', "cus_first_name=':first_name' AND cus_last_name=':last_name'", array(':first_name'=>$first_name , ':last_name'=>$last_name) );
-    }
-
-    /**/
-    /* */
-    /**/
-    public function level_lists()
-    {
-        $a = array();
-        $a[] = array('id'=>'general', 'name'=>'สมาชิกทั่วไป');
-        $a[] = array('id'=>'vip', 'name'=>'สมาชิกพิเศษ (VIP)');
-
-        return $a;
     }
 }

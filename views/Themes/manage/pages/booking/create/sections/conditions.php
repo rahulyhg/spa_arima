@@ -14,17 +14,29 @@ foreach ($this->conditions as $key => $value) {
         $dataname = 'summary="'.$value['keyword'].'" data-name="'.$value['keyword'].'"';
     }
 
-    if( !empty($value['has_lock']) ){
-        $cls .= ' disabled is-lock';
+    if( empty($value['is_cal']) ){
+        $cls .= ' is-lock';
     }
 
     if( !empty( $value['income'] ) ){
         $type = 'income';
     }
 
+    $inputHidden = '';
+    if( !empty($value['has_lock']) ){
+        
+        $inputHidden = '<input data-type="'.$type.'" type="hidden" name="payment['.$type.'][value][]"'.$dataname.' class="js-number'.$cls.'">';
+
+        $cls .= ' disabled';
+    }
+
     $tr[$type] .= '<tr'.( !empty($value['id']) ? ' data-id="'.$value['id'].'"':'' ).'>'.
         '<td class="label">'.$value['name'].'</td>'.
-        '<td class="data"><input data-type="'.$type.'" type="text" name="payment[income]['.$value['id'].']" class="'.$cls.'"'.$dataname.''.( !empty($value['has_lock'])? ' disabled':'' ).' /></td>'.
+        '<td class="data">'.
+            '<input type="hidden" name="payment['.$type.'][name][]" value="'.$value['id'].'" class="inputtext">'.
+            $inputHidden .
+            '<input data-type="'.$type.'" type="text" name="payment['.$type.'][value][]" class="'.$cls.'"'.$dataname.''.( !empty($value['has_lock'])? ' disabled':'' ).'>'.
+            '</td>'.
         '<td class="baht">บาท/baht</td>'.
     '</tr>';
 

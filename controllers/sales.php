@@ -7,18 +7,22 @@ class Sales extends Controller {
     }
 
     public function index( $id=null, $tab='booking' ) {
+
         $this->view->setPage('on', 'sales' );
 
         if( !empty( $this->me['dep_is_sale'] ) ){
             $id = $this->me['id'];
         }
 
-        if( !empty($id) ){
+        if( !empty($id) ){      
             $options = array();
+        
+            $booking = $this->model->query('booking')->lists( array('sale'=>$id) );
+
             $item = $this->model->query('employees')->get( $id, $options );
-            if( empty($item) ) $this->error();
 
             $this->view->setData('id', $id );
+            $this->view->setData('booking',$booking);
             $this->view->setData('item', $item );
             $this->view->setData('tab', $tab); 
             $this->view->render("sales/profile/display");
@@ -65,7 +69,7 @@ class Sales extends Controller {
 
         $this->view->setData('prefixName', $this->model->query('system')->_prefixName());
         $this->view->setData('dealer', $this->model->query('dealer')->lists() );
-        $this->view->setData('city', $this->model->query('city')->lists());
+        $this->view->setData('city', $this->model->query('system')->city());
         //$this->view->setData('department', $this->model->query('employees')->department() );
         $this->view->setData('position', $this->model->query('employees')->position(2));
         //$this->view->setData('position', $this->model->query('position')->lists());
@@ -84,7 +88,7 @@ class Sales extends Controller {
         $this->view->setData('prefixName', $this->model->query('system')->_prefixName());
         //$this->view->setData('department', $this->model->query('employees')->department());
         $this->view->setData('dealer', $this->model->query('dealer')->lists() );
-        $this->view->setData('city', $this->model->query('city')->lists());
+        $this->view->setData('city', $this->model->query('system')->city());
         $this->view->setData('position', $this->model->query('employees')->position(2));
 
         $this->view->render("sales/forms/add_or_edit_dialog");
@@ -106,12 +110,16 @@ class Sales extends Controller {
                     ->post('emp_pos_id')->val('is_empty')
                     ->post('emp_prefix_name')
                     ->post('emp_first_name')->val('is_empty')
-                    ->post('emp_last_name')->val('is_empty')
+                    ->post('emp_last_name')
                     ->post('emp_phone_number')
                     ->post('emp_notes');
 
             $form->submit();
             $postData = $form->fetch();
+
+            $postData['emp_first_name'] = trim($postData['emp_first_name']);
+            $postData['emp_last_name'] = trim($postData['emp_last_name']);
+            $postData['emp_dep_id'] = 2;
 
             if( empty($item) ){
                 $postData['emp_password'] = $_POST['emp_password'];
@@ -125,7 +133,7 @@ class Sales extends Controller {
             $has_name = true;
             $has_user = true;
             if( !empty($id) ){
-                if( $postData['emp_name'] == $item['name'] ){
+                if( $postData['emp_first_name'] == $item['first_name'] && $postData['emp_last_name'] == $item['last_name'] ){
                     $has_name = false;
                 }
 
@@ -134,13 +142,13 @@ class Sales extends Controller {
                 }
             }
 
-            if( $this->model->is_user($postData['emp_username']) && $has_user == true ){
+            if( $this->model->query('employees')->is_user($postData['emp_username']) && $has_user == true ){
                 $arr['error']['emp_username'] = "มี Username นี้อยู่ในระบบแล้ว";
             }
 
-            $postData['emp_first_name'] = trim($postData['emp_first_name']);
-            $postData['emp_last_name'] = trim($postData['emp_last_name']);
-            $postData['emp_dep_id'] = 2;
+            if( $this->model->query('employees')->is_name( $postData['emp_first_name'] , $postData['emp_last_name'] ) && $has_name == true ){
+                $arr['error']['emp_name'] = "มีชื่อ-นามสกุลนี้ในระบบแล้ว";
+            }
 
             if( empty($arr['error']) ){
 

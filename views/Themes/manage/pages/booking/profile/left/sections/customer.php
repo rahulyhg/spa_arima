@@ -37,7 +37,9 @@ $a[] = array('label'=>'แหล่งที่มา', 'key' => 'refer', 'value
 <section class="mbl">
 	<header class="clearfix">
 		<h2 class="title"><i class="icon-user mrs"></i>ลูกค้า</h2>
+		<?php if( !empty($this->permit['booking']['edit']) || $this->me['id'] == $this->item['sale']['id'] ) { ?>
 		<a data-plugins="dialog" href="<?=URL?>customers/edit/<?=$this->item['cus']['id']?>" class="btn-icon btn-edit"><i class="icon-pencil"></i></a>
+		<?php } ?>
 	</header>
 	
 	<table cellspacing="0"><tbody><?php

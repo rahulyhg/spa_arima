@@ -61,7 +61,7 @@ $form   ->field("car_plate")
         ->label( 'ป้ายทะเบียนรถ' )
         ->autocomplete('off')
         ->attr('data-name', 'car_plate')
-        ->addClass('inputtext')
+        ->addClass('inputtext has-edit')
         ->value('');
 
 $form   ->field("car_red_plate")
@@ -69,7 +69,7 @@ $form   ->field("car_red_plate")
         ->label( 'ป้ายแดง' )
         ->autocomplete('off')
         ->attr('data-name', 'car_red_plate')
-        ->addClass('inputtext')
+        ->addClass('inputtext has-edit')
         ->value('');
 
 $form   ->field("car_mile")

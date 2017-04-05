@@ -27,7 +27,9 @@
 
 			<li class="divider"></li>
 
+			<?php if( !empty($this->permit['customers']['add']) ) { ?>
             <li class="mt"><div class="rfloat"><a href="<?=URL?>customers/add" class="btn btn-blue" data-plugins="dialog"><i class="icon-plus mrs"></i>เพิ่ม</a></div></li>
+            <?php } ?>
 
 		</ul>
 		

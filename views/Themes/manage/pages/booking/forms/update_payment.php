@@ -22,20 +22,20 @@ $form = $form->create()
     ->addClass('form-insert');
 
 $form   ->field("book_type")
-        ->text( '<ul class="list-table-cell">
+        ->text( '<ul class="list-table-cell" data-plugins="actionsListHiden">
     <li>
       <table><tr>
-        <td><label class="radio"><input type="radio" name="book[pay_type]" value="cash" action-set="paytype" '.($this->item['pay_type']['id']=='cash'?'checked="1"':'').'>เงินสด</label></td>
-        <td><label class="radio"><input type="radio" name="book[pay_type]" value="hier" action-set="paytype" '.($this->item['pay_type']['id']=='hier'?'checked="1"':'').'>กรณีเช่าซื้อ/Hier Purchase</label></td>
+        <td><label class="radio"><input type="radio" name="book[pay_type]" value="cash" action-id="cash" '.($this->item['pay_type']['id']=='cash'?'checked="1"':'').'>เงินสด</label></td>
+        <td><label class="radio"><input type="radio" name="book[pay_type]" value="hier" action-id="hier" '.($this->item['pay_type']['id']=='hier'?'checked="1"':'').'>กรณีเช่าซื้อ/Hier Purchase</label></td>
       </tr></table>
     </li>
-    <li action-type="paytype" data-id="hier">
+    <li action-type="hier">
       <table><tr>
         <td class="cell-label">บริษัท/Finance company</td>
         <td><input type="text" name="book[pay_type_options][finance_name]" class="inputtext" value="'.(!empty($option['finance_name'])?$option['finance_name']:'').'"></td>
       </tr></table>
     </li>
-    <li action-type="paytype" data-id="hier">
+    <li action-type="hier">
       <table><tr>
         <td class="cell-label">เงินดาวน์/Down payment</td>
         <td style="width:50px;"><input type="text" name="book[pay_type_options][down_payment_percent]" class="inputtext" value="'.(!empty($option['down_payment_percent']) ? $option['down_payment_percent'] : '').'"></td>
@@ -45,7 +45,7 @@ $form   ->field("book_type")
         <td></td>
       </tr></table>
     </li>
-    <li action-type="paytype" data-id="hier">
+    <li action-type="hier">
       <table><tr>
         <td class="cell-label">ดอกเบี้ย/Interest</td>
         <td style="width:50px;"><input type="text" name="book[pay_type_options][interest]" class="inputtext" value="'.(!empty($option['interest'])?$option['interest']:'').'"></td>
@@ -58,14 +58,14 @@ $form   ->field("book_type")
           </td>
       </tr></table>
     </li>
-    <li action-type="paytype" data-id="hier">
+    <li action-type="hier">
       <table><tr>
         <td class="cell-label">ยอดจัด/Finance Amount</td>
         <td><input type="text" name="book[pay_type_options][finance_amount]" class="inputtext" value="'.(!empty($option['finance_amount'])?$option['finance_amount']:'').'"></td>
         <td class="cell-label">บาท/baht</td>
       </tr></table>
     </li>
-    <li action-type="paytype" data-id="hier">
+    <li action-type="hier">
       <table><tr>
         <td class="cell-label">ผ่อนชำระ/Interest</td>
         <td><input type="text" name="book[pay_type_options][installment]" class="inputtext" value="'.(!empty($option['installment'])?$option['installment']:'').'"></td>

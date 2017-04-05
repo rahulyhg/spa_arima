@@ -47,7 +47,7 @@ if( !empty($this->results['lists']) ){
         /**/
         $subtext_sale = '';
         if( !empty($item['sale']['image_url']) ){
-            $image_sale = $this->fn->imageBox($item['sale']['image_url'], 48);
+            $image_sale = '<div class="avatar lfloat mrm"><img class="img" src="'.$item['sale']['image_url'].'" alt="'.$item['sale']['fullname'].'"></div>';
         }
         else{
             $image_sale = '<div class="avatar lfloat no-avatar mrm"><div class="initials"><i class="icon-user"></i></div></div>';

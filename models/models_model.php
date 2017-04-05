@@ -109,6 +109,14 @@ class Models_Model extends Model {
 		if( !empty($options['colors']) ){
             $data['colors'] = $this->getColors($data['id']);
         }
+         if( !empty($data['image_cover']) ){
+            $image = $this->query('media')->get($data['image_cover']);
+
+            if(!empty($image)){
+	            $data['image_arr'] = $image;
+	            $data['image_url'] = $image['url'];
+            }
+        }
 
 		return $data;
 	}
@@ -170,5 +178,22 @@ class Models_Model extends Model {
             // update 
             $this->db->update('products_models_colors', $post, "`color_id`={$data['id']}");
         }
+	}
+
+	public function summary(){
+
+		$reservation = $this->db->select("SELECT SUM(model_amount_reservation) as total_reservation FROM products_models");
+		$balance = $this->db->select("SELECT SUM(model_amount_balance) as total_balance FROM products_models");
+		$total = $this->db->select("SELECT SUM(model_amount_total) AS total_total FROM products_models");
+		$order = $this->db->select("SELECT SUM(model_amount_order) AS total_order FROM products_models");
+		$sales = $this->db->select("SELECT SUM(model_amount_sales) AS total_sales FROM products_models");
+
+		$data['total_reservation'] = $reservation[0]['total_reservation'];
+		$data['total_balance'] = $balance[0]['total_balance'];
+		$data['total_total'] = $total[0]['total_total'];
+		$data['total_order'] = $order[0]['total_order'];
+		$data['total_sales'] = $sales[0]['total_sales'];
+
+		return $data;
 	}
 }

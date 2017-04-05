@@ -1,3 +1,89 @@
+var __Elem = {
+	anchorBucketed: function (data) {
+		
+		var anchor = $('<div>', {class: 'anchor ui-bucketed clearfix'});
+		var avatar = $('<div>', {class: 'avatar lfloat no-avatar mrm'});
+		var content = $('<div>', {class: 'content'});
+		var icon = '';
+
+		if( !data.image_url || data.image_url=='' ){
+
+			icon = 'user';
+			if( data.icon ){
+				icon = data.icon;
+			}
+			icon = '<div class="initials"><i class="icon-'+icon+'"></i></div>';
+		}
+		else{
+			icon = $('<img>', {
+				class: 'img',
+				src: data.image_url,
+				alt: data.text
+			});
+		}
+
+		avatar.append( icon );
+
+		var massages = $('<div>', {class: 'massages'});
+
+		if( data.text ){
+			massages.append( $('<div>', {class: 'text fwb u-ellipsis'}).html( data.text ) );
+		}
+
+		if( data.category ){
+			massages.append( $('<div>', {class: 'category'}).html( data.category ) );
+		}
+		
+		if( data.subtext ){
+			massages.append( $('<div>', {class: 'subtext'}).html( data.subtext ) );
+		}
+
+		content.append(
+			  $('<div>', {class: 'spacer'})
+			, massages
+		);
+		anchor.append( avatar, content );
+
+        return anchor;
+	},
+	anchorFile: function ( data ) {
+		
+		if( data.type=='jpg' ){
+			icon = '<div class="initials"><i class="icon-file-image-o"></i></div>';
+		}
+		else{
+			icon = '<div class="initials"><i class="icon-file-text-o"></i></div>';
+		}
+		
+		var anchor = $('<div>', {class: 'anchor clearfix'});
+		var avatar = $('<div>', {class: 'avatar lfloat no-avatar mrm'});
+		var content = $('<div>', {class: 'content'});
+		var meta =  $('<div>', {class: 'subname fsm fcg'});
+
+		if( data.emp ){
+			meta.append( 'Added by ',$('<span>', {class: 'mrs'}).text( data.emp.fullname ) );
+		}
+
+		if( data.created ){
+			var theDate = new Date( data.created );
+			meta.append( 'on ', $('<span>', {class: 'mrs'}).text( theDate.getDate() + '/' + (theDate.getMonth()+1) + '/' + theDate.getFullYear() ) );
+		}
+
+		avatar.append( icon );
+
+		content.append(
+			  $('<div>', {class: 'spacer'})
+			, $('<div>', {class: 'massages'}).append(
+				  $('<div>', {class: 'fullname u-ellipsis'}).text( data.name )
+				, meta
+			)
+		);
+		anchor.append( avatar, content );
+
+        return anchor;
+	} 
+};
+
 // Utility
 if ( typeof Object.create !== 'function' ) {
 	Object.create = function( obj ) {
@@ -276,7 +362,8 @@ if ( typeof Object.create !== 'function' ) {
 	};
 	$.fn.listsaccessory.options = {
 		lists: [],
-		data: []
+		data: [],
+		checked: {}
 	};
 
 
@@ -288,9 +375,9 @@ if ( typeof Object.create !== 'function' ) {
 			
 			self.$listsbox = self.$elem.find('[rel=listsbox]');
 			self.options = $.extend( {}, $.fn.conditionpayment.options, options );
-			console.log( self.options );
 
 			self.Events();
+			self.summary();
 		},
 
 		Events: function () {
@@ -300,7 +387,6 @@ if ( typeof Object.create !== 'function' ) {
 				
 				var parent = $(this).closest('tr');
 				var input = parent.find(':input').first();
-				
 
 				if( input.val()=='' ){
 					input.focus();
@@ -328,8 +414,82 @@ if ( typeof Object.create !== 'function' ) {
 					parent.remove();
 				}
 			});
+
+			/**/
+			/* Event input number */
+			/**/
+			self.$elem.delegate('.js-number', 'keyup', function (e) {
+			});
+			self.$elem.delegate('.js-number', 'keypress', function (e) {
+				if (e.keyCode == 13) { 
+					self.change_number($(this).data('name'), $(this).val() );
+				};
+			});
+			self.$elem.delegate('.js-number', 'keydown', function (e) {
+		        // Allow: backspace, delete, tab, escape, enter and .
+		        if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
+		             // Allow: Ctrl/cmd+A
+		             (e.keyCode == 65 && (e.ctrlKey === true || e.metaKey === true)) ||
+		             // Allow: Ctrl/cmd+C
+		             (e.keyCode == 67 && (e.ctrlKey === true || e.metaKey === true)) ||
+		             // Allow: Ctrl/cmd+X
+		             (e.keyCode == 88 && (e.ctrlKey === true || e.metaKey === true)) ||
+		             // Allow: home, end, left, right
+		             (e.keyCode >= 35 && e.keyCode <= 39)) {
+		                 // let it happen, don't do anything
+		             return;
+		        }
+		        // Ensure that it is a number and stop the keypress
+		        if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+		        	e.preventDefault();
+		        }
+		    });
+		    self.$elem.delegate('.js-number', 'change', function () {
+		    	self.change_number($(this).data('name'), $(this).val() );		    	
+		    })
+		    self.$elem.delegate('.js-number', 'blur',function () {
+
+		    	if( $(this).val()=='' ||  $(this).val()<0 ){
+		    		$(this).val( 0 );
+		    	}
+		    });
 		},
 
+		change_number: function ( type, val ) {
+			var self = this;
+
+			self.$elem.find('[data-name='+ type +']').not('.not-clone').val( $.trim( val ) );
+			self.summary();
+		},
+		
+		summary: function () {
+			
+			var sub = 0, total = 0;
+			var income = 0; 
+			var less = 0;
+
+			var $section = self.$elem;
+
+			$.each( $section.find( '.js-number' ), function (i, obj) {
+				
+				var val = parseInt( $(this).val() || 0 );
+				if( $(this).hasClass('is-lock')   ){
+					val = 0;
+				}
+
+				if( $(this).data('type')=='income' ){
+					income += val;
+				}
+
+				if( $(this).data('type')=='less' ){
+					less += val;
+				}
+
+			} );
+
+			$section.find('[summary=sub]').val( PHP.number_format(income, 0) );
+			$section.find('[summary=total]').val( PHP.number_format(income-less, 0) );
+		}
 	}
 	$.fn.conditionpayment = function( options ) {
 		return this.each(function() {
@@ -431,6 +591,7 @@ if ( typeof Object.create !== 'function' ) {
 		data: [],
 		THBToUSD: 35.02,
 	};
+
 
 	var Rates = {
 		init: function(options, elem) {
@@ -877,6 +1038,7 @@ if ( typeof Object.create !== 'function' ) {
 		});
 	};
 
+
 	var CarCreate = {
 		init: function (options, elem) {
 			var self = this;
@@ -1231,7 +1393,7 @@ if ( typeof Object.create !== 'function' ) {
 			self.data = {};
 
 			// setElem
-			self.$elem.find(':input[summary=accessory], :input[summary=insurance], :input[summary=paydown], :input[summary=deposit]').addClass('disabled').prop('disabled', true);
+			// self.$elem.find(':input[summary=accessory], :input[summary=insurance], :input[summary=paydown], :input[summary=deposit]').addClass('disabled').prop('disabled', true);
 
 			// Event 
 			self.Events();
@@ -1348,7 +1510,6 @@ if ( typeof Object.create !== 'function' ) {
 			// change conditions
 			self.changeConditions();
 			
-
 			/**/
 			/* Event input number */
 			/**/
@@ -2863,13 +3024,16 @@ if ( typeof Object.create !== 'function' ) {
 				onSelected: function ( result, then ) {
 
 					self.getCus( result.data.cus.id, function () {
+
 						self.$elem.find('[role=search]').addClass('hidden_elem');
 
 						self.$elem.find('[role=steplist]').find( '[data-id=sender], [data-id=owner], [data-id=car]' ).addClass('is_success');
 
 						var $car = self.$elem.find('[data-section=car]');
-
 						$car.find(':input').not('.has-edit').addClass('disabled').prop('disabled', true);
+
+						// set id 
+						self.$elem.find(':input[data-name=car_id]').val( result.id ).removeClass('disabled').prop('disabled', false);
 
 						self.changeModel( result.data.model.id, function () {
 							
@@ -2913,7 +3077,7 @@ if ( typeof Object.create !== 'function' ) {
 			self.$elem.find('.js-next').click(function(e) {
 
 				var li = self.$elem.find('.uiStepSelected');
-	
+		
 				if( li.next().length==1 ){
 					type = li.data('id');
 				}
@@ -2997,7 +3161,6 @@ if ( typeof Object.create !== 'function' ) {
 			var $cus = self.$elem.find('[data-section=owner]');
 
 			$.get( Event.URL + 'customers/_get/' + id, function (result) {
-
 				if( typeof callback === 'function' ){
 					callback( result );
 				}
@@ -3038,6 +3201,8 @@ if ( typeof Object.create !== 'function' ) {
 							if( i>0 ) $(this).remove();
 						} );
 					});
+
+					self.clearCar();
 				});
 
 				$edit.click(function () {
@@ -3115,6 +3280,31 @@ if ( typeof Object.create !== 'function' ) {
 					if( input.length==1 ) input.val( val );
 				}
 			});
+
+		},
+
+		checkCar: function () {
+			var self = this;
+
+			var has = false;
+			if( self.options.steps.owner.data || self.is_newcus ){
+				has = true;
+			}
+
+			self.$searchWrap.toggleClass('hidden_elem', has);
+		},
+		clearCar: function () {
+			var self = this;
+
+			var $car = self.$elem.find('[data-section=car]');
+			
+			$car.find(':input').not('.has-edit').removeClass('disabled').prop('disabled', false).val('');
+
+			var $model = $car.find('[selector=model]');
+			$model.find('option').first().prop('selected', true);
+			self.changeModel( $model.val() );
+
+			self.$elem.find(':input[data-name=car_id]').val('').addClass('disabled').prop('disabled', true);
 		},
 
 		changeSender: function ( checked ) {
@@ -3157,7 +3347,7 @@ if ( typeof Object.create !== 'function' ) {
 					callback();
 				}
 				else{
-					self.changeProduct( $item.val() );
+					self.changeProduct( self.$elem.find('[selector=model]').val() );
 				}
 	
 			}, 'json');
@@ -3166,7 +3356,7 @@ if ( typeof Object.create !== 'function' ) {
 			var self = this;
 
 			var $color = self.$elem.find('[selector=colorcar]');
-			$.get(Event.URL + 'products/lists_productcolor', {id: val }, function (res) {
+			$.get(Event.URL + 'products/get_modelcolor', {id: val}, function (res) {
 
 				$color.empty();
 				$.each( res, function (i, obj) {
@@ -3236,16 +3426,6 @@ if ( typeof Object.create !== 'function' ) {
 			self.$elem.find('[summary=total-price]').text( total_price );
 		},
 
-		checkCar: function () {
-			var self = this;
-
-			var has = false;
-			if( self.options.steps.owner.data || self.is_newcus ){
-				has = true;
-			}
-
-			self.$searchWrap.toggleClass('hidden_elem', has);
-		},
 		changeStepSelected: function () {
 			var self = this;
 
@@ -3299,8 +3479,11 @@ if ( typeof Object.create !== 'function' ) {
 		submit: function ( type ) {
 			var self = this;
 
+
 			var $form = self.$elem;
 			var url = $form.attr('action');
+			var $btn = self.$elem.find('.js-next');
+			$btn.addClass('disabled is-loader').prop('disabled', true);
 
 			$form.find('[name=type_form]').val( type );
 
@@ -3332,8 +3515,12 @@ if ( typeof Object.create !== 'function' ) {
 				// console.log( 'done', results );
 			}).fail(function() {
 				
+				Event.showMsg({'text': 'การเชื่อมต่อผิดผลาด', load: true, auto: true});
+				$btn.removeClass('disabled').prop('disabled', false);
 				// console.log( 'fail' );
 			}).always(function() {
+
+				$btn.removeClass('disabled').prop('disabled', false);
 				// console.log( 'always' );
 			});
 		}
@@ -3371,12 +3558,15 @@ if ( typeof Object.create !== 'function' ) {
 			self.is_focus = false;
 			self.is_keycodes = [37,38,39,40,13];
 			self.load = false;
+			self.is_focus2 = false;
 
 			// Event
 			var v;
 			self.$elem.keyup(function (e) {
 				var $this = $(this);
 				var value = $.trim( $this.val() );
+
+				self.is_focus2 = true;
 
 				if( self.is_keycodes.indexOf( e.which )==-1 && !self.has_load ){
 
@@ -3437,6 +3627,11 @@ if ( typeof Object.create !== 'function' ) {
 				if( !self.is_focus ){
 					self.hide();
 				}
+
+				self.is_focus2 = false;
+
+			}).focus(function () {
+				self.is_focus2 = true;
 			});
 		},
 
@@ -3450,9 +3645,10 @@ if ( typeof Object.create !== 'function' ) {
 			}).done(function( results ) {
 
 				self.data = $.extend( {}, self.data, results );
-				if( results.total==0 || results.error ){
+				if( results.total==0 || results.error || self.is_focus2==false ){
 					return false;
 				}
+
 				self.setMenu();
 
 			}).fail(function() {
@@ -3703,7 +3899,7 @@ if ( typeof Object.create !== 'function' ) {
 			var self = this;
 
 			self.$prev.toggleClass('hidden_elem', self.indexStepSelected()==0);
-			self.$next.text( self.$nav.find('.uiStepSelected').next().length==0 ? 'บันทึก':'ต่อไป');
+			self.$next.find('.btn-text').text( self.$nav.find('.uiStepSelected').next().length==0 ? 'บันทึก':'ต่อไป');
 		},
 		submit: function ( type ) {
 			var self = this;
@@ -3712,6 +3908,11 @@ if ( typeof Object.create !== 'function' ) {
 			var url = $form.attr('action');
 
 			$form.find('[name=type_form]').val( type );
+			if( self.$next.hasClass('btn-error') ){
+				self.$next.removeClass('btn-error');
+			}
+
+			self.$next.addClass('disabled').addClass('is-loader').prop('disabled', true);
 
 			var formData = Event.formData($form);
 
@@ -3726,8 +3927,12 @@ if ( typeof Object.create !== 'function' ) {
 				Event.processForm($form, results);
 
 				if( results.error ){
+
+					self.$next.addClass('btn-error');
 					return false;
 				}
+
+				$form.find('.newOrder_inputs-main').scrollTop( 0 );
 
 				if( type!='save' && !results.error ){
 
@@ -3737,12 +3942,14 @@ if ( typeof Object.create !== 'function' ) {
 					
 					return false;
 				}
-				// console.log( 'done', results );
 			}).fail(function() {
 				
-				// console.log( 'fail' );
+				Event.showMsg({text: 'การเชื่อมต่อผิดผลาด', auto: true, load: true})
+				self.$next.removeClass('disabled').removeClass('is-loader').prop('disabled', false);
 			}).always(function() {
-				// console.log( 'always' );
+
+				self.$next.removeClass('disabled').removeClass('is-loader').prop('disabled', false);
+
 			});
 		}
 	}
@@ -3759,6 +3966,861 @@ if ( typeof Object.create !== 'function' ) {
 		index: 0
 	}
 
+	var ActionsListHiden = {
+		init: function ( options, elem ) {
+			var self = this;
+
+			self.$elem = $( elem );
+			self.options = $.extend( {}, $.fn.actionsListHiden.options, options );
+
+			self.$elem.find('[data-actions]').change(function () {
+				
+				var action = $(this).data('actions');
+				var $box = self.$elem.find('[data-active='+ action +']');
+
+				self.$elem.find(':input').not('[data-actions]').addClass('disabled').prop('disabled', true);
+
+
+				// $.each( )
+				$box.find(':input').not('[data-actions]').removeClass('disabled').prop('disabled', false);
+
+			});
+		}
+	}
+	$.fn.actionsListHiden = function( options ) {
+		return this.each(function() {
+			var $this = Object.create( ActionsListHiden );
+			$this.init( options, this );
+			$.data( this, 'actionsListHiden', $this );
+		});
+	};
+	$.fn.actionsListHiden.options = {}
+
+
+	/**/
+	/* RUpload */
+	/**/
+	var RUpload = {
+		init: function (options, elem) {
+			var self = this;
+
+			self.$elem = $(elem);
+			self.$listsbox = self.$elem.find('[rel=listsbox]');
+			self.$add = self.$elem.find('[rel=add]');
+			self.data = $.extend( {}, $.fn.rupload.options, options );
+			self.up_length = 0;
+
+			self.refresh( 1 );
+			self.Events();
+		},
+
+		Events: function () {
+			var self = this;
+
+			self.$elem.find('.js-upload').click(function (e) {
+				e.preventDefault();
+
+				self.change();
+			});
+
+			self.$elem.delegate('.js-remove', 'click', function (e) {
+
+				self.loadRemove( $(this).closest('li').data() );
+				e.preventDefault();
+			});
+			// has-loading
+		},
+		change: function () {
+			var self = this;
+
+			var $input = $('<input/>', { type: 'file', accept: "image/*"});
+			if( self.data.multiple ){
+				$input.attr('multiple', 1);
+			}
+			$input.trigger('click');
+
+			$input.change(function(){
+
+				self.$add.addClass('disabled').addClass('is-loader').prop('disabled', true);
+				
+				self.files = this.files;
+				
+				self.setFile();
+			});
+		},
+		loadRemove: function (data) {
+			var self = this;
+
+			Dialog.load( self.data.remove_url, {id: data.id, callback: 1}, {
+				onSubmit: function (el) {
+					
+					$form = el.$pop.find('form');
+					Event.inlineSubmit( $form ).done(function( result ) {
+
+						result.onDialog = true;
+						result.url = '';
+						Event.processForm($form, result);
+
+						if( result.error ){
+							return false;
+						}
+						
+						self.$elem.find('[data-id='+ data.id +']').remove();
+						self.sort();
+						Dialog.close();
+
+					});
+				}
+			} );
+		},
+
+		setFile: function () {
+			var self = this;
+
+			$.each( self.files, function (i, file) {
+				self.up_length++;
+				self.displayFile( file );
+
+				self.sort();
+			} );	
+		},
+		displayFile: function ( file ) {
+			var self = this;
+
+			var item = $('<li>', {class: 'has-upload' }).append( __Elem.anchorFile( file ) );
+			item.append( self.setBTNRemove() );
+
+
+			var progress = $('<div>', {class:'progress-bar medium mts'});
+			var bar = $('<span>', {class:'blue'});
+
+			progress.append( bar );
+
+			item.find('.massages').append( progress );
+
+			if( self.$listsbox.find('li').length==0 ){
+				self.$listsbox.append( item );
+			}
+			else{
+				self.$listsbox.find('li').first().before( item );
+			}
+
+			var formData = new FormData();
+			formData.append( self.data.name, file);
+
+			$.ajax({
+			    type: 'POST',
+			    dataType: 'json',
+			    url: self.data.upload_url,
+			    data: formData,
+			    cache: false,
+			    processData: false,
+			    contentType: false,
+			    error: function (xhr, ajaxOptions, thrownError) {
+
+			        /*alert(xhr.responseText);
+			        alert(thrownError);*/
+			        Event.showMsg({text: 'อัพโหลดไฟล์ไม่ได้', auto: true, load: true, bg: 'red'});
+			        item.remove();
+			    },
+
+			    xhr: function () {
+			        var xhr = new window.XMLHttpRequest();
+			        //Download progress
+			        xhr.addEventListener("progress", function (evt) {
+			            if (evt.lengthComputable) {
+			                var percentComplete = evt.loaded / evt.total;
+			                bar.css('width', Math.round(percentComplete * 100));
+			                // progressElem.html(  + "%");
+			            }
+			        }, false);
+			        return xhr;
+			    },
+			    beforeSend: function () {
+			        // $('#loading').show();
+			    },
+			    complete: function () {
+
+			    	self.up_length--;
+			    	if( self.up_length==0 ){
+			    		self.$add.removeClass('disabled').removeClass('is-loader').prop('disabled', false);
+			    	}
+			        // $("#loading").hide();
+			    },
+			    success: function (json) {
+
+			    	if( json.error ){
+
+			    		return false;
+			    	}
+
+			    	item.attr('data-id', json.id);
+			    	item.data( json )
+			    	progress.remove();
+			    }
+			});
+		},
+
+		refresh: function ( length ) {
+			var self = this;
+
+			if( self.is_loading ) clearTimeout( self.is_loading ); 
+
+			if ( self.$elem.hasClass('has-error') ){
+				self.$elem.removeClass('has-error')
+			}
+
+			if ( self.$elem.hasClass('has-empty') ){
+				self.$elem.removeClass('has-empty')
+			}
+
+			self.$elem.addClass('has-loading');
+
+			self.is_loading = setTimeout(function () {
+
+				self.fetch().done(function( results ) {
+
+					self.data = $.extend( {}, self.data, results );
+
+					if( results.error ){
+
+						if( results.message ){
+							self.$elem.find('.js-message').text( results.message );
+							self.$elem.addClass('has-error');
+						}
+						return false;
+					}
+
+					self.$elem.toggleClass( 'has-empty', parseInt(self.data.total)==0 );
+
+					$.each( results.lists, function (i, obj) {
+						self.display( obj );
+					} );
+				});
+			}, length || 1);
+			
+		},
+		fetch: function () {
+			var self = this;
+
+			return $.ajax({
+				url: self.data.url,
+				data: self.data.options,
+				dataType: 'json'
+			}).always(function () {
+
+				self.$elem.removeClass('has-loading');
+				
+			}).fail(function() { 
+				self.$elem.addClass('has-error');
+			});
+		},
+
+		display: function ( data ) {
+			var self = this;
+
+			var item = $('<li>', {'data-id': data.id}).append( __Elem.anchorFile( data ) );
+			item.append( self.setBTNRemove() );
+			item.data( data );
+
+			if( self.$listsbox.find('li').length==0 ){
+				self.$listsbox.append( item );
+			}
+			else{
+				self.$listsbox.find('li').first().before( item );
+			}
+		},
+		setBTNRemove: function () {
+			
+			return $('<button>', {type: 'button', class: 'js-remove icon-remove btn-remove'});
+		},
+		sort: function () {
+			var self = this;
+
+			self.$elem.toggleClass('has-empty', self.$listsbox.find('li').length==0 );
+		}
+	}
+	$.fn.rupload = function( options ) {
+		return this.each(function() {
+			var $this = Object.create( RUpload );
+			$this.init( options, this );
+			$.data( this, 'rupload', $this );
+		});
+	};
+	$.fn.rupload.options = {
+		options: {},
+		multiple: false,
+		name: 'file1'
+	}
+
+	/**/
+	/* Invite */
+	/**/
+	var Invite = {
+		init: function (options, elem) {
+			var self = this;
+
+			self.$elem = $(elem);
+
+			$.each( self.$elem.find('[ref]'), function () {
+				var key = $(this).attr('ref');
+				self['$'+key] = $(this);
+			} );
+
+			$.each( self.$elem.find('[act]'), function () {
+				var key = $(this).attr('act');
+				self['$'+key] = $(this);
+			} );
+
+			self.settings = $.extend( {}, $.fn.invite.settings, options );
+			self.resize();
+
+			self.checked = self.settings.checked || {};
+
+			if( self.settings.invite ){
+				$.each( self.settings.invite, function(key, users) {
+					$.each( users, function(i, obj) {
+						self.checked[ key+'_'+obj.id ] = obj;
+					});
+				} );
+			}
+
+			self.data = {
+				options: self.settings.options || {}
+			};
+
+			self.refresh();
+			self.Events();
+		},
+
+		resize: function () {
+			var self = this;
+
+			var parent = self.$listsbox.parent();
+
+			var offset = parent.position();
+			var outerHeight = self.$elem.outerHeight();
+			parent.css('height', self.$elem.outerHeight() - (self.$header.outerHeight() + 40) );
+		},
+
+		refresh: function ( length ) {
+			var self = this;
+
+			if( self.is_loading ) clearTimeout( self.is_loading ); 
+
+			if ( self.$listsbox.parent().hasClass('has-error') ){
+				self.$listsbox.parent().removeClass('has-error')
+			}
+
+			if ( self.$listsbox.parent().hasClass('has-empty') ){
+				self.$listsbox.parent().removeClass('has-empty')
+			}
+
+			self.$listsbox.parent().addClass('has-loading');
+
+			self.is_loading = setTimeout(function () {
+
+				self.fetch().done(function( results ) {
+					
+					// self.data = $.extend( {}, self.data, results );
+
+					self.$listsbox.toggleClass( 'has-empty', results.length==0 );
+					self.buildFrag( results );
+					self.display();
+
+				});
+			}, length || 1);
+		},
+		fetch: function () {
+			var self = this;
+
+			if( self.is_search ){
+				self.$actions.find(':input').addClass('disabled').prop('disabled', true);
+			}
+
+			$.each( self.$actions.find('select[act=selector]'), function () {
+				self.data.options[ $(this).attr('name') ] = $(this).val();
+			} );
+
+
+			return $.ajax({
+				url: self.settings.url,
+				data: self.data.options,
+				dataType: 'json'
+			}).always(function () {
+
+				self.$listsbox.parent().removeClass('has-loading');
+
+				if( self.is_search ){
+					self.$actions.find(':input').removeClass('disabled').prop('disabled', false);
+					self.$inputsearch.focus();
+					self.is_search = false;
+				}
+				
+			}).fail(function() { 
+				self.$listsbox.parent().addClass('has-error');
+			});
+		},
+		buildFrag: function ( results ) {
+			var self = this;
+
+			var data = {
+				total: 0,
+				options: {},
+				lists: []
+			};
+
+			$.each( results, function (i, obj) {
+				
+				data.options = $.extend( {}, data.options, obj.data.options );
+				if( obj.data.options.more==true ){
+					data.options.more = true;
+				}
+
+				data.total += parseInt( obj.data.total );
+
+				$.each(obj.data.lists, function (i, val) {
+
+					if( !val.type ){
+						val.type = obj.object_type;
+					}
+
+					if( !val.category ){
+						val.category = obj.object_name;
+					}
+
+					data.lists.push( val ); 
+				});
+			} );
+
+			self.data = $.extend( {}, self.data, data );
+
+			self.$listsbox.parent().toggleClass('has-more', self.data.options.more);
+			self.$listsbox.parent().toggleClass('has-empty', self.data.total==0 );
+		},
+		display: function( item ) {
+			var self = this;
+
+			self.$listsbox.parent().removeClass('has-loading');
+
+			$.each( self.data.lists, function (i, obj) {
+				
+				var item = $('<li>', {class: 'ui-item', 'data-id': obj.id, 'data-type': obj.type}).html( __Elem.anchorBucketed( obj ) );
+
+				item.data( obj );
+				item.append('<div class="btn-checked"><i class="icon-check"></i></div>');
+
+				if( self.checked[ obj.type + "_" + obj.id ] ){
+					item.addClass('has-checked');
+					self.setToken( obj, true );
+				}
+
+				self.$listsbox.append( item );
+			});
+
+			if( !self.$elem.hasClass('on') ){
+				self.$elem.addClass('on');
+			}
+
+			self.resize();
+		},
+
+		Events: function () {
+			var self = this;
+
+			self.$listsbox.parent().find('.ui-more').click(function (e) {
+				self.data.options.pager++;
+
+				self.refresh( 300 );
+				e.preventDefault();
+			});
+
+			self.$listsbox.delegate('.ui-item', 'click', function (e) {
+				
+				var checked = !$(this).hasClass('has-checked');
+
+				$(this).toggleClass('has-checked', checked );
+				self.setToken( $(this).data(),  checked );
+				e.preventDefault();
+			});
+
+			self.$tokenbox.delegate('.js-remove-token', 'click', function (e) {
+				
+				var data = $(this).closest('[data-id]').data();
+
+				delete self.checked[ data.type + "_" + data.id ];
+				self.$tokenbox.find('[data-id='+ data.id +'][data-type='+ data.type +']').remove();
+				self.$listsbox.find('[data-id='+ data.id +'][data-type='+ data.type +']').removeClass('has-checked');
+				self.resize();
+				e.preventDefault();
+			});
+
+			self.$actions.find('select[act=selector]').change(function () {
+
+				self.data.options.q = $.trim( self.$inputsearch.val() );
+				self.data.options.pager = 1;
+				self.data.options[ $(this).attr('name') ] = $(this).val();
+
+				self.$listsbox.empty();
+				self.refresh( 1 );
+			});
+
+			self.$elem.find('.js-selected-all').click(function () {
+
+				var item = self.$listsbox.find('.ui-item').not('.has-checked');
+				
+				var checked = true;
+				if( item.length == 0 ){
+					checked = false;
+				}
+
+				$.each(self.$listsbox.find('.ui-item'), function (i, obj) {
+					
+					if( checked && !$(this).hasClass('has-checked') ){
+						$(this).toggleClass('has-checked', checked );
+						self.setToken( $(this).data(),  checked );
+					}
+					else if( $(this).hasClass('has-checked') ){
+						$(this).toggleClass('has-checked', checked );
+						self.setToken( $(this).data(),  checked );
+					}
+					
+
+				});
+			});
+
+
+			var searchVal = $.trim( self.$inputsearch.val() );			
+			self.$inputsearch.keyup(function () {
+				var val  = $.trim( $(this).val() );
+
+				if( val=='' && val!=searchVal ){
+					searchVal = '';
+					self._search( searchVal );
+				}				
+			}).keypress(function (e) {
+				if(e.which === 13){
+					e.preventDefault();
+
+					var text = $.trim( $(this).val() );
+					if( text!='' ){
+						searchVal = text;
+						self._search( text );
+					} 
+				}
+			});
+		},
+
+		setToken: function (data, checked) {
+			var self = this;
+
+			if( checked ){
+				self.checked[ data.type + "_" + data.id ] = data;
+
+				if( self.$tokenbox.find('[data-id='+ data.id +'][data-type='+ data.type +']').length==1 ){ return false; }
+				
+				var $el = __Elem.anchorBucketed(data);
+				$el.addClass('anchor24');
+
+				var item = $('<li>', {class: 'ui-item has-action', 'data-id': data.id, 'data-type': data.type}).append(
+					  $el
+					, $('<input>', {type: 'hidden', name: 'invite[id][]', value: data.id })
+					, $('<input>', {type: 'hidden', name: 'invite[type][]', value: data.type})
+					, $('<button>', {type: 'button', class: 'ui-action top right js-remove-token'}).html( $('<i>', {class: 'icon-remove'}) )
+				);
+
+				item.data( data );
+
+				self.$tokenbox.append( item );
+				self.$tokenbox.scrollTop(self.$tokenbox.prop("scrollHeight"));
+			}
+			else{
+				delete self.checked[ data.type + "_" + data.id ];
+				self.$tokenbox.find('[data-id='+ data.id +'][data-type='+ data.type +']').remove();
+			}
+
+			self.resize();
+
+			self.$elem.find('.js-selectedCountVal').text( Object.keys( self.checked ).length );
+		},
+		_search: function (text) {
+			var self = this;
+
+			self.data.options.pager = 1;
+			self.data.options[ 'q' ] = text;
+			self.is_search = true;
+
+			self.$listsbox.empty();
+			self.refresh( 500 );
+		},	
+	}
+	$.fn.invite = function( options ) {
+		return this.each(function() {
+			var $this = Object.create( Invite );
+			$this.init( options, this );
+			$.data( this, 'invite', $this );
+		});
+	};
+	$.fn.invite.settings = {
+		multiple: false,
+	}
+
+	/**/
+	/* listplan */
+	/**/
+	var Listplan = {
+		init: function ( options, elem ) {
+			var self = this;
+
+			self.$elem = $(elem);
+			self.options = $.extend( {}, $.fn.listplan.settings, options );
+
+			// upcoming
+			self.upcoming.init( self.options.upcoming || {}, self.$elem.find('[ref=upcoming]'), self );
+
+			self.Events();
+		},
+		upcoming: {
+
+			init: function ( options, $elem, than  ) {
+				var self = this;
+
+				self.than = than;
+				self.$elem = $elem;
+				self.$listsbox = self.$elem.find('[ref=listsbox]');
+				self.$more = self.$elem.find('[role=more]');
+
+				self.data = options;
+
+				self.refresh( 1 );
+
+				self.$more.click(function (e) {
+					e.preventDefault();
+
+					self.data.options.pager++;
+					self.refresh( 300 );
+				});
+			},
+			refresh: function ( length ) {
+				var self = this;
+
+				if( self.is_loading ) clearTimeout( self.is_loading ); 
+
+				if ( self.$elem.hasClass('has-error') ){
+					self.$elem.removeClass('has-error')
+				}
+
+				if ( self.$elem.hasClass('has-empty') ){
+					self.$elem.removeClass('has-empty')
+				}
+
+				self.$elem.addClass('has-loading');
+
+				self.is_loading = setTimeout(function () {
+
+					self.fetch().done(function( results ) {
+
+						self.data = $.extend( {}, self.data, results );
+
+						self.$elem.toggleClass( 'has-empty', parseInt(self.data.total)==0 );
+						if( results.error ){
+
+							if( results.message ){
+								self.$elem.find('[ref=message]').text( results.message );
+								self.$elem.addClass('has-error');
+							}
+							return false;
+						}
+
+						$.each( results.lists, function (i, obj) {
+							self.display( obj );
+						} );
+
+						self.$elem.toggleClass('has-more', self.data.options.more);
+					});
+				}, length || 1);			
+			},
+			fetch: function () {
+				var self = this;
+
+				return $.ajax({
+					url: self.data.url,
+					data: self.data.options,
+					dataType: 'json'
+				}).always(function () {
+
+					self.$elem.removeClass('has-loading');
+					
+				}).fail(function() { 
+					self.$elem.addClass('has-error');
+				});
+			},
+			display: function ( data ) {
+				var self = this;
+				self.$listsbox.append( self.than.setItem( data ) );
+			},
+		},
+
+		setItem: function (data) {
+			
+			data.icon = 'calendar';
+			var li = $('<li>', {class: 'ui-item', 'data-id': data.id}).html( __Elem.anchorBucketed(data) );
+
+			li.data( data );
+
+			var actions = $('<div>', {class: 'ui-actions'});
+
+			actions.append(
+				  $('<button>', {type: 'button', class: 'action js-edit'}).html( $('<i>', {class: 'icon-pencil'}) ) 
+				, $('<button>', {type: 'button', class: 'action js-remove'}).html( $('<i>', {class: 'icon-remove'}) ) 
+			)
+
+			li.append( actions );
+
+			return li;
+		},
+
+		Events: function () {
+			var self = this;
+
+			if( self.options.add_url ){
+
+				self.$add = self.$elem.find('[role=add]');
+				self.$elem.find('.js-add').click(function () {
+					self.add();
+				});
+			}
+
+			if( self.options.edit_url ){
+				self.$elem.delegate('.js-edit', 'click', function (e) {
+					e.preventDefault();
+
+					var $parent = $(this).closest('[data-id]');
+					self.edit( $(this).closest('[data-id]').data(), $parent );
+				});
+			}
+
+			if( self.options.remove_url ){
+				self.$elem.delegate('.js-remove', 'click', function (e) {
+
+					var $parent = $(this).closest('[data-id]');
+					self.remove( $parent.data(), $parent );
+				});
+			}
+			
+		},
+
+		add: function () {
+			var self = this;
+
+			self.$add.addClass('disabled').addClass('is-loader').prop('disabled', true);
+			Dialog.load(self.options.add_url, {callback: 'bucketed'}, {
+				onClose: function () {
+					self.$add.removeClass('disabled').removeClass('is-loader').prop('disabled', false);
+				},
+				onSubmit: function ($el) {
+					self.$add.removeClass('disabled').removeClass('is-loader').prop('disabled', false);
+
+					$form = $el.$pop.find('form');
+					Event.inlineSubmit( $form ).done(function( result ) {
+
+						result.url = '';
+						Event.processForm($form, result);
+
+						if( result.error ){
+							return false;
+						}
+
+						var item = self.setItem( result.data );
+						var $listsbox = self.$elem.find('[ref=upcoming]').find('[ref=listsbox]');
+
+						if( $listsbox.find('li').length > 0){
+							$listsbox.find('li').first().before( item );
+						}
+						else{
+							$listsbox.append( item );
+						}
+
+						Dialog.close();
+					});
+				}
+			});
+		},
+
+		edit: function ( data, $el ) {
+			var self = this;
+
+			$el.addClass('disabled').prop('disabled', true);
+			Dialog.load(self.options.edit_url, {id: data.id, callback: 'bucketed'}, {
+				onClose: function () {
+					$el.removeClass('disabled').prop('disabled', false);
+				},
+				onSubmit: function ($d) {
+					$el.removeClass('disabled').prop('disabled', false);
+
+					$form = $d.$pop.find('form');
+					Event.inlineSubmit( $form ).done(function( result ) {
+
+						$el.removeClass('disabled').prop('disabled', false);
+
+						result.url = '';
+						Event.processForm($form, result);
+
+						if( result.error ){
+							return false;
+						}
+
+						var $listsbox = self.$elem.find('[ref=upcoming]').find('[ref=listsbox]');
+						$listsbox.find('[data-id='+ data.id +']').replaceWith( self.setItem( result.data ) );
+
+						Dialog.close();
+					});
+				}
+			});
+		},
+
+		remove: function (data, $el) {
+			var self = this;
+
+			$el.addClass('disabled').prop('disabled', true);
+			Dialog.load(self.options.remove_url, {id: data.id, callback: 1}, {
+				onClose: function () {
+					$el.removeClass('disabled').prop('disabled', false);
+				},
+				onSubmit: function ($d) {
+
+					$form = $d.$pop.find('form');
+					Event.inlineSubmit( $form ).done(function( result ) {
+
+						$el.removeClass('disabled').prop('disabled', false);
+
+						result.url = '';
+						Event.processForm($form, result);
+
+						if( result.error ){
+							return false;
+						}
+
+						var $listsbox = self.$elem.find('[ref=upcoming]').find('[ref=listsbox]');
+						$listsbox.find('[data-id='+ data.id +']').remove();
+
+						Dialog.close();
+					});
+				}
+			});
+		}
+	}
+	$.fn.listplan = function( options ) {
+		return this.each(function() {
+			var $this = Object.create( Listplan );
+			$this.init( options, this );
+			$.data( this, 'listplan', $this );
+		});
+	};
+	$.fn.listplan.options = {
+		multiple: false,
+	}
+
 	
 })( jQuery, window, document );
 
@@ -3769,7 +4831,6 @@ $(function () {
 	$('.navigation-trigger').click(function(e){
 		e.preventDefault();
 		$('body').toggleClass('is-pushed-left', !$('body').hasClass('is-pushed-left'));
-
 
 		$.get( Event.URL + 'me/navTrigger', {
 			'status': $('body').hasClass('is-pushed-left') ? 1:0
@@ -3794,8 +4855,5 @@ $(function () {
 		// e.stopPropagation();
 	});
 	
-	
-
-
 	
 });

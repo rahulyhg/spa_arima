@@ -147,7 +147,7 @@ class Time_Fn extends _function {
     public function normal($timestamp) {
         return date('j', $timestamp)." ". $this->month( date('n', $timestamp), true )." ". (date('Y', $timestamp)+543);
     }
-    public function str_event_date($start, $end){
+    public function str_event_date($start, $end, $full=false){
         $today = date('Y-m-d');
         $todayTime = strtotime($today);
         $todayYear = date('Y', $todayTime);
@@ -157,41 +157,61 @@ class Time_Fn extends _function {
         $startMonth = date('n', $startTime);
         $startYear = date('Y', $startTime);
 
-        $endTime = strtotime($end);
-        $endDate = date('j', $endTime);
-        $endMonth = date('n', $endTime);
-        $endYear = date('Y', $endTime);
+        if( $end=='0000-00-00 00:00:00' ){
 
-        if( $startTime==$endTime || ($startDate==$endDate && $startMonth == $endMonth && $startYear == $endYear) ){
-            $text = date('j', $startTime) . ' ' . $this->month( $startMonth, true );
+            $theDate = date("j", $startTime);
+            $difference = time() - $startTime;
 
-            if( $todayYear!=$startYear ){
-                $text .= ' '.($startYear);
+            $theMonth = $this->month(date("n", $startTime), true);
+            $theYear = date("Y", $startTime) + 543;
+            $theTime = date("H.s", $startTime);
+
+            $title = "{$theDate} {$theMonth} {$theYear} เวลา {$theTime}น.";
+
+            if( $difference >= 0 && $difference < 86400){
+                $theDate = 'วันนี้,';
             }
-        }
-        else if( ($startMonth == $endMonth && $startYear == $endYear) ){
+            $text = "{$theDate} {$theMonth} {$theYear}, {$theTime}น.";
 
-            $text = date('j', $startTime) . ' - '.date('j', $endTime) . ' ' . $this->month( $startMonth, true );
-
-            if( $todayYear!=$startYear ){
-                $text .= ' '.$startYear;
-            }
-        }
-        else if( $startYear == $endYear ){
-            $text = date('j', $startTime) . ' ' . $this->month( $startMonth, true );
-            $text .= ' - ';
-            $text .= date('j', $endTime) . ' ' . $this->month( $endMonth, true );
-
-            if( $todayYear!=$startYear ){
-                $text .= ' '.$startYear;
-            }
+            $text = '<span class="timestamp" data-time="'.$startTime.'" title="'.$title.'">'.$text.'</span>';
         }
         else{
+            $endTime = strtotime($end);
+            $endDate = date('j', $endTime);
+            $endMonth = date('n', $endTime);
+            $endYear = date('Y', $endTime);
 
-            $text = date('j', $startTime) . ' ' . $this->month( $startMonth, true ) . ' ' .$startYear;
-            $text .= ' - ';
-            $text .= date('j', $endTime) . ' ' . $this->month( $endMonth, true ). ' ' .$endYear;
+            if( $startTime==$endTime || ($startDate==$endDate && $startMonth == $endMonth && $startYear == $endYear) ){
+                $text = date('j', $startTime) . ' ' . $this->month( $startMonth, true );
 
+                if( $todayYear!=$startYear || $full ){
+                    $text .= ' '.($startYear);
+                }
+            }
+            else if( ($startMonth == $endMonth && $startYear == $endYear) ){
+
+                $text = date('j', $startTime) . ' - '.date('j', $endTime) . ' ' . $this->month( $startMonth, true );
+
+                if( $todayYear!=$startYear || $full ){
+                    $text .= ' '.$startYear;
+                }
+            }
+            else if( $startYear == $endYear ){
+                $text = date('j', $startTime) . ' ' . $this->month( $startMonth, true );
+                $text .= ' - ';
+                $text .= date('j', $endTime) . ' ' . $this->month( $endMonth, true );
+
+                if( $todayYear!=$startYear || $full ){
+                    $text .= ' '.$startYear;
+                }
+            }
+            else{
+
+                $text = date('j', $startTime) . ' ' . $this->month( $startMonth, true ) . ' ' .$startYear;
+                $text .= ' - ';
+                $text .= date('j', $endTime) . ' ' . $this->month( $endMonth, true ). ' ' .$endYear;
+
+            }
         }
 
         return $text;
@@ -200,5 +220,43 @@ class Time_Fn extends _function {
     public function age($birthdayDate) {
         return floor((time() - strtotime($birthdayDate))/31556926);
     }
+
+
+    public function getWeeks($date, $rollover='sunday') {
+        $cut = substr($date, 0, 8);
+        $daylen = 86400;
+
+        $timestamp = strtotime($date);
+        $first = strtotime($cut . "00");
+        $elapsed = ($timestamp - $first) / $daylen;
+
+        $weeks = 1;
+
+        for ($i = 1; $i <= $elapsed; $i++)
+        {
+            $dayfind = $cut . (strlen($i) < 2 ? '0' . $i : $i);
+            $daytimestamp = strtotime($dayfind);
+
+            $day = strtolower(date("l", $daytimestamp));
+
+            if($day == strtolower($rollover))  $weeks ++;
+        }
+
+        return $weeks;
+    }
+
+    public function theWeeks($theDate, $rollover='sunday') {
+        $timestamp = strtotime($theDate);
+        $week = date('w', $timestamp);
+
+        if( $rollover=='monday' ){
+            $week -= 1;
+        }
+        $arr['start'] = date('Y-m-d', strtotime("-{$week} days"));
+        
+        $week = 6-$week;
+        $arr['end'] = date('Y-m-d',strtotime("+{$week} days"));
+
+        return $arr;
+    }
 }
-?>

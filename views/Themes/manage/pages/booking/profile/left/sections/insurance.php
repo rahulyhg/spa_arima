@@ -11,7 +11,9 @@ $a[] = array('label'=>'ค่าเบี้ยประกัน', 'key'=>'insu
 <section class="mbl">
 	<header class="clearfix">
 		<h2 class="title"><i class="icon-heart mrs"></i>ประกันภัย</h2>
+		<?php if( !empty($this->permit['booking']['edit']) || $this->me['id'] == $this->item['sale']['id'] ) { ?>
 		<a data-plugins="dialog" href="<?=URL?>booking/update/<?=$this->item['id']?>/insurance" class="btn-icon btn-edit"><i class="icon-pencil"></i></a>
+		<?php } ?>
 	</header>
 	
 	<table cellspacing="0"><tbody><?php
@@ -20,13 +22,19 @@ $a[] = array('label'=>'ค่าเบี้ยประกัน', 'key'=>'insu
 
 		if( empty($this->item[ $value['key'] ]) ) continue;
 
+
 		if( isset($value['value']) ){
-			if( empty($this->item[ $value['key'] ][ $value['value'] ]) ) continue;
+			if( empty($this->item[ $value['key'] ][ $value['value'] ]) && $value['value'] != 'sure' ) continue;
 
 			$val = $this->item[ $value['key'] ][ $value['value'] ];
 		}
 		else{
 			$val = $this->item[ $value['key'] ];
+		}
+
+
+		if( $value['value'] == 'sure' ){
+			$val = $val==1 ? 'ระบุชื่อ' : 'ไม่ระบุชื่อ';
 		}
 
 		if( isset($value['type']) ){
@@ -35,17 +43,18 @@ $a[] = array('label'=>'ค่าเบี้ยประกัน', 'key'=>'insu
 				$time = strtotime($val);
 
 				$val = 
-					  $this->fn->q('time')->day( date('w', $time), 1 )
-					. 'ที่ '
-					. date('j', $time)
-					. ' '
-					. $this->fn->q('time')->month( date('n', $time) )
-					. ' '
-					. ( date('Y', $time)+543 );
+				$this->fn->q('time')->day( date('w', $time), 1 )
+				. 'ที่ '
+				. date('j', $time)
+				. ' '
+				. $this->fn->q('time')->month( date('n', $time) )
+				. ' '
+				. ( date('Y', $time)+543 );
 			}
 			elseif($value['type']=='number'){
 				$val = number_format($val, 0);
 				$val = $val==0? '-':$val;
+
 			}
 			elseif($value['type']=='birthday'){
 				$val = $this->fn->q('time')->birthday($this->item['cus'][ $value['key'] ]);
@@ -67,8 +76,8 @@ $a[] = array('label'=>'ค่าเบี้ยประกัน', 'key'=>'insu
 		$right = isset($value['right']) ? $value['right']:'';
 
 		echo '<tr>'.
-			'<td class="label">'.$value['label'].'</td>'.
-			'<td class="data">'.$val.$right.'</td>'.
+		'<td class="label">'.$value['label'].'</td>'.
+		'<td class="data">'.$val.$right.'</td>'.
 		'</tr>';
 	}
 	?></tbody></table>

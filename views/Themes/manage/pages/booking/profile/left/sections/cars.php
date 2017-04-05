@@ -12,7 +12,11 @@ $a[] = array('label'=>'ราคา', 'key'=>'product', 'value'=>'price', 'type'
 <section class="mbl">
 	<header class="clearfix">
 		<h2 class="title"><i class="icon-car mrs"></i>รถยนต์ที่จอง</h2>
+		<?php 
+		if( !empty($this->permit['booking']['edit']) || $this->me['id'] == $this->item['sale']['id'] ){
+		?>
 		<a data-plugins="dialog" href="<?=URL?>booking/update/<?=$this->item['id']?>/car" class="btn-icon btn-edit"><i class="icon-pencil"></i></a>
+		<?php } ?>
 	</header>
 	
 	<table cellspacing="0"><tbody><?php

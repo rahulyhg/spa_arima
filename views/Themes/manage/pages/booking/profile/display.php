@@ -24,12 +24,12 @@ require 'init.php';
 				<div class="rfloat hidden_elem">
 					<div class="group-btn"><a class="btn"><i class="icon-print mrs"></i>Print</a><a class="btn" data-plugins="dropdown" data-options="<?=$this->fn->stringify( array(
                     'select' => array( 0=> 
-                          array(
-                            'text' => 'พิมพ์ใบสรุปค่าใช้จ่าย',
-                            // 'href' => URL.'customers/status/'.$this->item['id'],
-                            'attr' => array('data-plugins'=>'dialog'),
-                        )
-                        , array(
+                        //   array(
+                        //     'text' => 'พิมพ์ใบสรุปค่าใช้จ่าย',
+                        //     // 'href' => URL.'customers/status/'.$this->item['id'],
+                        //     'attr' => array('data-plugins'=>'dialog'),
+                        // ),
+                         array(
                             'text' => 'พิมพ์ใบขออนุมัติเปิกป้ายแดง',
                             // 'href' => URL.'customers/status/'.$this->item['id'],
                             'attr' => array('data-plugins'=>'dialog'),

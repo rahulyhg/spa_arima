@@ -59,11 +59,10 @@ if( !empty($this->results['lists']) ){
 
             '<td class="price">'.( !empty($item['price']) ? number_format($item['price']):'-' ).'</td>'.
 
-
-
-            '<td class="status">'.( !empty($item['balance']) ? number_format($item['balance']):'-' ).'</td>'.
                 
             '<td class="status">'.( !empty($item['booking']) ? number_format($item['booking']):'-' ).'</td>'.
+
+            '<td class="status">'.( !empty($item['balance']) ? number_format($item['balance']):'-' ).'</td>'.
             
             '<td class="status">'.( !empty($item['subtotal']) ? number_format($item['subtotal']):'-' ).'</td>'.
             

@@ -6,24 +6,26 @@ class Search_Model extends Model {
         parent::__construct();
     }
 
-    public function results($objects, $q=''){
+    public function results($objects, $options = array() ){
+
+        $options = array_merge( array(
+            'view_stype'=>'bucketed'
+        ), $options );
 
     	$results = array();
-    	if( !empty($q) ){
-        	foreach ($objects as $key => $object) {
+    	foreach ($objects as $type => $object) {
 
-	    		$result = $this->{$key}( $q );
+    		$result = $this->query( $type )->lists( $options );
 
-	    		if(!empty($result)){
-	    			$results[] = array(
-			            'object_type'=>$object['type'],
-			            'object_name'=>$object['name'],
-			            'data'=>$this->convert($object['type'],$result)
-			        );
-	    		}
-	    	}
+    		if(!empty($result)){
+    			$results[] = array(
+		            'object_type'=>$type,
+		            'object_name'=>$object['name'],
+		            'data'=> $result
+		        );
+    		}
+    	}
 
-        }
 
     	return $results;
     }
@@ -90,11 +92,11 @@ class Search_Model extends Model {
 
     }
 
-    public function customers($q='') {
+    // public function customer($q='') {
 
-    	$where_str = "";
+
+    	/*$where_str = "";
         $where_arr = array();
-
 
     	$arrQ = explode(' ', $q);
         $wq = '';
@@ -120,6 +122,6 @@ class Search_Model extends Model {
 
     		ORDER BY cus_updated DESC LIMIT 5"
 
-        , $where_arr ) );
-    }
+        , $where_arr ) );*/
+    // }
 }

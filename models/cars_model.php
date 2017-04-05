@@ -139,6 +139,13 @@ class Cars_Model extends Model{
             $where_arr[':qfull'] = $options['q'];
         }
 
+        if( !empty($options['customer']) ){
+
+            $where_str .= !empty( $where_str ) ? " AND ":'';
+            $where_str .= "car_cus_id = :customer";
+            $where_arr[':customer'] = $options['customer'];
+        }
+
         $arr['total'] = $this->db->count($this->_table, $where_str, $where_arr);
 
         $where_str = !empty($where_str) ? "WHERE {$where_str}":'';

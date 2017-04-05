@@ -8,17 +8,29 @@ class Customers extends Controller {
 
     public function index( $id=null, $section='car' ) {
     	$this->view->setPage('on', 'customers' );
-
+           
         if( !empty($id) ){
 
             $options = array();
+            /* Booking */
+            $booking = $this->model->query('booking')->lists( array('customer'=>$id) );
+
+            /* Car */
+            $car = $this->model->query('cars')->lists( array('customer'=>$id) );
+
+            /* Services */
+            $services = $this->model->query('services')->lists( array('services'=>$id) );
+
             $options['options'] = 1;
 
             $item = $this->model->query('customers')->get( $id, $options );
             if( empty($item) ) $this->error();
 
             $this->view->setData('id', $id );
+            $this->view->setData('services',$services);
             $this->view->setData('item', $item );
+            $this->view->setData('booking', $booking );
+            $this->view->setData('car', $car);
             $this->view->setData('tab', $section); 
             $this->view->render("customers/profile/display");
         }
@@ -74,8 +86,6 @@ class Customers extends Controller {
         $this->view->setData('prefixName', $this->model->query('system')->_prefixNameCustomer());
         $this->view->setData('sex', $this->model->lists_sex());
         $this->view->setData('city', $this->model->query('system')->city() );
-        $this->view->setData('country', $this->model->query('system')->country() );
-        $this->view->setData('level', $this->model->query('customers')->level_lists());
         $this->view->render("customers/forms/add_or_edit_dialog");
     }
 
@@ -91,7 +101,7 @@ class Customers extends Controller {
         $this->view->setData('prefixName', $this->model->query('system')->_prefixNameCustomer());
         $this->view->setData('sex', $this->model->lists_sex());
         $this->view->setData('city', $this->model->query('system')->city());
-        $this->view->setData('level', $this->model->query('customers')->level_lists());
+
         $this->view->render("customers/forms/add_or_edit_dialog");
     }
 
@@ -101,7 +111,6 @@ class Customers extends Controller {
         $item = $this->model->get($id);
         if( empty($item) ) $this->error();
 
-        $this->view->setData('level', $this->model->query('customers')->level_lists());
         $this->view->setData('prefixName', $this->model->query('system')->_prefixNameCustomer());
         $this->view->setData('sex', $this->model->lists_sex());
         $this->view->setData('item', $item);
@@ -114,7 +123,6 @@ class Customers extends Controller {
         if( empty($item) ) $this->error();
 
         $this->view->setData('city', $this->model->query('system')->city());
-        $this->view->setData('country', $this->model->query('system')->country());
         $this->view->setData('item', $item);
         $this->view->render('customers/forms/edit_contact');
     }
@@ -145,25 +153,25 @@ class Customers extends Controller {
             $form   ->post('cus_prefix_name')
                     ->post('cus_first_name')->val('is_empty')
                     ->post('cus_last_name')
-                    ->post('cus_card_id')
-                    ->post('cus_country_id');
+                    ->post('cus_nickname')
+                    ->post('cus_card_id');
 
             $form->submit();
             $postData = $form->fetch();
 
-            //$postData['cus_birthday'] = $birthday;
+            $postData['cus_birthday'] = !empty($birthday) ? $birthday : '0000-00-00';
             $postData['cus_first_name'] = trim($postData['cus_first_name']);
             $postData['cus_last_name'] = trim($postData['cus_last_name']);
 
             $has_name = true;
             if( !empty($item) ){
-                if( $postData['cus_first_name'] == $item['first_name'] && $postData['cus_last_name'] == $item['last_name'] ){
+                if( $postData['cus_first_name'] == $item['fist_name'] && $postData['cus_last_name'] == $item['last_name'] ){
                     $has_name = false;
                 }
             }
 
             if( $this->model->is_name( $postData['cus_first_name'] , $postData['cus_last_name'] ) && $has_name == true ){
-                $arr['error']['name'] = 'มี ชื่อ-นามสกุล นี้อยู่ในระบบแล้ว';
+                $arr['error']['cus_name'] = 'มีชื่อนี้อยู่ในระบบแล้ว';
             }
 
             // set options
@@ -172,10 +180,6 @@ class Customers extends Controller {
                 foreach ($values['name'] as $key => $value) {
 
                     if( empty($values['value'][$key]) ) continue;
-
-                    if( $type == 'social' && $value == 'Line ID' ){
-                        $postData['cus_lineID'] = trim($values['value'][$key]);
-                    }
 
                     $options[$type][] = array(
                         'type' => $type,
@@ -193,7 +197,9 @@ class Customers extends Controller {
             ? $options['phone'][0]['value']
             : '';
 
-            if( empty($postData['cus_lineID']) ) $postData['cus_lineID'] = '';
+            $postData['cus_lineID'] = !empty($options['social'][0]['value'])
+            ? $options['social'][0]['value']
+            : '';
 
             // if( strlen($_POST['address']['zip']) != 5 ){
             //     $arr['error']['cus_address'] = 'กรุณากรอกรหัสไปรษณีย์ให้ครบ 5 หลัก';
@@ -201,9 +207,9 @@ class Customers extends Controller {
 
             if( empty($arr['error']) ){
 
-                // $postData['cus_city_id'] = $_POST['address']['city'];
-                // $postData['cus_zip'] = $_POST['address']['zip'];
-                // $postData['cus_address'] = json_encode($_POST['address']);
+                $postData['cus_city_id'] = $_POST['address']['city'];
+                $postData['cus_zip'] = $_POST['address']['zip'];
+                $postData['cus_address'] = json_encode($_POST['address']);
 
                 if( !empty($item) ){
                     $this->model->update( $id, $postData );
@@ -287,25 +293,25 @@ class Customers extends Controller {
 
         if( empty($item) ) $this->error();
 
-        // $futureDate = date('Y-m-d',strtotime(date("Y-m-d", mktime()) . " -6 year")); // 2554 // 2011
-        // $birthday = date("{$_POST['birthday']['year']}-{$_POST['birthday']['month']}-{$_POST['birthday']['date']}");
-        // if( strtotime($birthday) > strtotime($futureDate) ){
-        //     $arr['error']['birthday'] = 'วันเกิดไม่ถูกต้อง';
-        // }
+        $futureDate = date('Y-m-d',strtotime(date("Y-m-d", mktime()) . " -6 year")); // 2554 // 2011
+        $birthday = date("{$_POST['birthday']['year']}-{$_POST['birthday']['month']}-{$_POST['birthday']['date']}");
+        if( strtotime($birthday) > strtotime($futureDate) ){
+            $arr['error']['birthday'] = 'วันเกิดไม่ถูกต้อง';
+        }
 
         try {
             $form = new Form();
             $form   ->post('cus_prefix_name')
-                    ->post('cus_first_name')->val('is_empty')
-                    ->post('cus_last_name')
-                    ->post('cus_nickname')
-                    ->post('cus_card_id');
+            ->post('cus_first_name')->val('is_empty')
+            ->post('cus_last_name')->val('is_empty')
+            ->post('cus_nickname')
+            ->post('cus_card_id');
 
 
             $form->submit();
             $postData = $form->fetch();
 
-            //$postData['cus_birthday'] = $birthday;
+            $postData['cus_birthday'] = $birthday;
             $postData['cus_first_name'] = trim($postData['cus_first_name']);
             $postData['cus_last_name'] = trim($postData['cus_last_name']);
 
@@ -345,10 +351,6 @@ class Customers extends Controller {
         if( empty($item) ) $this->error();
 
         try {
-            $form = new Form();
-            $form   ->post('cus_country_id');
-            $form->submit();
-            $postData = $form->fetch();
 
             // foreach ($_POST['address'] as $key => $value) {
             //     if( empty($value) && $key != 'village' && $key !='street' && $key != 'alley') {
@@ -385,17 +387,17 @@ class Customers extends Controller {
 
             if( empty($postData['cus_lineID']) ) $postData['cus_lineID'] = '';
 
-            // if( strlen($_POST['address']['zip']) != 5 ){
-            //     $arr['error']['cus_address'] = 'กรุณากรอกรหัสไปรษณีย์ให้ครบ 5 หลัก';
-            // }
+            /*if( strlen($_POST['address']['zip']) != 5 ){
+                $arr['error']['cus_address'] = 'กรุณากรอกรหัสไปรษณีย์ให้ครบ 5 หลัก';
+            }*/
 
             if( empty($arr['error']) ){
 
-                // $postData['cus_city_id'] = $_POST['address']['city'];
+                $postData['cus_city_id'] = $_POST['address']['city'];
 
-                // $postData['cus_zip'] = $_POST['address']['zip'];
+                $postData['cus_zip'] = $_POST['address']['zip'];
 
-                // $postData['cus_address'] = json_encode($_POST['address']);
+                $postData['cus_address'] = json_encode($_POST['address']);
 
                 $this->model->update( $id, $postData );
 
@@ -431,6 +433,53 @@ class Customers extends Controller {
                             $this->model->del_option( $value['id'] );
                         }
                     }
+                }
+
+                if( !empty($_FILES['file1']) ){
+
+                    if( !empty($item['image_id']) ){
+                        $this->model->query('media')->del($item['image_id']);
+                        $this->model->update( $id, array('emp_image_id'=>0 ) );
+                    }
+
+                    $album = array('album_id'=>3);
+                    
+                    if( empty($structure) ){
+                        $structure = WWW_UPLOADS . $album['album_id'];
+                        if( !is_dir( $structure ) ){
+                            mkdir($structure, 0777, true);
+                        }
+                    }
+
+                    /**/
+                    /* set Media */
+                    /**/
+                    $media = array(
+                        'media_album_id' => $album['album_id'],
+                        'media_type' => isset($_REQUEST['media_type']) ? $_REQUEST['media_type']: strtolower(substr(strrchr($_FILES['file1']['name'],"."),1))
+                        );
+
+                    $options = array(
+
+                        'dir' => $structure.DS,
+                        'url' => UPLOADS.$album['album_id'].'/',
+                        );
+
+                    if( isset($_REQUEST['minimize']) ){
+                        $options['minimize'] = explode(',', $_REQUEST['minimize']);
+                    }
+                    
+                    $options['has_quad'] = true;
+
+                    $this->model->query('media')->upload_picture( $_FILES['file1'], $media , $options );
+                    $item['image_id'] = $media['media_id'];
+                    $this->model->update( $id, array('cus_image_id'=>$item['image_id'] ) );
+                    
+                }
+
+                // resize 
+                if( !empty($_POST['cropimage']) && !empty($item['image_id']) ){
+                    $this->model->query('media')->resize($item['image_id'], $_POST['cropimage']);
                 }
 
                 $arr['message'] = 'บันทึกเรียบร้อย';
@@ -475,105 +524,6 @@ class Customers extends Controller {
         }
     }
 
-    public function notes(){
-        if( empty($this->me) || $this->format!='json') $this->error();
-        echo json_encode($this->model->notes());
-    }
-
-    public function save_note(){
-        if( empty($this->me) || empty($_POST) || $this->format!='json') $this->error();
-
-
-        if( empty($_POST['text']) || empty($_POST['cus_id']) ){
-
-            $arr['message'] = array('text'=>'กรุณากรอกข้อมูลให้ครบ!', 'bg'=>'red', 'auto'=>1, 'load'=>1) ;
-            $arr['error'] = 1;
-        }
-        else{
-            $data = array(
-                'note_text' => $_POST['text'],
-                'note_date' => date('Y-m-d H:s:i'),
-                'note_user_id' => $this->me['id'],
-                'note_cus_id' => $_POST['cus_id']
-                );
-            $this->model->save_note( $data );
-
-            $arr['data'] = $data;
-
-            $arr['message'] = 'บันทึกเรียบร้อย';
-            $arr['url'] = 'refresh';
-
-        }
-
-        echo json_encode( $arr );
-    }
-
-    public function del_note($id=null) {
-        $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : $id;
-        if( empty($this->me) || empty($id) || $this->format!='json' ) $this->error();
-        
-        $item = $this->model->get_note($id);
-        if( empty($item) ) $this->error();
-
-        if (!empty($_POST)) {
-
-            if ($item['permit']['del']) {
-                $this->model->deleteNote($id);
-                $arr['message'] = 'ลบข้อมูลเรียบร้อย';
-            } else {
-                $arr['message'] = 'ไม่สามารถลบข้อมูลได้';
-            }
-
-            if( isset($_REQUEST['callback']) ){
-                $arr['callback'] = $_REQUEST['callback'];
-            }
-            $arr['url'] = 'refresh';
-            echo json_encode($arr);
-        }
-        else{
-            $this->view->setData('item', $item);
-            $this->view->render("customers/forms/del_note");
-        }
-    }
-
-    public function edit_note(){
-        $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : $id;
-        if( empty($this->me) || empty($id) || $this->format!='json' ) $this->error();
-
-        $item = $this->model->get_note($id);
-        if( empty($item) ) $this->error();
-
-        if (!empty($_POST)) {
-
-            try {
-                $form = new Form();
-                $form   ->post('note_text')->val('is_empty');
-
-                $form->submit();
-                $postData = $form->fetch();  
-                
-                if( empty($arr['error']) ){
-
-                    $this->model->updateNote($id, $postData );
-                    
-                    $arr['message'] = 'บันทึกเรียบร้อย';
-
-                    $arr['url'] = 'refresh';
-                    $arr['text'] = $postData['note_text'];
-                }
-
-            } catch (Exception $e) {
-                $arr['error'] = $this->_getError($e->getMessage());
-            }
-
-            echo json_encode($arr);
-        }
-        else{
-            $this->view->setData('item', $item);
-            $this->view->render("customers/forms/get_note");
-        }
-    }
-
     public function bookmark($id=null){
         $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : $id;
         if( empty($this->me) || empty($id) || $this->format!='json' ) $this->error();
@@ -590,5 +540,24 @@ class Customers extends Controller {
         $arr['message'] = 'บันทึกเรียบร้อย';
 
         echo json_encode( $arr );
+    }
+
+    public function setdata($id='', $field=null)
+    {
+        if( empty($id) || empty($field) || empty($this->me) ) $this->error();
+
+        $item = $this->model->get( $id );
+
+        if( empty($item) ) $this->error();
+
+        if( isset($_REQUEST['has_image_remove']) && !empty($item['image_id']) ){
+            $this->model->query('media')->del( $item['image_id'] );
+        }
+
+        $data[$field] = isset($_REQUEST['value'])? $_REQUEST['value']:'';
+        $this->model->update($id, $data);
+
+        $arr['message'] = 'บันทึกเรียบร้อย';
+        echo json_encode($arr);
     }
 }

@@ -29,7 +29,15 @@ foreach ($this->results as $key => $value) {
         }
     }
 
-    $li .= '<li class="checklist-item'.( $checked ? ' checked':'' ).'"><div class="anchor clearfix"><div class="avatar lfloat no-avatar mrm"><div class="initials"><i class="icon-user i-before"></i><i class="icon-check i-after"></i></div></div><div class="content"><div class="spacer"></div><div class="massages"><div class="fullname">'.$value['fullname'].'</div><div class="subname fsm meta">'.$contact.'</div></div></div></div>'.
+    $image = '';
+    if( !empty($value['image_url']) ){
+        $image = '<div class="avatar lfloat mrm"><img class="img" src="'.$value['image_url'].'" alt="'.$value['fullname'].'"><i class="icon-check i-after"></i></div>';
+    }
+    else{
+        $image = '<div class="avatar lfloat no-avatar mrm"><div class="initials"><i class="icon-user i-before"></i><i class="icon-check i-after"></i></div></div>';
+    }
+
+    $li .= '<li class="checklist-item'.( $checked ? ' checked':'' ).'"><div class="anchor clearfix">'.$image.'<div class="content"><div class="spacer"></div><div class="massages"><div class="fullname">'.$value['fullname'].'</div><div class="subname fsm meta">'.$contact.'</div></div></div></div>'.
 
         '<div class="checklist-item-hiden">'.
             '<input type="checkbox" name="ids[]" value="'.$value['id'].'"'.( $checked ? ' checked="1"':'' ).'>'.

@@ -28,42 +28,40 @@ if( !empty($this->results['lists']) ){
             
         }
 
-
+        $image = '';
         if( !empty($item['image_url']) ){
-            $image = $this->fn->imageBox($item['image_url'], 48);
+            $image = '<div class="avatar lfloat mrm"><img class="img" src="'.$item['image_url'].'" alt="'.$item['fullname'].'"></div>';
         }
         else{
             $image = '<div class="avatar lfloat no-avatar mrm"><div class="initials"><i class="icon-user"></i></div></div>';
         }
-
 
         $qty = !empty($item['total_item'])
             ? $item['total_item']
             : '-';
 
 
-        $subname = '';
-
+        $subtext = '';
         $express = '';
         if( !empty($item['phone']) ){
-            $subname .= !empty($subname) ? ', ':'';
-            $subname .= '<i class="icon-phone mrs"></i>' . $item['phone'];
+            $subtext .= !empty($subtext) ? ', ':'';
+            $subtext.='<i class="icon-phone mrs"></i>'. $item['phone'];
 
-            $express .= '<a href="tel:'.$item['phone'].'" class="btn-icon btn-border mrs"><i class="icon-phone"></i></a>';
+            $express .= '<li><i class="icon-phone mrs"></i><a href="tel:'.$item['phone'].'">'.$item['phone'].'</a></li>';
         }
 
         if( !empty($item['email']) ){
-            $subname .= !empty($subname) ? ', ':'';
-            $subname .= '<i class="icon-envelope-o mrs"></i>' .$item['email'];
+            $subtext .= !empty($subtext) ? ', ':'';
+            $subtext.='<i class="icon-envelope-o mrs"></i>'. $item['email'];
 
-            $express .= '<a href="mailto:'.$item['email'].'" class="btn-icon btn-border mrs"><i class="icon-envelope"></i></a>';
+             $express .= '<li><i class="icon-envelope mrs"></i><a href="mailto:'.$item['email'].'" title="'.$item['email'].'">'.$item['email'].'</a></li>';
         }
 
         if( !empty($item['lineID']) ){
-            $subname .= !empty($subname) ? ', ':'';
-            $subname .= 'Line ID: '.$item['lineID'].'<a target="_blank" href="http://line.me/ti/p/~'.$item['lineID'].'"><i class="mls icon-external-link"></i></a>';
+            $subtext .= !empty($subtext) ? ', ':'';
+            $subtext .= '<a target="_blank" href="http://line.me/ti/p/~'.$item['lineID'].'"><i class="mls icon-external-link"></i> '.$item['lineID'].'</a>';
 
-            $express .= '<a class="btn-icon btn-border" href="line:'.$item['lineID'].'">Line</a>';
+            $express .= '<li>Line ID: <a href="line:'.$item['lineID'].'">'.$item['lineID'].'</a></li>';
         }
 
         $age = '';
@@ -82,13 +80,19 @@ if( !empty($this->results['lists']) ){
                 '<div class="anchor clearfix">'.
                     $image.
                     '<div class="content"><div class="spacer"></div><div class="massages">'.
-                        '<div class="fullname"><a class="fwb" href="'.URL .'customers/'.$item['id'].'">'. $item['fullname'].'</a>'.$age.'</div>'.
-                        '<div class="subname fsm meta">'.$subname.'</div>'.
+                        '<div class="fullname"><a class="fwb" href="'.URL .'customers/'.$item['id'].'">'. $item['fullname'].'</a></div>'.
+                        // '<div class="subname fsm meta">'.$subname.'</div>'.
                     '</div>'.
                 '</div></div>'.
             '</td>'.
 
-            '<td class="email"><div class="profile-express">'.$express.'</div></td>'.
+            '<td class="express"><ul class="fsm">'.$express.'</ul></td>'.
+
+            '<td class="status">'.(!empty($item['total_car']) ? $item['total_car'] : '-').'</td>'.
+
+            '<td class="status">'.(!empty($item['total_booking']) ? $item['total_booking'] : '-').'</td>'.
+
+            '<td class="status">'.(!empty($item['total_cancel']) ? $item['total_cancel'] : '-').'</td>'.
 
         '</tr>';
         

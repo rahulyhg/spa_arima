@@ -16,7 +16,7 @@ $this->tabs[] = array('id'=>'conditions','name'=>'เงื่อนไขกา
 
 $this->tabs_rigth = array();
 
-$this->tabs_rigth[] = array('id'=>'insurance','name'=>'ประกันภัย', 'active'=>1, 'icon'=>'heart');
+
 $this->tabs_rigth[] = array('id'=>'files','name'=>'Files', 'icon'=>'file-o');
 $this->tabs_rigth[] = array('id'=>'plans','name'=>'นัดหมาย', 'icon'=>'history');
 $this->tabs_rigth[] = array('id'=>'notes','name'=>'Notes', 'icon'=>'comments-o');

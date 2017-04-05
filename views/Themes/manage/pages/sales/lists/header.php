@@ -41,9 +41,9 @@ $url = URL.'sales/';
 
 			<li class="divider"></li>
 
-            <li class="mt"><div class="rfloat"><a data-plugins="dialog" href="<?=$url?>add" class="btn btn-blue" _data-plugins="dialog"><i class="icon-plus mrs"></i>เพิ่ม</a></div>
-            
-            </li>
+			<?php if( !empty($this->permit['sales']['add']) ) { ?>
+            <li class="mt"><div class="rfloat"><a data-plugins="dialog" href="<?=$url?>add" class="btn btn-blue" _data-plugins="dialog"><i class="icon-plus mrs"></i>เพิ่ม</a></div></li>
+            <?php } ?>
 
 		</ul>
 		

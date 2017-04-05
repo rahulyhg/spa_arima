@@ -30,6 +30,7 @@ class Employees_Model extends Model{
                         , emp_image_id
                         , emp_birthday
                         , emp_lang
+                        , emp_permission
                         , d.dep_id
                         , d.dep_name
                         , d.dep_is_admin
@@ -37,6 +38,7 @@ class Employees_Model extends Model{
                         , d.dep_permission
                         , p.pos_id 
                         , p.pos_name
+                        , p.pos_permission
                         , c.city_name";
 
     private $_cutNamefield = "emp_";
@@ -48,7 +50,7 @@ class Employees_Model extends Model{
             'pager' => isset($_REQUEST['pager'])? $_REQUEST['pager']:1,
             'limit' => isset($_REQUEST['limit'])? $_REQUEST['limit']:50,
 
-            'sort' => isset($_REQUEST['sort'])? $_REQUEST['sort']: 'updated',
+            'sort' => isset($_REQUEST['sort'])? $_REQUEST['sort']: 'created',
             'dir' => isset($_REQUEST['dir'])? $_REQUEST['dir']: 'DESC',
 
             'time'=> isset($_REQUEST['time'])? $_REQUEST['time']:time(),
@@ -58,6 +60,10 @@ class Employees_Model extends Model{
         ), $options);
 
         $date = date('Y-m-d H:i:s', $options['time']);
+
+        if( isset($_REQUEST['view_stype']) ){
+            $options['view_stype'] = $_REQUEST['view_stype'];
+        }
 
         $where_str = "";
         $where_arr = array();
@@ -122,8 +128,8 @@ class Employees_Model extends Model{
         $where_str = !empty($where_str) ? "WHERE {$where_str}":'';
         $orderby = $this->orderby( $this->_cutNamefield.$options['sort'], $options['dir'] );
         $limit = $this->limited( $options['limit'], $options['pager'] );
-        
-        $arr['lists'] = $this->buildFrag( $this->db->select("SELECT {$this->_field} FROM {$this->_table} {$where_str} {$orderby} {$limit}", $where_arr ) );
+
+        $arr['lists'] = $this->buildFrag( $this->db->select("SELECT {$this->_field} FROM {$this->_table} {$where_str} {$orderby} {$limit}", $where_arr ), $options  );
 
         if( ($options['pager']*$options['limit']) >= $arr['total'] ) $options['more'] = false;
         $arr['options'] = $options;
@@ -131,36 +137,54 @@ class Employees_Model extends Model{
         return $arr;
     }
 
-    public function buildFrag($results) {
+    public function buildFrag($results, $options=array()) {
         $data = array();
         foreach ($results as $key => $value) {
             if( empty($value) ) continue;
-            $data[] = $this->convert( $value );
+            $data[] = $this->convert($value , $options);
         }
-
         return $data;
     }
-    public function get($id){
+    public function get($id, $options=array()){
+
         $sth = $this->db->prepare("SELECT {$this->_field} FROM {$this->_table} WHERE {$this->_cutNamefield}id=:id LIMIT 1");
         $sth->execute( array(
             ':id' => $id
         ) );
 
         return $sth->rowCount()==1
-            ? $this->convert( $sth->fetch( PDO::FETCH_ASSOC ) )
+            ? $this->convert( $sth->fetch( PDO::FETCH_ASSOC ) , $options )
             : array();
     }
-    public function convert($data){
+
+    public function bucketed($data , $options=array()) {
+
+        return array(
+            'id'=> $data['id'],
+            // 'created' => $data['created'],
+            'text'=> $data['fullname'],
+            "category"=>isset($category)?$category:"",
+            "subtext"=>!empty($data['phone_number']) ? $data['phone_number']:"",
+            "image_url"=>!empty($data['image_url']) ? $data['image_url']:"",
+            "type"=>"employees",
+            // 'status' => isset($status)?$status:"",
+            // 'data' => $data,
+        );
+    }
+    public function convert($data , $options=array()){
+
         $data['role'] = 'emp';
-
         $data = $this->cut($this->_cutNamefield, $data);
-
         foreach ($this->query('system')->_prefixName() as $key => $value) {
             if( $value['id']==$data['prefix_name'] ){
                 
                 $data['prefix_name_th'] = $value['name'];
                 break;
             }
+        }
+
+        if( empty($data['prefix_name_th']) ){
+            $data['prefix_name_th'] = '';
         }
 
         $data['fullname'] = "{$data['prefix_name_th']}{$data['first_name']} {$data['last_name']}";
@@ -171,13 +195,36 @@ class Employees_Model extends Model{
         $data['initials'] = $this->fn->q('text')->initials( $data['first_name'] );
         
         if( !empty($data['dep_is_sale']) ){
-            if( $data['dep_is_sale'] == 1 ){
-                $data['total_booking'] = $this->db->count('booking', '`book_sale_id`=:emp_id', array(':emp_id'=>$data['id']));
-            }
-        }
 
-        if( !empty($data['dep_permission']) ){
-            $data['dep_permission'] = json_decode($data['dep_permission'], true);
+            if( $data['dep_is_sale'] == 1 ){
+
+                $where_total = '`book_sale_id`=:emp_id AND `book_status`=:status';
+                $where_total_arr = array(
+                    ':emp_id'=>$data['id'],
+                );
+
+                if( (!empty($options['period_start']) && !empty($options['period_end'])) || (!empty($_REQUEST['period_start']) && !empty($_REQUEST['period_end'])) ){
+                    
+                    $period_start = !empty($options['period_start']) ? $options['period_start'] : $_REQUEST['period_start'];
+                    $period_end = !empty($options['period_end']) ? $options['period_end'] : $_REQUEST['period_end'];
+
+                    $where_total .= ' AND `book_date` BETWEEN :startDate AND :endDate';
+                    $where_total_arr[':startDate'] = $period_start;
+                    $where_total_arr[':endDate'] = $period_end;
+                }
+
+                /* TOTAL BOOKING */
+                $where_total_arr[':status'] = 'booking';
+                $data['total_booking'] = $this->db->count('booking', $where_total, $where_total_arr);
+
+                /* TOTAL CANCEL */
+                $where_total_arr[':status'] = 'cancel';
+                $data['total_cancel'] = $this->db->count('booking', $where_total, $where_total_arr);
+
+                /* TOTAL FINISH */
+                $where_total_arr[':status'] = 'finish';
+                $data['total_finish'] = $this->db->count('booking', $where_total, $where_total_arr);
+            }
         }
 
         if( !empty($data['image_id']) ){
@@ -185,7 +232,7 @@ class Employees_Model extends Model{
 
             if( !empty($image) ){
                 $data['image_arr'] = $image;
-                $data['image_url'] = $image['url'];
+                $data['image_url'] = $image['quad_url'];
             }
         }
 
@@ -197,8 +244,25 @@ class Employees_Model extends Model{
             $data['address']['city_name'] = $this->query('system')->city_name($data['address']['city']);
         }
 
+        // permission
+        if( !empty($data['permission']) ){
+            $data['permission'] = json_decode($data['permission'], true);
+        }
+        else if(!empty($data['pos_permission'])){
+            $data['permission'] = json_decode($data['pos_permission'], true);
+        }
+        else if( !empty($data['dep_permission']) ){
+            $data['permission'] = json_decode($data['dep_permission'], true);
+        }
+
         $data['permit']['del'] = true;
-        return $data;
+
+        $view_stype = !empty($options['view_stype']) ? $options['view_stype']:'convert';
+        if( !in_array($view_stype, array('bucketed', 'convert')) ) $view_stype = 'convert';
+
+        return $view_stype=='bucketed'
+            ? $this->bucketed( $data )
+            : $data;
     }
 
     /**/
@@ -225,13 +289,15 @@ class Employees_Model extends Model{
 
         return $c;
     }
-    
-    /**/
-    /* Check */
-    /**/
-    public function is_name( $first_name=null , $last_name=null ){
-        return $this->db->count( 'employees', "emp_first_name=':first_name' AND emp_last_name=':last_name'", array(':first_name'=>$first_name , ':last_name'=>$last_name) );
-    }
+    // public function is_name($text) {
+
+    //     $c = $this->db->count($this->_objType, "{$this->_cutNamefield}name='{$text}'");
+    //     if( $c==0 ){
+    //         $c = $this->db->count("users", "emp_name='{$text}'");
+    //     }
+
+    //     return $c;
+    // }
 
     public function is_checkpass($id, $old_pass) {
         return $this->db->count($this->_objType, "{$this->_cutNamefield}id='{$id}' AND {$this->_cutNamefield}password='{$old_pass}'");
@@ -323,16 +389,25 @@ class Employees_Model extends Model{
             $where = 'WHERE pos_dep_id='.$dep_id;
         }
 
-        return $this->db->select("SELECT pos_id as id, pos_name as name FROM emp_position {$where}");
+        return $this->db->select("SELECT pos_id as id, pos_name as name, pos_permission as permission FROM emp_position {$where}");
     }
     public function get_position($id){
         $sth = $this->db->prepare("
-            SELECT pos_id as id, pos_name as name, pos_dep_id as dep_id
-            FROM emp_position
+            SELECT pos_id as id, pos_name as name, pos_dep_id as dep_id, pos_permission as permission, dep_permission
+            FROM emp_position LEFT JOIN emp_department ON pos_dep_id=dep_id
             WHERE `pos_id`=:id 
             LIMIT 1");
         $sth->execute( array( ':id' => $id ) );
         $data = $sth->rowCount()==1 ? $sth->fetch( PDO::FETCH_ASSOC ) : array();
+        
+        // print_r($data); die;
+
+        if( !empty($data['permission']) ){
+            $data['permission'] = json_decode($data['permission'], true);
+        }
+        elseif( !empty($data['dep_permission']) ){
+            $data['permission'] = json_decode($data['dep_permission'], true);
+        }
 
         $data['permit']['del'] = true;
 
@@ -350,16 +425,6 @@ class Employees_Model extends Model{
     }
     public function delete_position($id){
         $this->db->delete( 'emp_position', "`pos_id`={$id}" );
-    }
-
-
-    public function prefixName() {
-        $a[] = array('id'=>'', 'name'=> '-');
-        $a[] = array('id'=>'Mr.', 'name'=> 'นาย');
-        $a[] = array('id'=>'Mrs.', 'name'=> 'นาง');
-        $a[] = array('id'=>'Ms.', 'name'=> 'น.ส.');
-
-        return $a;
     }
 
 
@@ -388,5 +453,12 @@ class Employees_Model extends Model{
         $a[] = array('id' => 'disabled', 'name' => 'ปิดใช้งาน');
 
         return $a;
+    }
+
+    /**/
+    /* Check */
+    /**/
+    public function is_name( $first_name=null , $last_name=null ){
+        return $this->db->count( 'employees', "emp_first_name=':first_name' AND emp_last_name=':last_name'", array(':first_name'=>$first_name , ':last_name'=>$last_name) );
     }
 }

@@ -47,15 +47,15 @@ $form   ->field("book_insurence")
     '</li>'.
 
     '<li>'.
-        '<table>'.
-            '<tr>'.
-               '<td class="pts"><label class="radio"><input type="radio" name="insurence[sure]" value="1" class="js-change-insurenceSure" '.$sure1.'>ระบุชื่อ</label></td>'.
+        '<table data-plugins="actionsListHiden">'.
+            '<tr data-active="sure">'.
+               '<td class="pts"><label class="radio"><input type="radio" name="insurence[sure]" value="1" class="js-change-insurenceSure" '.$sure1.' data-actions="sure">ระบุชื่อ</label></td>'.
                '<td class="cell-label">ค่าเบี้ยประกัน/Premiun</td>'.
                '<td class="cell-data"><input data-name="insurance" type="text" name="insurence[premium]" class="inputtext not-clone js-number js-change-insurence" value="'.$value1.'"></td>'.
                '<td class="cell-right">บาท/Baht</td>'.
             '</tr>'.
-            '<tr>'.
-               '<td class="pts"><label class="radio"><input type="radio" name="insurence[sure]" value="0" class="js-change-insurenceSure" '.$sure0.'>ไม่ระบุชื่อ</label></td>'.
+            '<tr data-active="sure1">'.
+               '<td class="pts"><label class="radio"><input type="radio" name="insurence[sure]" value="0" class="js-change-insurenceSure" '.$sure0.' data-actions="sure1">ไม่ระบุชื่อ</label></td>'.
                '<td class="cell-label">ค่าเบี้ยประกัน/Premiun</td>'.
  
                '<td class="cell-data"><input type="text" name="insurence[premium]" class="inputtext disabled not-clone js-number js-change-insurence" data-name="insurance" disabled value="'.$value0.'"></td>'.

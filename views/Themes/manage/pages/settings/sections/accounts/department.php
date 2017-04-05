@@ -48,7 +48,7 @@ $url = URL .'employees/';
 			<td class="actions whitespace">
 				
 				<span class="gbtn"><a data-plugins="dialog" href="<?=$url?>edit_department/<?=$item['id'];?>" class="btn btn-no-padding"><i class="icon-pencil"></i></a></span>
-				<span class="gbtn"><a data-plugins="dialog" href="<?=$url?>edit_permit_dep/<?=$item['id']?>" class="btn btn-no-padding"><i class="icon-check-square-o"></i></a></span>
+				<span class="gbtn"><a data-plugins="dialog" href="<?=$url?>edit_permit/<?=$item['id']?>?type=department" class="btn btn-no-padding"><i class="icon-check-square-o"></i></a></span>
 				<span class='gbtn'><a data-plugins="dialog" href="<?=$url?>del_department/<?=$item['id'];?>" class="btn btn-no-padding"><i class="icon-trash"></i></a></span>
 					
 			</td>

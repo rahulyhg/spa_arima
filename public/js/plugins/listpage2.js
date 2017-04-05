@@ -217,7 +217,6 @@ if ( typeof Object.create !== 'function' ) {
 						});
 					}
 					
-					
 				} );
 
 				if( closedateOptions.length > 0 ){

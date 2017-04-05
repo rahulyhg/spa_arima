@@ -152,16 +152,23 @@ class Services_Model extends Model
             $where_str .= "service_status=:status";
             $where_arr[':status'] = $options['status'];
         }
+         if( !empty($_REQUEST['services']) or !empty($options['services']) ){  
+            $options['services'] = !empty($_REQUEST['services'])?$_REQUEST['services']:$options['services'];     
+            $where_str .= !empty( $where_str ) ? " AND ":'';
+            $where_str .= "service_cus_id=:services";
+            $where_arr[':services'] = $options['services'];
+         
+        }
 
-        if( !empty($_REQUEST['period_start']) && !empty($_REQUEST['period_end']) ){
+        if( ( !empty($_REQUEST['period_start']) && !empty($_REQUEST['period_end']) ) || ( !empty($options['period_start']) && !empty($options['period_end']) ) ){
 
-            $options['period_start'] = date("Y-m-d 00:00:00", strtotime($_REQUEST['period_start']));
-            $options['period_end'] = date("Y-m-d 23:59:59", strtotime($_REQUEST['period_end']));
+            $period_start = !empty($options['period_start']) ? $options['period_start'] : $_REQUEST['period_start'];
+            $period_end = !empty($options['period_end']) ? $options['period_end'] : $_REQUEST['period_end'];
 
             $where_str .= !empty( $where_str ) ? " AND ":'';
             $where_str .= "service_date_repair BETWEEN :startDate AND :endDate";
-            $where_arr[':startDate'] = $options['period_start'];
-            $where_arr[':endDate'] = $options['period_end'];
+            $where_arr[':startDate'] = $period_start;
+            $where_arr[':endDate'] = $period_end;
         }
 
         $arr['total'] = $this->db->count($this->_table, $where_str, $where_arr);
@@ -331,23 +338,6 @@ class Services_Model extends Model
         $data['car_updated'] = date('c');
         $this->db->update('cars', $data, "`car_id`={$id}");
     }
-    
-    /**/
-    /* EVENT */
-    /**/
-    public function insertEvent(&$data){
-
-        $data = $this->_setEvent($data);
-        $this->db->insert('events',$data);
-        $data['event_id'] = $this->db->lastInsertId();
-    }
-
-    /**/
-    /* JoinEvent */
-    public function insertJoinEvent($data){
-        $this->db->insert('events_obj_permit',$data);
-    }
-    /**/
 
     /**/
     /* SET OPTION */
@@ -402,51 +392,52 @@ class Services_Model extends Model
 
                     if( empty($value) && $key != 'lineID' && $key != 'nickname' ){
 
-                        if( $key == 'first_name' || $key == 'last_name' ){
+                        if( $key == 'first_name' ){
                             $data['error']['cus_name'] = 'กรอกข้อมูลให้ครบ';
                         }
-                        else{
-                            $data['error']['cus_'.$key] = 'กรุณากรอกข้อมูล';
-                        }
+                        // else{
+                        //     $data['error']['cus_'.$key] = 'กรุณากรอกข้อมูล';
+                        // }
                     }
                 }
 
-                $options = $data['cus']['options'];
-                foreach ($options as $type => $values) {
-                    foreach ($values['name'] as $key => $val) {
-                        if( $type == 'phone'){
-                            if( empty($values['value'][$key]) ){
-                                $data['error']['cus_options_phone'] = 'กรุณากรอกเบอร์โทรศัพท์';
-                            }
-                        }
-                    }
-                }
+                // $options = $data['cus']['options'];
+                // foreach ($options as $type => $values) {
+                //     foreach ($values['name'] as $key => $val) {
+                //         if( $type == 'phone'){
+                //             if( empty($values['value'][$key]) ){
+                //                 $data['error']['cus_options_phone'] = 'กรุณากรอกเบอร์โทรศัพท์';
+                //             }
+                //         }
+                //     }
+                // }
 
-                if( !empty($data['cus']['address']) ){
+                // if( !empty($data['cus']['address']) ){
 
-                    foreach ($data['cus']['address'] as $key => $value) {
+                //     foreach ($data['cus']['address'] as $key => $value) {
 
-                        if( empty($value) && $key != 'village' && $key !='street' && $key != 'alley'){
-                            $data['error']['cus_address'] = 'กรอกข้อมูลที่อยู่ให้ครบถ้วน';
-                        }
+                //         if( empty($value) && $key != 'village' && $key !='street' && $key != 'alley'){
+                //             $data['error']['cus_address'] = 'กรอกข้อมูลที่อยู่ให้ครบถ้วน';
+                //         }
 
-                        if( $key == 'zip' ){
-                            if( strlen($value) != '5' ){
-                                $data['error']['cus_address'] = 'กรุณากรอกรหัสไปรษณีย์ให้ครบ 5 หลัก';
-                            }
-                        }
-                    }
-                }
+                //         if( $key == 'zip' ){
+                //             if( strlen($value) != '5' ){
+                //                 $data['error']['cus_address'] = 'กรุณากรอกรหัสไปรษณีย์ให้ครบ 5 หลัก';
+                //             }
+                //         }
+                //     }
+                // }
 
-                $futureDate = date('Y-m-d',strtotime(date("Y-m-d", mktime()) . " -6 year")); // 2554 // 2011
-                $birthday = date("{$_POST['birthday']['year']}-{$_POST['birthday']['month']}-{$_POST['birthday']['date']}");
-                if( strtotime($birthday) > strtotime($futureDate) ){
-                    $arr['error']['birthday'] = 'วันเกิดไม่ถูกต้อง';
-                }
 
-                if( strlen($data['cus']['card_id']) != '13' ){
-                    $arr['error']['cus_card_id'] = 'กรุณากรอกรหัสบัตรประชาชนให้ถูกต้อง';
-                }
+                // $futureDate = date('Y-m-d',strtotime(date("Y-m-d", mktime()) . " -6 year"));
+                // $birthday = date("{$data['birthday']['year']}-{$data['birthday']['month']}-{$data['birthday']['date']}");
+                // if( strtotime($birthday) > strtotime($futureDate) ){
+                //     $arr['error']['birthday'] = 'วันเกิดไม่ถูกต้อง';
+                // }
+
+                // if( strlen($data['cus']['card_id']) != '13' ){
+                //     $arr['error']['cus_card_id'] = 'กรุณากรอกรหัสบัตรประชาชนให้ถูกต้อง';
+                // }
             }
         }
 
@@ -504,9 +495,8 @@ class Services_Model extends Model
                     if( $key == 'address' || $key == 'options' ) continue;
                     $cus['cus_'.$key] = $value;
                 }
-
                 $futureDate = date('Y-m-d',strtotime(date("Y-m-d", mktime()) . " -6 year")); // 2554 // 2011
-                $birthday = date("{$_POST['birthday']['year']}-{$_POST['birthday']['month']}-{$_POST['birthday']['date']}");
+                $birthday = date("{$data['birthday']['year']}-{$data['birthday']['month']}-{$data['birthday']['date']}");
 
                 $cus['cus_address'] = json_encode($data['cus']['address']);
                 $cus['cus_zip'] = $data['cus']['address']['zip'];
@@ -572,7 +562,10 @@ class Services_Model extends Model
             /**/
             /* SET Service */
             /**/
-            $service = array('service_emp_id'=>$data['me']);
+            $service = array( 
+                'service_emp_id'=>$data['me'], 
+                'service_cus_id'=>$cus_id
+            );
             $this->insert($service);
             $ser_id = $service['id'];
 
@@ -615,6 +608,8 @@ class Services_Model extends Model
             }
             else{
 
+                $car['car_plate'] = !empty($data['car']['plate']) ? $data['car']['plate']:'';
+                $car['car_red_plate'] = !empty($data['car']['red_plate']) ? $data['car']['red_plate']:'';
                 $car['car_mile'] = $data['car']['mile'];
                 $this->updateCar($data['car']['id'], $car);
                 $car_id = $data['car']['id'];
@@ -630,7 +625,7 @@ class Services_Model extends Model
                 if( empty($data['items']['name'][$i]) || empty($data['items']['value'][$i]) ) continue;
 
                 $option = array(
-                    'sop_service_id'=>$ser_id,
+                    'sop_ser_id'=>$ser_id,
                     'sop_name'=>$data['items']['name'][$i],
                     'sop_value'=>$data['items']['value'][$i],
                     );
@@ -653,17 +648,25 @@ class Services_Model extends Model
                     $event['event_'.$key] = $value;
                 }
 
-                $event['event_cus_id'] = $cus_id;
+                //$event['event_cus_id'] = $cus_id;
                 $event['event_emp_id'] = $data['me'];
-                $this->insertEvent($event);
+                $this->query('events')->insert($event);
 
-                $join = array(
+                $join[] = array(
                     'event_id'=>$event['event_id'],
                     'obj_id'=>$ser_id,
-                    'obj_type'=>'service',
+                    'obj_type'=>'services',
                     );
 
-                $this->insertJoinEvent($join);
+                $join[] = array(
+                    'event_id'=>$event['event_id'],
+                    'obj_id'=>$cus_id,
+                    'obj_type'=>'customers',
+                    );
+
+                foreach ($join as $key => $value) {
+                    $this->query('events')->insertJoinEvent($value);
+                }
             }
 
             $status = 'run';
@@ -685,7 +688,7 @@ class Services_Model extends Model
 
             $this->update($ser_id ,$update_ser);
 
-            $data['massage'] = 'บันทึกข้อมูลเรียบร้อยแล้ว';
+            $data['message'] = 'บันทึกข้อมูลเรียบร้อยแล้ว';
             $data['url'] = URL.'services/'.$ser_id;
         }
 

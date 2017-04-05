@@ -358,11 +358,14 @@ class _function {
                     $attr .= " {$n}=\"{$val}\"";
                 }
             }
-            
 
             if($type=='select'){
-                
+
                 $option = '';
+                if( strpos( $value['id'], "prefix_name" ) ){
+                    $option = '<option value="">-</option>';
+                }
+
                 $val = isset($value['value']) ? $value['value'] : '';
                 foreach ($value['options'] as $data) {
                     $active = $val==$data['id'] ? ' selected="1"':'';

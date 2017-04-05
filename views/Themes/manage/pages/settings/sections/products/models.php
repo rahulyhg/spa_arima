@@ -21,12 +21,25 @@ $url = URL .'models/';
 			<th class="actions"></th>
 		</tr>
 
-		<?php foreach ($this->data['lists'] as $key => $item) { ?>
+		<?php foreach ($this->data['lists'] as $key => $item) {
+    //print_r($item); die;
+                     $image = '';
+        if( !empty($item['image_url']) ){
+            $image = '<div class="lfloat mrm"><img class="img" src="'.$item['image_url'].'"style="width: 114px;margin-top:-9px"></div>';
+        }
+        else{
+            $image = '<div class="avatar lfloat no-avatar mrm"><div class="initials"><i class="icon-car"></i></div></div>';
+        }
+
+                    
+                    ?>
 		<tr>
 
 			<td class="name">
+                             <?=$image ?>
 				<h3><?=$item['name']?></h3>
 				<div class="fsm fcg">
+                                   
 					<span><?=$item['brand_name']?></span> · <span><?=$item['dealer_name']?></span>
 				</div>
 			</td>

@@ -334,7 +334,7 @@ if ( typeof Object.create !== 'function' ) {
 			self.is_loading = setTimeout(function () {
 
 				self.fetch().done(function( results ) {
-
+					
 					self.data = $.extend( {}, self.data, results.settings );
 					self.$load.toggleClass( 'has-empty', parseInt(self.data.total)==0 ? true: false );
 					

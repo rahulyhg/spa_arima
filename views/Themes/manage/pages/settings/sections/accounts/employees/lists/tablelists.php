@@ -65,33 +65,50 @@ if( !empty($this->results['lists']) ){
             'href' => $url.'password/'.$item['id'],
             'attr' => array('data-plugins'=>'dialog'),
             'icon' => 'key'
-        );
+            );
 
         if( $item['display']=='enabled' ){
-        $dropdown[] = array(
-            'text' => 'Disabled',
-            'href' => $url.'display/'.$item['id'].'/disabled',
-            'attr' => array('data-plugins'=>'dialog'),
-            'icon' => 'lock'
-        );
+            $dropdown[] = array(
+                'text' => 'Disabled',
+                'href' => $url.'display/'.$item['id'].'/disabled',
+                'attr' => array('data-plugins'=>'dialog'),
+                'icon' => 'lock'
+            );
         }
 
         if( $item['display']=='disabled' ){
-        $dropdown[] = array(
-            'text' => 'Enabled',
-            'href' => $url.'display/'.$item['id'].'/enabled',
-            'attr' => array('data-plugins'=>'dialog'),
-            'icon' => 'unlock'
-        );
+            $dropdown[] = array(
+                'text' => 'Enabled',
+                'href' => $url.'display/'.$item['id'].'/enabled',
+                'attr' => array('data-plugins'=>'dialog'),
+                'icon' => 'unlock'
+            );
         }
 
-        if( !empty($item['permit']['del']) ){
-        $dropdown[] = array(
-            'text' => 'Delete',
-            'href' => $url.'del/'.$item['id'],
-            'attr' => array('data-plugins'=>'dialog'),
-            'icon' => 'remove'
-        );
+        // if( !empty($item['permit']['del']) ){
+        //     $dropdown[] = array(
+        //         'text' => 'Delete',
+        //         'href' => $url.'del/'.$item['id'],
+        //         'attr' => array('data-plugins'=>'dialog'),
+        //         'icon' => 'remove'
+        //     );
+        // }
+
+        if( $this->me['id'] != $item['id'] ){
+
+            $dropdown[] = array(
+                'text' => 'Delete',
+                'href' => $url.'del/'.$item['id'],
+                'attr' => array('data-plugins'=>'dialog'),
+                'icon' => 'remove'
+            );
+
+            $dropdown[] = array(
+                'text' => 'Permission',
+                'href' => $url.'edit_permit/'.$item['id'].'?type=employees',
+                'attr' => array('data-plugins'=>'dialog'),
+                'icon' => 'check-square-o'
+            );
         }
 
         $tr .= '<tr class="'.$cls.'" data-id="'.$item['id'].'">'.
@@ -120,18 +137,20 @@ if( !empty($this->results['lists']) ){
             '<td class="express"><ul class="fsm">'.$express.'</ul></td>'.
             '<td class="actions">'.
 
-                '<div class="group-btn whitespace mts">'.
-                    '<a data-plugins="dialog" href="'.$url.'edit/'.$item['id'].'" class="btn"><i class="icon-pencil"></i></a>'.
+                '<div class="group-btn whitespace mts">';
+                if( !empty($this->permit['employees']['edit']) ){
+                    $tr .='<a data-plugins="dialog" href="'.$url.'edit/'.$item['id'].'" class="btn"><i class="icon-pencil"></i></a>'.
                     '<a data-plugins="dropdown" class="btn" data-options="'.$this->fn->stringify( array(
                         'select' => $dropdown,
                         'settings' =>array(
                             'axisX'=> 'right',
                             'parent'=>'.setting-main'
                         ) 
-                    ) ).'"><i class="icon-ellipsis-v"></i></a>'.
+                    ) ).'"><i class="icon-ellipsis-v"></i></a>';
+                }
                     // '<a data-plugins="dialog" href="'.$url.'change_password/'.$item['id'].'" class="btn"><i class="icon-key"></i></a>'.
                     // '<a data-plugins="dialog" href="'.$url.'del/'.$item['id'].'" class="btn '.$disabled.'"><i class="icon-trash"></i></a>'.
-                '</div>'.
+                $tr .= '</div>'.
             '</td>'.
               
         '</tr>';

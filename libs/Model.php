@@ -109,6 +109,10 @@ class Model {
 
         // Settings
         $arr = array( 
+            'dashboard' => array('view'=>0),
+
+            'events' => array('view'=>0,'edit'=>0, 'del'=>0, 'add'=>1),
+
             'company' => $permit,
             'dealer' => $permit,
             'my' => $permit,
@@ -131,12 +135,19 @@ class Model {
             'stocks' => $permit,
             'sales' => $permit,
             'services' => $permit,
-            'reports' => $permit,
+            'reports' => array('view'=>0),
 
         );
 
         // 
-        if( $id!=1 ){
+
+        if( $id==1 ){ // is admin
+            $arr['dashboard'] = array('view'=>1);
+            $arr['events'] = array('view'=>1,'edit'=>1, 'del'=>1, 'add'=>1);
+            $arr['reports'] = array('view'=>1);
+
+        }
+        else if( $id!=1 ){ // not admin
             $arr['company'] = array('view'=>0,'edit'=>0, 'del'=>0, 'add'=>0);
             $arr['dealer'] = array('view'=>0,'edit'=>0, 'del'=>0, 'add'=>0);
 
@@ -159,14 +170,14 @@ class Model {
         /* sale */
         if( $id==2 ){
             $arr['services'] = array('view'=>0,'edit'=>0, 'del'=>0, 'add'=>0);
-            $arr['employees'] = array('view'=>1,'edit'=>0, 'del'=>0, 'add'=>1);
+            $arr['employees'] = array('view'=>0,'edit'=>0, 'del'=>0, 'add'=>0);
             $arr['sales'] = array('view'=>1,'edit'=>0, 'del'=>0, 'add'=>0);
         }
 
         /* service */
         if($id==3){
             $arr['booking'] = array('view'=>0,'edit'=>0, 'del'=>0, 'add'=>0);
-            $arr['employees'] = array('view'=>1,'edit'=>0, 'del'=>0, 'add'=>1);
+            $arr['employees'] = array('view'=>0,'edit'=>0, 'del'=>0, 'add'=>0);
             $arr['sales'] = array('view'=>0,'edit'=>0, 'del'=>0, 'add'=>0);
         }
 

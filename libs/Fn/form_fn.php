@@ -114,7 +114,7 @@ class form_Fn extends _function{
 
                 if($type=='select'){
                     
-                    $option = '';
+                    $option = '<option value="">-</option>';
                     $val = isset($value['value']) ? $value['value'] : '';
                     foreach ($value['options'] as $data) {
 
@@ -183,7 +183,6 @@ class form_Fn extends _function{
 	}
 	private function _prefixName( $options=array() ) {
 		
-		$a['-'] = array('id'=>'', 'name'=> '-');
         $a['Mr.'] = array('id'=>'Mr.', 'name'=> 'นาย');
         $a['Mrs.'] = array('id'=>'Mrs.', 'name'=> 'นาง');
         $a['Ms.'] = array('id'=>'Ms.', 'name'=> 'น.ส.');

@@ -1,6 +1,5 @@
 <?php
 
-
 # title
 $title = 'แผนก';
 if( !empty($this->item) ){

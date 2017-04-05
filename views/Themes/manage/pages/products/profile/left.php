@@ -1,9 +1,14 @@
 <?php
 $top = array();
 
-$top[] = array('text'=>'แก้ไข','href'=>URL.'products/edit/'.$this->item['id'],'attr'=> array('data-plugins'=>'dialog'),'icon'=>'pencil');
+if( !empty($this->permit['stocks']['edit']) ){
 
-$top[] = array('text' => 'ลบ','href' => URL.'products/del/'.$this->item['id'],'attr' => array('data-plugins'=>'dialog'),'icon' => 'remove');
+    $top[] = array('text'=>'แก้ไข','href'=>URL.'products/edit/'.$this->item['id'],'attr'=> array('data-plugins'=>'dialog'),'icon'=>'pencil');
+}
+
+if( !empty($this->permit['stocks']['del']) ){
+    $top[] = array('text' => 'ลบ','href' => URL.'products/del/'.$this->item['id'],'attr' => array('data-plugins'=>'dialog'),'icon' => 'remove');
+}
 
 $updated ='';
 if( $this->item['updated']!='0000-00-00 00:00:00' ){

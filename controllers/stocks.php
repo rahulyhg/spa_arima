@@ -31,19 +31,18 @@ class Stocks extends Controller {
         }
         else{
             $results = $this->model->query('models')->lists();
-           
 
-           if( $this->format=='json' ) {
-            $this->view->setData('results', $results);
-            
+            if( $this->format=='json' ) {
+                $this->view->setData('results', $results);
+
                 $render = "stocks/lists/json";
-             } else{
+            } else{
 
-                 $render = "stocks/lists/display";
-                 
-             }
+                $this->view->setData('sum', $this->model->query('models')->summary());
+                $render = "stocks/lists/display";
+            }
 
-             $this->view->render($render);
+            $this->view->render($render);
         }
     }
 

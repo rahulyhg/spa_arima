@@ -28,19 +28,33 @@ $dropdown = array();
 }*/
 
 // $dropdown[] = array( 'type' => 'separator');
-$dropdown[] = array(
-    'text' => 'ลบ',
-    'href' => URL.'customers/del/'.$this->item['id'],
-    'attr' => array('data-plugins'=>'dialog'),
-);
+if( !empty($this->permit['customers']['edit']) || $this->me['id'] == $this->item['emp_id'] ){
+    $dropdown[] = array(
+        'text' => 'ลบ',
+        'href' => URL.'customers/del/'.$this->item['id'],
+        'attr' => array('data-plugins'=>'dialog'),
+    );
 
-$dropdown = $this->fn->stringify( array(
-    'select' => $dropdown,
+    $dropdown = $this->fn->stringify( array(
+        'select' => $dropdown,
 
-    'setttings' => array(
-        'axisX' => 'right'
-    )
-) );
+        'setttings' => array(
+            'axisX' => 'right'
+            )
+    ) );
+    $dropdown = '<a class="btn-icon" data-plugins="dropdown" data-options="'.$dropdown.'"><i class="icon-ellipsis-v"></i></a>';
+}
+else{
+    $dropdown = '';
+}
+
+$image = '';
+if( !empty($this->item['image_url']) ){
+    $image = '<div class="avatar lfloat mrm"><img class="img" src="'.$this->item['image_url'].'" alt="'.$this->item['fullname'].'"></div>';
+}
+else{
+    $image = '<div class="avatar lfloat no-avatar mrm"><div class="initials"><i class="icon-user"></i></div></div>';
+}
 
 ?><div class="profile-left" role="left" data-width="340">
 
@@ -53,12 +67,12 @@ $dropdown = $this->fn->stringify( array(
                     <a class="btn-icon" href="<?=URL?>customers"><i class="icon-arrow-left"></i></a>
                 </div> -->
                 <div class="rfloat">
-                   <a class="btn-icon" data-plugins="dropdown" data-options="<?=$dropdown?>"><i class="icon-ellipsis-v"></i></a>
+                   <?=$dropdown?>
                 </div>
             </div>
 
             <div class="anchor clearfix">
-                <div class="lfloat mrm avatar no-avatar"><div class="initials"><i class="icon-user"></i></div></div>
+                <?=$image?>
                 <div class="content"><div class="spacer"></div><div class="massages">
                     <h3 class="fullname"><?=$this->item['fullname']?></h3>
                     <div class="subname fsm"><?=$subname?></div>

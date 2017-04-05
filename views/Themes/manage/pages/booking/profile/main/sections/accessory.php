@@ -70,6 +70,7 @@ foreach ($accStr as $key => $value) {
 <div class="mvl clearfix">
 	<div class="rfloat">
 		<div class="group-btn">
+		<?php if( !empty($this->permit['booking']['edit']) || $this->me['id'] == $this->item['sale']['id']  ) { ?>
 			<a class="btn"><i class="icon-print mrs"></i>Print</a><a class="btn" data-plugins="dropdown" data-options="<?=$this->fn->stringify( array(
                     'select' => array( 0=> 
                         /*array(
@@ -92,6 +93,7 @@ foreach ($accStr as $key => $value) {
                     	// 'parent' => '.customers-main'
                     )
                     ) )?>"><i class="icon-ellipsis-v"></i></a>
+        <?php } ?>
 		</div>
 	</div>
 </div>

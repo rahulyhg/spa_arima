@@ -1,42 +1,54 @@
 <?php
 
-$title = 'พนักงาน';
+$title = 'พนักงานขาย';
+
+$options = array(
+    'url' => URL.'media/set',
+    'data' => array(
+        'album_name'=>'my', 
+        'minimize'=> array(128,128),
+        'has_quad'=> true,
+     ),
+    'autosize' => true,
+    'show'=>'quad_url',
+    'remove' => true
+);
+
+if( !empty($this->item['id']) ){
+    $options['setdata_url'] = URL.'customers/setdata/'.$this->item['id'].'/cus_image_id/?has_image_remove';
+}
+
+$image_url = '';
+$hasfile = false;
+if( !empty($this->item['image_url']) ){
+    $hasfile = true;
+    $image_url = '<img class="img" src="'.$this->item['image_url'].'?rand='.rand(100, 1).'">';
+
+    $options['remove_url'] = URL.'media/del/'.$this->item['image_id'];
+    
+}
+
+$picture_box = '<div class="anchor"><div class="clearfix">'.
+
+        '<div class="ProfileImageComponent lfloat size80 radius mrm is-upload'.($hasfile ? ' has-file':' has-empty').'" data-plugins="uploadProfile" data-options="'.$this->fn->stringify( $options ).'">'.
+            '<div class="ProfileImageComponent_image">'.$image_url.'</div>'.
+            '<div class="ProfileImageComponent_overlay"><i class="icon-camera"></i></div>'.
+            '<div class="ProfileImageComponent_empty"><i class="icon-camera"></i></div>'.
+            '<div class="ProfileImageComponent_uploader"><div class="loader-spin-wrap"><div class="loader-spin"></div></div></div>'.
+            '<button type="button" class="ProfileImageComponent_remove"><i class="icon-remove"></i></button>'.
+        '</div>'.
+    '</div>'.
+
+'</div>';
 
 $form = new Form();
 $form = $form->create()
     // set From
     ->elem('div')
-    ->style('horizontal')
-    ->addClass('form-insert');
+    ->addClass('form-insert form-emp');
 
-// $form   ->field("image")
-//         ->text('<div class="profile-cover image-cover" data-plugins="imageCover" data-options="'.(
-//         !empty($this->item['image_arr']) 
-//             ? $this->fn->stringify( array_merge( 
-//                 array( 
-//                     'scaledX'=> 250,
-//                     'scaledY'=> 250,
-//                     'action_url' => URL.'employees/del_image_profile/'.$this->item['id'],
-//                     // 'top_url' => IMAGES_PRODUCTS
-//                 ), $this->item['image_arr'] ) )
-//             : $this->fn->stringify( array( 
-//                     'scaledX'=> 250,
-//                     'scaledY'=> 250
-//                 ) )
-//             ).'" style="margin-top: 0px; margin-left: -23%;">
-//         <div class="loader">
-//         <div class="progress-bar medium"><span class="bar blue" style="width:0"></span></div>
-//         </div>
-//         <div class="preview"></div>
-//         <div class="dropzone">
-//             <div class="dropzone-text">
-//                 <div class="dropzone-icon"><i class="icon-picture-o img"></i></div>
-//                 <div class="dropzone-title">เพิ่มรูปโฆษณา</div>
-//             </div>
-//             <div class="media-upload"><input type="file" accept="image/*" name="image"></div>
-//         </div>
-        
-// </div>');
+$form   ->field("image")
+        ->text( $picture_box );
 
 // Dealer
 if( count($this->dealer['lists'])==1 ){
@@ -116,78 +128,10 @@ $form   ->field("emp_pos_id")
         ->label('Position')
         ->text( $position );
 
-$address = array( 0=> 
-
-    array( 0 => 
-        array(
-            'id' => 'address_number', 
-            'name' => 'address[number]', 
-            'label' => 'บ้านเลขที่*',
-            'value' => !empty($this->item['address']['number']) ? $this->item['address']['number']:'',
-        ),
-        array(
-            'id' => 'address_mu', 
-            'name' => 'address[mu]', 
-            'label' => 'หมู่ที่*',
-            'value' => !empty($this->item['address']['mu']) ? $this->item['address']['mu']:'',
-        ),
-        array(
-            'id' => 'address_village', 
-            'name' => 'address[village]', 
-            'label' => 'หมู่บ้าน',
-            'value' => !empty($this->item['address']['village']) ? $this->item['address']['village']:'',
-        ),
-        array(
-            'id' => 'address_alley', 
-            'name' => 'address[alley]', 
-            'label' => 'ซอย',
-            'value' => !empty($this->item['address']['alley']) ? $this->item['address']['alley']:'',
-        ),
-    ),
-
-    array( 0 => 
-        array(
-            'id' => 'address_street', 
-            'name' => 'address[street]', 
-            'label' => 'ถนน',
-            'value' => !empty($this->item['address']['street']) ? $this->item['address']['street']:'',
-        ),
-        array(
-            'id' => 'address_district', 
-            'name' => 'address[district]', 
-            'label' => 'แขวง/ตำบล*',
-            'value' => !empty($this->item['address']['district']) ? $this->item['address']['district']:'',
-        ),
-        array(
-            'id' => 'address_amphur', 
-            'name' => 'address[amphur]', 
-            'label' => 'เขต/อำเภอ*',
-            'value' => !empty($this->item['address']['amphur']) ? $this->item['address']['amphur']:'',
-        ),
-    ),
-
-    array( 0 => 
-        array(
-            'id' => 'address_city', 
-            'name' => 'address[city]', 
-            'label' => 'จังหวัด*',
-            'type' => 'select',
-            'options' => $this->city['lists'],
-            'value' => !empty($this->item['address']['city']) ? $this->item['address']['city']:''
-        ),
-        array(
-            'id' => 'address_zip', 
-            'name' => 'address[zip]', 
-            'label' => 'รหัสไปรษณีย์*',
-            'value' => !empty($this->item['address']['zip']) ? $this->item['address']['zip']:'',
-        ),
-    ),
-);
-
-$form   ->field("emp_address")
-        ->name('emp[address]')
-        ->label('ที่อยู่*')
-        ->text( '<div class="table-address-wrap">'. $this->fn->uTableAddress($address).'</div>' );
+$form   ->field("cus_address")
+        ->name('cus[address]')
+        ->label('ที่อยู่')
+        ->text( $this->fn->q('form')->address( !empty($this->item['address'])? $this->item['address']:array(), array('city'=>$this->city ) ) );
 
 $birthday = '';
 $day = '<option value="00">วัน</option>';

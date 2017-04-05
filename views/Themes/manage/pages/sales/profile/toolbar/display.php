@@ -1,15 +1,12 @@
-<?php
-
-?>
 <div class="profile-toolbar">
 	
 	<ul class="ProfileToolbar_status">
 		
-		<li class="item"><label class="label">ยอดจอง</label><div class="data">-</div></li>
+		<li class="item"><label class="label">ยอดจอง</label><div class="data"><?=(!empty($this->item['total_booking']) ? $this->item['total_booking'] : '-')?></div></li>
 
-		<li class="item"><label class="label">ถอนจอง</label><div class="data">-</div></li>
+		<li class="item"><label class="label">ยอดขาย</label><div class="data"><?=(!empty($this->item['total_finish']) ? $this->item['total_finish'] : '-')?></div></li>
 
-		<li class="item"><label class="label">ส่งหมอบ</label><div class="data">-</div></li>
+		<li class="item"><label class="label">ยกเลิก</label><div class="data"><?=(!empty($this->item['total_cancel']) ? $this->item['total_cancel'] : '-')?></div></li>
 
 
 	</ul>
@@ -24,5 +21,7 @@
 		}
 
 	?>
+           
 	</nav>
+     
 </div>

@@ -26,6 +26,7 @@ $url = URL .'booking/';
 	
 			<th class="name">เงื่อนไข</th>
 			<th class="status">Income</th>
+			<th class="status">Calculate</th>
 			<th class="status"><i class="icon-lock mrs"></i>Lock</th>
 			<th class="actions">จัดการ</th>
 
@@ -39,6 +40,7 @@ $url = URL .'booking/';
 			</td>
 
 			<td class="status"><label class="checkbox"><input disabled class="disabled" type="checkbox" name=""<?=!empty($item['income']) ?' checked="1"' :''?>></label></td>		
+			<td class="status"><label class="checkbox"><input disabled class="disabled" type="checkbox" name=""<?=!empty($item['is_cal']) ?' checked="1"' :''?>></label></td>		
 			<td class="status"><label class="checkbox"><input disabled class="disabled" type="checkbox" name=""<?=!empty($item['has_lock']) ?' checked="1"' :''?>></label></td>			
 			
 			<td class="actions whitespace">

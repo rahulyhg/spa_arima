@@ -15,31 +15,47 @@ foreach ($this->status as $key => $value) {
 
     if( $value['id']==$this->item['status']['id'] ) continue;
 
-    $url = URL.'booking/update/'.$this->item['id'].'/status/'.$value['id'];
+    if( !empty($this->permit['booking']['edit']) || $this->me['id'] == $this->item['sale']['id'] ) {
 
-    if( $value['id'] == 'finish' ){
-        $url .= '?next='.URL.'customers/'.$this->item['cus']['id'].'/cars';
+        $url = URL.'booking/update/'.$this->item['id'].'/status/'.$value['id'];
+
+        if( $value['id'] == 'finish' ){
+            $url .= '?next='.URL.'customers/'.$this->item['cus']['id'].'/cars';
+        }
+
+        $dropdown[] = array(
+            'text' => $value['name'],
+            'href' => $url,
+            'attr' => array('data-plugins'=>'dialog'),
+        );
+    }
+}
+
+if( !empty($this->permit['booking']['del']) || $this->me['id'] == $this->item['sale']['id'] ){
+    
+    if( !empty($dropdown) ){
+        $dropdown[] = array( 'type' => 'separator');
     }
 
     $dropdown[] = array(
-        'text' => $value['name'],
-        'href' => $url,
+        'text' => 'ลบ',
+        'href' => URL.'booking/del/'.$this->item['id'],
         'attr' => array('data-plugins'=>'dialog'),
     );
 }
 
-$dropdown[] = array( 'type' => 'separator');
-$dropdown[] = array(
-    'text' => 'ลบ',
-    'href' => URL.'booking/del/'.$this->item['id'],
-    'attr' => array('data-plugins'=>'dialog'),
-);
+if( !empty($dropdown) ){
 
+    $dropdown = $this->fn->stringify( array(
+        'select' => $dropdown,
+        'settings'=>array('axisX'=>'right')
+    ) );
 
-$dropdown = $this->fn->stringify( array(
-    'select' => $dropdown,
-    'settings'=>array('axisX'=>'right')
-) );
+    $dropdown = ' <a class="btn-icon" data-plugins="dropdown" data-options="'.$dropdown.'"><i class="icon-ellipsis-v"></i></a>';
+}
+else{
+    $dropdown = '';
+}
 
 
 $subtext = '';
@@ -54,8 +70,13 @@ $subtext .= ' เลขที่ ' .( !empty($this->item['number']) ? "{$this->i
 
             <div class="clearfix profile-left_actions">
                 <div class="rfloat">
+                <?php if( !empty($this->permit['booking']['edit']) || $this->me['id'] == $this->item['sale']['id'] ){ ?>
                    <a class="btn-icon" href="<?=URL?>booking/update/<?=$this->item['id']?>/basic" data-plugins="dialog"><i class="icon-pencil"></i></a>
-                   <a class="btn-icon" data-plugins="dropdown" data-options="<?=$dropdown?>"><i class="icon-ellipsis-v"></i></a>
+                <?php } 
+
+                echo $dropdown;
+                ?>
+                  
                 </div>
             </div>
 
