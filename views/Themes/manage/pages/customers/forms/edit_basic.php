@@ -23,6 +23,23 @@ $form   ->field("cus_card_id")
         ->placeholder('')
         ->value( !empty($this->item['card_id'])? $this->item['card_id']:'' );
 
+$level = '';
+foreach ($this->level as $key => $value) {
+
+    $sel = '';
+    if( !empty($this->item) ){
+        if( $value['id'] == $this->item['level_id'] ){
+            $sel = ' selected="1"';
+        }
+    }
+    $level .= '<option'.$sel.' value="'.$value['id'].'">'.$value['name'].'</option>';
+}
+$level = '<select class="inputtext" name="cus_level_id">'.$level.'</select>';
+
+$form   ->field("cus_level_id")
+        ->label('ระดับ')
+        ->text( $level );
+
 # set form
 $arr['form'] = '<form class="js-submit-form" method="post" action="'.URL. 'customers/update_basic"></form>';
 

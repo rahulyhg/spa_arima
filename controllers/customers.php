@@ -75,6 +75,7 @@ class Customers extends Controller {
         $this->view->setData('sex', $this->model->lists_sex());
         $this->view->setData('city', $this->model->query('system')->city() );
         $this->view->setData('country', $this->model->query('system')->country() );
+        $this->view->setData('level', $this->model->query('customers')->level_lists());
         $this->view->render("customers/forms/add_or_edit_dialog");
     }
 
@@ -90,7 +91,7 @@ class Customers extends Controller {
         $this->view->setData('prefixName', $this->model->query('system')->_prefixNameCustomer());
         $this->view->setData('sex', $this->model->lists_sex());
         $this->view->setData('city', $this->model->query('system')->city());
-
+        $this->view->setData('level', $this->model->query('customers')->level_lists());
         $this->view->render("customers/forms/add_or_edit_dialog");
     }
 
@@ -100,6 +101,7 @@ class Customers extends Controller {
         $item = $this->model->get($id);
         if( empty($item) ) $this->error();
 
+        $this->view->setData('level', $this->model->query('customers')->level_lists());
         $this->view->setData('prefixName', $this->model->query('system')->_prefixNameCustomer());
         $this->view->setData('sex', $this->model->lists_sex());
         $this->view->setData('item', $item);

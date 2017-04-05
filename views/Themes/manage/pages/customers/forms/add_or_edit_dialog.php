@@ -66,6 +66,23 @@ $form->hr( $this->fn->q('form')->contacts(
     array( 'field_first_name'=>'options[social]' )
 ) );
 
+$level = '';
+foreach ($this->level as $key => $value) {
+
+    $sel = '';
+    if( !empty($this->item) ){
+        if( $value['id'] == $this->item['level_id'] ){
+            $sel = ' selected="1"';
+        }
+    }
+    $level .= '<option'.$sel.' value="'.$value['id'].'">'.$value['name'].'</option>';
+}
+$level = '<select class="inputtext" name="cus_level_id">'.$level.'</select>';
+
+$form   ->field("cus_level_id")
+        ->label('ระดับ')
+        ->text( $level );
+
 # set form
 $arr['form'] = '<form class="js-submit-form" method="post" action="'.URL. 'customers/save"></form>';
 

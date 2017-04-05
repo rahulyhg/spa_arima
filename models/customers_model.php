@@ -29,6 +29,7 @@ class customers_model extends Model
                        , cus_city_id
                        , cus_country_id
                        , cus_emp_id
+                       , cus_level_id
 
                        , city_name
                        , country_name";
@@ -396,5 +397,17 @@ class customers_model extends Model
     /**/
     public function is_name( $first_name=null , $last_name=null ){
         return $this->db->count('customers', "cus_first_name=':first_name' AND cus_last_name=':last_name'", array(':first_name'=>$first_name , ':last_name'=>$last_name) );
+    }
+
+    /**/
+    /* */
+    /**/
+    public function level_lists()
+    {
+        $a = array();
+        $a[] = array('id'=>'general', 'name'=>'สมาชิกทั่วไป');
+        $a[] = array('id'=>'vip', 'name'=>'สมาชิกพิเศษ (VIP)');
+
+        return $a;
     }
 }
