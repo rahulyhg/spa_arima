@@ -116,19 +116,17 @@ class Model {
             'company' => $permit,
             'dealer' => $permit,
             'my' => $permit,
+            'paytype' => $permit,
+
+            'room' => $permit,
+            'bed' => $permit,
             
             'department' => $permit,
             'position' => $permit,
             'employees' => $permit,
-        
-            'brands' => $permit,
-            'models' => $permit,
-            'accessory' => $permit,
-            'stores' => $permit,
-       
-            /*'book_status' => $permit,
-            'conditions' => $permit,*/
-            'cus_refer' => $permit,
+            'skill' => $permit,
+
+            'level' => $permit,
 
             'customers' => $permit,
             'booking' => $permit,

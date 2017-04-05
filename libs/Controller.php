@@ -70,13 +70,13 @@ class Controller {
     }
     public function setPagePermit($value='') {
 
-        $permit_id = 0;
-        if( !empty($this->me['dep_is_admin'])  ){
-            $permit_id = 1;
-        }
-        elseif( !empty($this->me['dep_is_sale'])  ){
-            $permit_id = 2;
-        }
+        $permit_id = 1;
+        // if( !empty($this->me['dep_is_admin'])  ){
+        //     $permit_id = 1;
+        // }
+        // elseif( !empty($this->me['dep_is_sale'])  ){
+        //     $permit_id = 2;
+        // }
 
         $permit = $this->model->permit( $permit_id );
 

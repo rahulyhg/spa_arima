@@ -31,11 +31,12 @@ class Employees_Model extends Model{
                         , emp_birthday
                         , emp_lang
                         , emp_permission
+
                         , d.dep_id
                         , d.dep_name
-                        , d.dep_is_admin
-                        , d.dep_is_sale
+                        , d.dep_access
                         , d.dep_permission
+
                         , p.pos_id 
                         , p.pos_name
                         , p.pos_permission
@@ -189,43 +190,7 @@ class Employees_Model extends Model{
 
         $data['fullname'] = "{$data['prefix_name_th']}{$data['first_name']} {$data['last_name']}";
 
-        // $data['image_url'] = IMAGES.'avatar/error/user.png';
-        $data['permit_on_pages'] = $this->permitOnPages();
-
         $data['initials'] = $this->fn->q('text')->initials( $data['first_name'] );
-        
-        if( !empty($data['dep_is_sale']) ){
-
-            if( $data['dep_is_sale'] == 1 ){
-
-                $where_total = '`book_sale_id`=:emp_id AND `book_status`=:status';
-                $where_total_arr = array(
-                    ':emp_id'=>$data['id'],
-                );
-
-                if( (!empty($options['period_start']) && !empty($options['period_end'])) || (!empty($_REQUEST['period_start']) && !empty($_REQUEST['period_end'])) ){
-                    
-                    $period_start = !empty($options['period_start']) ? $options['period_start'] : $_REQUEST['period_start'];
-                    $period_end = !empty($options['period_end']) ? $options['period_end'] : $_REQUEST['period_end'];
-
-                    $where_total .= ' AND `book_date` BETWEEN :startDate AND :endDate';
-                    $where_total_arr[':startDate'] = $period_start;
-                    $where_total_arr[':endDate'] = $period_end;
-                }
-
-                /* TOTAL BOOKING */
-                $where_total_arr[':status'] = 'booking';
-                $data['total_booking'] = $this->db->count('booking', $where_total, $where_total_arr);
-
-                /* TOTAL CANCEL */
-                $where_total_arr[':status'] = 'cancel';
-                $data['total_cancel'] = $this->db->count('booking', $where_total, $where_total_arr);
-
-                /* TOTAL FINISH */
-                $where_total_arr[':status'] = 'finish';
-                $data['total_finish'] = $this->db->count('booking', $where_total, $where_total_arr);
-            }
-        }
 
         if( !empty($data['image_id']) ){
             $image = $this->query('media')->get($data['image_id']);
@@ -242,6 +207,11 @@ class Employees_Model extends Model{
 
         if( !empty($data['address']['city']) ){
             $data['address']['city_name'] = $this->query('system')->city_name($data['address']['city']);
+        }
+
+        // access
+        if( !empty($data['access']) ){
+            $data['access'] = json_decode($data['access'], true);
         }
 
         // permission
@@ -338,10 +308,7 @@ class Employees_Model extends Model{
         , dep_name as name
         , dep_notes as notes
         , dep_permission as permission
-        , dep_is_admin as is_admin
-        , dep_is_sale as is_sale
-        , dep_is_tec as is_tec
-        , dep_is_service as is_service
+        , dep_access as access
     ";
     public function department() {
 

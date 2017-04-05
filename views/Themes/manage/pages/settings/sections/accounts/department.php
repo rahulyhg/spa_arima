@@ -8,9 +8,9 @@ $url = URL .'employees/';
 <div class="setting-header cleafix">
 
 <div class="rfloat">
-	<?php if( $this->me['dep_is_admin'] == 1 ){ ?> 
+
 	<span class="gbtn"><a class="btn btn-blue" data-plugins="dialog" href="<?=$url?>add_department"><i class="icon-plus mrs"></i><span>เพิ่ม</span></a></span>
-	<?php } ?>
+
 </div>
 
 <div class="setting-title">แผนก</div>
