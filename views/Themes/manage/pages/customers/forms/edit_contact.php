@@ -7,10 +7,29 @@ $form = $form->create()
     ->addClass('form-insert');
 
 // address
-$form   ->field("cus_address")
-        ->name('cus[address]')
-        ->label('ที่อยู่*')
-        ->text( $this->fn->q('form')->address( !empty($this->item['address'])? $this->item['address']:array(), array('city' => $this->city ) ) );
+// $form   ->field("cus_address")
+//         ->name('cus[address]')
+//         ->label('ที่อยู่*')
+//         ->text( $this->fn->q('form')->address( !empty($this->item['address'])? $this->item['address']:array(), array('city' => $this->city ) ) );
+
+$country = '';
+foreach ($this->country as $key => $value) {
+
+    $sel = '';
+    if( !empty($this->item) ){
+        if( $value['id'] == $this->item['country_id'] ){
+            $sel = ' selected="1"';
+        }
+    }
+
+    $country .= '<option'.$sel.' value="'.$value['id'].'">'.$value['name'].'</option>';
+}
+
+$country = '<select class="inputtext" name="cus_country_id">'.$country.'</select>';
+
+$form   ->field("cus_country_id")
+        ->label("ประเทศ")
+        ->text( $country );
 
 // email
 $form->hr( $this->fn->q('form')->contacts( 

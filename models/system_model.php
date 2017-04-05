@@ -153,6 +153,22 @@ class System_Model extends Model{
         return $text;
     }
 
+    public function country(){
+        return $this->db->select("SELECT country_id AS id, country_name AS name FROM countries ORDER By country_name ASC");
+    }
+    public function country_name($id){
+        $sth = $this->db->prepare("SELECT country_name AS name FROM countries WHERE country_id=:id LIMIT 1");
+        $sth->execute( array( ':id' => $id ) );
+
+        $text = '';
+        if( $sth->rowCount()==1 ){
+            $fdata = $sth->fetch( PDO::FETCH_ASSOC );
+            $text = $fdata['name'];
+        }
+
+        return $text;
+    }
+
     /**/
     /* GET PAGE PERMISSION */
     /**/

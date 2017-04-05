@@ -74,6 +74,7 @@ class Customers extends Controller {
         $this->view->setData('prefixName', $this->model->query('system')->_prefixNameCustomer());
         $this->view->setData('sex', $this->model->lists_sex());
         $this->view->setData('city', $this->model->query('system')->city() );
+        $this->view->setData('country', $this->model->query('system')->country() );
         $this->view->render("customers/forms/add_or_edit_dialog");
     }
 
@@ -111,6 +112,7 @@ class Customers extends Controller {
         if( empty($item) ) $this->error();
 
         $this->view->setData('city', $this->model->query('system')->city());
+        $this->view->setData('country', $this->model->query('system')->country());
         $this->view->setData('item', $item);
         $this->view->render('customers/forms/edit_contact');
     }
@@ -124,32 +126,43 @@ class Customers extends Controller {
             if( empty($item) ) $this->error();
         }
 
-        $futureDate = date('Y-m-d',strtotime(date("Y-m-d", mktime()) . " -6 year")); // 2554 // 2011
-        $birthday = date("{$_POST['birthday']['year']}-{$_POST['birthday']['month']}-{$_POST['birthday']['date']}");
-        if( strtotime($birthday) > strtotime($futureDate) ){
-            $arr['error']['birthday'] = 'วันเกิดไม่ถูกต้อง';
-        }
+        // $futureDate = date('Y-m-d',strtotime(date("Y-m-d", mktime()) . " -6 year")); // 2554 // 2011
+        // $birthday = date("{$_POST['birthday']['year']}-{$_POST['birthday']['month']}-{$_POST['birthday']['date']}");
+        // if( strtotime($birthday) > strtotime($futureDate) ){
+        //     $arr['error']['birthday'] = 'วันเกิดไม่ถูกต้อง';
+        // }
 
-        foreach ($_POST['address'] as $key => $value) {
-            if( empty($value) && $key != 'village' && $key !='street' && $key != 'alley') {
-                $arr['error']['cus_address'] = 'กรุณากรอกข้อมูลในช่องที่มีเครื่องหมาย * ให้ครบถ้วน';
-            }
-        }
+        // foreach ($_POST['address'] as $key => $value) {
+        //     if( empty($value) && $key != 'village' && $key !='street' && $key != 'alley') {
+        //         $arr['error']['cus_address'] = 'กรุณากรอกข้อมูลในช่องที่มีเครื่องหมาย * ให้ครบถ้วน';
+        //     }
+        // }
 
         try {
             $form = new Form();
             $form   ->post('cus_prefix_name')
                     ->post('cus_first_name')->val('is_empty')
-                    ->post('cus_last_name')->val('is_empty')
-                    ->post('cus_nickname')
-                    ->post('cus_card_id');
+                    ->post('cus_last_name')
+                    ->post('cus_card_id')
+                    ->post('cus_country_id');
 
             $form->submit();
             $postData = $form->fetch();
 
-            $postData['cus_birthday'] = $birthday;
+            //$postData['cus_birthday'] = $birthday;
             $postData['cus_first_name'] = trim($postData['cus_first_name']);
             $postData['cus_last_name'] = trim($postData['cus_last_name']);
+
+            $has_name = true;
+            if( !empty($item) ){
+                if( $postData['cus_first_name'] == $item['first_name'] && $postData['cus_last_name'] == $item['last_name'] ){
+                    $has_name = false;
+                }
+            }
+
+            if( $this->model->is_name( $postData['cus_first_name'] , $postData['cus_last_name'] ) && $has_name == true ){
+                $arr['error']['name'] = 'มี ชื่อ-นามสกุล นี้อยู่ในระบบแล้ว';
+            }
 
             // set options
             $options = array();
@@ -180,15 +193,15 @@ class Customers extends Controller {
 
             if( empty($postData['cus_lineID']) ) $postData['cus_lineID'] = '';
 
-            if( strlen($_POST['address']['zip']) != 5 ){
-                $arr['error']['cus_address'] = 'กรุณากรอกรหัสไปรษณีย์ให้ครบ 5 หลัก';
-            }
+            // if( strlen($_POST['address']['zip']) != 5 ){
+            //     $arr['error']['cus_address'] = 'กรุณากรอกรหัสไปรษณีย์ให้ครบ 5 หลัก';
+            // }
 
             if( empty($arr['error']) ){
 
-                $postData['cus_city_id'] = $_POST['address']['city'];
-                $postData['cus_zip'] = $_POST['address']['zip'];
-                $postData['cus_address'] = json_encode($_POST['address']);
+                // $postData['cus_city_id'] = $_POST['address']['city'];
+                // $postData['cus_zip'] = $_POST['address']['zip'];
+                // $postData['cus_address'] = json_encode($_POST['address']);
 
                 if( !empty($item) ){
                     $this->model->update( $id, $postData );
@@ -272,25 +285,25 @@ class Customers extends Controller {
 
         if( empty($item) ) $this->error();
 
-        $futureDate = date('Y-m-d',strtotime(date("Y-m-d", mktime()) . " -6 year")); // 2554 // 2011
-        $birthday = date("{$_POST['birthday']['year']}-{$_POST['birthday']['month']}-{$_POST['birthday']['date']}");
-        if( strtotime($birthday) > strtotime($futureDate) ){
-            $arr['error']['birthday'] = 'วันเกิดไม่ถูกต้อง';
-        }
+        // $futureDate = date('Y-m-d',strtotime(date("Y-m-d", mktime()) . " -6 year")); // 2554 // 2011
+        // $birthday = date("{$_POST['birthday']['year']}-{$_POST['birthday']['month']}-{$_POST['birthday']['date']}");
+        // if( strtotime($birthday) > strtotime($futureDate) ){
+        //     $arr['error']['birthday'] = 'วันเกิดไม่ถูกต้อง';
+        // }
 
         try {
             $form = new Form();
             $form   ->post('cus_prefix_name')
-            ->post('cus_first_name')->val('is_empty')
-            ->post('cus_last_name')->val('is_empty')
-            ->post('cus_nickname')
-            ->post('cus_card_id');
+                    ->post('cus_first_name')->val('is_empty')
+                    ->post('cus_last_name')
+                    ->post('cus_nickname')
+                    ->post('cus_card_id');
 
 
             $form->submit();
             $postData = $form->fetch();
 
-            $postData['cus_birthday'] = $birthday;
+            //$postData['cus_birthday'] = $birthday;
             $postData['cus_first_name'] = trim($postData['cus_first_name']);
             $postData['cus_last_name'] = trim($postData['cus_last_name']);
 
@@ -330,12 +343,16 @@ class Customers extends Controller {
         if( empty($item) ) $this->error();
 
         try {
+            $form = new Form();
+            $form   ->post('cus_country_id');
+            $form->submit();
+            $postData = $form->fetch();
 
-            foreach ($_POST['address'] as $key => $value) {
-                if( empty($value) && $key != 'village' && $key !='street' && $key != 'alley') {
-                    $arr['error']['cus_address'] = 'กรุณากรอกข้อมูลในช่องที่มีเครื่องหมาย * ให้ครบถ้วน';
-                }
-            }
+            // foreach ($_POST['address'] as $key => $value) {
+            //     if( empty($value) && $key != 'village' && $key !='street' && $key != 'alley') {
+            //         $arr['error']['cus_address'] = 'กรุณากรอกข้อมูลในช่องที่มีเครื่องหมาย * ให้ครบถ้วน';
+            //     }
+            // }
             
             // set options
             $options = array();
@@ -366,17 +383,17 @@ class Customers extends Controller {
 
             if( empty($postData['cus_lineID']) ) $postData['cus_lineID'] = '';
 
-            if( strlen($_POST['address']['zip']) != 5 ){
-                $arr['error']['cus_address'] = 'กรุณากรอกรหัสไปรษณีย์ให้ครบ 5 หลัก';
-            }
+            // if( strlen($_POST['address']['zip']) != 5 ){
+            //     $arr['error']['cus_address'] = 'กรุณากรอกรหัสไปรษณีย์ให้ครบ 5 หลัก';
+            // }
 
             if( empty($arr['error']) ){
 
-                $postData['cus_city_id'] = $_POST['address']['city'];
+                // $postData['cus_city_id'] = $_POST['address']['city'];
 
-                $postData['cus_zip'] = $_POST['address']['zip'];
+                // $postData['cus_zip'] = $_POST['address']['zip'];
 
-                $postData['cus_address'] = json_encode($_POST['address']);
+                // $postData['cus_address'] = json_encode($_POST['address']);
 
                 $this->model->update( $id, $postData );
 

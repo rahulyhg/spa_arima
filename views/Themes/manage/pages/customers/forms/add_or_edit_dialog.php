@@ -10,21 +10,40 @@ $form   ->field("name")
         ->label('ชื่อ')
         ->text( $this->fn->q('form')->fullname( !empty($this->item)?$this->item:array(), array('field_first_name'=>'cus_', 'prefix_name'=>$this->prefixName) ) );
 
-$form   ->field("birthday")
-        ->label('วันเกิด')
-        ->text( $this->fn->q('form')->birthday( !empty($this->item)?$this->item:array(), array('field_first_name'=>'cus_') ) );
+// $form   ->field("birthday")
+//         ->label('วันเกิด')
+//         ->text( $this->fn->q('form')->birthday( !empty($this->item)?$this->item:array(), array('field_first_name'=>'cus_') ) );
 
 $form   ->field("cus_card_id")
-        ->label('หมายเลขบัตรประจำตัวประชาชน')
+        ->label('หมายเลขบัตรประจำตัวประชาชน / Passport')
         ->autocomplete('off')
         ->addClass('inputtext')
         ->placeholder('')
         ->value( !empty($this->item['card_id'])? $this->item['card_id']:'' );
 
-$form   ->field("cus_address")
-        ->name('cus[address]')
-        ->label('ที่อยู่')
-        ->text( $this->fn->q('form')->address( !empty($this->item['address'])? $this->item['address']:array(), array('city'=>$this->city ) ) );
+$country = '';
+foreach ($this->country as $key => $value) {
+
+    $sel = '';
+    if( !empty($this->item) ){
+        if( $value['id'] == $this->item['country_id'] ){
+            $sel = ' selected="1"';
+        }
+    }
+
+    $country .= '<option'.$sel.' value="'.$value['id'].'">'.$value['name'].'</option>';
+}
+
+$country = '<select class="inputtext" name="cus_country_id">'.$country.'</select>';
+
+$form   ->field("cus_country_id")
+        ->label("ประเทศ")
+        ->text( $country );
+
+// $form   ->field("cus_address")
+//         ->name('cus[address]')
+//         ->label('ที่อยู่')
+//         ->text( $this->fn->q('form')->address( !empty($this->item['address'])? $this->item['address']:array(), array('city'=>$this->city ) ) );
 
 // email
 $form->hr( $this->fn->q('form')->contacts( 

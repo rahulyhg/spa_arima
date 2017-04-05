@@ -79,6 +79,10 @@ class Employees extends Controller {
             $form->submit();
             $postData = $form->fetch();
 
+            $postData['emp_username'] = trim($postData['emp_username']);
+            $postData['emp_first_name'] = trim($postData['emp_first_name']);
+            $postData['emp_last_name'] = trim($postData['emp_last_name']);
+
             if( empty($item) ){
                 $postData['emp_password'] = $_POST['emp_password'];
                 if( empty($postData['emp_password']) ){
@@ -89,14 +93,23 @@ class Employees extends Controller {
             }
 
             $has_user = true;
+            $has_name = true;
             if( !empty($id) ){
                 if( $postData['emp_username'] == $item['username'] ){
                     $has_user = false;
+                }
+
+                if( $postData['emp_first_name'] == $item['first_name'] && $postData['emp_last_name'] == $item['last_name'] ){
+                    $has_name = false;
                 }
             }
 
             if( $this->model->is_user($postData['emp_username']) && $has_user == true ){
                 $arr['error']['emp_username'] = "มี Username นี้อยู่ในระบบแล้ว";
+            }
+
+            if( $this->model->is_name( $postData['emp_first_name'] , $postData['emp_last_name'] ) && $has_name == true ){
+                $arr['error']['name'] = 'มี ชื่อ-นามสกุล นี้อยู่ในระบบแล้ว';
             }
 
             /**/
@@ -121,9 +134,6 @@ class Employees extends Controller {
                 $arr['error']['birthday'] = 'วันเกิดไม่ถูกต้อง';
             }
 
-            $postData['emp_username'] = trim($postData['emp_username']);
-            $postData['emp_first_name'] = trim($postData['emp_first_name']);
-            $postData['emp_last_name'] = trim($postData['emp_last_name']);
             $postData['emp_address'] = json_encode($_POST['address']);
             $postData['emp_city_id'] = $_POST['address']['city'];
             $postData['emp_zip'] = $_POST['address']['zip'];
