@@ -152,8 +152,7 @@ class Settings extends Controller {
     public function dealer() {
 
         $this->view->setPage('on', 'settings');
-        $this->view->setData('section', 'products');
-        $this->view->setData('tap', 'dealer');
+        $this->view->setData('section', 'dealer');
 
         $this->view->setData('data', $this->model->query('dealer')->lists());
         $this->view->render('settings/display');

@@ -117,7 +117,8 @@ class Dashboard extends Controller {
 			'period_start'=>$start,
 			'period_end'=>$end
 		);
-		$total_services = $this->model->query('services')->lists( $services_options );
+		//$total_services = $this->model->query('services')->lists( $services_options );
+		$total_services = array();
 		$this->view->setData('total_services', $total_services);
 
 		/* ยอดสินค้า */

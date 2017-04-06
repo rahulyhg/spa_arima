@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 05, 2017 at 12:34 PM
+-- Generation Time: Apr 06, 2017 at 04:55 AM
 -- Server version: 5.6.24
 -- PHP Version: 5.6.8
 
@@ -603,7 +603,7 @@ CREATE TABLE `dealer` (
 --
 
 INSERT INTO `dealer` (`dealer_id`, `dealer_name`, `dealer_created`, `dealer_address`, `dealer_license`, `dealer_tel`, `dealer_mobile_phone`, `dealer_fax`, `dealer_email`, `dealer_emp_id`, `dealer_updated`) VALUES
-(1, 'บริษัท จีเอ็มจี โปรเกรส (2016) จำกัด', '2017-02-14 23:18:05', '81 หมู่ที่ 1 ถนน รังสิต-ปทุมธานี ต.บ้านกลาง อ.เมื่องปทุมธานี จ.ปทุมธานี 12000', '0135559009031', '02-5673-555, 025671-255', '095-814-6065', '02-567-1256', 'mgprogress2016@gmail.com', 6, '2017-02-15 00:09:38');
+(1, 'Arima Onsen Thailand', '2017-02-14 23:18:05', '37/10-14 Soi Suriwongse Plaza, Suriwongse Road, Bangrak, Bangkok 10500', '', '', '', '', '', 6, '2017-04-05 17:53:11');
 
 -- --------------------------------------------------------
 
@@ -699,23 +699,20 @@ CREATE TABLE `emp_department` (
   `dep_id` int(11) NOT NULL,
   `dep_name` varchar(40) NOT NULL,
   `dep_notes` text NOT NULL,
-  `dep_is_admin` tinyint(1) NOT NULL COMMENT '1 = admin',
-  `dep_permission` text NOT NULL,
-  `dep_is_sale` tinyint(1) NOT NULL,
-  `dep_is_tec` tinyint(1) NOT NULL,
-  `dep_is_service` tinyint(1) NOT NULL
+  `dep_access` text NOT NULL,
+  `dep_permission` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `emp_department`
 --
 
-INSERT INTO `emp_department` (`dep_id`, `dep_name`, `dep_notes`, `dep_is_admin`, `dep_permission`, `dep_is_sale`, `dep_is_tec`, `dep_is_service`) VALUES
-(1, 'Manager', '', 1, '{\"dashboard\":{\"view\":\"1\"},\"calendar\":{\"view\":\"1\"},\"customers\":{\"view\":\"1\",\"add\":\"1\",\"edit\":\"1\",\"del\":\"1\"},\"booking\":{\"view\":\"1\",\"add\":\"1\",\"edit\":\"1\",\"del\":\"1\"},\"stock\":{\"view\":\"1\",\"add\":\"1\",\"edit\":\"1\",\"del\":\"1\"},\"sales\":{\"view\":\"1\",\"add\":\"1\",\"edit\":\"1\",\"del\":\"1\"},\"services\":{\"view\":\"1\",\"add\":\"1\",\"edit\":\"1\",\"del\":\"1\"},\"reports\":{\"view\":\"1\"},\"company\":{\"view\":\"1\",\"add\":\"1\",\"edit\":\"1\",\"del\":\"1\"},\"dealer\":{\"view\":\"0\",\"add\":\"0\",\"edit\":\"0\",\"del\":\"0\"},\"department\":{\"view\":\"0\",\"add\":\"0\",\"edit\":\"0\",\"del\":\"0\"},\"position\":{\"view\":\"1\",\"add\":\"1\",\"edit\":\"1\",\"del\":\"1\"},\"employees\":{\"view\":\"1\",\"add\":\"1\",\"edit\":\"1\",\"del\":\"1\"},\"brands\":{\"view\":\"0\",\"add\":\"0\",\"edit\":\"0\",\"del\":\"0\"},\"models\":{\"view\":\"1\",\"add\":\"1\",\"edit\":\"1\",\"del\":\"1\"},\"accessory\":{\"view\":\"1\",\"add\":\"1\",\"edit\":\"1\",\"del\":\"1\"},\"store\":{\"view\":\"0\",\"add\":\"0\",\"edit\":\"0\",\"del\":\"0\"},\"cus_refer\":{\"view\":\"1\",\"add\":\"1\",\"edit\":\"1\",\"del\":\"0\"}}', 0, 0, 0),
-(2, 'Sales', 'จัดการ บริการส่วนของการจอง', 0, '{\"dashboard\":{\"view\":\"0\"},\"customers\":{\"view\":\"1\",\"add\":\"1\",\"edit\":\"0\",\"del\":\"0\"},\"booking\":{\"view\":\"1\",\"add\":\"1\",\"edit\":\"0\",\"del\":\"0\"},\"stock\":{\"view\":\"1\",\"add\":\"0\",\"edit\":\"0\",\"del\":\"0\"},\"sales\":{\"view\":\"1\",\"add\":\"0\",\"edit\":\"0\",\"del\":\"0\"},\"services\":{\"view\":\"0\",\"add\":\"0\",\"edit\":\"0\",\"del\":\"0\"},\"reports\":{\"view\":\"0\"}}', 1, 0, 0),
-(3, 'Service', 'จัดการ บริการส่วนบริการลูกค้า', 0, '{\"dashboard\":{\"view\":\"0\"},\"customers\":{\"view\":\"0\",\"add\":\"0\",\"edit\":\"0\",\"del\":\"0\"},\"booking\":{\"view\":\"0\",\"add\":\"0\",\"edit\":\"0\",\"del\":\"0\"},\"stocks\":{\"view\":\"0\",\"add\":\"0\",\"edit\":\"0\",\"del\":\"0\"},\"sales\":{\"view\":\"0\",\"add\":\"0\",\"edit\":\"0\",\"del\":\"0\"},\"services\":{\"view\":\"1\",\"add\":\"1\",\"edit\":\"0\",\"del\":\"0\"},\"reports\":{\"view\":\"0\"}}', 0, 0, 1),
-(4, 'Admin', 'สามารถทำได้ทุกอย่าง', 1, '{\"dashboard\":{\"view\":\"1\"},\"customers\":{\"view\":\"1\",\"add\":\"1\",\"edit\":\"1\",\"del\":\"1\"},\"booking\":{\"view\":\"1\",\"add\":\"1\",\"edit\":\"1\",\"del\":\"1\"},\"stock\":{\"view\":\"1\",\"add\":\"1\",\"edit\":\"1\",\"del\":\"1\"},\"sales\":{\"view\":\"1\",\"add\":\"1\",\"edit\":\"1\",\"del\":\"1\"},\"services\":{\"view\":\"1\",\"add\":\"1\",\"edit\":\"1\",\"del\":\"1\"},\"reports\":{\"view\":\"1\"}}', 0, 0, 0),
-(5, 'Technician', '', 0, '', 0, 1, 0);
+INSERT INTO `emp_department` (`dep_id`, `dep_name`, `dep_notes`, `dep_access`, `dep_permission`) VALUES
+(1, 'Manager', '', '', '{\"dashboard\":{\"view\":\"1\"},\"calendar\":{\"view\":\"1\"},\"customers\":{\"view\":\"1\",\"add\":\"1\",\"edit\":\"1\",\"del\":\"1\"},\"booking\":{\"view\":\"1\",\"add\":\"1\",\"edit\":\"1\",\"del\":\"1\"},\"stock\":{\"view\":\"1\",\"add\":\"1\",\"edit\":\"1\",\"del\":\"1\"},\"sales\":{\"view\":\"1\",\"add\":\"1\",\"edit\":\"1\",\"del\":\"1\"},\"services\":{\"view\":\"1\",\"add\":\"1\",\"edit\":\"1\",\"del\":\"1\"},\"reports\":{\"view\":\"1\"},\"company\":{\"view\":\"1\",\"add\":\"1\",\"edit\":\"1\",\"del\":\"1\"},\"dealer\":{\"view\":\"0\",\"add\":\"0\",\"edit\":\"0\",\"del\":\"0\"},\"department\":{\"view\":\"0\",\"add\":\"0\",\"edit\":\"0\",\"del\":\"0\"},\"position\":{\"view\":\"1\",\"add\":\"1\",\"edit\":\"1\",\"del\":\"1\"},\"employees\":{\"view\":\"1\",\"add\":\"1\",\"edit\":\"1\",\"del\":\"1\"},\"brands\":{\"view\":\"0\",\"add\":\"0\",\"edit\":\"0\",\"del\":\"0\"},\"models\":{\"view\":\"1\",\"add\":\"1\",\"edit\":\"1\",\"del\":\"1\"},\"accessory\":{\"view\":\"1\",\"add\":\"1\",\"edit\":\"1\",\"del\":\"1\"},\"store\":{\"view\":\"0\",\"add\":\"0\",\"edit\":\"0\",\"del\":\"0\"},\"cus_refer\":{\"view\":\"1\",\"add\":\"1\",\"edit\":\"1\",\"del\":\"0\"}}'),
+(2, 'Sales', 'จัดการ บริการส่วนของการจอง', '', '{\"dashboard\":{\"view\":\"0\"},\"customers\":{\"view\":\"1\",\"add\":\"1\",\"edit\":\"0\",\"del\":\"0\"},\"booking\":{\"view\":\"1\",\"add\":\"1\",\"edit\":\"0\",\"del\":\"0\"},\"stock\":{\"view\":\"1\",\"add\":\"0\",\"edit\":\"0\",\"del\":\"0\"},\"sales\":{\"view\":\"1\",\"add\":\"0\",\"edit\":\"0\",\"del\":\"0\"},\"services\":{\"view\":\"0\",\"add\":\"0\",\"edit\":\"0\",\"del\":\"0\"},\"reports\":{\"view\":\"0\"}}'),
+(3, 'Service', 'จัดการ บริการส่วนบริการลูกค้า', '', '{\"dashboard\":{\"view\":\"0\"},\"customers\":{\"view\":\"0\",\"add\":\"0\",\"edit\":\"0\",\"del\":\"0\"},\"booking\":{\"view\":\"0\",\"add\":\"0\",\"edit\":\"0\",\"del\":\"0\"},\"stocks\":{\"view\":\"0\",\"add\":\"0\",\"edit\":\"0\",\"del\":\"0\"},\"sales\":{\"view\":\"0\",\"add\":\"0\",\"edit\":\"0\",\"del\":\"0\"},\"services\":{\"view\":\"1\",\"add\":\"1\",\"edit\":\"0\",\"del\":\"0\"},\"reports\":{\"view\":\"0\"}}'),
+(4, 'Admin', 'สามารถทำได้ทุกอย่าง', '', '{\"dashboard\":{\"view\":\"1\"},\"customers\":{\"view\":\"1\",\"add\":\"1\",\"edit\":\"1\",\"del\":\"1\"},\"booking\":{\"view\":\"1\",\"add\":\"1\",\"edit\":\"1\",\"del\":\"1\"},\"stock\":{\"view\":\"1\",\"add\":\"1\",\"edit\":\"1\",\"del\":\"1\"},\"sales\":{\"view\":\"1\",\"add\":\"1\",\"edit\":\"1\",\"del\":\"1\"},\"services\":{\"view\":\"1\",\"add\":\"1\",\"edit\":\"1\",\"del\":\"1\"},\"reports\":{\"view\":\"1\"}}'),
+(5, 'หมอนวด', '', '', '');
 
 -- --------------------------------------------------------
 
@@ -1267,14 +1264,10 @@ CREATE TABLE `system_info` (
 
 INSERT INTO `system_info` (`option_name`, `option_value`) VALUES
 ('type', 'article'),
-('name', 'บริษัท จีเอ็มจี โปรเกรส (2016) จำกัด'),
-('address', '81 หมู่ที่ 1 ถนน รังสิต-ปทุมธานี ต.บ้านกลาง อ.เมื่องปทุมธานี จ.ปทุมธานี 12000'),
-('phone', '02-5673-555, 025671-255'),
-('mobile_phone', '095-814-6065'),
-('fax', '02-567-1256'),
-('license', '0135559009031'),
-('email', 'mgprogress2016@gmail.com'),
-('title', 'MG Progress');
+('name', 'Progress'),
+('address', '37/10-14 Soi Suriwongse Plaza, Suriwongse Road, Bangrak, Bangkok 10500'),
+('phone', '(66)0-2235-2142-3,(66)0-2632-7041-2'),
+('title', 'Progress');
 
 -- --------------------------------------------------------
 
