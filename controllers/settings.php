@@ -116,6 +116,9 @@ class Settings extends Controller {
             $this->view->setData('display', $this->model->query('employees')->display() );
             $data = array();
         }
+        elseif($tap=='skill'){
+            $data = $this->model->query('employees')->skill();
+        }
         else{
             $this->error();
         }
@@ -184,14 +187,31 @@ class Settings extends Controller {
         $this->view->render( $render );
     }
 
+    public function paytype(){
 
-    public function test($tap='index')
-    {
+        $this->view->setPage('on', 'settings');
+        $this->view->setData('section', 'paytype');
 
-        $this->view->setData('section', 'test');
-        $this->view->setData('tap', $tap);
-
+        $this->view->setData('data', $this->model->query('paytype')->lists());
         $this->view->render('settings/display');
+    }
+
+    public function customers( $tap='level' ){
+
+        $this->view->setPage('on', 'settings');
+        $this->view->setData('section', 'customers');
+        $this->view->setData('tap', $tap);
+        $render = 'settings/display';
+
+        if( $tap == 'level' ){
+            $data = $this->model->query('customers')->level();
+        }
+        else{
+            $this->error();
+        }
+
+        $this->view->setData('data', $data);
+        $this->view->render( $render );
     }
 
 }
