@@ -42,8 +42,32 @@
 			<div class="ui-list-roomsbox-wrap" data-floor="<?=$j?>">
 			<ul class="ui-list ui-list-roomsbox">
 				
+				<?php foreach ($this->data['lists'] as $key => $value) { 
+					if( $value['floor'] != $j ) continue;
+					?>
+				<li class="booking"><div class="inner">
+					<span class="number"><?=$value['number']?></span>
 
-				<?php for ($i=0; $i < 6; $i++) { ?>
+					<div class="control fsm cleafix">
+						<a class=""><i class="icon-pencil"></i></a><a class=""><i class="icon-plus"></i></a>
+					</div>
+
+					<div class="bedroom">
+						<ul class="ui-list ui-list-bedroomsbox cleafix">
+						<?php foreach ($value['bed'] as $val) { ?>
+							<li></li>
+						<?php } ?>
+						</ul>
+					</div>
+
+					<div class="status">
+						<div class="ui-timer"><?=$value['timer']?></div>
+						<div class="ui-status" style="background-color: <?=$value['status']['color']?>"><?=$value['status']['name']?></div>
+					</div>
+				</div></li>
+				<?php } ?>
+
+				<!-- <?php for ($i=0; $i < 6; $i++) { ?>
 					<li class="booking"><div class="inner">
 						<span class="number"><?=$j?>0<?=$i?></span>
 
@@ -66,7 +90,7 @@
 							<div class="ui-status">Booking</div>
 						</div>
 					</div></li>
-				<?php }?>
+				<?php }?> -->
 
 				<li class="plus"><a class="inner" href="<?=URL?>rooms/add?floor=<?=$j?>" data-plugins="dialog">+</a></li>
 			</ul>

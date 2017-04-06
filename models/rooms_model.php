@@ -26,7 +26,7 @@ class Rooms_Model extends Model{
     public function insert(&$data) {
         
         //$data["created"] = date('c'); // new create time
-        $this->db->insert($this->_objType, $this->_modifyData( $data ) );
+        $this->db->insert($this->_objType, $data);
         $data[$this->_cutNamefield.'id'] = $this->db->lastInsertId();
         $data = $this->convert($data);
     }
@@ -43,7 +43,7 @@ class Rooms_Model extends Model{
             'limit' => isset($_REQUEST['limit'])? $_REQUEST['limit']:50,
             'more' => true,
 
-            'sort' => isset($_REQUEST['sort'])? $_REQUEST['sort']: 'created',
+            'sort' => isset($_REQUEST['sort'])? $_REQUEST['sort']: 'id',
             'dir' => isset($_REQUEST['dir'])? $_REQUEST['dir']: 'DESC',
             
             'time'=> isset($_REQUEST['time'])? $_REQUEST['time']:time(),
@@ -92,6 +92,7 @@ class Rooms_Model extends Model{
 
         }
 
+        $arr['floor'] = $this->db->select("SELECT room_floor AS floor FROM {$this->_table} GROUP BY room_floor ASC");
         $arr['total'] = $this->db->count($this->_table, $where_str, $where_arr);
 
         $where_str = !empty($where_str) ? "WHERE {$where_str}":'';
@@ -128,6 +129,11 @@ class Rooms_Model extends Model{
 
         $data = $this->cut($this->_cutNamefield, $data);
 
+        $data = $this->_convert( $data );
+
+        $data['status'] = $this->getStatus( $data['status'] );
+        $data['bed'] = $this->listBed( $data['id'] );
+
         return $data;
     }
 
@@ -143,6 +149,18 @@ class Rooms_Model extends Model{
     	return $a;
     }
 
+    public function getStatus( $id=null ){
+
+        $data = array();
+        foreach ($this->status() as $key => $value) {
+            if( $value['id'] == $id ){
+                $data = $value; break;
+            }
+        }
+
+        return $data;
+    }
+
     public function level(){
 
     	$a = array();
@@ -151,6 +169,45 @@ class Rooms_Model extends Model{
     	$a[] = array('id'=>'vip','name'=>'ห้องวีไอพี');
 
     	return $a;
+    }
+
+    /**/
+    /* Check */
+    /**/
+    function is_room( $floor , $number ){
+        return $this->db->count('rooms', "room_floor={$floor} AND room_number={$number}");
+    }
+
+    /**/
+    /* Auto Code */
+    /**/
+    function AutoBedCode( $id=null ){
+
+        $room = $this->get( $id );
+        $bed_number = $this->db->count( 'room_bed', "bed_room_id={$id}" );
+        if( empty($bed_number) ){
+            $bed_number = 1;
+        }
+        else{
+            $bed_number = $bed_number + 1;
+        }
+
+        $number = sprintf("%0d", $room['number']);
+        return "{$room['floor']}{$room['number']}{$bed_number}";
+    }
+
+    /**/
+    /* Bed */
+    /**/
+    function setBed( $data ){
+        $this->db->insert('room_bed' ,$data);
+    }
+
+    function listBed( $id=null ){
+
+        $data = $this->db->select("SELECT bed_id AS id , bed_code AS code , bed_status AS status , bed_room_id AS room_id FROM room_bed WHERE bed_room_id={$id}");
+
+        return $data;
     }
 
 }
