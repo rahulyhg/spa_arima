@@ -61,7 +61,7 @@
 					</div>
 
 					<div class="status">
-						<div class="ui-timer"><?=$value['timer']?></div>
+						<div class="ui-timer"><?=$value['timer']==0 ? '' : $value['timer']?></div>
 						<div class="ui-status" style="background-color: <?=$value['status']['color']?>"><?=$value['status']['name']?></div>
 					</div>
 				</div></li>
