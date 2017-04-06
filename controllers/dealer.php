@@ -13,6 +13,7 @@ class Dealer extends Controller {
 	public function add() {
 		if( empty($this->me) || $this->format!='json' ) $this->error();
 
+        $this->view->setData('paytype', $this->model->query('paytype')->lists());
         $this->view->setPage('path','Themes/manage/forms/dealer');
         $this->view->render("add");
 	}
@@ -25,7 +26,7 @@ class Dealer extends Controller {
 		if( empty($item) ) $this->error();
 
 		$this->view->setData('item', $item);
-		
+		$this->view->setData('paytype', $this->model->query('paytype')->lists());
         $this->view->setPage('path','Themes/manage/forms/dealer');
         $this->view->render("add");
 	}
@@ -52,6 +53,10 @@ class Dealer extends Controller {
             $form->submit();
             $postData = $form->fetch();
 
+            if( empty($_POST['paytype']) ){
+                $arr['error']['paytype'] = 'กรุณาเลือกประเภทการจ่ายเงิน';
+            }
+
             if( empty($arr['error']) ){
 
             	if( !empty($item) ){
@@ -62,6 +67,20 @@ class Dealer extends Controller {
                 	$this->model->insert( $postData );
                     $id = $postData['id'];
             	}
+
+                if( !empty($_POST['paytype']) ){
+
+                    $this->model->unsetPaytype( $id );
+
+                    foreach ($_POST['paytype'] as $value) {
+
+                        $paytype = array(
+                            'pay_id'=>$value,
+                            'dealer_id'=>$id
+                        );
+                        $this->model->setPaytype( $paytype );
+                    }
+                }
 
                 $arr['message'] = 'บันทึกเรียบร้อย';
                 $arr['url'] = 'refresh';

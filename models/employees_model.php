@@ -225,6 +225,9 @@ class Employees_Model extends Model{
             $data['permission'] = json_decode($data['dep_permission'], true);
         }
 
+        //Skill
+        $data['skill'] = $this->listSkill( $data['id'] );
+
         $data['permit']['del'] = true;
 
         $view_stype = !empty($options['view_stype']) ? $options['view_stype']:'convert';
@@ -472,6 +475,25 @@ class Employees_Model extends Model{
     }
     public function is_skill( $text='' ){
         return $this->db->count('emp_skill', "`skill_name`=:name", array(':name'=>$text));
+    }
+
+    public function setSkill( $data ){
+        $this->db->insert('emp_skill_permit', $data);
+    }
+
+    public function unsetSkill( $id ){
+        $this->db->delete('emp_skill_permit', "{$this->_cutNamefield}id={$id}", $this->db->count('emp_skill_permit', "{$this->_cutNamefield}id={$id}") );
+    }
+
+    public function listSkill( $id ){
+
+        $data = $this->db->select("SELECT s.skill_id AS id , s.skill_name AS name 
+            FROM emp_skill s
+                LEFT JOIN emp_skill_permit p ON s.skill_id = p.skill_id
+            WHERE p.emp_id = :id
+        ORDER By p.skill_id ASC", array(':id'=>$id));
+
+        return $data;
     }
     /* End skill */
 }

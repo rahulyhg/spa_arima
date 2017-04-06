@@ -93,7 +93,29 @@ class Dealer_Model extends Model{
 
         $data = $this->cut($this->_cutNamefield, $data);
 
+        $data['paytype'] = $this->listPaytype( $data['id'] );
+
         return $data;
     }
 
+    /**/
+    /* Pay Type */
+    /**/
+    public function listPaytype( $id=null ){
+        $data = $this->db->select("SELECT p.pay_id AS id , p.pay_name AS name 
+            FROM system_paytype p 
+                LEFT JOIN dealer_paytype_permit d ON p.pay_id=d.pay_id
+            WHERE d.dealer_id=:id
+        ORDER BY d.pay_id ASC" , array(':id'=>$id));
+
+        return $data;
+    }
+
+    public function setPaytype( $data ){
+        $this->db->insert('dealer_paytype_permit', $data);
+    }
+
+    public function unsetPaytype( $id=null ){
+        $this->db->delete('dealer_paytype_permit', "{$this->_cutNamefield}id={$id}", $this->db->count('dealer_paytype_permit', "{$this->_cutNamefield}id={$id}") );
+    }
 }

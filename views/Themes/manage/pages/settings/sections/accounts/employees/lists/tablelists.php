@@ -139,7 +139,8 @@ if( !empty($this->results['lists']) ){
 
                 '<div class="group-btn whitespace mts">';
                 if( !empty($this->permit['employees']['edit']) ){
-                    $tr .='<a data-plugins="dialog" href="'.$url.'edit/'.$item['id'].'" class="btn"><i class="icon-pencil"></i></a>'.
+                    $tr .='<a data-plugins="dialog" href="'.$url.'set_skill/'.$item['id'].'" class="btn"><i class="icon-check-square-o"></i></a>'.
+                    '<a data-plugins="dialog" href="'.$url.'edit/'.$item['id'].'" class="btn"><i class="icon-pencil"></i></a>'.
                     '<a data-plugins="dropdown" class="btn" data-options="'.$this->fn->stringify( array(
                         'select' => $dropdown,
                         'settings' =>array(

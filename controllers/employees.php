@@ -952,5 +952,46 @@ class Employees extends Controller {
             $this->view->render("del");
         }   
     }
+
+    public function set_skill($id=null){
+        $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : $id;
+        if( empty($this->me )|| empty($id) || $this->format!='json' ) $this->error();
+
+        $item = $this->model->get($id);
+        if( empty($item) ) $this->error();
+
+        if( !empty($_POST) ){
+
+            try {
+                $this->model->unsetSkill( $id );
+
+                if( !empty($_POST['skill']) ){
+
+                    foreach ($_POST['skill'] as $key => $value) {
+
+                        $skill = array(
+                            'skill_id'=>$value,
+                            'emp_id'=>$id,
+                        );
+
+                        $this->model->setSkill( $skill );
+                    }
+                }
+
+                $arr['message'] = 'บันทึกเรียบร้อย';
+
+            } catch (Exception $e) {
+                $arr['error'] = $this->_getError($e->getMessage());
+            }
+
+            echo json_encode($arr);
+        }
+        else{
+            $this->view->setData('item', $item);
+            $this->view->setData('skill', $this->model->skill());
+            $this->view->setPage('path', 'Themes/manage/forms/skill');
+            $this->view->render("set");
+        }
+    }
     // end: skill
 }

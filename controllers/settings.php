@@ -157,6 +157,7 @@ class Settings extends Controller {
         $this->view->setPage('on', 'settings');
         $this->view->setData('section', 'dealer');
 
+        $this->view->setData('paytype', $this->model->query('paytype')->lists());
         $this->view->setData('data', $this->model->query('dealer')->lists());
         $this->view->render('settings/display');
     }

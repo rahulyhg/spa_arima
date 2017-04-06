@@ -53,6 +53,29 @@ $form   ->field("email")
         ->addClass('inputtext')
         ->autocomplete("off")
         ->value( !empty($this->item['email']) ? $this->item['email']:'');
+
+$paytype = '';
+
+foreach ($this->paytype['lists'] as $key => $value) {
+
+    $sel = '';
+
+    if( !empty($this->item) ){
+        foreach ($this->item['paytype'] as $val) {
+            if( $val['id'] == $value['id'] ){
+                $sel = ' checked="1"';
+                
+                break;
+            }
+        }
+    }
+
+    $paytype .= '<label class="checkbox mrl"><input'.$sel.' type="checkbox" name="paytype[]" value="'.$value['id'].'"><span class="fwb">'.$value['name'].'</span></label>';
+}
+
+$form   ->field("paytype")
+        ->label('ประเภทการจ่ายเงิน')
+        ->text( $paytype );
         
 # set form
 $arr['form'] = '<form class="js-submit-form" method="post" action="'.URL. 'dealer/save"></form>';
