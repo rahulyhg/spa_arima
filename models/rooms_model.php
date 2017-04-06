@@ -1,6 +1,6 @@
 <?php
 
-class Dealer_Model extends Model{
+class Rooms_Model extends Model{
 
     public function __construct() {
         parent::__construct();
@@ -135,10 +135,10 @@ class Dealer_Model extends Model{
     public function status(){
 
     	$a = array();
-    	$a[] = array('id'=>'on', 'name'=>'ว่าง', 'color'=>'#FF9801');
-    	$a[] = array('id'=>'off', 'name'=>'ไม่ว่าง', 'color'=>'#F44336');
-    	$a[] = array('id'=>'cleaning', 'name'=>'ทำความสะอาด', 'color'=>'#CC0099');
-    	$a[] = array('id'=>'booking', 'name'=>'จอง', 'color'=>'#990099');
+    	$a[] = array('id'=>'on', 'name'=>'ว่าง', 'color'=>'#42c947');
+    	$a[] = array('id'=>'off', 'name'=>'ไม่ว่าง', 'color'=>'#f44336');
+    	$a[] = array('id'=>'cleaning', 'name'=>'ทำความสะอาด', 'color'=>'#cc0099');
+    	$a[] = array('id'=>'booking', 'name'=>'จอง', 'color'=>'#ff9801');
     	$a[] = array('id'=>'renovate', 'name'=>'ปิดปรับปรุง', 'color'=>'#333333');
     	return $a;
     }

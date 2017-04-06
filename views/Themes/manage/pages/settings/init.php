@@ -4,6 +4,7 @@
 $sub = array();
 $sub[] = array('text' => 'รายละเอียดของบริษัท','key' => 'company','url' => URL.'settings/company');
 $sub[] = array('text'=>'Dealer','key'=>'dealer','url'=>URL.'settings/dealer');
+$sub[] = array('text'=>'จัดการห้อง','key'=>'rooms','url'=>URL.'settings/rooms/');
 $sub[] = array('text' => 'โปรไฟล์','key' => 'my','url' => URL.'settings/my');
 
 foreach ($sub as $key => $value) {
@@ -14,7 +15,7 @@ if( !empty($sub)  ){
 }
 
 /* Room */
-$sub = array();
+/*$sub = array();
 $sub[] = array('text'=>'ห้อง','key'=>'room','url'=>URL.'settings/rooms/');
 $sub[] = array('text'=>'เตียง','key'=>'bed','url'=>URL.'settings/rooms/bed');
 
@@ -23,7 +24,7 @@ foreach ($sub as $key => $value) {
 }
 if( !empty($sub)  ){
 	$menu[] = array('text'=>'จัดการห้อง','sub' => $sub, 'url' => URL.'settings/rooms/');
-}
+}*/
 
 /* Accounts */
 $sub = array();

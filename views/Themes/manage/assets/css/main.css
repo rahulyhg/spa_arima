@@ -1437,6 +1437,7 @@ a.link-text:hover span{text-decoration:underline}
 .ui-list-roomsbox>li>.inner{
 	position: relative;
 	background-color: #fefefe;
+	display: block;
 	min-width: 118px;
 	min-height: 90px;
 }
@@ -1453,19 +1454,27 @@ a.link-text:hover span{text-decoration:underline}
 	-webkit-box-shadow: 0 1px 4px 0 rgba(0,0,0,0.14);
     box-shadow: 0 1px 4px 0 rgba(0,0,0,0.14);
 }
-.ui-list-roomsbox>li.plus{
-	border: none;
+.ui-list-roomsbox>li.plus .inner{
 	background-color: transparent;
+    text-align: center;
+    line-height: 80px;
+    font-size: 50px;
+    color: #999;
 }
-.ui-list-roomsbox>li.plus .ui-link{
-	/*font-size: 20px*/
+.ui-list-roomsbox>li.plus>.inner:before{
+	border-style: dashed;
 }
-.ui-list-roomsbox>li.plus .ui-link:hover{
 
+.ui-list-roomsbox>li.plus .inner:hover{
+	color: #3b5998;
+	text-decoration: none;
 }
 .ui-list-roomsbox>li.plus:hover{
 	-webkit-box-shadow:none;
     box-shadow:none;
+}
+.ui-list-roomsbox>li.plus:hover>.inner:before{
+	border-color: #3b5998;
 }
 .ui-list-roomsbox .number{
 	position: absolute;
@@ -1511,7 +1520,7 @@ a.link-text:hover span{text-decoration:underline}
 	top: 0;
 	right: 0;
 	font-size: 12px;
-	/*display: none;*/
+	display: none;
 }
 .ui-list-roomsbox>li:hover .control{
 	display: block;
@@ -1555,6 +1564,10 @@ a.link-text:hover span{text-decoration:underline}
 	top: 3px;
 }
 
+.ui-roomsbox-container{
+	position: relative;
+	height: 100%
+}
 .ui-roomsbox-wrap{
 	position: relative;
 	height: 100%
@@ -1578,6 +1591,16 @@ a.link-text:hover span{text-decoration:underline}
     font-weight: bold;
     border-right: 3px solid #ccc;
 }
+.ui-roomsbox-floor>li>a:hover{
+	text-decoration: none;
+	color: #999;
+	border-color:#999;
+}
+.ui-roomsbox-floor>li.active>a{
+	border-color:#000;
+	color: #000;
+}
+
 .ui-roomsbox-rooms{
 	position: absolute;
     top: 0;
@@ -1585,20 +1608,24 @@ a.link-text:hover span{text-decoration:underline}
     bottom: 0;
     right: 0;
     overflow-y: auto;
-    padding-top: 10px;
-    padding-bottom: 10px;
 }
-.ui-list-roomsbox + .ui-list-roomsbox{
+.ui-list-roomsbox-wrap{
+	padding: 10px 0
+}
+/*.ui-list-roomsbox-wrap + .ui-list-roomsbox-wrap{
 	margin-top: 20px;
-}
+}*/
 
 .ui-lists-status>li{
-	line-height: 29px;
-	margin-right: 3px;
+	line-height: 25px;
+	margin-right: 8px;
 	display: inline-block;
 	vertical-align: top;
 }
-
+.ui-lists-status .ui-color{
+	margin: 0;
+	margin-right: 5px
+}
 
 .ui-bucketed .text{font-weight:bold}
 .ui-bucketed .subtext{color:#999;font-size:13px}
@@ -2664,4 +2691,18 @@ table.table-plan td{vertical-align: top;}
 .table-permit .ID{
 	width: 10px;
 	text-align: center;
+}
+
+
+/* set Form */
+.form-insert-room #room_floor_fieldset,
+.form-insert-room #room_person_fieldset,
+.form-insert-room #room_timer_fieldset{
+	float: left;
+	margin-right: 10px;
+}
+.form-insert-room #room_floor_fieldset,
+.form-insert-room #room_person_fieldset,
+.form-insert-room #room_timer_fieldset{
+	width: 70px
 }

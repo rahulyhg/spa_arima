@@ -204,7 +204,11 @@ class Settings extends Controller {
 
         $this->view->setData('section', 'rooms');
         if( $tap=='' ){
-            // $this->view->setData('status', $this->model->query('rooms')->status() );
+
+            $status = $this->model->query('rooms')->status();
+            // print_r($status); die;
+
+            $this->view->setData('status', $status );
         }
 
         $this->view->render('settings/display');

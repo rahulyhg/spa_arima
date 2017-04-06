@@ -118,8 +118,8 @@ class Model {
             'my' => $permit,
             'paytype' => $permit,
 
-            'room' => $permit,
-            'bed' => $permit,
+            'rooms' => $permit,
+            // 'bed' => $permit,
             
             'department' => $permit,
             'position' => $permit,

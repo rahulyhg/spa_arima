@@ -17,8 +17,6 @@ require 'init.php';
     ?></nav>
 </div>
 
-<hr class="setting-hr">
-
 <section class="setting-section" style="max-width: 420px"><?php 
 	
 	require "sections/{$this->_tap}.php";

@@ -1,16 +1,19 @@
-<div class="phl ptl" style="position: absolute;top:0;left: 0;right: 0">
+<div class="ui-roomsbox-container" data-plugins="listRoomsbox">
+
+<div class="ui-roomsbox-header phl ptl" style="position: absolute;top:0;left: 0;right: 0;z-index: 100">
 
 <div class="setting-header cleafix">
 
 	<div class="rfloat">
 
-		<div>
-			<div class="fsss fwb fcg">Lists Status:</div>
-			<ul class="ui-lists-status">
-				<li><div class="ui-color lfloat mrm" style="background-color:#F44336"></div>Booking</li>
-				<li><div class="ui-color lfloat mrm" style="background-color:#F44336"></div>Booking</li>
-			</ul>
-		</div>
+		<div class="fsss fwb fcg">Lists Status:</div>
+		<ul class="ui-lists-status"><?php 
+
+			foreach ($this->status as $key => $value) {
+				echo '<li><div class="ui-color lfloat mrm" style="background-color:'.$value['color'].'"></div>'.$value['name'].'</li>';
+			}
+		?></ul>
+		
 	</div>
 	<div class="setting-title"><i class="icon-building-o mrs"></i>Rooms</div>
 </div>
@@ -19,15 +22,13 @@
 
 </div>
 
-
-
 <div class="ui-roomsbox-wrap">
 
 	<div class="" style="position: absolute;top: 92px;left: 0;right: 0;bottom: 0">
 		<div class="ui-roomsbox-floor-wrap">
-			<ul class="ui-roomsbox-floor">
+			<ul class="ui-roomsbox-floor" ref="actions">
 			<?php for ($j=1; $j <= 4; $j++) { ?>
-				<li><a>ชั้น <?=$j?></a></li>
+				<li><a action-floor="<?=$j?>">ชั้น <?=$j?></a></li>
 			<?php }?>
 			</ul>
 
@@ -35,10 +36,11 @@
 				<a>เพิ่มชั้น</a>
 			</div> -->
 		</div>
-		<div class="ui-roomsbox-rooms"><div style="max-width: 720px;">
+		<div class="ui-roomsbox-rooms" ref="main"><div style="max-width: 720px;position: relative;">
 			<?php for ($j=1; $j <= 4; $j++) { ?>
 			
-			<ul class="ui-list ui-list-roomsbox" data-room="<?=$j?>">
+			<div class="ui-list-roomsbox-wrap" data-floor="<?=$j?>">
+			<ul class="ui-list ui-list-roomsbox">
 				
 
 				<?php for ($i=0; $i < 6; $i++) { ?>
@@ -66,8 +68,9 @@
 					</div></li>
 				<?php }?>
 
-				<li class="plus pts"><a class=""><i class="icon-plus"></i><span>เพิ่มห้อง</span></a></li>
+				<li class="plus"><a class="inner" href="<?=URL?>rooms/add?floor=<?=$j?>" data-plugins="dialog">+</a></li>
 			</ul>
+			</div>
 			<?php }?>
 		</div></div>
 	
@@ -75,4 +78,6 @@
 
 </div>
 
+
+</div>
 
