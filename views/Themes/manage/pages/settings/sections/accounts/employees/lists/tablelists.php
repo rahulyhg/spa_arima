@@ -61,7 +61,7 @@ if( !empty($this->results['lists']) ){
 
         $dropdown = array();
         $dropdown[] = array(
-            'text' => 'Change Password',
+            'text' => 'แก้ไขรหัสผ่าน',
             'href' => $url.'password/'.$item['id'],
             'attr' => array('data-plugins'=>'dialog'),
             'icon' => 'key'
@@ -69,7 +69,7 @@ if( !empty($this->results['lists']) ){
 
         if( $item['display']=='enabled' ){
             $dropdown[] = array(
-                'text' => 'Disabled',
+                'text' => 'ปิดการใช้งาน',
                 'href' => $url.'display/'.$item['id'].'/disabled',
                 'attr' => array('data-plugins'=>'dialog'),
                 'icon' => 'lock'
@@ -78,7 +78,7 @@ if( !empty($this->results['lists']) ){
 
         if( $item['display']=='disabled' ){
             $dropdown[] = array(
-                'text' => 'Enabled',
+                'text' => 'เปิดการใช้งาน',
                 'href' => $url.'display/'.$item['id'].'/enabled',
                 'attr' => array('data-plugins'=>'dialog'),
                 'icon' => 'unlock'
@@ -97,17 +97,24 @@ if( !empty($this->results['lists']) ){
         if( $this->me['id'] != $item['id'] ){
 
             $dropdown[] = array(
-                'text' => 'Delete',
+                'text' => 'ลบ',
                 'href' => $url.'del/'.$item['id'],
                 'attr' => array('data-plugins'=>'dialog'),
                 'icon' => 'remove'
             );
 
             $dropdown[] = array(
-                'text' => 'Permission',
+                'text' => 'สิทธิ์เข้าใช้งาน',
                 'href' => $url.'edit_permit/'.$item['id'].'?type=employees',
                 'attr' => array('data-plugins'=>'dialog'),
                 'icon' => 'check-square-o'
+            );
+
+            $dropdown[] = array(
+                'text' => 'ความสามารถให้บริการ',
+                'href' => $url.'set_skill/'.$item['id'],
+                'attr' => array('data-plugins'=>'dialog'),
+                'icon' => 'info-circle'
             );
         }
 
@@ -139,8 +146,7 @@ if( !empty($this->results['lists']) ){
 
                 '<div class="group-btn whitespace mts">';
                 if( !empty($this->permit['employees']['edit']) ){
-                    $tr .='<a data-plugins="dialog" href="'.$url.'set_skill/'.$item['id'].'" class="btn"><i class="icon-check-square-o"></i></a>'.
-                    '<a data-plugins="dialog" href="'.$url.'edit/'.$item['id'].'" class="btn"><i class="icon-pencil"></i></a>'.
+                    $tr .= '<a data-plugins="dialog" href="'.$url.'edit/'.$item['id'].'" class="btn"><i class="icon-pencil"></i></a>'.
                     '<a data-plugins="dropdown" class="btn" data-options="'.$this->fn->stringify( array(
                         'select' => $dropdown,
                         'settings' =>array(
