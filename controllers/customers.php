@@ -560,4 +560,92 @@ class Customers extends Controller {
         $arr['message'] = 'บันทึกเรียบร้อย';
         echo json_encode($arr);
     }
+
+    /**/
+    /* LEVEL */
+    /**/
+    public function add_level(){
+        if( empty($this->me) || $this->format!='json' ) $this->error();
+
+        $this->view->setPage('path','Themes/manage/forms/level');
+        $this->view->render("add");
+    }
+
+    public function edit_level( $id=null ){
+        if( empty($id) || empty($this->me)  || $this->format != 'json') $this->error();
+
+        $item = $this->model->get_level( $id );
+
+        $this->view->setData('item', $item);
+        $this->view->setPage('path', 'Themes/manage/forms/level');
+        $this->view->render("add");
+    }
+
+    public function save_level(){
+        if( empty($_POST) ) $this->error();
+
+        $id = isset($_POST['id']) ? $_POST['id']: null;
+        if( !empty($id) ){
+            $item = $this->model->get_level($id);
+            if( empty($item) ) $this->error();
+        }
+
+        try {
+            $form = new Form();
+            $form   ->post('level_name')->val('is_empty');
+
+            $form->submit();
+            $postData = $form->fetch();
+
+            if( empty($arr['error']) ){
+
+                if( !empty($item) ){
+                    $this->model->update_level( $id, $postData );
+                }
+                else{
+                    $this->model->insert_level( $postData );
+                    $id = $postData['level_id'];
+                }
+
+                $arr['message'] = 'บันทึกเรียบร้อย';
+                $arr['url'] = 'refresh';
+            }
+
+        } catch (Exception $e) {
+            $arr['error'] = $this->_getError($e->getMessage());
+        }
+
+        echo json_encode($arr);
+    }
+
+    public function del_level( $id=null ){
+        $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : $id;
+        if( empty($this->me )|| empty($id) || $this->format!='json' ) $this->error();
+        
+        $item = $this->model->get_level($id);
+        if( empty($item) ) $this->error();
+
+        if (!empty($_POST)) {
+
+            if ($item['permit']['del']) {
+                $this->model->delete_level($id);
+                $arr['message'] = 'ลบข้อมูลเรียบร้อย';
+            } else {
+                $arr['message'] = 'ไม่สามารถลบข้อมูลได้';
+            }
+
+            if( isset($_REQUEST['callback']) ){
+                $arr['callback'] = $_REQUEST['callback'];
+            }
+            
+            $arr['url'] = isset($_REQUEST['next'])? $_REQUEST['next'] : URL.'settings/customers';
+            
+            echo json_encode($arr);
+        }
+        else{
+            $this->view->setData('item', $item);
+            $this->view->setPage('path', 'Themes/manage/forms/level');
+            $this->view->render("del");
+        }
+    }
 }

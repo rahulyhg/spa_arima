@@ -345,6 +345,9 @@ class Employees_Model extends Model{
     public function delete_department($id){
         $this->db->delete( 'emp_department', "`dep_id`={$id}" );
     }
+    public function is_dep($text=''){
+        return $this->db->count('emp_department', "`dep_name`=:name", array(':name'=>$text));
+    }
 
     /**/
     /* Position */
@@ -428,4 +431,47 @@ class Employees_Model extends Model{
     public function is_name( $first_name=null , $last_name=null ){
         return $this->db->count( 'employees', "emp_first_name=':first_name' AND emp_last_name=':last_name'", array(':first_name'=>$first_name , ':last_name'=>$last_name) );
     }
+
+    /**/
+    /* SKILL */
+    /**/
+    private $select_skill = "
+         skill_id as id
+        ,skill_name as name
+    ";
+    public function skill() {
+
+        $data = $this->db->select("SELECT {$this->select_skill} FROM emp_skill");
+        return $data;
+    }
+    public function get_skill($id){
+        $sth = $this->db->prepare("
+            SELECT {$this->select_skill}
+            FROM emp_skill 
+            WHERE `skill_id`=:id 
+            LIMIT 1");
+        $sth->execute( array( ':id' => $id ) );
+        $data = $sth->rowCount()==1 ? $sth->fetch( PDO::FETCH_ASSOC ) : array();
+
+        $data['permit']['del'] = true;
+
+        $total_emp = $this->db->count('emp_skill_permit', "`skill_id`={$data['id']}");
+        if( $total_emp > 0 ) $data['permit']['del'] = false;
+
+        return $data;
+    }
+    public function insert_skill(&$data) {
+        $this->db->insert( 'emp_skill', $data );
+        $data['skill_id'] = $this->db->lastInsertId();
+    }
+    public function update_skill($id, $data){
+        $this->db->update( 'emp_skill', $data, "`skill_id`={$id}" );
+    }
+    public function delete_skill($id){
+        $this->db->delete( 'emp_skill', "`skill_id`={$id}" );
+    }
+    public function is_skill( $text='' ){
+        return $this->db->count('emp_skill', "`skill_name`=:name", array(':name'=>$text));
+    }
+    /* End skill */
 }

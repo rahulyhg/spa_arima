@@ -292,4 +292,45 @@ class customers_model extends Model
     public function is_name( $first_name=null , $last_name=null ){
         return $this->db->count('customers', "cus_first_name=':first_name' AND cus_last_name=':last_name'", array(':first_name'=>$first_name , ':last_name'=>$last_name) );
     }
+
+    /**/
+    /* Level */
+    /**/
+
+    private $select_level = "
+    level_id as id
+    , level_name as name
+    ";
+    public function level() {
+
+        $data = $this->db->select("SELECT {$this->select_level} FROM customers_level");
+        return $data;
+    }
+    public function get_level($id){
+        $sth = $this->db->prepare("
+            SELECT {$this->select_level}
+            FROM customers_level 
+            WHERE `level_id`=:id 
+            LIMIT 1");
+        $sth->execute( array( ':id' => $id ) );
+        $data = $sth->rowCount()==1 ? $sth->fetch( PDO::FETCH_ASSOC ) : array();
+
+        $data['permit']['del'] = true;
+
+        $total_emp = $this->db->count('customers', "`cus_level_id`={$data['id']}");
+        if( $total_emp > 0 ) $data['permit']['del'] = false;
+
+        return $data;
+    }
+    public function insert_level(&$data) {
+        $this->db->insert( 'customers_level', $data );
+        $data['level_id'] = $this->db->lastInsertId();
+    }
+    public function update_level($id, $data){
+        $this->db->update( 'customers_level', $data, "`level_id`={$id}" );
+    }
+    public function delete_level($id){
+        $this->db->delete( 'customers_level', "`level_id`={$id}" );
+    }
+
 }

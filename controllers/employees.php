@@ -386,7 +386,7 @@ class Employees extends Controller {
                 }
             }
 
-            if( $this->model->is_name($postData['dep_name']) && $has_name == true ){
+            if( $this->model->is_dep($postData['dep_name']) && $has_name == true ){
                 $arr['error']['dep_name'] = "มีชื่อนี้อยู่ในระบบแล้ว";
             }
 
@@ -850,4 +850,107 @@ class Employees extends Controller {
 
         echo json_encode($arr);
     }
+
+    /**/
+    /* skill */
+    /**/
+    public function add_skill(){
+        if( empty($this->me) || $this->format!='json' ) $this->error();
+
+        $this->view->setData('pageMenu', $this->model->query('system')->pageMenu());
+
+        $this->view->setPage('path','Themes/manage/forms/skill');
+        $this->view->render("add");
+    }
+    public function edit_skill($id=null){
+        $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : $id;
+        if( empty($this->me) || empty($id) || $this->format!='json' ) $this->error();
+
+        $item = $this->model->get_skill($id);
+        if( empty($item) ) $this->error();
+        // print_r($item); die;
+
+        $this->view->setData('item', $item);
+        $this->view->setPage('path','Themes/manage/forms/skill');
+        $this->view->render("add");
+    }
+    public function save_skill(){
+        if( empty($this->me) || empty($_POST) || $this->format!='json' ) $this->error();
+
+        if( isset($_REQUEST['id']) ){
+            $id = $_REQUEST['id'];
+
+            $item = $this->model->get_skill($id);
+            if( empty($item) ) $this->error();
+        }
+
+        try {
+            $form = new Form();
+            $form   ->post('skill_name')->val('is_empty');
+
+            $form->submit();
+            $postData = $form->fetch();
+
+            $has_name = true;
+            if( !empty($id) ){
+                if( $postData['skill_name'] == $item['name'] ){
+                    $has_name = false;
+                }
+            }
+
+            if( $this->model->is_skill($postData['skill_name']) && $has_name == true ){
+                $arr['error']['skill_name'] = "มีชื่อนี้อยู่ในระบบแล้ว";
+            }
+
+            if( empty($arr['error']) ){
+
+                if( !empty($item) ){
+                    $this->model->update_skill( $id, $postData );
+                }
+                else{
+                    $this->model->insert_skill( $postData );
+                }
+
+                $arr['url'] = 'refresh';
+                $arr['message'] = 'บันทึกเรียบร้อย';
+            }
+
+        } catch (Exception $e) {
+            $arr['error'] = $this->_getError($e->getMessage());
+        }
+
+        echo json_encode($arr);
+    }
+    
+    public function del_skill($id=null){
+        $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : $id;
+        if( empty($this->me) || empty($id) || $this->format!='json' ) $this->error();
+        
+        $item = $this->model->get_skill($id);
+        if( empty($item) ) $this->error();
+
+        if (!empty($_POST)) {
+
+            if ( !empty($item['permit']['del']) ) {
+                $this->model->delete_skill($id);
+
+                $arr['message'] = 'ลบข้อมูลเรียบร้อย';
+                $arr['url'] = isset($_REQUEST['next'])? $_REQUEST['next'] : 'refresh';
+            } else {
+                $arr['message'] = 'ไม่สามารถลบข้อมูลได้';
+            }
+
+            if( isset($_REQUEST['callback']) ){
+                $arr['callback'] = $_REQUEST['callback'];
+            }
+
+            echo json_encode($arr);
+        }
+        else{
+            $this->view->setData('item', $item);
+            $this->view->setPage('path','Themes/manage/forms/skill');
+            $this->view->render("del");
+        }   
+    }
+    // end: skill
 }

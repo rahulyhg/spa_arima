@@ -4,7 +4,6 @@
 $sub = array();
 $sub[] = array('text' => 'รายละเอียดของบริษัท','key' => 'company','url' => URL.'settings/company');
 $sub[] = array('text'=>'Dealer','key'=>'dealer','url'=>URL.'settings/dealer');
-$sub[] = array('text'=>'ประเภทการจ่ายเงิน','key'=>'paytype','url'=>URL.'settings/paytype');
 $sub[] = array('text' => 'โปรไฟล์','key' => 'my','url' => URL.'settings/my');
 
 foreach ($sub as $key => $value) {
@@ -42,7 +41,8 @@ if( !empty($sub)  ){
 
 /* Customer */
 $sub = array();
-$sub[] = array('text'=>'ระดับ','key'=>'level','url'=>URL.'settings/customers/');
+$sub[] = array('text'=>'ระดับ','key'=>'level','url'=>URL.'settings/customers/level');
+$sub[] = array('text'=>'ประเภทการจ่ายเงิน','key'=>'paytype','url'=>URL.'settings/paytype');
 
 foreach ($sub as $key => $value) {
 	if( empty($this->permit[$value['key']]['view']) ) unset($sub[$key]);
