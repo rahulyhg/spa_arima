@@ -553,9 +553,11 @@ body.hidden-tobar #tobar{display:none;height:0}
 .listpage-table [ref=tablelists] td.empty .empty-title{color:#9197a3;text-shadow:0 1px 0 rgba(255,255,255,1)}
 .listpage-table [ref=tablelists] tr.total td{background-color:#e6e6e6;font-weight:bold;border-top-color:#fff}
 .listpage2.offline [ref=tabletitle] table, .listpage2 .listpage2-table.has-empty [ref=tabletitle] table{opacity:0}
+
 /**/
-	/* settings-page */
-	/**/
+/* settings-page */
+/**/
+.setting-main{position:relative}
 .setting-main .uiContextualLayerPositioner{z-index:10}
 /*.settings-page{background-color:#f2f2f2}*/
 .settings-left{background-color:#fff;box-shadow:0 2px 5px 0 rgba(0,0,0,0.16);z-index:100}
@@ -595,6 +597,7 @@ body.hidden-tobar #tobar{display:none;height:0}
 .settings-table.admin th{padding-bottom:12px;padding-top:12px;border-top:1px solid #ccc}
 .settings-table th .hlep{display:inline-block;width:15px;height:15px;border-radius:50%;background-color:#aaa;font-size:10px;text-align:center;color:#fff;cursor:pointer;line-height:15px;position:relative}
 .setting-header, .setting-section{max-width:750px}
+.setting-hr{background-color:#ccc;height: 1px;margin:0 0 20px}
 .setting-header{margin-bottom:15px}
 .setting-title{display:block;font-size:24px;line-height:36px;display:inline-block;margin-right:10px}
 .setting-description{margin-bottom:15px}
@@ -1420,6 +1423,181 @@ a.link-text:hover span{text-decoration:underline}
 .ui-item .anchor24{padding:2px}
 .ui-item.has-action .anchor24{padding-right:30px}
 .ui-item .anchor .content{padding: 0}
+
+/**/
+/* ui-list roomsbox */
+/**/
+.ui-list-roomsbox>li{
+	display: inline-block;
+	margin: 5px;
+	/**/
+	
+	vertical-align: top;
+}
+.ui-list-roomsbox>li>.inner{
+	position: relative;
+	background-color: #fefefe;
+	min-width: 118px;
+	min-height: 90px;
+}
+.ui-list-roomsbox>li>.inner:before{
+	content: '';
+	position: absolute;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	border: 2px solid #ccc;
+}
+.ui-list-roomsbox>li:hover{
+	-webkit-box-shadow: 0 1px 4px 0 rgba(0,0,0,0.14);
+    box-shadow: 0 1px 4px 0 rgba(0,0,0,0.14);
+}
+.ui-list-roomsbox>li.plus{
+	border: none;
+	background-color: transparent;
+}
+.ui-list-roomsbox>li.plus .ui-link{
+	/*font-size: 20px*/
+}
+.ui-list-roomsbox>li.plus .ui-link:hover{
+
+}
+.ui-list-roomsbox>li.plus:hover{
+	-webkit-box-shadow:none;
+    box-shadow:none;
+}
+.ui-list-roomsbox .number{
+	position: absolute;
+	top: 2px;
+	left: 4px;
+	font-size: 13px;
+	opacity: .8
+}
+.ui-list-roomsbox .ui-status{
+	/*line-height: 30px;
+	padding-left: 4px;
+	padding-right: 4px;
+	*/
+	/*border: 1px solid #000;*/
+	background-color: #F44336;
+	border-radius: 0;
+	font-weight: bold;
+	font-size: 12px;
+
+	/*-ms-transform: rotate(-15deg);
+    -webkit-transform: rotate(-15deg);
+    transform: rotate(-15deg);*/
+}
+.ui-list-roomsbox .status{
+	
+	position: absolute;
+
+	bottom: 6px;
+	right: 0;
+	
+	text-align: right;
+
+	vertical-align: middle;
+}
+.ui-list-roomsbox .status .ui-timer{
+	font-size: 12px;
+	line-height: 1;
+	opacity: .9;
+	padding-right: 6px;
+}
+.ui-list-roomsbox .control{
+	position: absolute;
+	top: 0;
+	right: 0;
+	font-size: 12px;
+	/*display: none;*/
+}
+.ui-list-roomsbox>li:hover .control{
+	display: block;
+}
+.ui-list-roomsbox .control>a{
+	color: #999;
+    display: inline-block;
+    float: left;
+    margin-top: 3px;
+    margin-right: 1px;
+}
+.ui-list-roomsbox .control>a:last-child{
+	margin-right: 5px;
+}
+.ui-list-roomsbox .control>a:hover{
+	text-decoration: none;
+	color: #000
+}
+.ui-list-roomsbox .bedroom{
+	position: absolute;
+	top: 20px;
+	left: 5px	
+}
+.ui-list-bedroomsbox>li{
+	display: inline-block;
+	width: 20px;
+    height: 28px;
+	background-color: #aaa;
+	margin-right: 2px;
+	margin-top: 2px;
+	float: left;
+	position: relative;
+}
+.ui-list-bedroomsbox>li:before{
+	content: '';
+	height: 5px;
+	background-color: rgba(255,255,255,.95);
+	position: absolute;
+	left: 2px;
+	right: 2px;
+	top: 3px;
+}
+
+.ui-roomsbox-wrap{
+	position: relative;
+	height: 100%
+}
+.ui-roomsbox-floor-wrap{
+    position: absolute;
+    left: 20px;
+    /*top: 85px;
+    left: 50px;*/
+}
+.ui-roomsbox-floor>li{
+	margin-bottom: 3px;
+}
+.ui-roomsbox-floor>li>a {
+    display: block;
+    line-height: 22px;
+    text-align: right;
+    color: #ccc;
+    padding: 1px 8px 1px 12px;
+    font-size: 14px;
+    font-weight: bold;
+    border-right: 3px solid #ccc;
+}
+.ui-roomsbox-rooms{
+	position: absolute;
+    top: 0;
+    left: 90px;
+    bottom: 0;
+    right: 0;
+    overflow-y: auto;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+.ui-list-roomsbox + .ui-list-roomsbox{
+	margin-top: 20px;
+}
+
+.ui-lists-status>li{
+	line-height: 29px;
+	margin-right: 3px;
+	display: inline-block;
+	vertical-align: top;
+}
 
 
 .ui-bucketed .text{font-weight:bold}

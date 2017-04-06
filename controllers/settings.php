@@ -185,11 +185,18 @@ class Settings extends Controller {
     }
 
 
-    public function test($tap='index')
-    {
+    /**/
+    /* rooms */
+    /**/
+    public function rooms($tap='') {
 
-        $this->view->setData('section', 'test');
+        $this->view->setData('section', 'rooms');
         $this->view->setData('tap', $tap);
+
+
+        if( $tap=='' ){
+            // $this->view->setData('status', $this->model->query('rooms')->status() );
+        }
 
         $this->view->render('settings/display');
     }
