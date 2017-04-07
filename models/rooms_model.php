@@ -43,8 +43,8 @@ class Rooms_Model extends Model{
             'limit' => isset($_REQUEST['limit'])? $_REQUEST['limit']:50,
             'more' => true,
 
-            'sort' => isset($_REQUEST['sort'])? $_REQUEST['sort']: 'id',
-            'dir' => isset($_REQUEST['dir'])? $_REQUEST['dir']: 'DESC',
+            'sort' => isset($_REQUEST['sort'])? $_REQUEST['sort']: 'number',
+            'dir' => isset($_REQUEST['dir'])? $_REQUEST['dir']: 'ASC',
             
             'time'=> isset($_REQUEST['time'])? $_REQUEST['time']:time(),
             

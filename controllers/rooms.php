@@ -62,10 +62,14 @@ class Rooms extends Controller {
 				$arr['error']['room_floor'] = 'มีหมายเลขห้อง '.$postData['room_number'].' อยู่ในชั้นดังกล่าวแล้ว';
 			}
 
+			if( $postData['room_floor'] < 1 ){
+				$arr['error']['room_floor'] = 'กรุณาเลือกข้อมูลเป็นตัวเลข';
+			}
+
 			$total_bed = 0;
-			
+
 			if( !empty($postData['room_bed']) ){
-				if( !is_numeric($postData['room_bed']) ){
+				if( !is_numeric($postData['room_bed']) OR $postData['room_bed'] < 1 ){
 					$arr['error']['room_bed'] = 'กรุณากรอกข้อมูลเป็นตัวเลข';
 				}
 				$total_bed = $postData['room_bed'];
