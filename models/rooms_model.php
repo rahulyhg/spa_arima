@@ -216,7 +216,7 @@ class Rooms_Model extends Model{
     function maxFloor(){
 
         $data = $this->db->select("SELECT room_floor AS floor FROM {$this->_table} ORDER BY room_floor DESC LIMIT 1");
-        return $data[0]['floor'];
+        return !empty($data[0]['floor']) ? $data[0]['floor'] : array();
     }
 
 }

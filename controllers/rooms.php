@@ -36,7 +36,7 @@ class Rooms extends Controller {
 					->post('room_level')
 					->post('room_number')->val('is_empty')
 					->post('room_price_type')
-					->post('room_bed')->val('is_empty');
+					->post('room_bed');
 
 			$form->submit();
 			$postData = $form->fetch();
@@ -62,8 +62,13 @@ class Rooms extends Controller {
 				$arr['error']['room_floor'] = 'มีหมายเลขห้อง '.$postData['room_number'].' อยู่ในชั้นดังกล่าวแล้ว';
 			}
 
-			if( !is_numeric($postData['room_bed']) ){
-				$arr['error']['room_bed'] = 'กรุณากรอกข้อมูลเป็นตัวเลข';
+			$total_bed = 0;
+			
+			if( !empty($postData['room_bed']) ){
+				if( !is_numeric($postData['room_bed']) ){
+					$arr['error']['room_bed'] = 'กรุณากรอกข้อมูลเป็นตัวเลข';
+				}
+				$total_bed = $postData['room_bed'];
 			}
 
 			if( empty($arr['error']) ){
@@ -77,9 +82,7 @@ class Rooms extends Controller {
 					$id = $postData['id'];
 				}
 
-				$total_bed = $postData['bed'];
-
-				for( $i=0;$i<$total_bed;$i++ ){
+				for( $i=0; $i<$total_bed; $i++ ){
 
 					$code = $this->model->AutoBedCode( $id );
 
