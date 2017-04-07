@@ -35,8 +35,7 @@ class Rooms extends Controller {
 			$form 	->post('room_floor')->val('is_empty')
 					->post('room_level')
 					->post('room_number')->val('is_empty')
-					->post('room_price_type')
-					->post('room_bed');
+					->post('room_price_type');
 
 			$form->submit();
 			$postData = $form->fetch();
@@ -50,6 +49,10 @@ class Rooms extends Controller {
 			if( !empty($_POST['room_price']) ){
 				$postData['room_price'] = $_POST['room_price'];
 			}
+			if( isset($_POST['room_bed']) ){
+				$postData['room_bed'] = $_POST['room_bed'];
+			}
+
 
 			$has_room = true;
 			if( !empty($item) ){
@@ -68,7 +71,7 @@ class Rooms extends Controller {
 
 			$total_bed = 0;
 
-			if( !empty($postData['room_bed']) ){
+			if( isset($postData['room_bed']) ){
 				if( !is_numeric($postData['room_bed']) OR $postData['room_bed'] < 1 ){
 					$arr['error']['room_bed'] = 'กรุณากรอกข้อมูลเป็นตัวเลข';
 				}
