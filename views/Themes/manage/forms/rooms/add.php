@@ -20,29 +20,6 @@ $form = $form->create()
     ->elem('div')
     ->addClass('form-insert form-insert-room');
 
-// Dealer
-if( count($this->dealer['lists'])==1 ){
-    $arr['hiddenInput'][] = array('name'=>'room_dealer_id','value'=>$this->dealer['lists'][0]['id']);
-}
-else{
-
-    $options = '';
-    foreach ($this->dealer['lists'] as $key => $value) {
-        
-        $selected = '';
-        if( !empty($this->item['dealer_id']) ){
-            if( $this->item['dealer_id']==$value['id'] ){
-                $selected = ' selected="1"';
-            }
-        }
-        $options .= '<option'.$selected.' value="'.$value['id'].'">'.$value['name'].'</option>';
-    }
-    $select = '<select class="inputtext" name="room_dealer_id">'.$options.'</select>';
-    $form   ->field("room_dealer_id")
-            ->label('Dealer')
-            ->text( $select );
-}
-
 $form   ->field("room_floor")
         ->label('ชั้น')
         ->type('number')

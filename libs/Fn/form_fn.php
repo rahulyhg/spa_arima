@@ -111,7 +111,6 @@ class form_Fn extends _function{
                 $name = isset($value['name']) ? $value['name'] : $id;
                 $label = isset($value['label']) ? $value['label'] : '';
                 
-
                 if($type=='select'){
                     
                     $option = '<option value="">-</option>';
