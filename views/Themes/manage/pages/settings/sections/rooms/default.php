@@ -41,7 +41,7 @@
 			</div> -->
 		</div>
 		<div class="ui-roomsbox-rooms" ref="main"><div style="max-width: 720px;position: relative;">
-			<?php for ($j=1; $j <= 4; $j++) { ?>
+			<?php for ($j=1; $j <= $floor; $j++) { ?>
 			
 			<div class="ui-list-roomsbox-wrap" data-floor="<?=$j?>">
 			<ul class="ui-list ui-list-roomsbox">
