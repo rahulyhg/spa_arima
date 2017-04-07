@@ -2706,3 +2706,6 @@ table.table-plan td{vertical-align: top;}
 .form-insert-room #room_timer_fieldset{
 	width: 70px
 }
+.form-insert-room #room_number_fieldset{
+	clear: both;
+}

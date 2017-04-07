@@ -106,6 +106,11 @@ if ( typeof Object.create !== 'function' ) {
 			self.$elem.find('#room_price_type').change(function () {			
 				self.changePrice_type( $(this).val() );
 			});
+
+			self.changeLevel( self.$elem.find('#room_level').val() );
+			self.$elem.find('#room_level').change(function () {			
+				self.changeLevel( $(this).val() );
+			});
 		},
 
 		changePrice_type: function ( val ) {
@@ -114,9 +119,16 @@ if ( typeof Object.create !== 'function' ) {
 			self.$elem.find('#room_person_fieldset, #room_timer_fieldset').toggleClass('hidden_elem', val!='person').find(':input').toggleClass('disabled', val!='person').prop('disabled',val!='person');
 
 			self.$elem.find('#room_price_fieldset').toggleClass('hidden_elem', val=='free').find(':input').toggleClass('disabled', val=='free').prop('disabled',val=='free');
+		},
 
+		changeLevel: function ( val ) {
+			var self = this;
+
+			var	is = val == 'baths';
+
+			self.$elem.find('#room_bed_fieldset').toggleClass('hidden_elem', is).find(':input').addClass('disabled', is).prop('disabled', is);
+			
 		}
-
 		
 	}
 	$.fn.addrooms = function( options ) {
