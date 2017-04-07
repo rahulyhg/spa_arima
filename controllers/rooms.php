@@ -32,7 +32,8 @@ class Rooms extends Controller {
 
 		try{
 			$form = new Form();
-			$form 	->post('room_floor')->val('is_empty')
+			$form 	->post('room_dealer_id')
+					->post('room_floor')->val('is_empty')
 					->post('room_level')
 					->post('room_number')->val('is_empty')
 					->post('room_price_type');
