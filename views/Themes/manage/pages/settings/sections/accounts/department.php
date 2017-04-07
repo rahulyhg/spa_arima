@@ -21,10 +21,9 @@ $url = URL .'employees/';
 		<tr>
 			<th class="name">ชื่อ</th>
 
-			<th class="status">Admin</th>
-			<th class="status">Sale</th>
-			<th class="status">Service</th>
-			<th class="status">ช่าง</th>
+			<?php foreach ($this->role as $key => $value) { ?>
+				<th class="status"><?=$value['name']?></th>
+			<?php } ?>
 
 			<th class="actions">จัดการ</th>
 
@@ -38,12 +37,21 @@ $url = URL .'employees/';
 				<div class="fsm fcg"><?=$item['notes']?></div>
 				<?php } ?>
 			</td>
-			
-			<td class="status"><label class="checkbox"><input disabled class="disabled" type="checkbox" name=""<?=!empty($item['is_admin']) ?' checked="1"' :''?>></label></td>
-			<td class="status"><label class="checkbox"><input disabled class="disabled" type="checkbox" name=""<?=!empty($item['is_sale']) ?' checked="1"' :''?>></label></td>
-			<td class="status"><label class="checkbox"><input disabled class="disabled" type="checkbox" name=""<?=!empty($item['is_service']) ?' checked="1"' :''?>></label></td>
-			<td class="status"><label class="checkbox"><input disabled class="disabled" type="checkbox" name=""<?=!empty($item['is_tec']) ?' checked="1"' :''?>></label></td>
 
+			<?php 
+			foreach ($this->role as $role) {
+
+				$ck = '';
+				if( !empty($item['access']) ){
+					$access = json_decode($item['access'], true);
+					if( in_array($role['id'], $access) ){
+						$ck = ' checked="1"';
+					}
+				}
+				
+				echo '<td class="status"><label class="checkbox"><input'.$ck.' disabled class="disabled" type="checkbox" name=""></label></td>';
+			} 
+			?>
 
 			<td class="actions whitespace">
 				

@@ -246,4 +246,16 @@ class System_Model extends Model{
         return $a;
     }
 
+    public function roles(){
+
+        $a = array();
+        $a[] = array('id'=>'1', 'name'=>'Admin');
+        $a[] = array('id'=>'2', 'name'=>'Manager');
+        $a[] = array('id'=>'3', 'name'=>'Accounting');
+        $a[] = array('id'=>'4', 'name'=>'Cashier');
+        $a[] = array('id'=>'5', 'name'=>'Service');
+
+        return $a;
+    }
+
 }

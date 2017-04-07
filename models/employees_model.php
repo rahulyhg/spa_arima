@@ -331,6 +331,10 @@ class Employees_Model extends Model{
             $data['permission'] = json_decode($data['permission'], true);
         }
 
+        if( !empty($data['access']) ){
+            $data['access'] = json_decode($data['access'], true);
+        }
+
         $data['permit']['del'] = true;
 
         $total_emp = $this->db->count('employees', "`emp_dep_id`={$data['id']}");

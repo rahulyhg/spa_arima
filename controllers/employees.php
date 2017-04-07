@@ -345,6 +345,7 @@ class Employees extends Controller {
         if( empty($this->me) || $this->format!='json' ) $this->error();
 
         $this->view->setData('pageMenu', $this->model->query('system')->pageMenu());
+        $this->view->setData('role', $this->model->query('system')->roles());
 
         $this->view->setPage('path','Themes/manage/forms/department');
         $this->view->render("add");
@@ -358,6 +359,7 @@ class Employees extends Controller {
         // print_r($item); die;
 
         $this->view->setData('item', $item);
+        $this->view->setData('role', $this->model->query('system')->roles());
         $this->view->setPage('path','Themes/manage/forms/department');
         $this->view->render("add");
     }
@@ -392,10 +394,9 @@ class Employees extends Controller {
 
             if( empty($arr['error']) ){
 
-                $postData['dep_is_admin'] = isset($_POST['dep_is_admin']) ? $_POST['dep_is_admin']:'';
-                $postData['dep_is_sale'] = isset($_POST['dep_is_sale']) ? $_POST['dep_is_sale']:'';
-                $postData['dep_is_tec'] = isset($_POST['dep_is_tec']) ? $_POST['dep_is_tec']:'';
-                $postData['dep_is_service'] = isset($_POST['dep_is_service']) ? $_POST['dep_is_service']:'';
+                if( !empty($_POST['access']) ){
+                    $postData['dep_access'] = json_encode($_POST['access']);
+                }
 
                 if( !empty($item) ){
                     $this->model->update_department( $id, $postData );

@@ -34,13 +34,21 @@ $form   ->field("dep_notes")
         ->placeholder('')
         ->value( !empty($this->item['notes'])? $this->fn->q('text')->textarea($this->item['notes']):'' );
 
-$form   ->field("dep_premit")
-        ->text(
-            '<label class="checkbox mrl"><input type="checkbox" name="dep_is_admin"'.( !empty($this->item['is_admin'])? ' checked': '' ).' value="1"><span class="fwb">Admin</span></label>'.
-            '<label class="checkbox mrl"><input type="checkbox" name="dep_is_sale"'.( !empty($this->item['is_sale'])? ' checked': '' ).'  value="1"><span class="fwb">Sale</span></label>'.
-            '<label class="checkbox mrl"><input type="checkbox" name="dep_is_service"'.( !empty($this->item['is_service'])? ' checked': '' ).'  value="1"><span class="fwb">Service</span></label>'.
-            '<label class="checkbox mrl"><input type="checkbox" name="dep_is_tec"'.( !empty($this->item['is_tec'])? ' checked': '' ).'  value="1"><span class="fwb">ช่างซ่อม</span></label>'
-        );
+$role = '';
+foreach ($this->role as $key => $value) {
+
+    $ck = '';
+    if( !empty($this->item['access']) ){
+        if( in_array($value['id'], $this->item['access']) ){
+            $ck = ' checked="1"';
+        }
+    }
+
+    $role .= '<label class="checkbox mrl"><input'.$ck.' type="checkbox" name="access[]" value="'.$value['id'].'"><span class="fwb">'.$value['name'].'</span></label>';
+}
+
+$form   ->field("dep_access")
+        ->text( $role );
 
 # set form
 $arr['form'] = '<form class="js-submit-form" method="post" action="'.URL. 'employees/save_department"></form>';
