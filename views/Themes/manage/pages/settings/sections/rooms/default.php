@@ -29,7 +29,7 @@
 			<ul class="ui-roomsbox-floor" ref="actions">
 			<?php 
 
-			$floor = $this->data['total_floor'];
+			$floor = $this->data['max_floor'];
 
 			for ($j=1; $j <= $floor; $j++) { ?>
 				<li><a action-floor="<?=$j?>">ชั้น <?=$j?></a></li>

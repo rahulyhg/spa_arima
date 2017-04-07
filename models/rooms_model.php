@@ -93,9 +93,7 @@ class Rooms_Model extends Model{
         }
 
         $arr['total'] = $this->db->count($this->_table, $where_str, $where_arr);
-
-        $floor = $this->db->select("SELECT room_floor AS floor FROM {$this->_table} ORDER BY room_floor DESC LIMIT 1");
-        $arr['total_floor'] = $floor[0]['floor'];
+        $arr['max_floor'] = $this->maxFloor();
 
         $where_str = !empty($where_str) ? "WHERE {$where_str}":'';
         $orderby = $this->orderby( $this->_cutNamefield.$options['sort'], $options['dir'] );
@@ -210,6 +208,15 @@ class Rooms_Model extends Model{
         $data = $this->db->select("SELECT bed_id AS id , bed_code AS code , bed_status AS status , bed_room_id AS room_id FROM room_bed WHERE bed_room_id={$id}");
 
         return $data;
+    }
+
+    /**/
+    /* Floor */
+    /**/
+    function maxFloor(){
+
+        $data = $this->db->select("SELECT room_floor AS floor FROM {$this->_table} ORDER BY room_floor DESC LIMIT 1");
+        return $data[0]['floor'];
     }
 
 }
