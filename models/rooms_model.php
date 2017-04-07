@@ -92,8 +92,10 @@ class Rooms_Model extends Model{
 
         }
 
-        $arr['floor'] = $this->db->select("SELECT room_floor AS floor FROM {$this->_table} GROUP BY room_floor ASC");
         $arr['total'] = $this->db->count($this->_table, $where_str, $where_arr);
+
+        $floor = $this->db->select("SELECT room_floor AS floor FROM {$this->_table} ORDER BY room_floor DESC LIMIT 1");
+        $arr['total_floor'] = $floor[0]['floor'];
 
         $where_str = !empty($where_str) ? "WHERE {$where_str}":'';
         $orderby = $this->orderby( $this->_cutNamefield.$options['sort'], $options['dir'] );

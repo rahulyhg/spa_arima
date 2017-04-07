@@ -27,7 +27,11 @@
 	<div class="" style="position: absolute;top: 92px;left: 0;right: 0;bottom: 0">
 		<div class="ui-roomsbox-floor-wrap">
 			<ul class="ui-roomsbox-floor" ref="actions">
-			<?php for ($j=1; $j <= 4; $j++) { ?>
+			<?php 
+
+			$floor = $this->data['total_floor'];
+
+			for ($j=1; $j <= $floor; $j++) { ?>
 				<li><a action-floor="<?=$j?>">ชั้น <?=$j?></a></li>
 			<?php }?>
 			</ul>
@@ -54,9 +58,12 @@
 
 					<div class="bedroom">
 						<ul class="ui-list ui-list-bedroomsbox cleafix">
-						<?php foreach ($value['bed'] as $val) { ?>
+						<?php if( !empty($value['bed']) ){
+							foreach ($value['bed'] as $val) { ?>
 							<li></li>
-						<?php } ?>
+							<?php } 
+						}
+						?>
 						</ul>
 					</div>
 
