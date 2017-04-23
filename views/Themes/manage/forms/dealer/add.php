@@ -1,6 +1,6 @@
 <?php
 
-$title = 'Dealer';
+$title = $this->lang->translate('Dealer');
 
 $form = new Form();
 $form = $form->create()
@@ -10,20 +10,20 @@ $form = $form->create()
 	->addClass('form-insert');
 
 $form   ->field("name")
-        ->label('Name')
+        ->label($this->lang->translate('Name'))
         ->addClass('inputtext')
         ->required(true)
         ->autocomplete("off")
         ->value( !empty($this->item['name']) ? $this->item['name']:'' );
 
 $form   ->field("license")
-        ->label('License No.')
+        ->label($this->lang->translate('License No.'))
         ->addClass('inputtext')
         ->autocomplete("off")
         ->value( !empty($this->item['license']) ? $this->item['license']:'');
 
 $form   ->field("address")
-        ->label('Address')
+        ->label($this->lang->translate('Address'))
         ->type('textarea')
         ->addClass('inputtext')
         ->autocomplete("off")
@@ -31,25 +31,25 @@ $form   ->field("address")
         ->value( !empty($this->item['address']) ? $this->item['address']:'');
 
 $form   ->field("tel")
-        ->label('Phone')
+        ->label($this->lang->translate('Phone'))
         ->addClass('inputtext')
         ->autocomplete("off")
         ->value( !empty($this->item['tel']) ? $this->item['tel']:'');
 
 $form   ->field("mobile_phone")
-        ->label('Mobile Phone')
+        ->label($this->lang->translate('Mobile Phone'))
         ->addClass('inputtext')
         ->autocomplete("off")
         ->value( !empty($this->item['mobile_phone']) ? $this->item['mobile_phone']:'');
 
 $form   ->field("fax")
-        ->label('Fax')
+        ->label($this->lang->translate('Fax'))
         ->addClass('inputtext')
         ->autocomplete("off")
         ->value( !empty($this->item['fax']) ? $this->item['fax']:'');
 
 $form   ->field("email")
-        ->label('Email')
+        ->label($this->lang->translate('Email'))
         ->addClass('inputtext')
         ->autocomplete("off")
         ->value( !empty($this->item['email']) ? $this->item['email']:'');
@@ -74,7 +74,7 @@ foreach ($this->paytype['lists'] as $key => $value) {
 }
 
 $form   ->field("paytype")
-        ->label('ประเภทการจ่ายเงิน')
+        ->label($this->lang->translate('Payment Type'))
         ->text( $paytype );
         
 # set form

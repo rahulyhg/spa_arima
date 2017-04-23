@@ -15,7 +15,7 @@
 		?></ul>
 		
 	</div>
-	<div class="setting-title"><i class="icon-building-o mrs"></i>Rooms</div>
+	<div class="setting-title"><i class="icon-building-o mrs"></i><?=$this->lang->translate('Room')?></div>
 </div>
 
 <hr class="setting-hr">

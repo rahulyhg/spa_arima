@@ -79,7 +79,7 @@ $arr['form'] = '<form class="js-submit-form" method="post" action="'.URL. 'emplo
 $arr['body'] = $form->html();
 
 # title
-$arr['title']= "กำหนดสิทธิ์ {$this->item['name']}";
+$arr['title']= "{$this->lang->translate('Permission')}";
 $arr['hiddenInput'][] = array('name'=>'id','value'=>$this->item['id']);
 $arr['hiddenInput'][] = array('name'=>'section','value'=>'permit');
 

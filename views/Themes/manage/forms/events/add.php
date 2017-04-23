@@ -23,21 +23,21 @@ $form = $form->create()
     ->addClass('form-insert');
 
 $form   ->field("event_title")
-        ->label('หัวข้อ')
+        ->label($this->lang->translate('Topic'))
         ->addClass('inputtext')
         ->placeholder('')
         ->autocomplete('off')
         ->value( !empty($this->item['title']) ? $this->item['title']:'' );
 
 $form 	->field("event_location")
-		->label('สถานที่')
+		->label($this->lang->translate('Location'))
 		->addClass('inputtext')
 		->placeholder('')
 		->autocomplete('off')
 		->value( !empty($this->item['location']) ? $this->item['location']:'' );
 
 $form 	->field("event_start")
-		->label('วันที่')
+		->label($this->lang->translate('Date'))
 		->text( '<div style="min-height: 159px;" data-plugins="eventdate" data-options="'.$this->fn->stringify( array(
 
 			'startDate' => $startDate,
@@ -47,7 +47,7 @@ $form 	->field("event_start")
 
 
 $form 	->field("event_color_code")
-		->label('สี')
+		->label($this->lang->translate('Color'))
 		->addClass('inputtext')
 		->type('textarea')
 		->attr('data-plugins', 'colors')
@@ -56,7 +56,7 @@ $form 	->field("event_color_code")
 		->value( !empty($this->item['color_code']) ? $this->item['color_code']:'' );
 
 $form 	->field("event_text")
-		->label('รายละเอียด')
+		->label($this->lang->translate('Description'))
 		->addClass('inputtext')
 		->type('textarea')
 		->placeholder('')

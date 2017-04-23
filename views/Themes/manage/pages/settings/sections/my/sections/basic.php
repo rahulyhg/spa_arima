@@ -46,21 +46,21 @@ $form = $form->create()
 		->method('post');
 
 $form   ->field("image")
-		->label('Avatar')
+		->label($this->lang->translate('Avatar'))
         ->text( $picture_box );
 
 $form   ->field("emp_first_name")
-        ->label('Full name')
+        ->label($this->lang->translate('Name'))
         ->text( $this->fn->q('form')->fullname( $this->me, array('field_first_name'=>'emp_') ) );
 
 $form  	->field("emp_email")
-		->label('Email')
+		->label($this->lang->translate('Email'))
 		->addClass('inputtext')
 		->autocomplete("off")
 		->value( !empty($this->me['email']) ? $this->me['email']:''  );
 
 $form  	->field("emp_phone_number")
-		->label('Phone')
+		->label($this->lang->translate('Phone'))
 		->addClass('inputtext')
 		->autocomplete("off")
 		->value( !empty($this->me['phone_number']) ? $this->me['phone_number']:''   );
@@ -86,11 +86,11 @@ foreach ($a as $key => $value) {
 }
 
 $form   ->field("emp_mode")
-        ->label('Themes')
+        ->label($this->lang->translate('Themes'))
         ->text( '<ul>'.$mode.'</ul>' );
 
 $form  	->submit()
 		->addClass("btn-submit btn btn-blue")
-		->value("บันทึก");
+		->value($this->lang->translate('Save'));
 
 echo $form->html();

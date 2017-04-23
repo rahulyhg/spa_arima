@@ -1,6 +1,6 @@
 <?php
 
-$title = 'ความสามารถของพนักงาน';
+$title = $this->lang->translate('Skill of').' '.$this->lang->translate('Employees');
 
 $form = new Form();
 $form = $form->create()
@@ -9,7 +9,7 @@ $form = $form->create()
 	->addClass('form-insert');
 
 $form   ->field("skill_name")
-        ->label('ความสามารถ')
+        ->label($this->lang->translate('Skill'))
         ->addClass('inputtext')
         ->required(true)
         ->autocomplete("off")
@@ -35,7 +35,7 @@ $arr['overflowY'] = 'auto';
 $arr['width'] = 550;*/
 
 # fotter: button
-$arr['button'] = '<button type="submit" class="btn btn-primary btn-submit"><span class="btn-text">Save</span></button>';
-$arr['bottom_msg'] = '<a class="btn" role="dialog-close"><span class="btn-text">Cancel</span></a>';
+$arr['button'] = '<button type="submit" class="btn btn-primary btn-submit"><span class="btn-text">'.$this->lang->translate('Save').'</span></button>';
+$arr['bottom_msg'] = '<a class="btn" role="dialog-close"><span class="btn-text">'.$this->lang->translate('Cancel').'</span></a>';
 
 echo json_encode($arr);

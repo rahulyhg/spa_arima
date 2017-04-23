@@ -7,18 +7,18 @@ $url = URL .'paytype/';
 
 <div class="rfloat">
 
-	<span class="gbtn"><a class="btn btn-blue" data-plugins="dialog" href="<?=$url?>add"><i class="icon-plus mrs"></i><span>Add New</span></a></span>
+	<span class="gbtn"><a class="btn btn-blue" data-plugins="dialog" href="<?=$url?>add"><i class="icon-plus mrs"></i><span><?=$this->lang->translate('Add New')?></span></a></span>
 
 </div>
 
-<div class="setting-title">Payment type</div>
+<div class="setting-title"><?=$this->lang->translate('Payment Type')?></div>
 </div>
 
 <section class="setting-section">
 	<table class="settings-table admin"><tbody>
 		<tr>
-			<th class="name">Type</th>
-			<th class="actions">Action</th>
+			<th class="name"><?=$this->lang->translate('Type')?></th>
+			<th class="actions"><?=$this->lang->translate('Action')?></th>
 
 		</tr>
 

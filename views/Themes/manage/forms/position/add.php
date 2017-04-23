@@ -1,6 +1,6 @@
 <?php
 
-$title = 'ตำแหน่ง';
+$title = $this->lang->translate('Position');
 
 $form = new Form();
 $form = $form->create()
@@ -23,18 +23,18 @@ foreach ($this->department as $key => $value) {
 }
 $department = '<select class="inputtext" name="pos_dep_id">'.$department.'</select>';
 $form   ->field("pos_dep_id")
-        ->label('Department')
+        ->label($this->lang->translate('Department'))
         ->text( $department );
 
 $form 	->field("pos_name")
-    	->label('Name*')
+    	->label($this->lang->translate('Name').'*')
         ->autocomplete('off')
         ->addClass('inputtext')
         ->placeholder('')
         ->value( !empty($this->item['name'])? $this->item['name']:'' );
 
 $form->field("pos_notes")
-    ->label('Note')
+    ->label($this->lang->translate('Note'))
     ->type('textarea')
     ->autocomplete('off')
     ->addClass('inputtext')
@@ -58,8 +58,8 @@ else{
 }
 
 # fotter: button
-$arr['button'] = '<button type="submit" class="btn btn-primary btn-submit"><span class="btn-text">Save</span></button>';
-$arr['bottom_msg'] = '<a class="btn" role="dialog-close"><span class="btn-text">Cancel</span></a>';
+$arr['button'] = '<button type="submit" class="btn btn-primary btn-submit"><span class="btn-text">'.$this->lang->translate('Save').'</span></button>';
+$arr['bottom_msg'] = '<a class="btn" role="dialog-close"><span class="btn-text">'.$this->lang->translate('Cancel').'</span></a>';
 
 // $arr['width'] = 782;
 

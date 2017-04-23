@@ -7,13 +7,13 @@ $form = $form->create()
 		->method('post');
 
 $form   ->field("emp_username")
-        ->label('Username')
+        ->label($this->lang->translate('Username'))
         ->addClass('inputtext')
         ->autocomplete("off")
         ->value( !empty($this->me['username']) ? $this->me['username']:''  );
 
 $form   ->field("emp_lang")
-        ->label('Language')
+        ->label($this->lang->translate('Language'))
         ->addClass('inputtext')
         ->select( array(0=>
               array('id'=>'th','name'=>'ภาษาไทย - Thai')

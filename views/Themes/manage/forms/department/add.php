@@ -1,13 +1,13 @@
 <?php
 
 # title
-$title = 'แผนก';
+$title = $this->lang->translate('Department');
 if( !empty($this->item) ){
-    $arr['title']= "แก้ไข{$title}";
+    $arr['title']= $title;
     $arr['hiddenInput'][] = array('name'=>'id','value'=>$this->item['id']);
 }
 else{
-    $arr['title']= "เพิ่ม{$title}";
+    $arr['title']= $title;
 }
 
 
@@ -19,14 +19,14 @@ $form = $form->create()
 
 // ประเภท
 $form 	->field("dep_name")
-    	->label('Name*')
+    	->label($this->lang->translate('Name').'*')
         ->autocomplete('off')
         ->addClass('inputtext')
         ->placeholder('')
         ->value( !empty($this->item['name'])? $this->item['name']:'' );
 
 $form   ->field("dep_notes")
-        ->label('Note')
+        ->label($this->lang->translate('Note'))
         ->type('textarea')
         ->autocomplete('off')
         ->addClass('inputtext')
