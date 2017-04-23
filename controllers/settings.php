@@ -10,10 +10,25 @@ class Settings extends Controller {
     	$this->my();
     }
 
-    public function company() {
+    public function company( $tap='basic' ) {
+
+        $this->view->setPage('on', 'settings' );
+        $this->view->setData('section', 'company');
+        $this->view->setData('tap', 'display');
+        $this->view->setData('_tap', $tap);
 
         if( empty($this->permit['company']['view']) ) $this->error();
         // print_r($this->permit); die;
+
+        if( $tap == 'dealer' ){
+
+            $this->view->setData('paytype', $this->model->query('paytype')->lists());
+            $this->view->setData('data', $this->model->query('dealer')->lists());
+        }
+        elseif( $tap != 'basic' ){
+
+            $this->error();
+        }
 
         if( !empty($_POST) && $this->format=='json' ){
 
@@ -27,12 +42,15 @@ class Settings extends Controller {
             echo json_encode($arr);
         }
         else{
-            $this->view->setPage('on', 'settings' );
-            $this->view->setData('section', 'company');
+            $this->view->render("settings/display");
+        }
+        // else{
+        //     $this->view->setPage('on', 'settings' );
+        //     $this->view->setData('section', 'company');
             
 
-            $this->view->render("settings/display");
-        } 
+        //     $this->view->render("settings/display");
+        // } 
     }
 
     public function my( $tap='basic' ) {
