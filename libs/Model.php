@@ -137,9 +137,7 @@ class Model {
 
         );
 
-        // 
-
-        if( $id==1 ){ // is admin
+        if( $id==1 ){ // is admin 
             $arr['dashboard'] = array('view'=>1);
             $arr['events'] = array('view'=>1,'edit'=>1, 'del'=>1, 'add'=>1);
             $arr['reports'] = array('view'=>1);

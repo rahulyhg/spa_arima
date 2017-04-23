@@ -9,10 +9,10 @@ $url = URL.'employees/';
 		<ul class="clearfix lfloat SettingCol-headerActions">
 
 			<li><a class="btn js-refresh"><i class="icon-refresh"></i></a></li>
-			<li><h2><i class="icon-users mrs"></i><span>พนักงาน</span></h2></li>
+			<li><h2><i class="icon-users mrs"></i><span><?=$this->lang->translate('Employees')?></span></h2></li>
 			<li class="divider"></li>
 
-			<li><a class="btn btn-blue" data-plugins="dialog" href="<?=$url?>add"><i class="icon-plus mrs"></i><span>เพิ่ม</span></a></li>
+			<li><a class="btn btn-blue" data-plugins="dialog" href="<?=$url?>add"><i class="icon-plus mrs"></i><span><?=$this->lang->translate('Add New')?></span></a></li>
 			
 		</ul>
 		<ul class="rfloat SettingCol-headerActions clearfix">

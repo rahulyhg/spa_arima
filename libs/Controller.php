@@ -172,6 +172,12 @@ class Controller {
 
         if( !empty($me) ){
             $this->me =  $me;
+
+            if( !empty($this->me['lang']) ){
+                $this->lang->set( $this->me['lang'] );
+            }
+           
+
             $this->model->me = $this->me;
             $this->view->me = $this->me;
             $this->view->setData('me', $this->me);

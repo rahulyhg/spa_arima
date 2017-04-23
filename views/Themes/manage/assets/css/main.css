@@ -2709,3 +2709,7 @@ table.table-plan td{vertical-align: top;}
 .form-insert-room #room_number_fieldset{
 	clear: both;
 }
+#room_floor_fieldset .notification{
+	position: absolute;
+	margin-top: 0;
+}

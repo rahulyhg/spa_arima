@@ -6,8 +6,8 @@ class th extends Langs
 	public $data = array();
 	
 
-	public function basics($text=null)
-	{
+	public function basics($text=null) {
+
 		$data['home'] = 'บ้าน';
 		$data['help'] = 'ช่วยเหลือ';
 		$data['learn more'] = 'เพิ่มเติม';
@@ -20,10 +20,13 @@ class th extends Langs
 
 		$data['our customers'] = 'ลูกค้า';
 
+		$data['employees'] = 'พนักงาน';
+
 		$str = strtolower($text);
 		return !empty($data[$str]) ? $data[$str]: $text;
 	}
 
+	
 	public function menu($text=null)
 	{
 		$data['home'] = 'หน้าแรก';
