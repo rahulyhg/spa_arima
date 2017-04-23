@@ -6,7 +6,7 @@
 
 		<ul class="lfloat" ref="title">
 			<li class="anchor clearfix mg-anchor">
-				<div class="lfloat mrm top-doc-logo"><?=!empty( $this->system['title'] ) ? $this->system['title']:'';?></div><div class="content"><div class="spacer"></div><div class="massages"><div class="fullname">ประวัติลูกค้า</div></div></div>
+				<div class="lfloat mrm top-doc-logo"><?=!empty( $this->system['title'] ) ? $this->system['title']:'';?></div><div class="content"><div class="spacer"></div><div class="massages"><div class="fullname"><?=$this->lang->translate('Member')?></div></div></div>
 			</li>
 		</ul>
 		
@@ -16,19 +16,19 @@
 			
 			<li><label for="closedate" class="label">Close date</label>
 			<select ref="closedate" name="closedate" class="inputtext">
-				<option value="daily">วันนี้</option>
-				<option selected value="weekly">สัปดาห์นี้</option>
-				<option value="monthly">เดือนนี้</option>
+				<option value="daily"><?=$this->lang->translate('Now')?></option>
+				<option selected value="weekly"><?=$this->lang->translate('Weekly')?></option>
+				<option value="monthly"><?=$this->lang->translate('Monthly')?></option>
 				<option divider></option>
-				<option value="latest">ล่าสุด</option>
+				<option value="latest"><?=$this->lang->translate('Lastest')?></option>
 				<option divider></option>
-				<option value="custom">กำหนดเอง</option>
+				<option value="custom"><?=$this->lang->translate('Custom')?></option>
 			</select></li>
 
 			<li class="divider"></li>
 
 			<?php if( !empty($this->permit['customers']['add']) ) { ?>
-            <li class="mt"><div class="rfloat"><a href="<?=URL?>customers/add" class="btn btn-blue" data-plugins="dialog"><i class="icon-plus mrs"></i>เพิ่ม</a></div></li>
+            <li class="mt"><div class="rfloat"><a href="<?=URL?>customers/add" class="btn btn-blue" data-plugins="dialog"><i class="icon-plus mrs"></i><?=$this->lang->translate('Add New')?></a></div></li>
             <?php } ?>
 
 		</ul>
@@ -41,7 +41,7 @@
 
 		<ul class="rfloat" ref="control">
 			<li class="mt"><form class="form-search" action="#">
-				<input class="inputtext search-input" type="text" id="search-query" placeholder="ค้นหา" name="q" autocomplete="off">
+				<input class="inputtext search-input" type="text" id="search-query" placeholder="<?=$this->lang->translate('search')?>" name="q" autocomplete="off">
 				<span class="search-icon">
 			 		 <button type="submit" class="icon-search nav-search" tabindex="-1"></button>
 				</span>

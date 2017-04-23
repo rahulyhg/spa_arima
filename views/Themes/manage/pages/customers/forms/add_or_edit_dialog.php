@@ -49,7 +49,7 @@ $form = $form->create()
 //         ->text( $picture_box );
 
 $form   ->field("name")
-        ->label('ชื่อ')
+        ->label($this->lang->translate('Name'))
         ->text( $this->fn->q('form')->fullname( !empty($this->item)?$this->item:array(), array('field_first_name'=>'cus_', 'prefix_name'=>$this->prefixName) ) );
 
 $form   ->field("birthday")
@@ -57,7 +57,7 @@ $form   ->field("birthday")
         ->text( $this->fn->q('form')->birthday( !empty($this->item)?$this->item:array(), array('field_first_name'=>'cus_') ) );
 
 $form   ->field("cus_card_id")
-        ->label('หมายเลขบัตรประจำตัวประชาชน')
+        ->label($this->lang->translate('ID Card / Passport'))
         ->autocomplete('off')
         ->addClass('inputtext')
         ->placeholder('')
@@ -65,7 +65,7 @@ $form   ->field("cus_card_id")
 
 $form   ->field("cus_address")
         ->name('cus[address]')
-        ->label('ที่อยู่')
+        ->label($this->lang->translate('Address'))
         ->text( $this->fn->q('form')->address( !empty($this->item['address'])? $this->item['address']:array(), array('city'=>$this->city ) ) );
 
 // email
@@ -95,12 +95,14 @@ $arr['form'] = '<form class="js-submit-form" method="post" action="'.URL. 'custo
 # body
 $arr['body'] = $form->html();
 
+$title = $this->lang->translate('Member');
+
 if( !empty($this->item) ){
-    $arr['title']= "แก้ไขลูกค้า";
+    $arr['title']= $title;
     $arr['hiddenInput'][] = array('name'=>'id','value'=>$this->item['id']);
 }
 else{
-    $arr['title']= "เพิ่มลูกค้า";
+    $arr['title']= $title;
 }
 
 $arr['width'] = 550;

@@ -11,11 +11,11 @@
 
 $title = array( 0 => 
 	array(
-	0 =>   array('key'=>'date', 'text'=>'เพิ่มเมื่อ', 'sort'=>'created','rowspan'=>2)
+	0 =>   array('key'=>'date', 'text'=>$this->lang->translate('Created'), 'sort'=>'created','rowspan'=>2)
 
-		 , array('key'=>'name', 'text'=>'ชื่อ-นามสกุล','sort'=>'first_name','rowspan'=>2)
-		 , array('key'=>'email', 'text'=>'ข้อมูลการติดต่อ','rowspan'=>2)
-		 , array('key'=>'status', 'text'=>'จำนวน', 'colspan'=> 3)
+		 , array('key'=>'name', 'text'=>$this->lang->translate('Full Name'),'sort'=>'first_name','rowspan'=>2)
+		 , array('key'=>'email', 'text'=>$this->lang->translate('Contact'),'rowspan'=>2)
+		 , array('key'=>'status', 'text'=>$this->lang->translate('Amount'), 'colspan'=> 3)
 	),
 	array(
 	0 =>   array('key'=>'status', 'text'=>'รถ')
