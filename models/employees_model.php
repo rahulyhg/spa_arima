@@ -445,8 +445,8 @@ class Employees_Model extends Model{
     public function display(){
 
         $a = array();
-        $a[] = array('id' => 'enabled', 'name' => 'เปิดใช้งาน');
-        $a[] = array('id' => 'disabled', 'name' => 'ปิดใช้งาน');
+        $a[] = array('id' => 'enabled', 'name' => 'Enabled');
+        $a[] = array('id' => 'disabled', 'name' => 'Disabled');
 
         return $a;
     }

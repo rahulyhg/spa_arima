@@ -7,21 +7,21 @@ $form = $form->create()
 		->method('post');
 
 $form  	->field("name")
-		->label('ชื่อบริษัท')
+		->label('Company Name')
 		->addClass('inputtext')
 		->required(true)
 		->autocomplete("off")
 		->value( !empty($this->system['name']) ? $this->system['name']:'' );
 
 $form  	->field("title")
-		->label('ชื่อบริษัทภาษาอังกฤษ')
+		->label('Company Name (English)')
 		->addClass('inputtext')
 		->required(true)
 		->autocomplete("off")
 		->value( !empty($this->system['title']) ? $this->system['title']:'' );
 
 $form  	->field("address")
-		->label('ที่อยู่')
+		->label('Address')
 		->type('textarea')
 		->addClass('inputtext')
 		->autocomplete("off")
@@ -29,19 +29,19 @@ $form  	->field("address")
 		->value( !empty($this->system['address']) ? $this->system['address']:'');
 
 $form  	->field("phone")
-		->label('หมายเลขโทรศัพท์')
+		->label('Phone')
 		->addClass('inputtext')
 		->autocomplete("off")
 		->value( !empty($this->system['phone']) ? $this->system['phone']:'');
 
 $form  	->field("mobile_phone")
-		->label('โทรศัพท์เคลื่อนที่')
+		->label('Mobile Phone')
 		->addClass('inputtext')
 		->autocomplete("off")
 		->value( !empty($this->system['mobile_phone']) ? $this->system['mobile_phone']:'');
 
 $form  	->field("fax")
-		->label('แฟกซ์')
+		->label('Fax')
 		->addClass('inputtext')
 		->autocomplete("off")
 		->value( !empty($this->system['fax']) ? $this->system['fax']:'');
@@ -53,7 +53,7 @@ $form  	->field("license")
 		->value( !empty($this->system['license']) ? $this->system['license']:'');
 
 $form  	->field("email")
-		->label('อีเมล')
+		->label('Email')
 		->addClass('inputtext')
 		->autocomplete("off")
 		->value( !empty($this->system['email']) ? $this->system['email']:'');

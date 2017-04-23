@@ -46,21 +46,21 @@ $form = $form->create()
 		->method('post');
 
 $form   ->field("image")
-		->label('รูปโปรไฟล์')
+		->label('Avatar')
         ->text( $picture_box );
 
 $form   ->field("emp_first_name")
-        ->label('ชื่อ-นามสกุล')
+        ->label('Full name')
         ->text( $this->fn->q('form')->fullname( $this->me, array('field_first_name'=>'emp_') ) );
 
 $form  	->field("emp_email")
-		->label('อีเมล')
+		->label('Email')
 		->addClass('inputtext')
 		->autocomplete("off")
 		->value( !empty($this->me['email']) ? $this->me['email']:''  );
 
 $form  	->field("emp_phone_number")
-		->label('เบอร์โทรศัพท์')
+		->label('Phone')
 		->addClass('inputtext')
 		->autocomplete("off")
 		->value( !empty($this->me['phone_number']) ? $this->me['phone_number']:''   );
@@ -86,7 +86,7 @@ foreach ($a as $key => $value) {
 }
 
 $form   ->field("emp_mode")
-        ->label('ธีมระบบ')
+        ->label('Themes')
         ->text( '<ul>'.$mode.'</ul>' );
 
 $form  	->submit()

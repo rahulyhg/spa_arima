@@ -11,14 +11,14 @@ $url = URL .'customers/';
 
 </div>
 
-<div class="setting-title">ระดับลูกค้า</div>
+<div class="setting-title">Customer Level</div>
 </div>
 
 <section class="setting-section">
 	<table class="settings-table admin"><tbody>
 		<tr>
-			<th class="name">ระดับ</th>
-			<th class="actions">จัดการ</th>
+			<th class="name">Level</th>
+			<th class="actions">Action</th>
 
 		</tr>
 

@@ -24,8 +24,8 @@ $url = URL.'employees/';
 
 	<div class="mtm clearfix">
 		<ul class="lfloat SettingCol-headerActions clearfix">
-			<li><label>แผนก:</label> <select ref="selector" name="department" class="inputtext">
-				<option value="">ทั้งหมด</option>
+			<li><label>Department:</label> <select ref="selector" name="department" class="inputtext">
+				<option value="">All</option>
 			<?php foreach ($this->department as $key => $value) {
 
 				$s = '';
@@ -40,8 +40,8 @@ $url = URL.'employees/';
 			<?php } ?>
 			</select></li>
 
-			<li><label>ตำแหน่ง:</label> <select ref="selector" name="position" class="inputtext">
-				<option value="">ทั้งหมด</option>
+			<li><label>Position:</label> <select ref="selector" name="position" class="inputtext">
+				<option value="">All</option>
 			<?php foreach ($this->position as $key => $value) {
 
 
@@ -89,9 +89,9 @@ $url = URL.'employees/';
 <div class="SettingCol-main">
 	<div class="SettingCol-tableHeader"><div class="SettingCol-contentInner">
 		<table class="settings-table admin"><thead><tr>
-			<th class="name" data-col="0">ชื่อ-นามสกุล</th>
+			<th class="name" data-col="0">Full Name</th>
 			<th class="email" data-col="1"></th>
-			<th class="actions" data-col="2">จัดการ</th>
+			<th class="actions" data-col="2">Action</th>
 		</tr></thead></table>
 	</div></div>
 	<div class="SettingCol-contentInner">
@@ -99,16 +99,16 @@ $url = URL.'employees/';
 	<div class="SettingCol-tableEmpty empty">
 		<div class="empty-loader">
 			<div class="empty-loader-icon loader-spin-wrap"><div class="loader-spin"></div></div>
-			<div class="empty-loader-text">กำลังโหลด...</div>
+			<div class="empty-loader-text">Loading...</div>
 		</div>
 		<div class="empty-error">
 			<div class="empty-icon"><i class="icon-link"></i></div>
-			<div class="empty-title">การเชื่อมต่อเกิดข้อผิดพลาด</div>
+			<div class="empty-title">Connection Error.</div>
 		</div>
 
 		<div class="empty-text">
 			<div class="empty-icon"><i class="icon-users"></i></div>
-			<div class="empty-title">ไม่พบผลลัพธ์</div>
+			<div class="empty-title">No Results Found.</div>
 		</div>
 	</div>
 	</div>

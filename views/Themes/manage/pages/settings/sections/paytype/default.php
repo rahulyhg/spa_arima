@@ -11,14 +11,14 @@ $url = URL .'paytype/';
 
 </div>
 
-<div class="setting-title">ประเภทการจ่ายเงิน</div>
+<div class="setting-title">Payment type</div>
 </div>
 
 <section class="setting-section">
 	<table class="settings-table admin"><tbody>
 		<tr>
-			<th class="name">ประเภท</th>
-			<th class="actions">จัดการ</th>
+			<th class="name">Type</th>
+			<th class="actions">Action</th>
 
 		</tr>
 
