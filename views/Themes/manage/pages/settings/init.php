@@ -1,16 +1,19 @@
 <?php
 
+$this->count_nav = 0;
+
 /* System */
 $sub = array();
-$sub[] = array('text' => 'รายละเอียดของบริษัท','key' => 'company','url' => URL.'settings/company');
-$sub[] = array('text'=>'Dealer','key'=>'dealer','url'=>URL.'settings/dealer');
-$sub[] = array('text'=>'จัดการห้อง','key'=>'rooms','url'=>URL.'settings/rooms/');
-$sub[] = array('text' => 'โปรไฟล์','key' => 'my','url' => URL.'settings/my');
+$sub[] = array('text' => $this->lang->translate('Company'),'key' => 'company','url' => URL.'settings/company');
+// $sub[] = array('text'=>'Dealer','key'=>'dealer','url'=>URL.'settings/dealer');
+// $sub[] = array('text'=>'จัดการห้อง','key'=>'rooms','url'=>URL.'settings/rooms/');
+$sub[] = array('text' => $this->lang->translate('Profile'),'key' => 'my','url' => URL.'settings/my');
 
 foreach ($sub as $key => $value) {
 	if( empty($this->permit[$value['key']]['view']) ) unset($sub[$key]);
 }
-if( !empty($sub)  ){
+if( !empty($sub) ){
+	$this->count_nav+=count($sub);
 	$menu[] = array('text' => '', 'url' => URL.'settings/company', 'sub' => $sub);
 }
 
@@ -28,26 +31,28 @@ if( !empty($sub)  ){
 
 /* Accounts */
 $sub = array();
-$sub[] = array('text'=>'แผนก','key'=>'department','url'=>URL.'settings/accounts/department');
-$sub[] = array('text'=>'ตำแหน่ง','key' => 'position','url' => URL.'settings/accounts/position');
-$sub[] = array('text'=>'พนักงาน','key' => 'employees','url' => URL.'settings/accounts/');
-$sub[] = array('text'=>'ความสามารถ','key'=>'skill','url'=> URL.'settings/accounts/skill');
+$sub[] = array('text'=> $this->lang->translate('Department'),'key'=>'department','url'=>URL.'settings/accounts/department');
+$sub[] = array('text'=> $this->lang->translate('Position'),'key' => 'position','url' => URL.'settings/accounts/position');
+$sub[] = array('text'=> $this->lang->translate('Employees'),'key' => 'employees','url' => URL.'settings/accounts/');
+$sub[] = array('text'=> $this->lang->translate('Skill'),'key'=>'skill','url'=> URL.'settings/accounts/skill');
 
 foreach ($sub as $key => $value) {
 	if( empty($this->permit[$value['key']]['view']) ) unset($sub[$key]);
 }
-if( !empty($sub)  ){
-	$menu[] = array('text'=>'จัดการบัญชี','sub' => $sub, 'url' => URL.'settings/accounts/');
+if( !empty($sub) ){
+	$this->count_nav+=count($sub);
+	$menu[] = array('text'=> $this->lang->translate('Accounts'),'sub' => $sub, 'url' => URL.'settings/accounts/');
 }
 
 /* Customer */
 $sub = array();
-$sub[] = array('text'=>'ระดับ','key'=>'level','url'=>URL.'settings/customers/level');
-$sub[] = array('text'=>'ประเภทการจ่ายเงิน','key'=>'paytype','url'=>URL.'settings/paytype');
+$sub[] = array('text'=> $this->lang->translate('Level') ,'key'=>'level','url'=>URL.'settings/customers/level');
+$sub[] = array('text'=> $this->lang->translate('Payment type'),'key'=>'paytype','url'=>URL.'settings/paytype');
 
 foreach ($sub as $key => $value) {
 	if( empty($this->permit[$value['key']]['view']) ) unset($sub[$key]);
 }
-if( !empty($sub)  ){
-	$menu[] = array('text'=>'จัดการลูกค้า','sub' => $sub, 'url' => URL.'settings/customers/');
+if( !empty($sub) ){
+	$this->count_nav+=count($sub);
+	$menu[] = array('text'=> $this->lang->translate('Customer'),'sub' => $sub, 'url' => URL.'settings/customers/');
 }

@@ -21,9 +21,9 @@ $url = URL .'employees/';
 		<tr>
 			<th class="name">ชื่อ</th>
 
-			<?php foreach ($this->role as $key => $value) { ?>
-				<th class="status"><?=$value['name']?></th>
-			<?php } ?>
+			<?php foreach ($this->access as $key => $value) {
+				echo '<th class="status">'.$value['name'].'</th>';
+			}?>
 
 			<th class="actions">จัดการ</th>
 
@@ -37,27 +37,17 @@ $url = URL .'employees/';
 				<div class="fsm fcg"><?=$item['notes']?></div>
 				<?php } ?>
 			</td>
+			
+			<?php foreach ($this->access as $key => $value) {
+				$item['access'] = !empty($item['access']) ? $item['access']: array();
 
-			<?php 
-			foreach ($this->role as $role) {
+			echo '<td class="status"><label class="checkbox"><input disabled class="disabled" type="checkbox" name="'.$value['id'].'"'.( in_array($value['id'], $item['access']) ?' checked="1"' :'').'></label></td>';
+			}?>
 
-				$ck = '';
-				if( !empty($item['access']) ){
-					$access = json_decode($item['access'], true);
-					if( in_array($role['id'], $access) ){
-						$ck = ' checked="1"';
-					}
-				}
+			<td class="actions">
 				
-				echo '<td class="status"><label class="checkbox"><input'.$ck.' disabled class="disabled" type="checkbox" name=""></label></td>';
-			} 
-			?>
-
-			<td class="actions whitespace">
-				
-				<span class="gbtn"><a data-plugins="dialog" href="<?=$url?>edit_department/<?=$item['id'];?>" class="btn btn-no-padding"><i class="icon-pencil"></i></a></span>
-				<span class="gbtn"><a data-plugins="dialog" href="<?=$url?>edit_permit/<?=$item['id']?>?type=department" class="btn btn-no-padding"><i class="icon-check-square-o"></i></a></span>
-				<span class='gbtn'><a data-plugins="dialog" href="<?=$url?>del_department/<?=$item['id'];?>" class="btn btn-no-padding"><i class="icon-trash"></i></a></span>
+				<div class="group-btn whitespace"><a data-plugins="dialog" href="<?=$url?>edit_department/<?=$item['id'];?>" class="btn"><i class="icon-pencil"></i></a><a data-plugins="dialog" href="<?=$url?>edit_permit/<?=$item['id']?>?type=department" class="btn"><i class="icon-check-square-o"></i></a><a data-plugins="dialog" href="<?=$url?>del_department/<?=$item['id'];?>" class="btn"><i class="icon-trash"></i></a>
+				</div>
 					
 			</td>
 

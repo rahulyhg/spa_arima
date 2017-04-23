@@ -34,7 +34,7 @@ class Employees_Model extends Model{
 
                         , d.dep_id
                         , d.dep_name
-                        , d.dep_access
+                        , d.dep_access as access
                         , d.dep_permission
 
                         , p.pos_id 
@@ -43,7 +43,6 @@ class Employees_Model extends Model{
                         , c.city_name";
 
     private $_cutNamefield = "emp_";
-
 
     public function lists( $options=array() ) {
 
@@ -174,6 +173,7 @@ class Employees_Model extends Model{
     }
     public function convert($data , $options=array()){
 
+
         $data['role'] = 'emp';
         $data = $this->cut($this->_cutNamefield, $data);
         foreach ($this->query('system')->_prefixName() as $key => $value) {
@@ -262,15 +262,15 @@ class Employees_Model extends Model{
 
         return $c;
     }
-    // public function is_name($text) {
+    /*public function is_name($text) {
 
-    //     $c = $this->db->count($this->_objType, "{$this->_cutNamefield}name='{$text}'");
-    //     if( $c==0 ){
-    //         $c = $this->db->count("users", "emp_name='{$text}'");
-    //     }
+        $c = $this->db->count($this->_objType, "{$this->_cutNamefield}name='{$text}'");
+        if( $c==0 ){
+            $c = $this->db->count("users", "emp_name='{$text}'");
+        }
 
-    //     return $c;
-    // }
+        return $c;
+    }*/
 
     public function is_checkpass($id, $old_pass) {
         return $this->db->count($this->_objType, "{$this->_cutNamefield}id='{$id}' AND {$this->_cutNamefield}password='{$old_pass}'");
@@ -315,7 +315,13 @@ class Employees_Model extends Model{
     ";
     public function department() {
 
-        $data = $this->db->select("SELECT {$this->select_department} FROM emp_department");
+        $fdata = $this->db->select("SELECT {$this->select_department} FROM emp_department");
+
+
+        $data = array();
+        foreach ($fdata as $key => $value) {
+            $data[] = $this->convert_department( $value );
+        }
         return $data;
     }
     public function get_department($id){
@@ -327,11 +333,15 @@ class Employees_Model extends Model{
         $sth->execute( array( ':id' => $id ) );
         $data = $sth->rowCount()==1 ? $sth->fetch( PDO::FETCH_ASSOC ) : array();
 
+        return $this->convert_department($data);
+    }
+    public function convert_department( $data ){
+        
         if( !empty($data['permission'] )){
             $data['permission'] = json_decode($data['permission'], true);
         }
 
-        if( !empty($data['access']) ){
+        if( !empty($data['access'] )){
             $data['access'] = json_decode($data['access'], true);
         }
 
@@ -359,6 +369,16 @@ class Employees_Model extends Model{
     /**/
     /* Position */
     /**/
+    private $select_position = "
+          pos_id as id
+        , pos_name as name
+        , pos_notes as notes
+        , pos_permission as permission
+
+        , pos_dep_id as dep_id
+        , dep_name
+        , dep_permission
+    ";
     public function position($dep_id=null){
 
         $where = '';
@@ -366,11 +386,11 @@ class Employees_Model extends Model{
             $where = 'WHERE pos_dep_id='.$dep_id;
         }
 
-        return $this->db->select("SELECT pos_id as id, pos_name as name, pos_permission as permission FROM emp_position {$where}");
+        return $this->db->select("SELECT {$this->select_position} FROM emp_position LEFT JOIN emp_department ON pos_dep_id=dep_id {$where}");
     }
     public function get_position($id){
         $sth = $this->db->prepare("
-            SELECT pos_id as id, pos_name as name, pos_dep_id as dep_id, pos_permission as permission, dep_permission
+            SELECT {$this->select_position}
             FROM emp_position LEFT JOIN emp_department ON pos_dep_id=dep_id
             WHERE `pos_id`=:id 
             LIMIT 1");
@@ -378,7 +398,6 @@ class Employees_Model extends Model{
         $data = $sth->rowCount()==1 ? $sth->fetch( PDO::FETCH_ASSOC ) : array();
         
         // print_r($data); die;
-
         if( !empty($data['permission']) ){
             $data['permission'] = json_decode($data['permission'], true);
         }

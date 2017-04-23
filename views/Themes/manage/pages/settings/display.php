@@ -1,7 +1,11 @@
 <?php require_once "init.php"; ?>
 <div id="mainContainer" class="Setting clearfix" data-plugins="main">
 
-	<?php require_once 'sections/left.php'; ?>
+	<?php 
+		if( $this->count_nav > 1 ){
+			require_once 'sections/left.php';
+		}
+	?>
 
 	<div class="setting-content" role="content">
 		<div class="setting-main" role="main"><?php

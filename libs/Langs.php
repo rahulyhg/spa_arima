@@ -57,7 +57,6 @@ class Langs
 
 	public function getCode()
 	{
-
 		Session::init();
 	    $lang = Session::get('lang');
 

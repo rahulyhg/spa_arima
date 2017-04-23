@@ -100,7 +100,7 @@ class Settings extends Controller {
             $data = $this->model->query('employees')->position();
         }
         elseif($tap=='department'){
-            $this->view->setData('role', $this->model->query('system')->roles());
+            $this->view->setData('access', $this->model->query('system')->roles());
             $data = $this->model->query('employees')->department();
         }
         elseif($tap=='employees'){

@@ -6,7 +6,68 @@ class System_Model extends Model{
         parent::__construct();
     }
 
-    /* Tax ID, Tax Rate */
+    /**/
+    /* permit */
+    /**/
+    public function permit( $access=array() ) {
+
+        $permit = array('view'=>0,'edit'=>0, 'del'=>0, 'add'=>0);
+
+        // Settings
+        $arr = array( 
+            'notifications' => array('view'=>1),
+            'calendar' => array('view'=>1),
+
+            'my' => array('view'=>1,'edit'=>1),
+
+            'customers' => array('view'=>1, 'add'=>1),
+
+            'packet' => array('view'=>1),
+            'promotions' => array('view'=>1),
+
+            'tasks' => array('view'=>1, 'add'=>1), 
+        );
+
+        // is admin 
+        if( in_array(1, $access) ){ 
+
+            // set settings
+            $arr['company'] = array('view'=>1,'edit'=>1, 'del'=>1, 'add'=>1);  
+            $arr['dealer'] = array('view'=>1,'edit'=>1, 'del'=>1, 'add'=>1);
+
+            $arr['department'] = array('view'=>1,'edit'=>1, 'del'=>1, 'add'=>1);
+            $arr['position'] = array('view'=>1,'edit'=>1, 'del'=>1, 'add'=>1);
+            $arr['employees'] = array('view'=>1,'edit'=>1, 'del'=>1, 'add'=>1);
+
+            // customers
+            $arr['level'] = array('view'=>1,'edit'=>1, 'del'=>1, 'add'=>1);
+            $arr['paytype'] = array('view'=>1,'edit'=>1, 'del'=>1, 'add'=>1);
+
+            // set menu
+            $arr['dashboard'] = array('view'=>1);
+            // $arr['events'] = array('view'=>1,'edit'=>1, 'del'=>1, 'add'=>0);
+
+            $arr['tasks'] = array('view'=>1,'edit'=>1, 'del'=>1, 'add'=>1);    
+            $arr['reports'] = array('view'=>1);
+        }
+
+        /* Manage */
+        if( in_array(2, $access) ){
+
+            $arr['dashboard'] = array('view'=>1);
+            $arr['employees'] = array('view'=>1,'edit'=>1, 'del'=>1, 'add'=>1);
+      
+
+            $arr['orders'] = array('view'=>1);
+            $arr['booking'] = array('view'=>1);
+
+            $arr['tasks'] = array('view'=>1,'edit'=>1, 'del'=>1, 'add'=>1);
+            $arr['reports'] = array('view'=>1);
+        }
+
+
+        return $arr;
+    }
 
 
     public function set($name, $value) {
@@ -108,8 +169,7 @@ class System_Model extends Model{
         return $a;
     }
     
-    public function pageMenu()
-    {
+    public function pageMenu() {
         $a = array();
 
         $a[] = array('key'=>'dashboard', 'name'=>'Dashboard');

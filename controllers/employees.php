@@ -394,9 +394,7 @@ class Employees extends Controller {
 
             if( empty($arr['error']) ){
 
-                if( !empty($_POST['access']) ){
-                    $postData['dep_access'] = json_encode($_POST['access']);
-                }
+                $postData['dep_access'] = !empty($_POST['access'])? json_encode($_POST['access']) : '';
 
                 if( !empty($item) ){
                     $this->model->update_department( $id, $postData );

@@ -2,9 +2,12 @@
 
 $options = array(
 	'url'=> URL.'calendar/events',
-	'add_url' => URL.'events/add',
 	'weekDayStart' => 1
 );
+
+if( !empty($this->permit['events']['add']) ){
+	$options['add_url'] = URL.'events/add';
+}
 
 ?><div id="mainContainer" class="clearfix" data-plugins="main">
 
