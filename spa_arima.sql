@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 06, 2017 at 04:55 AM
+-- Generation Time: Apr 23, 2017 at 06:37 AM
 -- Server version: 5.6.24
 -- PHP Version: 5.6.8
 
@@ -261,6 +261,14 @@ CREATE TABLE `customers_level` (
   `level_id` int(11) NOT NULL,
   `level_name` varchar(60) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `customers_level`
+--
+
+INSERT INTO `customers_level` (`level_id`, `level_name`) VALUES
+(1, 'สมาชิกทั่วไป'),
+(2, 'สมาชิกพิเศษ (VIP)');
 
 -- --------------------------------------------------------
 
@@ -603,7 +611,7 @@ CREATE TABLE `dealer` (
 --
 
 INSERT INTO `dealer` (`dealer_id`, `dealer_name`, `dealer_created`, `dealer_address`, `dealer_license`, `dealer_tel`, `dealer_mobile_phone`, `dealer_fax`, `dealer_email`, `dealer_emp_id`, `dealer_updated`) VALUES
-(1, 'Arima Onsen Thailand', '2017-02-14 23:18:05', '37/10-14 Soi Suriwongse Plaza, Suriwongse Road, Bangrak, Bangkok 10500', '', '', '', '', '', 6, '2017-04-05 17:53:11');
+(1, 'Arima Onsen Thailand', '2017-02-14 23:18:05', '37/10-14 Soi Suriwongse Plaza, Suriwongse Road, Bangrak, Bangkok 10500', '', '', '', '', '', 6, '2017-04-06 14:51:54');
 
 -- --------------------------------------------------------
 
@@ -615,6 +623,14 @@ CREATE TABLE `dealer_paytype_permit` (
   `pay_id` int(11) NOT NULL,
   `dealer_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `dealer_paytype_permit`
+--
+
+INSERT INTO `dealer_paytype_permit` (`pay_id`, `dealer_id`) VALUES
+(2, 1),
+(1, 1);
 
 -- --------------------------------------------------------
 
@@ -711,8 +727,8 @@ INSERT INTO `emp_department` (`dep_id`, `dep_name`, `dep_notes`, `dep_access`, `
 (1, 'Manager', '', '', '{\"dashboard\":{\"view\":\"1\"},\"calendar\":{\"view\":\"1\"},\"customers\":{\"view\":\"1\",\"add\":\"1\",\"edit\":\"1\",\"del\":\"1\"},\"booking\":{\"view\":\"1\",\"add\":\"1\",\"edit\":\"1\",\"del\":\"1\"},\"stock\":{\"view\":\"1\",\"add\":\"1\",\"edit\":\"1\",\"del\":\"1\"},\"sales\":{\"view\":\"1\",\"add\":\"1\",\"edit\":\"1\",\"del\":\"1\"},\"services\":{\"view\":\"1\",\"add\":\"1\",\"edit\":\"1\",\"del\":\"1\"},\"reports\":{\"view\":\"1\"},\"company\":{\"view\":\"1\",\"add\":\"1\",\"edit\":\"1\",\"del\":\"1\"},\"dealer\":{\"view\":\"0\",\"add\":\"0\",\"edit\":\"0\",\"del\":\"0\"},\"department\":{\"view\":\"0\",\"add\":\"0\",\"edit\":\"0\",\"del\":\"0\"},\"position\":{\"view\":\"1\",\"add\":\"1\",\"edit\":\"1\",\"del\":\"1\"},\"employees\":{\"view\":\"1\",\"add\":\"1\",\"edit\":\"1\",\"del\":\"1\"},\"brands\":{\"view\":\"0\",\"add\":\"0\",\"edit\":\"0\",\"del\":\"0\"},\"models\":{\"view\":\"1\",\"add\":\"1\",\"edit\":\"1\",\"del\":\"1\"},\"accessory\":{\"view\":\"1\",\"add\":\"1\",\"edit\":\"1\",\"del\":\"1\"},\"store\":{\"view\":\"0\",\"add\":\"0\",\"edit\":\"0\",\"del\":\"0\"},\"cus_refer\":{\"view\":\"1\",\"add\":\"1\",\"edit\":\"1\",\"del\":\"0\"}}'),
 (2, 'Sales', 'จัดการ บริการส่วนของการจอง', '', '{\"dashboard\":{\"view\":\"0\"},\"customers\":{\"view\":\"1\",\"add\":\"1\",\"edit\":\"0\",\"del\":\"0\"},\"booking\":{\"view\":\"1\",\"add\":\"1\",\"edit\":\"0\",\"del\":\"0\"},\"stock\":{\"view\":\"1\",\"add\":\"0\",\"edit\":\"0\",\"del\":\"0\"},\"sales\":{\"view\":\"1\",\"add\":\"0\",\"edit\":\"0\",\"del\":\"0\"},\"services\":{\"view\":\"0\",\"add\":\"0\",\"edit\":\"0\",\"del\":\"0\"},\"reports\":{\"view\":\"0\"}}'),
 (3, 'Service', 'จัดการ บริการส่วนบริการลูกค้า', '', '{\"dashboard\":{\"view\":\"0\"},\"customers\":{\"view\":\"0\",\"add\":\"0\",\"edit\":\"0\",\"del\":\"0\"},\"booking\":{\"view\":\"0\",\"add\":\"0\",\"edit\":\"0\",\"del\":\"0\"},\"stocks\":{\"view\":\"0\",\"add\":\"0\",\"edit\":\"0\",\"del\":\"0\"},\"sales\":{\"view\":\"0\",\"add\":\"0\",\"edit\":\"0\",\"del\":\"0\"},\"services\":{\"view\":\"1\",\"add\":\"1\",\"edit\":\"0\",\"del\":\"0\"},\"reports\":{\"view\":\"0\"}}'),
-(4, 'Admin', 'สามารถทำได้ทุกอย่าง', '', '{\"dashboard\":{\"view\":\"1\"},\"customers\":{\"view\":\"1\",\"add\":\"1\",\"edit\":\"1\",\"del\":\"1\"},\"booking\":{\"view\":\"1\",\"add\":\"1\",\"edit\":\"1\",\"del\":\"1\"},\"stock\":{\"view\":\"1\",\"add\":\"1\",\"edit\":\"1\",\"del\":\"1\"},\"sales\":{\"view\":\"1\",\"add\":\"1\",\"edit\":\"1\",\"del\":\"1\"},\"services\":{\"view\":\"1\",\"add\":\"1\",\"edit\":\"1\",\"del\":\"1\"},\"reports\":{\"view\":\"1\"}}'),
-(5, 'หมอนวด', '', '', '');
+(4, 'Admin', 'สามารถทำได้ทุกอย่าง', '[\"1\"]', '{\"dashboard\":{\"view\":\"1\"},\"customers\":{\"view\":\"1\",\"add\":\"1\",\"edit\":\"1\",\"del\":\"1\"},\"booking\":{\"view\":\"1\",\"add\":\"1\",\"edit\":\"1\",\"del\":\"1\"},\"stock\":{\"view\":\"1\",\"add\":\"1\",\"edit\":\"1\",\"del\":\"1\"},\"sales\":{\"view\":\"1\",\"add\":\"1\",\"edit\":\"1\",\"del\":\"1\"},\"services\":{\"view\":\"1\",\"add\":\"1\",\"edit\":\"1\",\"del\":\"1\"},\"reports\":{\"view\":\"1\"}}'),
+(5, 'หมอนวด', '', '[\"5\"]', '');
 
 -- --------------------------------------------------------
 
@@ -765,6 +781,19 @@ CREATE TABLE `emp_skill` (
   `skill_id` int(11) NOT NULL,
   `skill_name` varchar(60) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `emp_skill`
+--
+
+INSERT INTO `emp_skill` (`skill_id`, `skill_name`) VALUES
+(2, 'นวดตัว'),
+(3, 'นวดหัว'),
+(4, 'นวดเท้า'),
+(5, 'นวดออย'),
+(6, 'นวดหน้า'),
+(7, 'แคะหู'),
+(8, 'เล็บมือ-เท้า');
 
 -- --------------------------------------------------------
 
@@ -833,8 +862,7 @@ INSERT INTO `media` (`media_album_id`, `media_id`, `media_name`, `media_caption`
 (1, 73, 'MG5.png', '', 'png', 34, 0, '2017-03-30 08:19:43'),
 (1, 74, 'MG3.png', '', 'png', 35, 0, '2017-03-30 08:20:02'),
 (1, 75, 'MG6.png', '', 'png', 36, 0, '2017-03-30 08:20:10'),
-(1, 76, 'MG GS.png', '', 'png', 37, 0, '2017-03-30 16:02:23'),
-(1, 78, 'Admin-icon.png', '', 'png', 38, 6, '2017-04-01 11:34:45');
+(1, 76, 'MG GS.png', '', 'png', 37, 0, '2017-03-30 16:02:23');
 
 -- --------------------------------------------------------
 
@@ -1208,16 +1236,27 @@ CREATE TABLE `promotions_package_permit` (
 --
 
 CREATE TABLE `rooms` (
+  `room_dealer_id` int(11) NOT NULL,
   `room_id` int(2) NOT NULL,
   `room_number` int(3) NOT NULL,
   `room_floor` int(1) NOT NULL,
   `room_price` float(6,2) NOT NULL,
+  `room_price_type` varchar(10) NOT NULL,
   `room_status` enum('on','off','renovate') NOT NULL,
   `room_bed` int(1) NOT NULL,
   `room_person` int(2) NOT NULL,
   `room_timer` int(4) NOT NULL,
   `room_level` enum('basic','baths','vip') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `rooms`
+--
+
+INSERT INTO `rooms` (`room_dealer_id`, `room_id`, `room_number`, `room_floor`, `room_price`, `room_price_type`, `room_status`, `room_bed`, `room_person`, `room_timer`, `room_level`) VALUES
+(0, 1, 201, 2, 1000.00, 'time', 'on', 0, 0, 0, 'baths'),
+(0, 2, 101, 1, 0.00, 'free', 'on', 3, 0, 0, 'basic'),
+(0, 3, 202, 2, 0.00, 'free', 'on', 0, 0, 0, 'basic');
 
 -- --------------------------------------------------------
 
@@ -1227,10 +1266,19 @@ CREATE TABLE `rooms` (
 
 CREATE TABLE `room_bed` (
   `bed_id` int(3) NOT NULL,
-  `bed_code` varchar(5) NOT NULL,
+  `bed_code` varchar(6) NOT NULL,
   `bed_status` enum('on','off') NOT NULL,
   `bed_room_id` int(2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `room_bed`
+--
+
+INSERT INTO `room_bed` (`bed_id`, `bed_code`, `bed_status`, `bed_room_id`) VALUES
+(1, '11011', 'on', 2),
+(2, '11012', 'on', 2),
+(3, '11013', 'on', 2);
 
 -- --------------------------------------------------------
 
@@ -1303,6 +1351,15 @@ CREATE TABLE `system_paytype` (
   `pay_id` int(11) NOT NULL,
   `pay_name` varchar(30) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `system_paytype`
+--
+
+INSERT INTO `system_paytype` (`pay_id`, `pay_name`) VALUES
+(1, 'บัตรเครดิต'),
+(2, 'เงินสด'),
+(3, 'เช็คธนาคาร');
 
 --
 -- Indexes for dumped tables
@@ -1496,7 +1553,8 @@ ALTER TABLE `promotions_package_permit`
 -- Indexes for table `rooms`
 --
 ALTER TABLE `rooms`
-  ADD PRIMARY KEY (`room_id`);
+  ADD PRIMARY KEY (`room_id`),
+  ADD KEY `room_dealer_id` (`room_dealer_id`);
 
 --
 -- Indexes for table `room_bed`
@@ -1554,7 +1612,7 @@ ALTER TABLE `customers`
 -- AUTO_INCREMENT for table `customers_level`
 --
 ALTER TABLE `customers_level`
-  MODIFY `level_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `level_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 --
 -- AUTO_INCREMENT for table `customers_options`
 --
@@ -1594,7 +1652,7 @@ ALTER TABLE `emp_position`
 -- AUTO_INCREMENT for table `emp_skill`
 --
 ALTER TABLE `emp_skill`
-  MODIFY `skill_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `skill_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 --
 -- AUTO_INCREMENT for table `invoices`
 --
@@ -1604,7 +1662,7 @@ ALTER TABLE `invoices`
 -- AUTO_INCREMENT for table `media`
 --
 ALTER TABLE `media`
-  MODIFY `media_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=79;
+  MODIFY `media_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=77;
 --
 -- AUTO_INCREMENT for table `media_albums`
 --
@@ -1654,12 +1712,12 @@ ALTER TABLE `promotions`
 -- AUTO_INCREMENT for table `rooms`
 --
 ALTER TABLE `rooms`
-  MODIFY `room_id` int(2) NOT NULL AUTO_INCREMENT;
+  MODIFY `room_id` int(2) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT for table `room_bed`
 --
 ALTER TABLE `room_bed`
-  MODIFY `bed_id` int(3) NOT NULL AUTO_INCREMENT;
+  MODIFY `bed_id` int(3) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT for table `system_notes`
 --
@@ -1669,7 +1727,7 @@ ALTER TABLE `system_notes`
 -- AUTO_INCREMENT for table `system_paytype`
 --
 ALTER TABLE `system_paytype`
-  MODIFY `pay_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `pay_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
