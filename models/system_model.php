@@ -37,6 +37,7 @@ class System_Model extends Model{
 
             $arr['department'] = array('view'=>1,'edit'=>1, 'del'=>1, 'add'=>1);
             $arr['position'] = array('view'=>1,'edit'=>1, 'del'=>1, 'add'=>1);
+            $arr['skill'] = array('view'=>1,'edit'=>1, 'del'=>1, 'add'=>1);
             $arr['employees'] = array('view'=>1,'edit'=>1, 'del'=>1, 'add'=>1);
 
             // customers
