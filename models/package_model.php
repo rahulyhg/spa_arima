@@ -88,6 +88,8 @@ class Package_Model extends Model {
 
 		$data = $this->cut($this->_cutNamefield, $data);
 
+		$data['skill'] = $this->listSkill( $data['id'] );
+
 		$data['permit']['del'] = true;
 
 		return $data;
@@ -118,5 +120,31 @@ class Package_Model extends Model {
 	}
 	public function delete($id) {
 		$this->db->delete($this->_objType, "{$this->_cutNamefield}id={$id}");
+		$this->db->delete( 'packet_skill', "`skill_id`={$id}" , $this->db->count('emp_skill_permit', "`skill_id`={$id}") );
 	}
+
+	/**/
+	/* Skill */
+	/**/
+	public function listSkill( $id ){
+
+        $data = $this->db->select("SELECT s.skill_id AS id , s.skill_name AS name 
+            FROM emp_skill s
+                LEFT JOIN package_skill p ON s.skill_id = p.skill_id
+            WHERE p.pack_id = :id
+        ORDER By p.skill_id ASC", array(':id'=>$id));
+
+        return $data;
+    }
+
+    public function setSkill( $data ){
+        $this->db->insert('package_skill', $data);
+    }
+
+    public function unsetSkill( $id ){
+    	$this->db->delete('package_skill', "{$this->_cutNamefield}id={$id}", $this->db->count('packet_skill', "{$this->_cutNamefield}id={$id}") );
+    }
+    /**/
+    /* End Skill */
+    /**/
 }

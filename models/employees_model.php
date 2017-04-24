@@ -495,6 +495,7 @@ class Employees_Model extends Model{
     }
     public function delete_skill($id){
         $this->db->delete( 'emp_skill', "`skill_id`={$id}" );
+        $this->db->delete( 'emp_skill_permit', "`skill_id`={$id}" , $this->db->count('emp_skill_permit', "`skill_id`={$id}") );
     }
     public function is_skill( $text='' ){
         return $this->db->count('emp_skill', "`skill_name`=:name", array(':name'=>$text));

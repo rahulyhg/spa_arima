@@ -54,6 +54,26 @@ $form   ->field("pack_price")
         ->type('number')
         ->value( !empty($this->item['price']) ? $this->item['price']:'' );
 
+$skill = '';
+foreach ($this->skill as $key => $value) {
+
+    $ck = '';
+    if( !empty($this->item['skill']) ){
+        foreach ($this->item['skill'] as $val) {
+
+            if( $val['id'] == $value['id'] ){
+                $ck = ' checked="1"';
+                break;
+            }
+        }
+    }
+
+    $skill .= '<label class="checkbox mrl"><input'.$ck.' type="checkbox" name="skill[]" value="'.$value['id'].'"><span class="fwb">'.$value['name'].'</span></label>';
+}
+
+$form   ->field("pack_skill")
+        ->text( $skill );
+
 # set form
 $arr['form'] = '<form class="js-submit-form" method="post" action="'.URL. 'package/save"></form>';
 
@@ -69,9 +89,9 @@ else{
     $arr['title']= "{$title}";
 }
 
-/*$arr['height'] = 'full';
-$arr['overflowY'] = 'auto';
-$arr['width'] = 550;*/
+// $arr['height'] = 'full';
+// $arr['overflowY'] = 'auto';
+$arr['width'] = 550;
 
 # fotter: button
 $arr['button'] = '<button type="submit" class="btn btn-primary btn-submit"><span class="btn-text">'.$this->lang->translate('Save').'</span></button>';

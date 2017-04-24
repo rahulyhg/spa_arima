@@ -17,6 +17,8 @@ class Package extends Controller {
 	public function add() {
 
 		if( empty($this->me) || $this->format!='json' ) $this->error();
+
+		$this->view->setData('skill', $this->model->query('employees')->skill() );
 		$this->view->render("package/forms/add");
 	}
 
@@ -27,6 +29,8 @@ class Package extends Controller {
 		if( empty($item) ) $this->error();
 
 		$this->view->setData('item', $item);
+		$this->view->setData('skill', $this->model->query('employees')->skill() );
+
         $this->view->render("package/forms/add");
 	}
 
@@ -68,11 +72,29 @@ class Package extends Controller {
             	$postData['pack_emp_id'] = $this->me['id'];
 
             	if( !empty($item) ){
+
+            		if( !empty($item['skill']) ){
+            			$this->model->unsetSkill( $id );
+            		}
+            		
             		$this->model->update( $id, $postData );
             	}
             	else{
                 	$this->model->insert( $postData );
                     $id = $postData['id'];
+            	}
+
+            	if( !empty($_POST['skill']) ){
+
+            		foreach ($_POST['skill'] as $key => $value) {
+
+            			$skill = array(
+            				'skill_id'=>$value,
+            				'pack_id'=>$id,
+            			);
+
+            			$this->model->setSkill( $skill );
+            		}
             	}
 
                 $arr['message'] = 'บันทึกเรียบร้อย';
