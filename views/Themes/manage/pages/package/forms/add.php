@@ -52,7 +52,7 @@ $form   ->field("pack_price")
         ->addClass('inputtext')
         ->autocomplete("off")
         ->type('number')
-        ->value( !empty($this->item['price']) ? $this->item['price']:'' );
+        ->value( !empty($this->item['price']) ? round($this->item['price']):'' );
 
 $skill = '';
 foreach ($this->skill as $key => $value) {
