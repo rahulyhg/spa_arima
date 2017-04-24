@@ -20,8 +20,30 @@ $form = $form->create()
     ->elem('div')
     ->addClass('form-insert form-insert-room');
 
+if( count($this->dealer['lists'])==1 ){
+    $arr['hiddenInput'][] = array('name'=>'room_dealer_id','value'=>$this->dealer['lists'][0]['id']);
+}
+else{
+
+    $options = '';
+    foreach ($this->dealer['lists'] as $key => $value) {
+        
+        $selected = '';
+        if( !empty($this->item['dealer_id']) ){
+            if( $this->item['dealer_id']==$value['id'] ){
+                $selected = ' selected="1"';
+            }
+        }
+        $options .= '<option'.$selected.' value="'.$value['id'].'">'.$value['name'].'</option>';
+    }
+    $select = '<select class="inputtext" name="room_dealer_id">'.$options.'</select>';
+    $form   ->field("room_dealer_id")
+            ->label($this->lang->translate('Dealer'))
+            ->text( $select );
+}
+
 $form   ->field("room_floor")
-        ->label($this->lang->translate('floor'))
+        ->label($this->lang->translate('Floor'))
         ->type('number')
         ->maxlength(2)
         ->autocomplete('off')
@@ -51,7 +73,7 @@ $form   ->field("room_price_type")
 
 
 $form   ->field("room_person")
-        ->label($this->lang->translate('Number of').' '.$this->lang->translate('Person'))
+        ->label($this->lang->translate('Person'))
         ->type('number')
         ->autocomplete('off')
         ->addClass('inputtext');
@@ -62,19 +84,19 @@ $array[] = array('id'=>'90','');
 $array[] = array('id'=>'90','');*/
 
 $form   ->field("room_timer")
-        ->label($this->lang->translate('time').'/('.$this->lang->translate('minute').')')
+        ->label($this->lang->translate('Time').'/('.$this->lang->translate('Minute').')')
         ->type('number')
         ->autocomplete('off')
         ->addClass('inputtext');  
 
 $form   ->field("room_price")
-        ->label($this->lang->translate('Number of').' '.$this->lang->translate('Price'))
+        ->label($this->lang->translate('Price'))
         ->type('number')
         ->autocomplete('off')
         ->addClass('inputtext');
 
 $form   ->field("room_bed")
-        ->label($this->lang->translate('Number of').' '.$this->lang->translate('Bed'))
+        ->label($this->lang->translate('Bed'))
         ->type('number')
         ->maxlength(2)
         ->autocomplete('off')
