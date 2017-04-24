@@ -15,6 +15,7 @@ class Rooms extends Controller {
 
 
 		$this->view->setData('level', $this->model->level() );
+		$this->view->setData('status', $this->model->status() );
 		$this->view->setData('dealer', $this->model->query('dealer')->lists());
 
         $this->view->setPage('path','Themes/manage/forms/rooms');
@@ -30,6 +31,7 @@ class Rooms extends Controller {
 		if( empty($item) ) $this->error();
  
 		$this->view->setData('level', $this->model->level() );
+		$this->view->setData('status', $this->model->status() );
 		$this->view->setData('dealer', $this->model->query('dealer')->lists());
 
 		$this->view->setData('item', $item);
@@ -53,7 +55,8 @@ class Rooms extends Controller {
 					->post('room_floor')->val('is_empty')
 					->post('room_level')
 					->post('room_number')->val('is_empty')
-					->post('room_price_type');
+					->post('room_price_type')
+					->post('room_status');
 
 			$form->submit();
 			$postData = $form->fetch();
@@ -102,7 +105,6 @@ class Rooms extends Controller {
 					$this->model->update( $id , $postData );
 				}
 				else{
-					$postData['room_status'] = 'on';
 					$this->model->insert( $postData );
 					$id = $postData['id'];
 				}

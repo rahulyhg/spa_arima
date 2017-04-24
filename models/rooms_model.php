@@ -12,17 +12,6 @@ class Rooms_Model extends Model{
     private $_cutNamefield = "room_";
 
 
-    private function _modifyData($data){
-
-        //$data["updated"] = date('c'); // last update time
-
-        $_data = array();
-        foreach ($data as $key => $value) {
-            $_data[ $this->_cutNamefield.$key ] = trim($value);
-        }
-        
-        return $_data;
-    }
     public function insert(&$data) {
         
         //$data["created"] = date('c'); // new create time
@@ -31,7 +20,7 @@ class Rooms_Model extends Model{
         $data = $this->convert($data);
     }
     public function update($id, $data) {
-        $this->db->update($this->_objType, $this->_modifyData($data), "{$this->_cutNamefield}id={$id}");
+        $this->db->update($this->_objType, $data , "{$this->_cutNamefield}id={$id}");
     }
     public function delete($id) {
         $this->db->delete($this->_objType, "{$this->_cutNamefield}id={$id}");

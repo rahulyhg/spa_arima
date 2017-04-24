@@ -115,6 +115,26 @@ $form   ->field("room_price")
             $arr['hiddenInput'][] = array('name'=>'room_bed','value'=>$this->item['bed_total']);
         }
 
+$status = '';
+foreach ($this->status as $key => $value) {
+    
+    $sel = '';
+
+    if( !empty($this->item) ){
+        if( $this->item['status']['id'] == $value['id'] ){
+            $sel = ' selected="1"';
+        }
+    }
+
+    $status .= '<option'.$sel.' value="'.$value['id'].'">'.$value['name'].'</option>';
+}
+
+$status = '<select class="inputtext" name="room_status">'.$status.'</select>';
+
+$form   ->field("room_status")
+        ->label($this->lang->translate('status'))
+        ->text( $status );
+
 # set form
 $arr['form'] = '<form class="js-submit-form" data-plugins="addrooms" method="post" action="'.URL. 'rooms/save"></form>';
 
