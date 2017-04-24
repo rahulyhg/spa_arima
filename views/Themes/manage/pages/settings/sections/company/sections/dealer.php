@@ -1,16 +1,6 @@
 <?php
-
 $url = URL .'dealer/';
-
-
 ?>
-<div class="setting-header cleafix">
-	<div class="rfloat">
-	<span class="gbtn"><a class="btn btn-blue" data-plugins="dialog" href="<?=$url?>add"><i class="icon-plus mrs"></i><span>Add New</span></a>
-	</span>
-	</div>
-</div>
-
 <section class="setting-section">
 	<table class="settings-table admin"><tbody>
 		<tr>
@@ -55,3 +45,9 @@ $url = URL .'dealer/';
 		<?php } ?>
 	</tbody></table>
 </section>
+<div class="clearfix">
+	<div class="rfloat">
+	<span class="gbtn"><a class="btn btn-blue" data-plugins="dialog" href="<?=$url?>add"><i class="icon-plus mrs"></i><span>Add New</span></a>
+	</span>
+	</div>
+</div>
