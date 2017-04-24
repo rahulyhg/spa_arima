@@ -5,8 +5,8 @@
 		<div class="clearfix pvm">
 
 		<ul class="lfloat" ref="title">
-			<li class="anchor clearfix mg-anchor">
-				<div class="lfloat mrm top-doc-logo"><?=!empty( $this->system['title'] ) ? $this->system['title']:'';?></div><div class="content"><div class="spacer"></div><div class="massages"><div class="fullname"><?=$this->lang->translate('Member')?></div></div></div>
+			<li class="mt">
+				<h2><i class="icon-address-card-o mrs"></i><span><?=$this->lang->translate('Member')?></span></h2>
 			</li>
 		</ul>
 		

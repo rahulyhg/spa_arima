@@ -35,6 +35,13 @@ class Rooms_Model extends Model{
     }
     public function delete($id) {
         $this->db->delete($this->_objType, "{$this->_cutNamefield}id={$id}");
+        $this->deleteAllBed($id);
+    }
+    public function deleteAllBed($id){
+        $this->db->delete('room_bed', "bed_room_id={$id}");
+    }
+    public function deleteBed($id){
+        $this->db->delete('room_bed', "bed_id={$id}");
     }
 
     public function lists( $options=array() ) {
@@ -133,6 +140,8 @@ class Rooms_Model extends Model{
 
         $data['status'] = $this->getStatus( $data['status'] );
         $data['bed'] = $this->listBed( $data['id'] );
+        $data['bed_total'] = $this->db->count('room_bed', 'bed_room_id='.$data['id']);
+        $data['permit']['del'] = true;
 
         return $data;
     }

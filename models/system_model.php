@@ -22,7 +22,7 @@ class System_Model extends Model{
 
             'customers' => array('view'=>1, 'add'=>1),
 
-            'packet' => array('view'=>1),
+            'package' => array('view'=>1),
             'promotions' => array('view'=>1),
 
             'tasks' => array('view'=>1, 'add'=>1), 
@@ -34,6 +34,7 @@ class System_Model extends Model{
             // set settings
             $arr['company'] = array('view'=>1,'edit'=>1, 'del'=>1, 'add'=>1);  
             $arr['dealer'] = array('view'=>1,'edit'=>1, 'del'=>1, 'add'=>1);
+            $arr['rooms'] = array('view'=>1,'edit'=>1, 'del'=>1, 'add'=>1);
 
             $arr['department'] = array('view'=>1,'edit'=>1, 'del'=>1, 'add'=>1);
             $arr['position'] = array('view'=>1,'edit'=>1, 'del'=>1, 'add'=>1);

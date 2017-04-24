@@ -221,7 +221,9 @@ class Settings extends Controller {
     /**/
     public function rooms($tap='') {
 
+        $this->view->setData('on','settings');
         $this->view->setData('section', 'rooms');
+
         if( $tap=='' ){
 
             $status = $this->model->query('rooms')->status();

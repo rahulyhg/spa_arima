@@ -21,6 +21,23 @@ class Rooms extends Controller {
         $this->view->render("add");
 	}
 
+	public function edit($id=null){
+
+		$id = isset($_REQUEST['id']) ? $_REQUEST['id'] : $id;
+		if( empty($this->me) || $this->format!='json' || empty($id) ) $this->error();
+
+		$item = $this->model->query('rooms')->get($id);
+		if( empty($item) ) $this->error();
+ 
+		$this->view->setData('level', $this->model->level() );
+		$this->view->setData('dealer', $this->model->query('dealer')->lists());
+
+		$this->view->setData('item', $item);
+
+		$this->view->setPage('path','Themes/manage/forms/rooms');
+        $this->view->render("add");
+	}
+
 	public function save(){
 
 		if( empty($this->me) || empty($_POST) ) $this->error();
@@ -90,17 +107,19 @@ class Rooms extends Controller {
 					$id = $postData['id'];
 				}
 
-				for( $i=0; $i<$total_bed; $i++ ){
+				if( empty($item) ){
+					for( $i=0; $i<$total_bed; $i++ ){
 
-					$code = $this->model->AutoBedCode( $id );
+						$code = $this->model->AutoBedCode( $id );
 
-					$bed = array(
-						'bed_code'=>$code,
-						'bed_status'=>'on',
-						'bed_room_id'=>$id
-					);
+						$bed = array(
+							'bed_code'=>$code,
+							'bed_status'=>'on',
+							'bed_room_id'=>$id
+						);
 
-					$this->model->setBed( $bed );
+						$this->model->setBed( $bed );
+					}
 				}
 
 				$arr['message'] = 'บันทึกข้อมูลเรียบร้อย';
@@ -112,5 +131,28 @@ class Rooms extends Controller {
         }
 
         echo json_encode($arr);
+	}
+
+	public function del($id=null){
+
+		$id = isset($_REQUEST['id']) ? $_REQUEST['id'] : $id;
+		if( empty($this->me) || $this->format!='json' || empty($id) ) $this->error();
+
+		$item = $this->model->get($id);
+		if( empty($item) ) $this->error();
+
+		if( !empty($_POST) ){
+
+			$this->model->delete($id);
+			$arr['message'] = 'ลบข้อมูลเรียบร้อย';
+			$arr['url'] = 'refresh';
+			echo json_encode($arr);
+		}
+		else{
+
+			$this->view->setData('item', $item);
+			$this->view->setPage('path', 'Themes/manage/forms/rooms');
+			$this->view->render('del');
+		}
 	}
 }

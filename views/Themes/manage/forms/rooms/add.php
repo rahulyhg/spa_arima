@@ -47,18 +47,20 @@ $form   ->field("room_floor")
         ->type('number')
         ->maxlength(2)
         ->autocomplete('off')
-        ->addClass('inputtext');
+        ->addClass('inputtext')
+        ->value( !empty($this->item['floor']) ? $this->item['floor'] : '' );
 
 $form   ->field("room_level")
         ->label($this->lang->translate('Type'))
         ->autocomplete('off')
         ->addClass('inputtext')
-        ->select( $this->level, 'id', 'name', false );
+        ->select( $this->level, 'id', 'name', !empty($this->item['level']) ? $this->item['level'] : false );
 
 $form   ->field("room_number")
         ->label($this->lang->translate('Number'))
         ->autocomplete('off')
-        ->addClass('inputtext');
+        ->addClass('inputtext')
+        ->value( !empty($this->item['number']) ? $this->item['number'] : '' );
 
 $a = array();
 $a[] = array('id'=>'free', 'name'=>$this->lang->translate('Free'));
@@ -69,14 +71,15 @@ $form   ->field("room_price_type")
         ->label($this->lang->translate('Price rate'))
         ->autocomplete('off')
         ->addClass('inputtext')
-        ->select( $a, 'id', 'name', false );
+        ->select( $a, 'id', 'name', !empty($this->item['price_type']) ? $this->item['price_type'] : false );
 
 
 $form   ->field("room_person")
         ->label($this->lang->translate('Person'))
         ->type('number')
         ->autocomplete('off')
-        ->addClass('inputtext');
+        ->addClass('inputtext')
+        ->value( !empty($this->item['person']) ? $this->item['person'] : '' );
 
 /*$array[] = array('id'=>'30','30 นาที');
 $array[] = array('id'=>'60','');
@@ -87,21 +90,30 @@ $form   ->field("room_timer")
         ->label($this->lang->translate('Time').'/('.$this->lang->translate('Minute').')')
         ->type('number')
         ->autocomplete('off')
-        ->addClass('inputtext');  
+        ->addClass('inputtext')
+        ->value( !empty($this->item['timer']) ? $this->item['timer'] : '' );
 
 $form   ->field("room_price")
         ->label($this->lang->translate('Price'))
         ->type('number')
         ->autocomplete('off')
-        ->addClass('inputtext');
+        ->addClass('inputtext')
+        ->value( !empty($this->item['price']) ? $this->item['price'] : '' );
 
-$form   ->field("room_bed")
-        ->label($this->lang->translate('Bed'))
-        ->type('number')
-        ->maxlength(2)
-        ->autocomplete('off')
-        ->addClass('inputtext');
+        if( empty($this->item) ){        
 
+            $form   ->field("room_bed")
+                    ->label($this->lang->translate('Bed'))
+                    ->type('number')
+                    ->maxlength(2)
+                    ->autocomplete('off')
+                    ->addClass('inputtext')
+                    ->value( !empty($this->item['bed_total']) ? $this->item['bed_total'] : '' );
+        }
+        else{
+
+            $arr['hiddenInput'][] = array('name'=>'room_bed','value'=>$this->item['bed_total']);
+        }
 
 # set form
 $arr['form'] = '<form class="js-submit-form" data-plugins="addrooms" method="post" action="'.URL. 'rooms/save"></form>';

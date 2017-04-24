@@ -48,7 +48,7 @@ if( !empty($bok)){
 }
 
 #services
-$sv[] = array('key'=>'packet','text'=>$this->lang->translate('menu','Packet'),'icon'=>'cubes','link'=>$url.'packet');
+$sv[] = array('key'=>'package','text'=>$this->lang->translate('menu','Package'),'icon'=>'cubes','link'=>$url.'package');
 $sv[] = array('key'=>'promotions','text'=> $this->lang->translate('menu','Discount') . ' & '. $this->lang->translate('menu','Promotions'),'icon'=>'tags','link'=>$url.'promotions');
 foreach ($sv as $key => $value) {
 	if( empty($this->permit[$value['key']]['view']) ) unset($sv[$key]);
