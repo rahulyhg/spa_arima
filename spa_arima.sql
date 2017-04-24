@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 23, 2017 at 06:37 AM
+-- Generation Time: Apr 24, 2017 at 11:45 AM
 -- Server version: 5.6.24
 -- PHP Version: 5.6.8
 
@@ -611,7 +611,7 @@ CREATE TABLE `dealer` (
 --
 
 INSERT INTO `dealer` (`dealer_id`, `dealer_name`, `dealer_created`, `dealer_address`, `dealer_license`, `dealer_tel`, `dealer_mobile_phone`, `dealer_fax`, `dealer_email`, `dealer_emp_id`, `dealer_updated`) VALUES
-(1, 'Arima Onsen Thailand', '2017-02-14 23:18:05', '37/10-14 Soi Suriwongse Plaza, Suriwongse Road, Bangrak, Bangkok 10500', '', '', '', '', '', 6, '2017-04-06 14:51:54');
+(1, 'Arima Onsen Thailand', '2017-02-14 23:18:05', '37/10-14 Soi Suriwongse Plaza, Suriwongse Road, Bangrak, Bangkok 10500', '', '', '', '', '', 6, '2017-04-23 22:20:29');
 
 -- --------------------------------------------------------
 
@@ -672,25 +672,8 @@ CREATE TABLE `employees` (
 --
 
 INSERT INTO `employees` (`emp_dealer_id`, `emp_dep_id`, `emp_pos_id`, `emp_id`, `emp_created`, `emp_prefix_name`, `emp_first_name`, `emp_last_name`, `emp_image_id`, `emp_nickname`, `emp_username`, `emp_password`, `emp_phone_number`, `emp_email`, `emp_line_id`, `emp_address`, `emp_city_id`, `emp_zip`, `emp_birthday`, `emp_updated`, `emp_display`, `emp_notes`, `emp_mode`, `emp_lang`, `emp_permission`, `emp_online`) VALUES
-(1, 4, 2, 6, '2016-12-11 14:42:30', 'Mr.', 'ภุชงค์', 'สวนแจ้ง', 78, '', 'admin', '96f6056b20bfa4ee2bdfbe3d885026b70b0aee8bb1ef70436571dd22cd127e74', '0843635952', 'monkey.d.chong@gmail.com', 'shiichong', '{\"number\":\"\",\"mu\":\"\",\"village\":\"\",\"alley\":\"\",\"street\":\"\",\"district\":\"\",\"amphur\":\"\",\"city\":\"64\",\"zip\":\"\"}', 64, '', '1970-01-01', '2017-04-03 00:49:39', 'enabled', '', 'blue', 'th', '', 0),
-(1, 2, 3, 13, '2017-02-08 15:25:41', 'Mr.', 'ธนัท', 'สัครพันธ์', 55, '', 'sale1', '96f6056b20bfa4ee2bdfbe3d885026b70b0aee8bb1ef70436571dd22cd127e74', '', '', '', '{\"number\":\"\",\"mu\":\"\",\"village\":\"\",\"alley\":\"\",\"street\":\"\",\"district\":\"\",\"amphur\":\"\",\"city\":\"64\",\"zip\":\"\"}', 64, '', '1970-01-01', '2017-03-24 17:04:51', 'enabled', '', 'blue', 'th', '', 0),
-(1, 2, 1, 14, '2017-02-08 15:26:07', 'Ms.', 'จิราพร', 'แสงโดด', 56, '', 'sale2', '96f6056b20bfa4ee2bdfbe3d885026b70b0aee8bb1ef70436571dd22cd127e74', '', '', '', '{\"number\":\"\",\"mu\":\"\",\"village\":\"\",\"alley\":\"\",\"street\":\"\",\"district\":\"\",\"amphur\":\"\",\"city\":\"\",\"zip\":\"\"}', 0, '', '1970-01-01', '2017-03-24 13:45:17', 'enabled', '', '', '', '', 0),
-(1, 2, 1, 15, '2017-02-08 15:27:20', 'Mr.', 'จิรายุ', 'วัชรศิริโชค', 57, '', 'sale3', '96f6056b20bfa4ee2bdfbe3d885026b70b0aee8bb1ef70436571dd22cd127e74', '', '', '', '{\"number\":\"\",\"mu\":\"\",\"village\":\"\",\"alley\":\"\",\"street\":\"\",\"district\":\"\",\"amphur\":\"\",\"city\":\"\",\"zip\":\"\"}', 0, '', '0000-00-00', '2017-03-26 11:52:50', 'enabled', '', '', '', '', 0),
-(1, 2, 1, 16, '2017-02-08 15:27:46', 'Ms.', 'นงนุช', 'ปิ่นแก้ว', 0, '', 'sale4', '96f6056b20bfa4ee2bdfbe3d885026b70b0aee8bb1ef70436571dd22cd127e74', '', '', '', '', 0, '', '0000-00-00', '2017-02-10 09:56:44', 'enabled', '', '', '', '', 0),
-(1, 2, 1, 17, '2017-02-08 15:28:10', 'Mr.', 'ณัฐวุฒิ', 'ทองสุข', 0, '', 'sale5', '96f6056b20bfa4ee2bdfbe3d885026b70b0aee8bb1ef70436571dd22cd127e74', '', '', '', '', 0, '', '0000-00-00', '2017-02-10 09:56:32', 'enabled', '', '', '', '', 0),
-(1, 2, 1, 18, '2017-02-08 15:28:29', 'Ms.', 'บุษกร', 'เพ็ชรมาลัย', 0, '', 'sale6', '96f6056b20bfa4ee2bdfbe3d885026b70b0aee8bb1ef70436571dd22cd127e74', '', '', '', '', 0, '', '0000-00-00', '2017-02-10 09:39:23', 'enabled', '', '', '', '', 0),
-(1, 2, 1, 19, '2017-02-08 15:28:50', 'Mr.', 'อัยยะ', 'สมสุข', 0, '', 'sale7', '96f6056b20bfa4ee2bdfbe3d885026b70b0aee8bb1ef70436571dd22cd127e74', '', '', '', '', 0, '', '0000-00-00', '2017-02-10 09:56:12', 'enabled', '', '', '', '', 0),
-(1, 2, 4, 20, '2017-02-08 15:29:38', 'Ms.', 'ลภัสรดา', 'ธิสา', 58, '', 'sale8', '96f6056b20bfa4ee2bdfbe3d885026b70b0aee8bb1ef70436571dd22cd127e74', '', '', '', '{\"number\":\"\",\"mu\":\"\",\"village\":\"\",\"alley\":\"\",\"street\":\"\",\"district\":\"\",\"amphur\":\"\",\"city\":\"\",\"zip\":\"\"}', 0, '', '1970-01-01', '2017-03-24 13:45:32', 'enabled', '', '', '', '', 0),
-(1, 2, 1, 21, '2017-02-08 15:30:12', 'Ms.', 'สุญาดา', 'พันธุ์เถาว์', 59, '', 'sale9', '96f6056b20bfa4ee2bdfbe3d885026b70b0aee8bb1ef70436571dd22cd127e74', '', '', '', '{\"number\":\"\",\"mu\":\"\",\"village\":\"\",\"alley\":\"\",\"street\":\"\",\"district\":\"\",\"amphur\":\"\",\"city\":\"\",\"zip\":\"\"}', 0, '', '1970-01-01', '2017-03-24 13:45:53', 'enabled', '', '', '', '', 0),
-(1, 2, 1, 22, '2017-02-08 15:30:33', 'Ms.', 'วิษา', 'เต็งกุลศล', 60, '', 'sale10', '96f6056b20bfa4ee2bdfbe3d885026b70b0aee8bb1ef70436571dd22cd127e74', '', '', '', '{\"number\":\"\",\"mu\":\"\",\"village\":\"\",\"alley\":\"\",\"street\":\"\",\"district\":\"\",\"amphur\":\"\",\"city\":\"\",\"zip\":\"\"}', 0, '', '0000-00-00', '2017-03-26 11:50:55', 'enabled', '', '', '', '', 0),
-(1, 2, 1, 23, '2017-02-08 15:31:08', 'Mr.', 'ยศพล', 'เสฏฐ์คณา', 0, '', 'sale11', '96f6056b20bfa4ee2bdfbe3d885026b70b0aee8bb1ef70436571dd22cd127e74', '', '', '', '', 0, '', '0000-00-00', '2017-02-10 09:38:17', 'enabled', '', '', '', '', 0),
-(1, 2, 1, 24, '2017-02-08 15:31:31', 'Mr.', 'อุดร', 'ดิษฐประสพ', 0, '', 'sale12', '96f6056b20bfa4ee2bdfbe3d885026b70b0aee8bb1ef70436571dd22cd127e74', '', '', '', '', 0, '', '0000-00-00', '2017-02-10 09:38:34', 'enabled', '', '', '', '', 0),
-(1, 2, 1, 25, '2017-02-08 15:31:52', 'Ms.', 'อัมพวัน', 'วงษ์ทอง', 0, '', 'sale13', '96f6056b20bfa4ee2bdfbe3d885026b70b0aee8bb1ef70436571dd22cd127e74', '', '', '', '{\"number\":\"\",\"mu\":\"\",\"village\":\"\",\"alley\":\"\",\"street\":\"\",\"district\":\"\",\"amphur\":\"\",\"city\":\"\",\"zip\":\"\"}', 0, '', '1970-01-01', '2017-03-24 11:01:16', 'enabled', '', '', '', '', 0),
-(1, 2, 1, 26, '2017-02-08 15:32:14', 'Ms.', 'จิรนิตย์', 'พันธ์หว้า', 0, '', 'sale14', '96f6056b20bfa4ee2bdfbe3d885026b70b0aee8bb1ef70436571dd22cd127e74', '', '', '', '{\"number\":\"\",\"mu\":\"\",\"village\":\"\",\"alley\":\"\",\"street\":\"\",\"district\":\"\",\"amphur\":\"\",\"city\":\"\",\"zip\":\"\"}', 0, '', '1970-01-01', '2017-03-24 12:16:08', 'enabled', '', '', '', '', 0),
-(1, 1, 2, 32, '2017-03-24 15:32:26', 'Mr.', 'พชร', 'นันทอาภา', 66, '', 'blacklistmodz', 'fe4cf836c6a7950448013c3effd82b63ea269c55f67ef790bb30342026f4e05b', '', '', '', '{\"number\":\"\",\"mu\":\"\",\"village\":\"\",\"alley\":\"\",\"street\":\"\",\"district\":\"\",\"amphur\":\"\",\"city\":\"\",\"zip\":\"\"}', 0, '', '1970-01-01', '2017-03-29 17:24:35', 'enabled', '', '', '', '', 0),
-(1, 5, 5, 33, '2017-03-27 23:31:45', 'Mr.', 'ช่างใหญ่', 'ใจนิ่ง', 0, '', 'tecni1', '96f6056b20bfa4ee2bdfbe3d885026b70b0aee8bb1ef70436571dd22cd127e74', '', '', '', '{\"number\":\"\",\"mu\":\"\",\"village\":\"\",\"alley\":\"\",\"street\":\"\",\"district\":\"\",\"amphur\":\"\",\"city\":\"\",\"zip\":\"\"}', 0, '', '1970-01-01', '2017-03-29 18:22:22', 'enabled', '', '', '', '', 0),
-(1, 5, 5, 34, '2017-03-29 18:42:09', 'Mr.', 'เหิญ', 'ใจใหญ่', 0, '', 'tecni2', '96f6056b20bfa4ee2bdfbe3d885026b70b0aee8bb1ef70436571dd22cd127e74', '', '', '', '{\"number\":\"\",\"mu\":\"\",\"village\":\"\",\"alley\":\"\",\"street\":\"\",\"district\":\"\",\"amphur\":\"\",\"city\":\"\",\"zip\":\"\"}', 0, '', '0000-00-00', '2017-03-29 18:42:09', 'enabled', '', '', '', '', 0),
-(1, 3, 0, 35, '2017-04-03 14:57:51', '', 'กุ้งนาง', '', 0, '', 'service02', 'b3fbcdb3904f6098715f10a90f523f85abba4d4577a72ddc46fb717830d08285', '', '', '', '{\"number\":\"\",\"mu\":\"\",\"village\":\"\",\"alley\":\"\",\"street\":\"\",\"district\":\"\",\"amphur\":\"\",\"city\":\"\",\"zip\":\"\"}', 0, '', '0000-00-00', '2017-04-03 15:31:05', 'enabled', '', '', '', '{\"dashboard\":{\"view\":\"0\"},\"customers\":{\"view\":\"0\",\"add\":\"0\",\"edit\":\"0\",\"del\":\"0\"},\"booking\":{\"view\":\"0\",\"add\":\"0\",\"edit\":\"0\",\"del\":\"0\"},\"stocks\":{\"view\":\"1\",\"add\":\"1\",\"edit\":\"1\",\"del\":\"1\"},\"sales\":{\"view\":\"0\",\"add\":\"0\",\"edit\":\"0\",\"del\":\"0\"},\"services\":{\"view\":\"0\",\"add\":\"0\",\"edit\":\"0\",\"del\":\"0\"},\"reports\":{\"view\":\"0\"}}', 0);
+(1, 4, 2, 6, '2016-12-11 14:42:30', 'Mr.', 'ภุชงค์', 'สวนแจ้ง', 77, '', 'admin', '96f6056b20bfa4ee2bdfbe3d885026b70b0aee8bb1ef70436571dd22cd127e74', '0843635952', 'monkey.d.chong@gmail.com', 'shiichong', '{\"number\":\"\",\"mu\":\"\",\"village\":\"\",\"alley\":\"\",\"street\":\"\",\"district\":\"\",\"amphur\":\"\",\"city\":\"64\",\"zip\":\"\"}', 64, '', '1970-01-01', '2017-04-24 14:46:30', 'enabled', '', 'blue', 'en', '', 0),
+(1, 1, 2, 32, '2017-03-24 15:32:26', 'Mr.', 'พชร', 'นันทอาภา', 66, '', 'blacklistmodz', 'fe4cf836c6a7950448013c3effd82b63ea269c55f67ef790bb30342026f4e05b', '', '', '', '{\"number\":\"\",\"mu\":\"\",\"village\":\"\",\"alley\":\"\",\"street\":\"\",\"district\":\"\",\"amphur\":\"\",\"city\":\"\",\"zip\":\"\"}', 0, '', '1970-01-01', '2017-03-29 17:24:35', 'enabled', '', '', '', '', 0);
 
 -- --------------------------------------------------------
 
@@ -848,12 +831,6 @@ CREATE TABLE `media` (
 --
 
 INSERT INTO `media` (`media_album_id`, `media_id`, `media_name`, `media_caption`, `media_type`, `media_sequence`, `media_emp_id`, `media_created`) VALUES
-(1, 55, 'Image_fcb0884.jpg', '', 'jpg', 23, 0, '0000-00-00 00:00:00'),
-(1, 56, 'Image_d3a6f57.jpg', '', 'jpg', 24, 0, '0000-00-00 00:00:00'),
-(1, 57, 'Image_e21da70.jpg', '', 'jpg', 25, 0, '0000-00-00 00:00:00'),
-(1, 58, 'Image_25f7745.jpg', '', 'jpg', 26, 0, '0000-00-00 00:00:00'),
-(1, 59, 'Image_14966c5.jpg', '', 'jpg', 27, 0, '0000-00-00 00:00:00'),
-(1, 60, 'Image_1391e22.jpg', '', 'jpg', 28, 0, '0000-00-00 00:00:00'),
 (1, 66, '14731133_700973536738065_7088858288486053031_n.jpg', '', 'jpg', 32, 0, '0000-00-00 00:00:00'),
 (2, 67, 'MG GS.png', '', 'png', 1, 0, '0000-00-00 00:00:00'),
 (2, 69, 'MG5.png', '', 'png', 2, 0, '0000-00-00 00:00:00'),
@@ -961,6 +938,47 @@ CREATE TABLE `package` (
   `pack_emp_id` int(11) NOT NULL,
   `pack_updated` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `package`
+--
+
+INSERT INTO `package` (`pack_id`, `pack_code`, `pack_name`, `pack_timer`, `pack_is_time`, `pack_price`, `pack_created`, `pack_emp_id`, `pack_updated`) VALUES
+(2, 'A01', 'TRADITIONAL THAI BODY MASSAGE', 60, 0, 350.00, '2017-04-24 16:20:22', 6, '2017-04-24 16:32:24'),
+(3, 'A02', 'HEAD MASSAGE', 60, 0, 350.00, '2017-04-24 16:30:20', 6, '2017-04-24 16:30:20'),
+(4, 'A03', 'FOOT - MASSAGE', 60, 0, 350.00, '2017-04-24 16:30:42', 6, '2017-04-24 16:30:55'),
+(5, 'A04', 'EAR CLEANING', 30, 0, 350.00, '2017-04-24 16:32:55', 6, '2017-04-24 16:32:55'),
+(6, 'A05', 'MANICURE', 40, 0, 350.00, '2017-04-24 16:33:17', 6, '2017-04-24 16:33:17'),
+(7, 'A06', 'PEDICURE', 30, 0, 350.00, '2017-04-24 16:33:33', 6, '2017-04-24 16:33:33'),
+(8, 'A07', 'OIL MASSAGE', 60, 0, 700.00, '2017-04-24 16:38:34', 6, '2017-04-24 16:38:34'),
+(9, 'A07', 'FACIAL - MASSAGE', 50, 0, 700.00, '2017-04-24 16:39:55', 6, '2017-04-24 16:44:57'),
+(10, 'A08', 'FACIAL MASSAGE , FACIAL PACK', 60, 0, 1000.00, '2017-04-24 16:43:42', 6, '2017-04-24 16:43:42');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `package_skill`
+--
+
+CREATE TABLE `package_skill` (
+  `pack_id` int(11) NOT NULL,
+  `skill_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `package_skill`
+--
+
+INSERT INTO `package_skill` (`pack_id`, `skill_id`) VALUES
+(3, 3),
+(4, 4),
+(2, 2),
+(5, 7),
+(6, 8),
+(7, 8),
+(8, 5),
+(10, 6),
+(9, 6);
 
 -- --------------------------------------------------------
 
@@ -1242,7 +1260,7 @@ CREATE TABLE `rooms` (
   `room_floor` int(1) NOT NULL,
   `room_price` float(6,2) NOT NULL,
   `room_price_type` varchar(10) NOT NULL,
-  `room_status` enum('on','off','renovate') NOT NULL,
+  `room_status` enum('on','off','cleaning','booking','renovate') NOT NULL,
   `room_bed` int(1) NOT NULL,
   `room_person` int(2) NOT NULL,
   `room_timer` int(4) NOT NULL,
@@ -1254,9 +1272,8 @@ CREATE TABLE `rooms` (
 --
 
 INSERT INTO `rooms` (`room_dealer_id`, `room_id`, `room_number`, `room_floor`, `room_price`, `room_price_type`, `room_status`, `room_bed`, `room_person`, `room_timer`, `room_level`) VALUES
-(0, 1, 201, 2, 1000.00, 'time', 'on', 0, 0, 0, 'baths'),
-(0, 2, 101, 1, 0.00, 'free', 'on', 3, 0, 0, 'basic'),
-(0, 3, 202, 2, 0.00, 'free', 'on', 0, 0, 0, 'basic');
+(1, 2, 101, 1, 0.00, 'persion', 'on', 3, 0, 0, ''),
+(1, 4, 301, 3, 120.00, '', 'cleaning', 3, 3, 120, '');
 
 -- --------------------------------------------------------
 
@@ -1278,7 +1295,10 @@ CREATE TABLE `room_bed` (
 INSERT INTO `room_bed` (`bed_id`, `bed_code`, `bed_status`, `bed_room_id`) VALUES
 (1, '11011', 'on', 2),
 (2, '11012', 'on', 2),
-(3, '11013', 'on', 2);
+(3, '11013', 'on', 2),
+(4, '33011', 'on', 4),
+(5, '33012', 'on', 4),
+(6, '33013', 'on', 4);
 
 -- --------------------------------------------------------
 
@@ -1357,9 +1377,9 @@ CREATE TABLE `system_paytype` (
 --
 
 INSERT INTO `system_paytype` (`pay_id`, `pay_name`) VALUES
-(1, 'บัตรเครดิต'),
-(2, 'เงินสด'),
-(3, 'เช็คธนาคาร');
+(1, 'Visa / Master Card'),
+(2, 'Cash'),
+(3, 'Bank check');
 
 --
 -- Indexes for dumped tables
@@ -1502,6 +1522,12 @@ ALTER TABLE `orders_items`
 ALTER TABLE `orders_items_emp_permit`
   ADD KEY `item_id` (`item_id`),
   ADD KEY `emp_id` (`emp_id`);
+
+--
+-- Indexes for table `package`
+--
+ALTER TABLE `package`
+  ADD PRIMARY KEY (`pack_id`);
 
 --
 -- Indexes for table `products`
@@ -1662,7 +1688,7 @@ ALTER TABLE `invoices`
 -- AUTO_INCREMENT for table `media`
 --
 ALTER TABLE `media`
-  MODIFY `media_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=77;
+  MODIFY `media_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=78;
 --
 -- AUTO_INCREMENT for table `media_albums`
 --
@@ -1678,6 +1704,11 @@ ALTER TABLE `orders`
 --
 ALTER TABLE `orders_items`
   MODIFY `item_id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `package`
+--
+ALTER TABLE `package`
+  MODIFY `pack_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 --
 -- AUTO_INCREMENT for table `products`
 --
@@ -1712,12 +1743,12 @@ ALTER TABLE `promotions`
 -- AUTO_INCREMENT for table `rooms`
 --
 ALTER TABLE `rooms`
-  MODIFY `room_id` int(2) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `room_id` int(2) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT for table `room_bed`
 --
 ALTER TABLE `room_bed`
-  MODIFY `bed_id` int(3) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `bed_id` int(3) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 --
 -- AUTO_INCREMENT for table `system_notes`
 --
