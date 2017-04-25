@@ -163,6 +163,9 @@ class Package_Model extends Model {
 
 		$this->db->delete($this->_objType, "{$this->_cutNamefield}id={$id}");
 	}
+	public function is_name($text) {
+		return $this->db->count($this->_objType, "`pack_name`=:text", array(':text'=>$text));
+	}
 
 	/**/
 	/* Skill */

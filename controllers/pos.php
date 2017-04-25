@@ -39,6 +39,11 @@ class Pos extends Controller{
 
         $this->view->elem('body')->attr('data-plugins', 'pos');
 
+
+        //set Data
+        // print_r($this->model->query('package')->lists()); die;
+        $this->view->setData('package', $this->model->query('package')->lists());
+
         $this->view->setPage('on', 'orders');
 		$this->view->render("index");
 	}

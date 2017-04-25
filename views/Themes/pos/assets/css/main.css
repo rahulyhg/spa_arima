@@ -622,7 +622,7 @@ body.has_menu .m-menu-toggle{display:block}
     border-radius: 5px 5px 0 0;
     background-color: #fcfbfd;
 }
-.slipPaper-main.has-bottom{
+.slipPaper-container.has-bottom .slipPaper-main{
     bottom: 130px;
 }
 .slipPaper-main:before, .slipPaper-main:after {
@@ -710,13 +710,16 @@ body.has_menu .m-menu-toggle{display:block}
 .slipPaper-bodyFooter-summary {
     width: 100%;
     color: #777;
+    
 }
+
 .slipPaper-bodyFooter-summary .colleft {
     width: 40%;
     vertical-align: top;
 }
 .slipPaper-bodyFooter-summary .colright {
     padding-left: 20px;
+    vertical-align: top;
 }
 .slipPaper-bodyFooter-summary table {
     width: 100%;
@@ -1189,6 +1192,71 @@ a.ui-status{text-decoration:none}
 .order-title label {
     font-weight: bold;
 }
+
+.icon-thailand-baht {
+    background-image: url('../images/icons/thailand-bahtx32.png');
+    width: 70px;
+    height: 70px;
+    display: inline-block !important;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.memu-tab{
+     margin-bottom: 10px;
+}
+.memu-tab a {
+    position: relative;
+    display: block;
+    float: left;
+    height: 32px;
+    margin: 0 15px;
+    font-size: 12px;
+    line-height: 32px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #666;
+
+}
+.memu-tab a:hover {
+    text-decoration: none;
+    color: #1d1d1d;
+}
+.memu-tab .active {
+    z-index: 1;
+    margin: 0 -4px;
+    padding: 0 15px;
+    border-radius: 4px;
+    background: #c60e0e;
+    box-shadow: inset 1px 1px 2px rgba(0,0,0,0.5);
+    color: #fff;
+    cursor: default;
+}
+.memu-tab .active:hover {
+    color: #fff;
+}
+.memu-tab .active:first-child {
+    margin-left: 0;
+}
+.memu-tab .active:after {
+    content: ' ';
+    position: absolute;
+    top: 32px;
+    left: 50%;
+    display: block;
+    width: 0;
+    height: 0;
+    margin-left: -4px;
+    border-top: 4px solid #c60e0e;
+    border-right: 4px solid transparent;
+    border-left: 4px solid transparent;
+}
+
+.memu-table td{border-bottom: 1px solid #ccc;padding: 8px 4px;}
+.memu-table .td_box{width: 1px;padding: 0}
+.memu-table .box{min-height:50px;}
+.memu-table .price{text-align: right;}
+.memu-table .time{width: 30px;}
 /*
 | ====================================== |
 | ============= Animation ============== |
