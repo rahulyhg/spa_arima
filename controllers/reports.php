@@ -7,8 +7,8 @@ class reports extends Controller {
     }
 
     public function index(){
-
-    	$this->view->render('reports/display');
+        $this->error();
+    	// $this->view->render('reports/display');
     }
 
     public function get() {
