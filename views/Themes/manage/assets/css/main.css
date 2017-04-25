@@ -132,8 +132,11 @@ a.navigation-trigger:hover{text-decoration:none}
 .navigation-list + .navigation-list, .navigation-main-footer, .navigation-btn-add{border-top:1px solid transparent}
 .navigation-main-footer{border-color:#d8d8d8}
 .navigation-main-footer .navigation-list{position:relative}
-.navigation-main-footer .navigation-brand-logo{margin-left:10px;height:30px;line-height:30px;margin-right:40px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:none}
+.navigation-main-footer .navigation-brand-logo{font-weight:bold;margin-left:10px;height:30px;line-height:30px;margin-right:40px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:none}
 .is-pushed-left .navigation-main-footer .navigation-brand-logo{display:block}
+.is-pushed-left .navigation-main-footer .navigation-brand-logo img{height: 100%;margin-right:6px}
+
+
 .is-pushed-left .navigation-main-footer-cogs{right:5px;position:absolute;bottom:0}
 .navigation-main-footer-cogs a{color:#000;line-height:30px;width:50px;display:block;text-align:center;opacity:.7;text-align:center}
 .is-pushed-left .navigation-main-footer-cogs a{width:30px}
@@ -581,9 +584,11 @@ body.hidden-tobar #tobar{display:none;height:0}
 .settings-table{width:100%}
 .settings-table th{color:#888;font-size:13px;font-weight:bold;padding:20px 12px 2px;border-bottom:1px solid #ccc;white-space:nowrap}
 .settings-table td{padding:8px 12px}/*white-space:nowrap*/
+.settings-table td.head{padding:4px 12px;background-color: #f2f2f2;font-size: 11px;font-weight: bold;}
 .settings-table .text{width:250px;text-align:left}
 .settings-table th.checkbox, .settings-table td.checkbox{width:10px;text-align:center}
 .settings-table .price{text-align:right;width:70px}
+.settings-table .unit{text-align:left;width:10px;white-space:nowrap}
 .settings-table .qty{text-align:center;width:40px}
 .settings-table .status, .settings-table .score{width:50px;text-align:center}
 .settings-table .date{width:40px;text-align:left}
@@ -2374,7 +2379,7 @@ body.light .datalist-main-header, body.light .datalist-main-footer{background-co
 .table-mg table.row-2 th{height:22px;line-height:22px;font-size:90%}
 .table-mg [ref=tablelists] table tr:first-child td{border-top:none}
 .table-mg table .status{min-width:80px;padding-left:0;padding-right:0}
-.listpage2-mg .listpage2-actions>div>ul>li.mt{margin-top:13px}
+.listpage2-mg .listpage2-actions>div>ul>li.mt{margin-top:15px}
 .listpage2-mg .listpage2-actions .label{font-size:13px;color:#999;display:block;line-height:1;margin-bottom:2px;font-weight:bold}
 .listpage2-mg .listpage2-actions .inputtext{width:100%}
 .listpage2-mg .listpage2-actions .inputtext, .listpage2-mg .listpage2-actions .btn-box{background-color:#fff}

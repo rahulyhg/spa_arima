@@ -1,6 +1,6 @@
 <?php
 
-class Sales extends Controller {
+class Package extends Controller {
 
     public function __construct() {
         parent::__construct();
@@ -8,41 +8,13 @@ class Sales extends Controller {
 
     public function index( $id=null, $tab='booking' ) {
 
-        $this->view->setPage('on', 'sales' );
+        $this->view->setPage('on', 'package' );
 
-        if( !empty( $this->me['dep_is_sale'] ) ){
-            $id = $this->me['id'];
-        }
-
-        if( !empty($id) ){      
-            $options = array();
-        
-            $booking = $this->model->query('booking')->lists( array('sale'=>$id) );
-
-            $item = $this->model->query('employees')->get( $id, $options );
-
-            $this->view->setData('id', $id );
-            $this->view->setData('booking',$booking);
-            $this->view->setData('item', $item );
-            $this->view->setData('tab', $tab); 
-            $this->view->render("sales/profile/display");
-        }
-        else{
-            $results = $this->model->query('employees')->lists( array('dep'=>'Sales') );
-
-            if( $this->format=='json' ) {
-                $this->view->setData('results', $results);
-                
-                $render = "sales/lists/json";
-            } 
-            else{
-               $this->view->setData('status', $this->model->query('services')->status() );
-               $this->view->setData('position', $this->model->query('employees')->position(2) );
-               $render = "sales/lists/display";
-           }
-           $this->view->render($render);
-       }
-   }
+        $this->view->setData('lists', $this->model->query('package')->lists());
+        $render = "package/lists/display";
+        $this->view->render($render);
+       
+    }
 
     public function lists(){
         if( empty($this->me) ) $this->error();
@@ -77,8 +49,7 @@ class Sales extends Controller {
         $this->view->render("sales/forms/add_or_edit_dialog");
     }
 
-    public function edit($id=null)
-    {
+    public function edit($id=null) {
         if( empty($this->me) || empty($id) ) $this->error();
 
         $item = $this->model->query('employees')->get($id);

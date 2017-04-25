@@ -22,7 +22,7 @@ class System_Model extends Model{
 
             'customers' => array('view'=>1, 'add'=>1),
 
-            'packet' => array('view'=>1),
+            'package' => array('view'=>1),
             'promotions' => array('view'=>1),
 
             'tasks' => array('view'=>1, 'add'=>1), 
@@ -48,6 +48,9 @@ class System_Model extends Model{
             $arr['dashboard'] = array('view'=>1);
             // $arr['events'] = array('view'=>1,'edit'=>1, 'del'=>1, 'add'=>0);
 
+            $arr['package'] = array('view'=>1,'edit'=>1,'del'=>1, 'add'=>1);
+            $arr['promotions'] = array('view'=>1,'edit'=>1,'del'=>1, 'add'=>1);
+
             $arr['tasks'] = array('view'=>1,'edit'=>1, 'del'=>1, 'add'=>1);    
             $arr['reports'] = array('view'=>1);
         }
@@ -58,12 +61,19 @@ class System_Model extends Model{
             $arr['dashboard'] = array('view'=>1);
             $arr['employees'] = array('view'=>1,'edit'=>1, 'del'=>1, 'add'=>1);
       
-
             $arr['orders'] = array('view'=>1);
             $arr['booking'] = array('view'=>1);
 
+            $arr['package'] = array('view'=>1,'edit'=>1,'del'=>1, 'add'=>1);
+            $arr['promotions'] = array('view'=>1,'edit'=>1,'del'=>1, 'add'=>1);
+
             $arr['tasks'] = array('view'=>1,'edit'=>1, 'del'=>1, 'add'=>1);
             $arr['reports'] = array('view'=>1);
+        }
+
+
+        if( in_array(4, $access) ){
+            $arr['pos'] = array('view'=>1,'edit'=>1,'del'=>1,'add'=>1);
         }
 
 

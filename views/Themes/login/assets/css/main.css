@@ -1,3 +1,15 @@
+/*          
+          .o88
+          "888
+ .oooo.    888  .oo.    ..o88.     ooo. .oo.    .oooo`88
+d88' `8b   88bP"Y88b   888P"Y88b  "888P"Y88b   888' `88b 
+888        88b   888   888   888   888   888   888   888
+888. .88   888   888   888   888   888   888   888. .880
+ 8`bo8P'  o888o o888o   8`bod8P'  o888o o888o   .oooo88o
+                                                     088`
+                                                    .o88
+*/
+
 body.login_page{background-color:#e5e5e5}
 body{min-height:400px}
 a{color:#2196f3;text-decoration:none}
@@ -58,14 +70,14 @@ a{color:#2196f3;text-decoration:none}
     left: 10px;width: auto;}
 .form-large .control-group .inputtext{padding-left: 38px}
 .login-header-bar img{
-	-webkit-transition-duration: 1s;
+    -webkit-transition-duration: 1s;
     transition-duration: 1s;
     -webkit-transition-timing-function: ease-in-put;
     transition-timing-function: ease-in-put;
     max-width: 100px;
 }
 @media screen and (max-width:400px) {
-	.content-wrapper{width: auto;margin-left:20px;margin-right: 20px;left: auto;}
+    .content-wrapper{width: auto;margin-left:20px;margin-right: 20px;left: auto;}
 
     .login-container-wrapper{width: 100%;padding:20px 10px}
     .login-logo .text h2{font-size: 35px;line-height: 35px;}
@@ -94,8 +106,8 @@ a{color:#2196f3;text-decoration:none}
     }
 }
 @media screen and (max-height:400px) {
-	.section{position: relative;}
-	.content-wrapper{top: auto;-ms-transform: none;
+    .section{position: relative;}
+    .content-wrapper{top: auto;-ms-transform: none;
     -webkit-transform: none;
     transform: none;margin-top: 20px;margin-bottom: 20px}
     body{ min-height: auto }

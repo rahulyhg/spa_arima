@@ -811,32 +811,6 @@ $(function () {
 		$('body').animate({scrollTop:0}, 300);
 	});
 
-	$('.js-navigation-trigger').click(function () {
-
-		var $page = $('#doc');
-
-		if( !$('body').hasClass('is-pushed-left') ){
-
-			var scroll = $(window).scrollTop()*-1;
-			$page.addClass('fixed_elem').css('top', scroll);
-
-			setTimeout(function () {
-				$('body').addClass('is-pushed-left');
-			},200);
-		}
-		else{
-			
-			var scroll = parseInt( $page.css("top"));
-				scroll = scroll<0 ? scroll*-1:scroll;
-
-			$('body').removeClass('is-pushed-left');
-
-			$page.removeClass('fixed_elem').css('top', "");
-			$(window).scrollTop( scroll );
-
-		}
-	
-	});
 
 	$('#primary-menu-toggle').click(function () {
 

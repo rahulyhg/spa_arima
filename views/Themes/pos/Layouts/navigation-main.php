@@ -2,6 +2,14 @@
 
 $url = URL;
 
+echo '<div class="navigation-main-bg js-navigation-trigger"></div>';
+
+echo '<nav class="navigation-main" role="navigation">';
+
+	// echo '<a class="btn btn-icon js-navigation-trigger"><i class="icon-bars"></i></a>';
+
+echo '<div class="navigation-main-content">';
+
 $image = '';
 if( !empty($this->me['image_url']) ){
 	$image = '<div class="avatar lfloat mrm"><img class="img" src="'.$this->me['image_url'].'" alt="'.$this->me['fullname'].'"></div>';
@@ -10,12 +18,10 @@ else{
 	$image = '<div class="avatar lfloat no-avatar mrm"><div class="initials"><i class="icon-user"></i></div></div>';
 }
 
-echo '<div class="navigation-main-bg navigation-trigger"></div><nav class="navigation-main" role="navigation"><a class="btn btn-icon navigation-trigger"><i class="icon-bars"></i></a>';
+echo '<div class="welcome-box"><div class="anchor clearfix">'.$image.'<div class="content"><div class="spacer"></div><div class="massages"><div class="fullname">'.$this->me['fullname'].'</div><span class="subname">'.$this->me['dep_name'].'</span></div></div></div></div>';
 
-echo '<div class="navigation-main-header"><div class="anchor clearfix">'.$image.'<div class="content"><div class="spacer"></div><div class="massages"><div class="fullname">'.$this->me['fullname'].'</div><span class="subname">'.$this->me['dep_name'].'</span></div></div></div></div>';
 
-echo '<div class="navigation-main-content">';
-
+// menu
 #info
 $info[] = array('key'=>'dashboard','text'=>'Dashboard','link'=>$url.'dashboard','icon'=>'home');
 // $info[] = array('key'=>'notifications','text'=>$this->lang->translate('menu','Notifications'),'link'=>$url.'notifications','icon'=>'bell-o');
@@ -74,23 +80,20 @@ if( !empty($reports) ){
 $cog[] = array('key'=>'settings','text'=>$this->lang->translate('menu','Settings'),'link'=>$url.'settings','icon'=>'cog');
 echo $this->fn->manage_nav($cog, $this->getPage('on'));
 
-	echo '</div>';
-
-	echo '<div class="navigation-main-footer">';
 
 
-echo '<ul class="navigation-list">'.
 
-	'<li class="clearfix">'.
-		'<div class="navigation-main-footer-cogs">'.
-			'<a data-plugins="dialog" href="'.URL.'logout/admin"><i class="icon-power-off"></i><span class="visuallyhidden">Log Out</span></a>'.
-			// '<a href="'.URL.'logout/admin"><i class="icon-cog"></i><span class="visuallyhidden">Settings</span></a>'.
-		'</div>'.
-		'<div class="navigation-brand-logo clearfix"><img class="lfloat mrm" src="'.IMAGES.'logo/small.png">'.( !empty( $this->system['title'] ) ? $this->system['title']:'' ).'</div>'.
-	'</li>'.
-'</ul>';
+
 
 echo '</div>';
+/* end: navigation-main-content*/
+
+echo '<div class="navigation-main-footer">';
+
+
+	echo '<ul class="navigation-list"><li><a data-plugins="dialog" href="'.URL.'logout/admin"><i class="icon-power-off"></i>Log Out</a></li></ul>';
+
+	echo '</div>';
 
 
 echo '</nav>';

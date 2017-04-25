@@ -66,7 +66,7 @@ class Controller {
         
 
         $this->handleLogin();
-        $this->setPagePermit();
+        
     }
     public function setPagePermit($value='') {
 
@@ -177,6 +177,7 @@ class Controller {
             Cookie::set( COOKIE_KEY_EMP, $this->me['id'], time() + (3600*24));
 
             // 
+            $this->setPagePermit();
             $this->_modify();
         }else {
 
@@ -288,17 +289,19 @@ class Controller {
     }
 
     public function _modify() {
+        
+        $options = array(
+            'has_head' => false,
+            'has_topbar' => false,
+            'has_menu' => true,
+        );
 
         if( empty($this->system['theme']) ){
             $this->system['theme'] = 'manage';
         }
 
         $this->view->setPage('theme', $this->system['theme']);
-        $this->view->setPage('theme_options', array(
-            'has_head' => false,
-            'has_topbar' => false,
-            'has_menu' => true,
-        ));
+        $this->view->setPage('theme_options', $options);
 
         
     }
