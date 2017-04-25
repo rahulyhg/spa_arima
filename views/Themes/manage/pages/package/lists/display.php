@@ -51,7 +51,8 @@ $url = URL .'package/';
 					
 			</td>
 
-		</tr>	
+		</tr>
+		<?php } ?>
 	</tbody></table>
 </section>
 <!-- end: section -->
