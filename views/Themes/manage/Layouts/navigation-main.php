@@ -62,13 +62,13 @@ if( !empty($bok)){
 
 #reports
 // $reports[] = array('key'=>'tasks','text'=>$this->lang->translate('menu','Tasks'),'link'=>$url.'tasks','icon'=>'check-square-o');
-$reports[] = array('key'=>'reports','text'=>$this->lang->translate('menu','Reports'),'link'=>$url.'reports','icon'=>'line-chart');
-foreach ($reports as $key => $value) {
-	if( empty($this->permit[$value['key']]['view']) ) unset($reports[$key]);
-}
-if( !empty($reports) ){
-	echo $this->fn->manage_nav($reports, $this->getPage('on'));
-}
+// $reports[] = array('key'=>'reports','text'=>$this->lang->translate('menu','Reports'),'link'=>$url.'reports','icon'=>'line-chart');
+// foreach ($reports as $key => $value) {
+// 	if( empty($this->permit[$value['key']]['view']) ) unset($reports[$key]);
+// }
+// if( !empty($reports) ){
+// 	echo $this->fn->manage_nav($reports, $this->getPage('on'));
+// }
 
 
 $cog[] = array('key'=>'settings','text'=>$this->lang->translate('menu','Settings'),'link'=>$url.'settings','icon'=>'cog');
