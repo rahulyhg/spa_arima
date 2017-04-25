@@ -88,11 +88,11 @@ if( !empty($this->results['lists']) ){
 
             '<td class="express"><ul class="fsm">'.$express.'</ul></td>'.
 
-            '<td class="status">'.(!empty($item['total_car']) ? $item['total_car'] : '-').'</td>'.
+            // '<td class="status">'.(!empty($item['total_car']) ? $item['total_car'] : '-').'</td>'.
 
-            '<td class="status">'.(!empty($item['total_booking']) ? $item['total_booking'] : '-').'</td>'.
+            // '<td class="status">'.(!empty($item['total_booking']) ? $item['total_booking'] : '-').'</td>'.
 
-            '<td class="status">'.(!empty($item['total_cancel']) ? $item['total_cancel'] : '-').'</td>'.
+            // '<td class="status">'.(!empty($item['total_cancel']) ? $item['total_cancel'] : '-').'</td>'.
 
         '</tr>';
         

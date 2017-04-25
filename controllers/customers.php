@@ -6,20 +6,12 @@ class Customers extends Controller {
         parent::__construct();
     }
 
-    public function index( $id=null, $section='car' ) {
+    public function index( $id=null, $section='services' ) {
     	$this->view->setPage('on', 'customers' );
            
         if( !empty($id) ){
 
             $options = array();
-            /* Booking */
-            $booking = $this->model->query('booking')->lists( array('customer'=>$id) );
-
-            /* Car */
-            $car = $this->model->query('cars')->lists( array('customer'=>$id) );
-
-            /* Services */
-            $services = $this->model->query('services')->lists( array('services'=>$id) );
 
             $options['options'] = 1;
 
@@ -27,10 +19,7 @@ class Customers extends Controller {
             if( empty($item) ) $this->error();
 
             $this->view->setData('id', $id );
-            $this->view->setData('services',$services);
             $this->view->setData('item', $item );
-            $this->view->setData('booking', $booking );
-            $this->view->setData('car', $car);
             $this->view->setData('tab', $section); 
             $this->view->render("customers/profile/display");
         }

@@ -15,13 +15,7 @@ $title = array( 0 =>
 
 		 , array('key'=>'name', 'text'=>$this->lang->translate('Full Name'),'sort'=>'first_name','rowspan'=>2)
 		 , array('key'=>'email', 'text'=>$this->lang->translate('Contact'),'rowspan'=>2)
-		 , array('key'=>'status', 'text'=>$this->lang->translate('Amount'), 'colspan'=> 3)
-	),
-	array(
-	0 =>   array('key'=>'status', 'text'=>'รถ')
-		 , array('key'=>'status', 'text'=>'การจอง')
-		 , array('key'=>'status', 'text'=>'ยกเลิกจอง')
-	) 
+	)
 	
 );
 
