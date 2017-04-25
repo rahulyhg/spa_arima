@@ -15,9 +15,28 @@ class Rooms extends Controller {
 
 
 		$this->view->setData('level', $this->model->level() );
+		$this->view->setData('status', $this->model->status() );
 		$this->view->setData('dealer', $this->model->query('dealer')->lists());
 
         $this->view->setPage('path','Themes/manage/forms/rooms');
+        $this->view->render("add");
+	}
+
+	public function edit($id=null){
+
+		$id = isset($_REQUEST['id']) ? $_REQUEST['id'] : $id;
+		if( empty($this->me) || $this->format!='json' || empty($id) ) $this->error();
+
+		$item = $this->model->query('rooms')->get($id);
+		if( empty($item) ) $this->error();
+ 
+		$this->view->setData('level', $this->model->level() );
+		$this->view->setData('status', $this->model->status() );
+		$this->view->setData('dealer', $this->model->query('dealer')->lists());
+
+		$this->view->setData('item', $item);
+
+		$this->view->setPage('path','Themes/manage/forms/rooms');
         $this->view->render("add");
 	}
 
@@ -36,7 +55,8 @@ class Rooms extends Controller {
 					->post('room_floor')->val('is_empty')
 					->post('room_level')
 					->post('room_number')->val('is_empty')
-					->post('room_price_type');
+					->post('room_price_type')
+					->post('room_status');
 
 			$form->submit();
 			$postData = $form->fetch();
@@ -85,22 +105,23 @@ class Rooms extends Controller {
 					$this->model->update( $id , $postData );
 				}
 				else{
-					$postData['room_status'] = 'on';
 					$this->model->insert( $postData );
 					$id = $postData['id'];
 				}
 
-				for( $i=0; $i<$total_bed; $i++ ){
+				if( empty($item) ){
+					for( $i=0; $i<$total_bed; $i++ ){
 
-					$code = $this->model->AutoBedCode( $id );
+						$code = $this->model->AutoBedCode( $id );
 
-					$bed = array(
-						'bed_code'=>$code,
-						'bed_status'=>'on',
-						'bed_room_id'=>$id
-					);
+						$bed = array(
+							'bed_code'=>$code,
+							'bed_status'=>'on',
+							'bed_room_id'=>$id
+						);
 
-					$this->model->setBed( $bed );
+						$this->model->setBed( $bed );
+					}
 				}
 
 				$arr['message'] = 'บันทึกข้อมูลเรียบร้อย';
@@ -112,5 +133,28 @@ class Rooms extends Controller {
         }
 
         echo json_encode($arr);
+	}
+
+	public function del($id=null){
+
+		$id = isset($_REQUEST['id']) ? $_REQUEST['id'] : $id;
+		if( empty($this->me) || $this->format!='json' || empty($id) ) $this->error();
+
+		$item = $this->model->get($id);
+		if( empty($item) ) $this->error();
+
+		if( !empty($_POST) ){
+
+			$this->model->delete($id);
+			$arr['message'] = 'ลบข้อมูลเรียบร้อย';
+			$arr['url'] = 'refresh';
+			echo json_encode($arr);
+		}
+		else{
+
+			$this->view->setData('item', $item);
+			$this->view->setPage('path', 'Themes/manage/forms/rooms');
+			$this->view->render('del');
+		}
 	}
 }

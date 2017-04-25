@@ -1,6 +1,6 @@
 <?php
 
 $taps = array();
-$taps[] = array('id'=>'account', 'name'=>'ตั้งค่าบัญชี');
-$taps[] = array('id'=>'basic', 'name'=>'ตั้งค่าพื้นฐาน');
-$taps[] = array('id'=>'password', 'name'=>'ตั้งค่ารหัสผ่าน');
+$taps[] = array('id'=>'account', 'name'=>$this->lang->translate('Account'));
+$taps[] = array('id'=>'basic', 'name'=>$this->lang->translate('Basic'));
+$taps[] = array('id'=>'password', 'name'=>$this->lang->translate('Password'));

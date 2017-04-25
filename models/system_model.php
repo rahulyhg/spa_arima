@@ -34,6 +34,7 @@ class System_Model extends Model{
             // set settings
             $arr['company'] = array('view'=>1,'edit'=>1, 'del'=>1, 'add'=>1);  
             $arr['dealer'] = array('view'=>1,'edit'=>1, 'del'=>1, 'add'=>1);
+            $arr['rooms'] = array('view'=>1,'edit'=>1, 'del'=>1, 'add'=>1);
 
             $arr['department'] = array('view'=>1,'edit'=>1, 'del'=>1, 'add'=>1);
             $arr['position'] = array('view'=>1,'edit'=>1, 'del'=>1, 'add'=>1);

@@ -1,6 +1,6 @@
 <?php
 
-$title = 'ความสามารถในการให้บริการของพนักงาน';
+$title = $this->lang->translate('Skill of Employees');
 
 $form = new Form();
 $form = $form->create()
@@ -35,8 +35,8 @@ $skill = '<table width="100%" class="table-permit">'.
 			'<thead>'.
 				'<tr>'.
 					'<th> No. </th>'.
-					'<th> ความสามารถ </th>'.
-					'<th> เลือก </th>'.
+					'<th> '.$this->lang->translate('Skill').' '.$this->lang->translate('List').' </th>'.
+					'<th> '.$this->lang->translate('Select').' </th>'.
 				'<tr>'.
 			'</thead>'.
 			'<tbody>'.$skill.'</tbody>'.
@@ -66,7 +66,7 @@ $arr['overflowY'] = 'auto';*/
 $arr['width'] = 450;
 
 # fotter: button
-$arr['button'] = '<button type="submit" class="btn btn-primary btn-submit"><span class="btn-text">Save</span></button>';
-$arr['bottom_msg'] = '<a class="btn" role="dialog-close"><span class="btn-text">Cancel</span></a>';
+$arr['button'] = '<button type="submit" class="btn btn-primary btn-submit"><span class="btn-text">'.$this->lang->translate('Save').'</span></button>';
+$arr['bottom_msg'] = '<a class="btn" role="dialog-close"><span class="btn-text">'.$this->lang->translate('Cancel').'</span></a>';
 
 echo json_encode($arr);

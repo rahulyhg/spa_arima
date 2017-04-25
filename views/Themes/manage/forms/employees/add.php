@@ -1,6 +1,6 @@
 <?php
 
-$title = 'พนักงาน';
+$title = $this->lang->translate('Employees');
 
 $options = array(
     'url' => URL.'media/set',
@@ -74,7 +74,7 @@ else{
 }
 
 $form   ->field("emp_username")
-        ->label('Username*')
+        ->label($this->lang->translate('Username').'*')
         ->autocomplete('off')
         ->addClass('inputtext')
         ->value( !empty($this->item['username'])? $this->item['username']:'' );
@@ -82,7 +82,7 @@ $form   ->field("emp_username")
 if( empty($this->item) ){
 
 $form   ->field("emp_password")
-        ->label('Password*')
+        ->label($this->lang->translate('Password').'*')
         ->type('password')
         ->maxlength(30)
         ->autocomplete('off')
@@ -91,7 +91,7 @@ $form   ->field("emp_password")
 
 
 $form   ->field("name")
-        ->label('ชื่อ')
+        ->label($this->lang->translate('Name'))
         ->text( $this->fn->q('form')->fullname( !empty($this->item)?$this->item:array(), array('field_first_name'=>'emp_', 'prefix_name'=>$this->prefixName) ) );
 
 
@@ -111,7 +111,7 @@ foreach ($this->department as $key => $value) {
 
 $department = '<select class="inputtext" name="emp_dep_id">'.$department.'</select>';
 $form   ->field("emp_dep_id")
-        ->label('Department')
+        ->label($this->lang->translate('Department'))
         ->text( $department );
 
 $position = '<option value="">-</option>';
@@ -127,29 +127,29 @@ foreach ($this->position as $key => $value) {
 }
 $position = '<select class="inputtext" name="emp_pos_id">'.$position.'</select>';
 $form   ->field("emp_pos_id")
-        ->label('Position')
+        ->label($this->lang->translate('Position'))
         ->text( $position );
 
 
-$form   ->field("cus_address")
-        ->name('cus[address]')
-        ->label('ที่อยู่')
+$form   ->field("emp_address")
+        ->name('emp[address]')
+        ->label($this->lang->translate('Address'))
         ->text( $this->fn->q('form')->address( !empty($this->item['address'])? $this->item['address']:array(), array('city'=>$this->city ) ) );
 
 
 $form   ->field("birthday")
-        ->label('วันเกิด')
+        ->label($this->lang->translate('Birthday'))
         ->text( $this->fn->q('form')->birthday( !empty($this->item)?$this->item:array(), array('field_first_name'=>'emp_') ) );
 
 $form   ->field("emp_phone_number")
-        ->label('Phone number*')
+        ->label($this->lang->translate('Phone').'*')
         ->autocomplete('off')
         ->addClass('inputtext')
         ->placeholder('')
         ->value( !empty($this->item['phone_number'])? $this->item['phone_number']:'' );
 
 $form   ->field("emp_email")
-        ->label('Email')
+        ->label($this->lang->translate('Email'))
         ->autocomplete('off')
         ->addClass('inputtext')
         ->placeholder('')
@@ -163,7 +163,7 @@ $form   ->field("emp_line_id")
         ->value( !empty($this->item['line_id'])? $this->item['line_id']:'' );
 
 $form   ->field("emp_notes")
-        ->label('Note')
+        ->label($this->lang->translate('Note'))
         ->type('textarea')
         ->autocomplete('off')
         ->addClass('inputtext')
@@ -179,11 +179,11 @@ $arr['body'] = $form->html();
 
 # title
 if( !empty($this->item) ){
-    $arr['title']= "แก้ไข{$title}";
+    $arr['title']= $title;
     $arr['hiddenInput'][] = array('name'=>'id','value'=>$this->item['id']);
 }
 else{
-    $arr['title']= "เพิ่ม{$title}";
+    $arr['title']= $title;
 }
 
 # fotter: button

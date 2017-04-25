@@ -1,6 +1,6 @@
 <?php
 
-$title = 'ห้อง';
+$title = $this->lang->translate('Room');
 
 $options = array(
     'url' => URL.'media/set',
@@ -20,41 +20,66 @@ $form = $form->create()
     ->elem('div')
     ->addClass('form-insert form-insert-room');
 
+if( count($this->dealer['lists'])==1 ){
+    $arr['hiddenInput'][] = array('name'=>'room_dealer_id','value'=>$this->dealer['lists'][0]['id']);
+}
+else{
+
+    $options = '';
+    foreach ($this->dealer['lists'] as $key => $value) {
+        
+        $selected = '';
+        if( !empty($this->item['dealer_id']) ){
+            if( $this->item['dealer_id']==$value['id'] ){
+                $selected = ' selected="1"';
+            }
+        }
+        $options .= '<option'.$selected.' value="'.$value['id'].'">'.$value['name'].'</option>';
+    }
+    $select = '<select class="inputtext" name="room_dealer_id">'.$options.'</select>';
+    $form   ->field("room_dealer_id")
+            ->label($this->lang->translate('Dealer'))
+            ->text( $select );
+}
+
 $form   ->field("room_floor")
-        ->label('ชั้น')
+        ->label($this->lang->translate('Floor'))
         ->type('number')
         ->maxlength(2)
         ->autocomplete('off')
-        ->addClass('inputtext');
+        ->addClass('inputtext')
+        ->value( !empty($this->item['floor']) ? $this->item['floor'] : '' );
 
 $form   ->field("room_level")
-        ->label('ประเภทห้อง')
+        ->label($this->lang->translate('Type'))
         ->autocomplete('off')
         ->addClass('inputtext')
-        ->select( $this->level, 'id', 'name', false );
+        ->select( $this->level, 'id', 'name', !empty($this->item['level']) ? $this->item['level'] : false );
 
 $form   ->field("room_number")
-        ->label('ชื่อหรือหมายเลขห้อง')
-        ->autocomplete('off')
-        ->addClass('inputtext');
-
-$a = array();
-$a[] = array('id'=>'free', 'name'=>'Free');
-$a[] = array('id'=>'time', 'name'=>'ต่อครั้ง');
-$a[] = array('id'=>'person', 'name'=>'ตามจำนวนลูกค้า');
-
-$form   ->field("room_price_type")
-        ->label('อัตราการเข้าใช้บริกการ')
+        ->label($this->lang->translate('Number'))
         ->autocomplete('off')
         ->addClass('inputtext')
-        ->select( $a, 'id', 'name', false );
+        ->value( !empty($this->item['number']) ? $this->item['number'] : '' );
+
+$a = array();
+$a[] = array('id'=>'free', 'name'=>$this->lang->translate('Free'));
+$a[] = array('id'=>'time', 'name'=>$this->lang->translate('Per Time'));
+$a[] = array('id'=>'person', 'name'=>$this->lang->translate('Per Customer'));
+
+$form   ->field("room_price_type")
+        ->label($this->lang->translate('Price rate'))
+        ->autocomplete('off')
+        ->addClass('inputtext')
+        ->select( $a, 'id', 'name', !empty($this->item['price_type']) ? $this->item['price_type'] : false );
 
 
 $form   ->field("room_person")
-        ->label('จำนวนลูกค้า')
+        ->label($this->lang->translate('Person'))
         ->type('number')
         ->autocomplete('off')
-        ->addClass('inputtext');
+        ->addClass('inputtext')
+        ->value( !empty($this->item['person']) ? $this->item['person'] : '' );
 
 /*$array[] = array('id'=>'30','30 นาที');
 $array[] = array('id'=>'60','');
@@ -62,24 +87,53 @@ $array[] = array('id'=>'90','');
 $array[] = array('id'=>'90','');*/
 
 $form   ->field("room_timer")
-        ->label('/ เวลา(นาที)')
+        ->label($this->lang->translate('Time').'/('.$this->lang->translate('Minute').')')
         ->type('number')
         ->autocomplete('off')
-        ->addClass('inputtext');  
+        ->addClass('inputtext')
+        ->value( !empty($this->item['timer']) ? $this->item['timer'] : '' );
 
 $form   ->field("room_price")
-        ->label('ราคา')
+        ->label($this->lang->translate('Price'))
         ->type('number')
         ->autocomplete('off')
-        ->addClass('inputtext');
+        ->addClass('inputtext')
+        ->value( !empty($this->item['price']) ? $this->item['price'] : '' );
 
-$form   ->field("room_bed")
-        ->label('จำนวนเตียง')
-        ->type('number')
-        ->maxlength(2)
-        ->autocomplete('off')
-        ->addClass('inputtext');
+        if( empty($this->item) ){        
 
+            $form   ->field("room_bed")
+                    ->label($this->lang->translate('Bed'))
+                    ->type('number')
+                    ->maxlength(2)
+                    ->autocomplete('off')
+                    ->addClass('inputtext')
+                    ->value( !empty($this->item['bed_total']) ? $this->item['bed_total'] : '' );
+        }
+        else{
+
+            $arr['hiddenInput'][] = array('name'=>'room_bed','value'=>$this->item['bed_total']);
+        }
+
+$status = '';
+foreach ($this->status as $key => $value) {
+    
+    $sel = '';
+
+    if( !empty($this->item) ){
+        if( $this->item['status']['id'] == $value['id'] ){
+            $sel = ' selected="1"';
+        }
+    }
+
+    $status .= '<option'.$sel.' value="'.$value['id'].'">'.$value['name'].'</option>';
+}
+
+$status = '<select class="inputtext" name="room_status">'.$status.'</select>';
+
+$form   ->field("room_status")
+        ->label($this->lang->translate('status'))
+        ->text( $status );
 
 # set form
 $arr['form'] = '<form class="js-submit-form" data-plugins="addrooms" method="post" action="'.URL. 'rooms/save"></form>';
@@ -89,16 +143,16 @@ $arr['body'] = $form->html();
 
 # title
 if( !empty($this->item) ){
-    $arr['title']= "แก้ไข{$title}";
+    $arr['title']= "{$title}";
     $arr['hiddenInput'][] = array('name'=>'id','value'=>$this->item['id']);
 }
 else{
-    $arr['title']= "เพิ่ม{$title}";
+    $arr['title']= "{$title}";
 }
 
 # fotter: button
-$arr['button'] = '<button type="submit" class="btn btn-primary btn-submit"><span class="btn-text">Save</span></button>';
-$arr['bottom_msg'] = '<a class="btn" role="dialog-close"><span class="btn-text">Cancel</span></a>';
+$arr['button'] = '<button type="submit" class="btn btn-primary btn-submit"><span class="btn-text">'.$this->lang->translate('Save').'</span></button>';
+$arr['bottom_msg'] = '<a class="btn" role="dialog-close"><span class="btn-text">'.$this->lang->translate('Cancel').'</span></a>';
 
 // $arr['width'] = 550;
 $arr['height'] = 'auto';

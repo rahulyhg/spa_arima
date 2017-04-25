@@ -6,8 +6,15 @@ class Package_Model extends Model {
 	}
 
 	private $_objType = "package";
-	private $_table = "";
-	private $_field = "*";
+
+	private $_table = "package p LEFT JOIN employees e ON p.pack_emp_id = e.emp_id";
+	private $_field = "p.*,
+					   e.emp_id,
+					   e.emp_prefix_name,
+					   e.emp_first_name,
+					   e.emp_last_name,
+					   e.emp_image_id";
+
 	private $_cutNamefield = "pack_";
 
 	public function lists( $options=array() ) {
@@ -27,8 +34,6 @@ class Package_Model extends Model {
 		if( isset($_REQUEST['q']) ){
 			$options['q'] = $_REQUEST['q'];
 		}
-
-
 
 		$date = date('Y-m-d H:i:s', $options['time']);
 
@@ -103,7 +108,8 @@ class Package_Model extends Model {
 	}
 	public function convert($data, $options=array()){
 
-		$data = $this->cut($this->_cutNamefield, $data);
+
+		/*$data = $this->cut($this->_cutNamefield, $data);
 
 		$data['permit']['del'] = true;
 		if( $data['amount_balance']>0 ){
@@ -120,14 +126,26 @@ class Package_Model extends Model {
 	            $data['image_arr'] = $image;
 	            $data['image_url'] = $image['url'];
             }
-        }
+        }*/
+
+		$data = $this->_convert($data);
+
+		$data = $this->cut($this->_cutNamefield, $data);
+
+		$data['skill'] = $this->listSkill( $data['id'] );
+
+		$data['permit']['del'] = true;
 
 		return $data;
 	}
 
 
-	/* Actions */
+	/*Process*/
+	/**/
 	public function insert(&$data) {
+
+		$data['pack_created'] = date('c');
+		$data['pack_updated'] = date('c');
 
 		$this->db->insert($this->_objType, $data);
 		$data['id'] = $this->db->lastInsertId();
@@ -135,9 +153,37 @@ class Package_Model extends Model {
 		$data = $this->cut($this->_cutNamefield, $data);
 	}
 	public function update($id, $data) {
+
+		$data['pack_updated'] = date('c');
 		$this->db->update($this->_objType, $data, "{$this->_cutNamefield}id={$id}");
 	}
 	public function delete($id) {
+
+		$this->db->delete( 'packet_skill', "`skill_id`={$id}" , $this->db->count('emp_skill_permit', "`skill_id`={$id}") );
+
 		$this->db->delete($this->_objType, "{$this->_cutNamefield}id={$id}");
 	}
+
+	/**/
+	/* Skill */
+	/**/
+	public function listSkill( $id ){
+
+        $data = $this->db->select("SELECT s.skill_id AS id , s.skill_name AS name 
+            FROM emp_skill s
+                LEFT JOIN package_skill p ON s.skill_id = p.skill_id
+            WHERE p.pack_id = :id
+        ORDER By p.skill_id ASC", array(':id'=>$id));
+
+        return $data;
+    }
+
+    public function setSkill( $data ){
+        $this->db->insert('package_skill', $data);
+    }
+
+    public function unsetSkill( $id ){
+    	$this->db->delete('package_skill', "{$this->_cutNamefield}id={$id}", $this->db->count('packet_skill', "{$this->_cutNamefield}id={$id}") );
+    }
+    
 }

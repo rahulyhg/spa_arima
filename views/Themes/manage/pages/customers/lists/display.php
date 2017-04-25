@@ -20,7 +20,7 @@
 		<!-- <div class="listpage2-table-overlay"></div> -->
 		<div class="listpage2-table-empty">
 	        <div class="empty-icon"><i class="icon-users"></i></div>
-	        <div class="empty-title">ไม่พบข้อมูล</div>
+	        <div class="empty-title"><?=$this->lang->translate('No Results Found.')?></div>
 		</div>
 		
 	</div>
@@ -30,7 +30,7 @@
 		<div class="listpage2-alert">
 			<div class="listpage2-loading">
 				<div class="listpage2-loading-icon loader-spin-wrap"><div class="loader-spin"></div></div>
-				<div class="listpage2-loading-text">กำลังโหลด...</div> 
+				<div class="listpage2-loading-text"><?=$this->lang->translate('Loading')?>...</div> 
 			</div>
 		</div>
 	</div>

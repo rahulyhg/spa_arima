@@ -38,7 +38,7 @@ if( !empty($cus)){
 }
 
 #services
-$sv[] = array('key'=>'package','text'=>$this->lang->translate('menu','Service Changes'),'icon'=>'cubes','link'=>$url.'package');
+$sv[] = array('key'=>'package','text'=>$this->lang->translate('menu','Package'),'icon'=>'cubes','link'=>$url.'package');
 //$this->lang->translate('menu','Discount') . ' & '. 
 $sv[] = array('key'=>'promotions','text'=> $this->lang->translate('menu','Promotions'),'icon'=>'tags','link'=>$url.'promotions');
 foreach ($sv as $key => $value) {

@@ -9,19 +9,19 @@ $url = URL .'employees/';
 
 <div class="rfloat">
 
-	<span class="gbtn"><a class="btn btn-blue" data-plugins="dialog" href="<?=$url?>add_skill"><i class="icon-plus mrs"></i><span>เพิ่ม</span></a></span>
+	<span class="gbtn"><a class="btn btn-blue" data-plugins="dialog" href="<?=$url?>add_skill"><i class="icon-plus mrs"></i><span><?=$this->lang->translate('Add New')?></span></a></span>
 
 </div>
 
-<div class="setting-title">ความสามารถ</div>
+<div class="setting-title"><?=$this->lang->translate('Skill')?></div>
 </div>
 
 <section class="setting-section">
 	<table class="settings-table admin"><tbody>
 		<tr>
-			<th class="name">ชื่อ</th>
+			<th class="name"><?=$this->lang->translate('Name')?></th>
 
-			<th class="actions">จัดการ</th>
+			<th class="actions"><?=$this->lang->translate('Action')?></th>
 
 		</tr>
 

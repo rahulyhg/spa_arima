@@ -1,9 +1,9 @@
 <?php
 
-$arr['title'] = $this->lang->translate('Confirm').' '.$this->lang->translate('Delete');
-if( !empty($this->item['permit']['del']) ){
+$arr['title'] = 'ยืนยันการลบข้อมูล';
+if( $this->item['permit']['del'] ){
 	
-	$arr['form'] = '<form class="js-submit-form" action="'.URL. 'employees/del_skill"></form>';
+	$arr['form'] = '<form class="js-submit-form" action="'.URL. 'package/del"></form>';
 	$arr['hiddenInput'][] = array('name'=>'id','value'=>$this->item['id']);
 	$arr['body'] = "{$this->lang->translate('You want to delete')} <span class=\"fwb\">\"{$this->item['name']}\"</span> {$this->lang->translate('or not')}?";
 	

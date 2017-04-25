@@ -69,14 +69,14 @@ $arr['body'] = '<table class="table-permit">'.
 	'<thead>'.
 		'<tr>'.
 			// '<th class="ID" rowspan="2">#</th>'.
-			'<th class="name" rowspan="2">รายการ</th>'.
-			'<th class="status" colspan="4">สิทธ์</th>'.
+			'<th class="name" rowspan="2">'.$this->lang->translate('List').'</th>'.
+			'<th class="status" colspan="4">'.$this->lang->translate('Permission').'</th>'.
 		'</tr>'.
 		'<tr>'.
-			'<th class="status">ดู</th>'.
-			'<th class="status">เพิ่ม</th>'.
-			'<th class="status">แก้ไข</th>'.
-			'<th class="status">ลบ</th>'.
+			'<th class="status">'.$this->lang->translate('View').'</th>'.
+			'<th class="status">'.$this->lang->translate('Add').'</th>'.
+			'<th class="status">'.$this->lang->translate('Edit').'</th>'.
+			'<th class="status">'.$this->lang->translate('Delete').'</th>'.
 		'</tr>'.
 	'</thead>'.
 
@@ -96,7 +96,7 @@ $arr['form'] = '<form class="js-submit-form" method="post" action="'.URL. 'emplo
 $name = $_REQUEST['type']=='employees' ? $this->item['fullname'] : $this->item['name'];
 
 # title
-$arr['title']= "กำหนดสิทธิ์";
+$arr['title']= $this->lang->translate('Permission');
 $arr['hiddenInput'][] = array('name'=>'id','value'=>$this->item['id']);
 $arr['hiddenInput'][] = array('name'=>'section','value'=>'permit');
 $arr['hiddenInput'][] = array('name'=>'type','value'=>$_REQUEST['type']);
