@@ -2,18 +2,6 @@
 
 $title = $this->lang->translate('Room');
 
-$options = array(
-    'url' => URL.'media/set',
-    'data' => array(
-        'album_name'=>'my', 
-        'minimize'=> array(128,128),
-        'has_quad'=> true,
-     ),
-    'autosize' => true,
-    'show'=>'quad_url',
-    'remove' => true
-);
-
 $form = new Form();
 $form = $form->create()
     // set From
