@@ -7,15 +7,25 @@
 					<div class="orderID"><span header="code"></span></div>
 					<div class="lfloat order-title">
 						<div class="text">
-							<span><label>Code:</label> <strong>#00002</strong></span>
-							<span><i class="icon-address-card-o"></i><a>ภุชงค์</a></span>
+							<span><label>Date:</label> <span><?=Date('j F Y')?></span></span>
+							<span><label>No.</label> <strong>001</strong></span>
 						</div>
+
 						<div class="subtext">
+							<span><label>Time:</label> 8:10 PM</span>
+							<span><label>-</label> 10:10 PM</span>
+							<span> 30:45:11</span>
+						</div>
+
+						<div class="subtext">
+							<span><label>Member:</label> <i class="icon-address-card-o"></i><span>ภุชงค์ 08436359502</span></span>
+						</div>
+						<!-- <div class="subtext">
 							<span><label>Room No.</label> 101</span>
 						</div>
 						<div class="subtext">
 							<span><label>By:</label> <i class="icon-user-circle-o"></i><a>ภุชงค์</a></span>
-						</div>
+						</div> -->
 						
 					</div>
 					<div class="rfloat">
@@ -26,19 +36,54 @@
 				
 			</div>
 			<div class="slipPaper-bodyContent" style="padding-top: 29px; top: 85px; bottom: 164px;">
-				<div class="slipPaper-bodyContent-header" style="padding-right: 5px;">
+				<div class="slipPaper-bodyContent-header">
 					<table>
 						<tbody><tr>
-							<th class="no"></th>
-							<th class="name">รายการ</th>
-							<th class="qty">จำนวน</th>
-							<th class="price">ราคา</th>
-							<th class="total">รวม</th>
+							<th class="no">#</th>
+							<th class="name">Items</th>
+							<th class="time">Time</th>
+							<th class="unittime"></th>
+							<th class="price">Price</th>
 						</tr>
 					</tbody></table>
 				</div>
-				<div class="slipPaper-bodyContent-body" style="height: 228px; overflow-y: auto;"><table role="orderlists"></table>
-				</div>
+				<div class="slipPaper-bodyContent-body" style="height: 153px; overflow-y: auto;"><table><tbody role="orderlists">
+					<?php for ($i=0; $i < 5; $i++) { ?>
+					<tr>
+						<td class="no">1.</td>
+						<td class="name">
+							<div class="title">
+								<strong>SHOWER ROOM</strong>
+								<span class="ui-status">50%</span>
+							</div>
+							<div class="order-title fsm">
+								<span><label>Room: </label> 101</span>
+								<span><label>By:</label> <i class="icon-user-circle-o"></i>ภุชงค์</span>
+							</div>
+						</td>
+						<td class="time">1</td>
+						<td class="unittime">TIME</td>
+						<td class="price has-discount">
+							<div class="full">0</div>
+							<div class="discount">0</div>
+						</td>
+					</tr>
+					<?php } ?>
+					<tr>
+						<td class="no">2.</td>
+						<td class="name">
+							<div class="fwb">OIL MASSAGE</div>
+							<div class="order-title fsm">
+								<span><label>Room: </label> 101</span>
+								<span><label>By:</label> <i class="icon-user-circle-o"></i>ภุชงค์</span>
+							</div>
+						</td>
+						<td class="time">1</td>
+						<td class="unittime">HOUR</td>
+						<td class="price">0</td>
+					</tr>
+
+				</tbody></table></div>
 			</div>
 			<div class="slipPaper-bodyFooter">
 				<table class="slipPaper-bodyFooter-summary mvm">
@@ -109,7 +154,7 @@
 										
 				<li class="button">
 					<span class="gbtn radius"><a class="btn js-set-option" data-type=""><i class="icon-retweet"></i></a></span>
-					<span class="t">ย้ายห้อง</span>
+					<span class="t">ส่วนลด</span>
 				</li>
 
 			</ul>

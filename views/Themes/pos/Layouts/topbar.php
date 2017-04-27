@@ -61,10 +61,12 @@ $pageNavR .= '<li class="uiToggle headerAvatarWrap">
 
 '</li>';
 
+$image_url = $this->getPage('image_url');
+
 echo '<div id="header-primary"><div class="topbar"><div class="global-nav clearfix">';
 
 		echo '<h1 class="topbar-logo">'.
-			'<img class="lfloat" src="'.IMAGES.'logo/small.png">'.
+			'<img src="'.$image_url.'" />'.
 			'<span class="visuallyhidden"></span>'.
 		'</h1>';
 

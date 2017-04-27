@@ -28,7 +28,7 @@ class Pos extends Controller{
 	        $this->view->elem('body')->addClass('has_menu');
         }
 
-        $this->view->setPage('image_url', !empty( $this->system['image_url'] ) ? $this->system['image_url']: IMAGES.'logo/small.png' );
+        $this->view->setPage('image_url', !empty( $this->system['image_url'] ) ? $this->system['image_url']: IMAGES.'logo/logo1.gif' );
         $this->view->setPage('name', !empty( $this->system['name'] ) ? $this->system['name']: 'POS' );
 
         $this->view->elem('body')->addClass('off');
@@ -38,11 +38,15 @@ class Pos extends Controller{
         )));
 
         $this->view->elem('body')->attr('data-plugins', 'pos');
+        $this->view->js('jquery/jquery-ui.min');
+        $this->view->js('jquery/jquery.sortable');
 
 
         //set Data
         // print_r($this->model->query('package')->lists()); die;
         $this->view->setData('package', $this->model->query('package')->lists());
+        $this->view->setData('prefixName', $this->model->query('system')->_prefixName());
+        $this->view->setData('city', $this->model->query('system')->city());
 
         $this->view->setPage('on', 'orders');
 		$this->view->render("index");

@@ -39,6 +39,8 @@ if ( typeof Object.create !== 'function' ) {
 
 			self.Events();
 			
+
+
 		},
 
 		setElem:function ( $el ) {
@@ -95,6 +97,7 @@ if ( typeof Object.create !== 'function' ) {
 		resize: function () {
 			var self = this;
 
+			var parent = self.$left.parent();
 			var left   = parseInt( self.$left.attr('data-width') ) || 550,
 				height = $(window).height() - self.$header.outerHeight();
 
@@ -104,7 +107,7 @@ if ( typeof Object.create !== 'function' ) {
 			});
 
 			self.$content.css({
-				marginLeft: left
+				marginLeft: parent.hasClass('hasLeft') ? left : 0
 			});
 
 			self.$main.css({
@@ -121,7 +124,6 @@ if ( typeof Object.create !== 'function' ) {
 			});
 		}
 	};
-
 	$.fn.pos = function( options ) {
 		return this.each(function() {
 			var $this = Object.create( POS );
@@ -129,15 +131,60 @@ if ( typeof Object.create !== 'function' ) {
 			$.data( this, 'pos', $this );
 		});
 	};
-
 	$.fn.pos.options = {
+		lang: 'en'
+	};
+
+
+	var JopQueue = {
+		init: function (options, elem) {
+			var self = this;
+
+			self.$elem = $(elem);
+			self.options = $.extend( {}, $.fn.jopQueue.options, options );
+
+			self.$listsbox = self.$elem.find('[rel=listsbox]');
+
+			self.$listsbox.sortable({
+				stop: function (event, ui) {
+					self.set_sequence();			
+				}
+			});
+		},
+
+		set_sequence: function () {
+			var self = this;
+
+			var n = 0
+			$.each(self.$listsbox.find('li'), function (i, obj) {
+				n++;
+
+				$( obj ).find('.number').text( n );
+				
+			});
+			
+		}
+	}
+	$.fn.jopQueue = function( options ) {
+		return this.each(function() {
+			var $this = Object.create( JopQueue );
+			$this.init( options, this );
+			$.data( this, 'jopQueue', $this );
+		});
+	};
+	$.fn.jopQueue.options = {
 		lang: 'en'
 	};
 	
 
 })( jQuery, window, document );
 
+
+
 $(function () {
+
+	// var elem = $(window)[0]; // Make the body go full screen.
+	// toggleFullScreen();
 
 	$('.js-navigation-trigger').click(function () {
 
@@ -166,3 +213,5 @@ $(function () {
 	});
 
 });
+
+

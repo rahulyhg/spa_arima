@@ -86,7 +86,7 @@ echo '<ul class="navigation-list">'.
 			'<a data-plugins="dialog" href="'.URL.'logout/admin"><i class="icon-power-off"></i><span class="visuallyhidden">Log Out</span></a>'.
 			// '<a href="'.URL.'logout/admin"><i class="icon-cog"></i><span class="visuallyhidden">Settings</span></a>'.
 		'</div>'.
-		'<div class="navigation-brand-logo clearfix"><img class="lfloat mrm" src="'.IMAGES.'logo/small.png">'.( !empty( $this->system['title'] ) ? $this->system['title']:'' ).'</div>'.
+		'<div class="navigation-brand-logo clearfix"><img class="lfloat mrm" src="'.IMAGES.'logo/logo1.gif">'.( !empty( $this->system['title'] ) ? $this->system['title']:'' ).'</div>'.
 	'</li>'.
 '</ul>';
 
