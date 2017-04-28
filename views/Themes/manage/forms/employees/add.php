@@ -67,11 +67,18 @@ else{
         }
         $options .= '<option'.$selected.' value="'.$value['id'].'">'.$value['name'].'</option>';
     }
+
     $select = '<select class="inputtext" name="emp_dealer_id">'.$options.'</select>';
     $form   ->field("emp_dealer_id")
             ->label('Dealer')
             ->text( $select );
 }
+
+$form   ->field("emp_code")
+        ->label($this->lang->translate('Number').'*')
+        ->autocomplete('off')
+        ->addClass('inputtext')
+        ->value( !empty($this->item['code'])? $this->item['code']:'' );
 
 $form   ->field("emp_username")
         ->label($this->lang->translate('Username').'*')
@@ -136,10 +143,16 @@ $form   ->field("emp_address")
         ->label($this->lang->translate('Address'))
         ->text( $this->fn->q('form')->address( !empty($this->item['address'])? $this->item['address']:array(), array('city'=>$this->city ) ) );
 
+$birthday = array();
+if( !empty($this->item['birthday']) ){
+    if( $this->item['birthday'] != '0000-00-00' ){
+        $birthday = $this->item;
+    }
+}
 
 $form   ->field("birthday")
         ->label($this->lang->translate('Birthday'))
-        ->text( $this->fn->q('form')->birthday( !empty($this->item)?$this->item:array(), array('field_first_name'=>'emp_') ) );
+        ->text( $this->fn->q('form')->birthday( $birthday, array('field_first_name'=>'emp_') ) );
 
 $form   ->field("emp_phone_number")
         ->label($this->lang->translate('Phone').'*')

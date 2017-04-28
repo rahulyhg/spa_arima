@@ -54,9 +54,15 @@ $form   ->field("name")
         ->text( $this->fn->q('form')->fullname( !empty($this->item)?$this->item:array(), array('field_first_name'=>'cus_', 'prefix_name'=>$this->prefixName) ) );
 
 // birthday
+$birthday = array();
+if( !empty($this->item['birthday']) ){
+    if( $this->item['birthday'] != '0000-00-00' ){
+        $birthday = $this->item;
+    }
+}
 $form   ->field("birthday")
         ->label('วันเกิด')
-        ->text( $this->fn->q('form')->birthday( !empty($this->item)?$this->item:array(), array('field_first_name'=>'cus_') ) );
+        ->text( $this->fn->q('form')->birthday( $birthday, array('field_first_name'=>'cus_') ) );
 
 $form   ->field("cus_card_id")
         ->label('หมายเลขบัตรประจำตัวประชาชน')

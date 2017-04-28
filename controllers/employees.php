@@ -65,12 +65,14 @@ class Employees extends Controller {
         try {
             $form = new Form();
             $form   ->post('emp_dealer_id')->val('is_empty')
+                    ->post('emp_code')
                     ->post('emp_username')->val('username')
                     ->post('emp_dep_id')->val('is_empty')
                     ->post('emp_pos_id')
                     ->post('emp_prefix_name')
                     ->post('emp_first_name')->val('is_empty')
                     ->post('emp_last_name')
+                    ->post('emp_nickname')
                     ->post('emp_phone_number')
                     ->post('emp_email')
                     ->post('emp_line_id')
