@@ -2,6 +2,10 @@
 
 class _function {
 
+    function __construct() {
+        $this->lang = new Langs();
+    }
+
     private $_q = array();
     public function q( $query ){
 

@@ -9,16 +9,19 @@
 					<div class="textbox fwb fsxl" style="white-space: nowrap;">Monday, 24 April</div>
 				</td>
 				<td>
-					<label>Type:</label>
+					<label>Status:</label>
 					<select class="inputtext">
 						<option>All</option>
 						<option>Orders</option>
 						<option>Booking</option>
 					</select>
 				</td>
-				<td>
+				<td class="prs">
 					<label>Search:</label>
 					<input type="text" class="inputtext input-search" maxlength="100" placeholder="">
+				</td>
+				<td class="" style="width: 30px">
+					<span class="gbtn radius"><a class="btn btn-blue"><i class="icon-plus"></i></a></span>
 				</td>
 			</tr>
 		</table>
@@ -32,23 +35,28 @@
 
 			<li class="ui-item head">10:00 PM</li>
 			<li class="ui-item active">
-				<div class="item-inner clearfix">
+				<div class="ui-item-inner clearfix">
 					<div class="rfloat"><abbr class="timestamp fsm">9:25</abbr></div>
 					
 					<div class="text">
-						<span><label>Code:</label> <strong>#00002</strong></span>
+						<span><label>No.</label> <strong>1</strong></span>
 						<span><i class="icon-address-card-o"></i>ภุชงค์</span>
 					</div>
 					
 					<div class="subtext clearfix">
-						<span><label>Room Number:</label> 101</span>
+						<span><label>Package:</label> AKASURI, SAUNA</span>
 						<div class="rfloat"><span class="ui-status">RUN</span></div>
 					</div>
 
 					<div class="subtext clearfix">
-						<span><i class="icon-user-circle-o"></i>ภุชงค์</span>
+						<span><label>Total Time:</label> 10.00 - 11.00 PM</span>
+
+						<div class="rfloat">
+							<!-- <span><i class="icon-cube"></i>4/฿4,000</span> -->
+						</div>
+						<!-- <span><i class="icon-user-circle-o"></i>ภุชงค์</span>
 						<span><i class="icon-cube"></i>4/฿4,000</span>
-						<span><i class="icon-shower"></i></span>
+						<span><i class="icon-shower"></i></span> -->
 					</div>
 				</div>
 			</li>
@@ -56,12 +64,12 @@
 			<li class="ui-item head">10:00 PM</li>
 			<?php for ($i=0; $i < 20; $i++) { ?>
 			<li class="ui-item ">
-				<div class="item-inner clearfix">
+				<div class="ui-item-inner clearfix">
 					<abbr class="rfloat timestamp fcg fsm">9:25</abbr>
 					
 					<div class="text">
-						<span><label>Code:</label> <strong>#00002</strong></span>
-						<span><i class="icon-address-card-o"></i>ภุชงค์</span>
+						<span><label>No.</label> <strong>102</strong></span>
+						<!-- <span><i class="icon-address-card-o"></i>ภุชงค์</span> -->
 					</div>
 					
 					<div class="subtext clearfix">

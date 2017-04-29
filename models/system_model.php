@@ -234,9 +234,9 @@ class System_Model extends Model{
     public function _prefixName($options=array()){
 
         //$a['-'] = array('id'=>'', 'name'=> '-');
-        $a['Mr.'] = array('id'=>'Mr.', 'name'=> 'นาย');
-        $a['Mrs.'] = array('id'=>'Mrs.', 'name'=> 'นาง');
-        $a['Ms.'] = array('id'=>'Ms.', 'name'=> 'น.ส.');
+        $a['Mr.'] = array('id'=>'Mr.', 'name'=> $this->lang->translate('Mr.') );
+        $a['Mrs.'] = array('id'=>'Mrs.', 'name'=> $this->lang->translate('Mrs.') );
+        $a['Ms.'] = array('id'=>'Ms.', 'name'=> $this->lang->translate('Ms.') );
 
         return array_merge($a, $options);
     }

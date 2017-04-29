@@ -271,7 +271,7 @@ a.btn-icon:hover{text-decoration:none}
 .btn-icon.btn-small{width:25px;font-size:14px}
 .btn-icon.btn-red{color:#d9534f}
 .btn-icon.btn-red:hover{color:#fff}
-.btn-no-padding{padding: 0}
+.btn-no-padding{min-width: 30px;padding: 0}
 
 /**/
 /* form */

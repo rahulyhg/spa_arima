@@ -114,14 +114,19 @@ class Time_Fn extends _function {
         return $arr[$length];
     }
 
-    public function month($length,$style=false){
-        if($style===false)
-        $arr = array(1 => "ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค.");
+    public function month($length, $short=false, $lang='th'){
+
+       $arr = $short
+            ? array(
+                'en' => array(1=>"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"),
+                'th' => array(1=>"มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"),
+            )
+            : array(
+                'en' => array(1=>"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"),
+                'th' => array(1=>"ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."),
+            );   
         
-        else
-        $arr = array(1 => "มกราคม", "กุมภาาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฏาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม");
-        
-        return $arr[$length];
+        return $arr[$lang][$length];
     }
 
     public function full($timestamp,$short=false, $showyear=false) { 

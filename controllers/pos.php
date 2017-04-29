@@ -6,16 +6,20 @@ class Pos extends Controller{
 		parent::__construct();
 	}
 
+    public function init($type='') {
+        
+    }
+
 	public function index() {
 
-		$theme_options = array(
+        $theme_options = array(
         	'has_topbar' => true,
         	'has_menu' => true,
         	'has_footer' => true,
         );
 
         if( count($this->me['access']) == 1 ){
-        	$theme_options['has_menu'] = false;
+            $theme_options['has_menu'] = false;
         }
 
         
@@ -48,7 +52,12 @@ class Pos extends Controller{
         $this->view->setData('prefixName', $this->model->query('system')->_prefixName());
         $this->view->setData('city', $this->model->query('system')->city());
 
+
+        // cus Profile
+        $this->view->setData('level', $this->model->query('customers')->level() );
+
         $this->view->setPage('on', 'orders');
 		$this->view->render("index");
+        
 	}
 }

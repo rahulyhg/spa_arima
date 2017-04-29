@@ -18,13 +18,13 @@ if ( typeof Object.create !== 'function' ) {
 			self.options = $.extend( {}, $.fn.pos.options, options );
 
 			/*self.loadPageTimeOut = setTimeout( function () {
-				
 				self.$elem.find('#page-loading').animate({
 					opacity: 0,
 				}, 300, "linear", function() {
 					self.$elem.removeClass('off');
-				});
 
+					
+				});
 			}, 3000);*/
 
 			self.$elem.removeClass('off');

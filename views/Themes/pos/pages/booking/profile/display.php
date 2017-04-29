@@ -6,13 +6,12 @@
 		<div class="clearfix" style="max-width: 600px;">
 
 			<div class="lfloat">
-				<div style="padding-top: 7px; display: inline-block;">
-				<h2><i class="icon-cube mrs"></i><span>SHOWER ROOM</span></h2>
-				</div>
+				<h2><i class="icon-address-book-o mrs"></i><span>00001</span> <a class="ui-status" style="background-color: rgb(219, 21, 6);">Booking</a></h2>
+
 			</div>
 
 			<div class="rfloat">
-				<span class="gbtn"><a class="btn"><i class="icon-arrow-left mrs"></i>Hide</a></span>
+				<span class="gbtn"><a class="btn"><i class="icon-pencil mrs"></i>Edit</a></span>
 				<!-- <span class="gbtn"><a class="btn btn-red"><i class="icon-remove mrs"></i>Cancel</a></span> -->
 			</div>
 
@@ -24,14 +23,28 @@
 		<div class="profile-menu">
 
 			<div>
+				<label class="label">Member:</label>
+
+				<div class="anchor clearfix"><div class="avatar lfloat mrm"><img class="img" src="http://localhost/spa_arima/public/uploads/1/87d2c0e7_a783003a6375b106ac9fa59fe388dfc9_a.jpg" alt="นายภุชงค์ สวนแจ้ง"></div><div class="content"><div class="spacer"></div><div class="massages"><div class="fullname">นายภุชงค์ สวนแจ้ง</div><span class="subname">0843635952</span></div></div></div>
+			</div>
+
+			<div>
+				<label class="label">Date:</label>
+				
+				<div class="data">
+					<span><?=date('l, j F, Y')?></span>
+					<span class="duration mll">8:00PM - 10:00PM</span>
+				</div>
+			</div>
+
+			<div>
+			<label class="label">Package:</label>
 			<table class="profile-menu-table">
+				
+
 				<thead>
 					<tr>
-						<th>Room</th>
-						<th>Service By</th>
-						<th class="time">Time</th>
-						<th class="price">Price</th>
-						<th class="actions">Actions</th>
+						<th colspan="5">AKASURI</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -51,21 +64,28 @@
 					<?php } ?>
 				</tbody>
 
+				<thead>
+					<tr>
+						<th colspan="5">AKASURI</th>
+					</tr>
+				</thead>
+
+				<tbody>
+					<tr>
+						<td>101</td>
+						<td><div class="anchor clearfix"><div class="avatar lfloat mrm"><img class="img" src="http://localhost/spa_arima/public/uploads/1/87d2c0e7_a783003a6375b106ac9fa59fe388dfc9_a.jpg" alt="นายภุชงค์ สวนแจ้ง"></div><div class="content"><div class="spacer"></div><div class="massages"><div class="fullname">นายภุชงค์ สวนแจ้ง</div><span class="subname">0843635952</span></div></div></div></td>
+						<td class="time">
+							<div>1 TIME</div>
+							<div>8:10 PM - 10:10 PM</div>
+						</td>
+						<td class="price">350฿</td>
+						<td class="actions">
+							<span class="gbtn"><a class="btn btn-no-padding"><i class="icon-remove"></i></a></span>
+						</td> 
+					</tr>
+				</tbody>
 			</table>
 
-			<div class="tac mts">
-				<span class="gbtn"><a class="btn btn-small btn-blue "><i class="icon-plus mrs"></i><span>Add Time</span></a></span>
-			</div>
-			</div>
-
-			<div>
-				<label class="label">Total Time: </label>
-
-				<div class="data">
-					<span>1	TIME</span>
-					<span class="duration mll">8:10 PM - 10:10 PM</span>
-					<span class="timer mls">30:45:11</span>
-				</div>
 			</div>
 
 			<div>
@@ -75,35 +95,22 @@
 
 			<div>
 				<label class="label">Note: </label>
-				<div><textarea class="inputtext inputnote" data-plugins="autosize"></textarea></div>
+				<div>sdfsf sfsdfsdfsd</div>
 			</div>
 
-			<!-- <div class="qty">
-				<label class="label">Quantity</label>
-
-				<div class="qty-change">
-					<table>
-						<tbody><tr>
-							<td class="b"><span class="gbtn radius"><button type="button" class="btn js-set-qty" data-type="minus"><i class="icon-minus"></i></button></span></td>
-							<td><input type="hidden" name="qty" class="total-input" value="79" min="1"><input type="text" name="qty" class="input-number js-qty-text" value="0" min="1"></td>
-							<td class="b"><span class="gbtn radius"><button type="button" class="btn js-set-qty" data-type="plus"><i class="icon-plus"></i></button></span></td>
-						</tr>
-					</tbody></table>
-				</div>
-			</div> -->
 		</div>
 
 		<!-- <div class="profile-menu-action clearfix">
 			<span class="gbtn"><a class="btn btn-large">Discount</a></span>
 		</div> -->
 
-		<div class="profile-menu clearfix mtl">
+		<div class="clearfix mtl">
 			<div class="lfloat">
 				<span class="gbtn"><a class="btn btn-red"><i class="icon-remove mrs"></i>Cancel</a></span>
 
 			</div>
 			<div class="rfloat">
-				<span class="gbtn radius"><a class="btn btn-blue">Done</a></span>
+				<span class="gbtn"><a class="btn btn-blue"><i class="icon-sign-in mrs"></i>Check In</a></span>
 			</div>
 		</div>
 	</div></div>

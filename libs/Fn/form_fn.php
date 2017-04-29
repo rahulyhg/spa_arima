@@ -152,10 +152,10 @@ class form_Fn extends _function{
 
 
 		$fields = array_merge( array( 
-			'prefix_name' => array('id'=>'prefix_name','label'=>'คำนำหน้าชื่อ','type'=>'select', 'options'=>$this->_prefixName($options['prefix_name']), 'addClass'=>'input-prefix'), 
-			'first_name'  => array('id'=>'first_name','label'=>'ชื่อ'), 
-			'last_name'  => array('id'=>'last_name','label'=>'นามสกุล'), 
-			'nickname'  => array('id'=>'nickname','label'=>'ชื่อเล่น','addClass' => 'input-nickname')
+			'prefix_name' => array('id'=>'prefix_name','label'=> $this->lang->translate('Prefix Name'),'type'=>'select', 'options'=>$this->_prefixName($options['prefix_name']), 'addClass'=>'input-prefix'), 
+			'first_name'  => array('id'=>'first_name','label'=> $this->lang->translate('First Name') ), 
+			'last_name'  => array('id'=>'last_name','label'=> $this->lang->translate('Last Name') ), 
+			'nickname'  => array('id'=>'nickname','label'=> $this->lang->translate('Nickname') ,'addClass' => 'input-nickname')
 		), $options['fields'] );
 
 		$_fields = array();
@@ -192,44 +192,44 @@ class form_Fn extends _function{
 	public function birthday( $data=null, $options=array() ) {
 
 		$options = array_merge( array(
-			'field_first_name' => '',
+			'field_first_name' => 'birthday',
 			'field_last_name' => '',
 			'end_year' => 18
 		), $options);
 
 		if( $data==null ) $data = $options;
 
-		$days[] = array('id'=>'00', 'name'=>'วัน');
+		$days[] = array('id'=>'00', 'name'=> '--'.$this->lang->translate('Date').'--' );
 		for ($i=1; $i <= 31; $i++) { 
 			$d = $i < 10 ? "0{$i}":$i;
 		    $days[] = array('id'=>$d, 'name'=> $i);
 		}
 
 		$fields[] = array( 
-		    'id' => $options['field_first_name'] . 'birthday_date' . $options['field_last_name'],
-		    'name' => 'birthday[date]', 
-		    'label' => 'วัน',
+		    'id' => $options['field_first_name'] . '_date',
+		    'name' => $options['field_first_name'] . '[date]', 
+		    'label' => $this->lang->translate('Day'),
 		    'type' => 'select',
 		    'options' => $days,
 		    'value' => !empty($data['birthday']) ? date('j', strtotime($data['birthday']) ):''
 		);
 
-		$months[] = array('id'=>'00', 'name'=>'เดือน');
+		$months[] = array('id'=>'00', 'name'=> '--'.$this->lang->translate('Month').'--' );
 		for ($i=1; $i <= 12; $i++) { 
 			$m = $i < 10 ? "0{$i}":$i;
-		    $months[] = array('id'=>$m, 'name'=> $this->q('time')->month( $i, true));
+		    $months[] = array('id'=>$m, 'name'=> $this->q('time')->month( $i, 0, $this->lang->getCode() ));
 		}
 		$fields[] = array( 
-		    'id' =>  $options['field_first_name'] . 'birthday_month' . $options['field_last_name'],
-		    'name' => 'birthday[month]', 
-		    'label' => 'เดือน',
+		    'id' =>  $options['field_first_name'] . '_month',
+		    'name' => $options['field_first_name'].'[month]', 
+		    'label' => $this->lang->translate('Month'),
 		    'type' => 'select',
 		    'options' => $months,
 		    'value' => !empty($data['birthday']) ? date('n', strtotime($data['birthday']) ):''
 		);
 
-		$years[] = array('id'=>'0000', 'name'=>'ปี');
-		$y = date('Y')-$options['end_year'];
+		$years[] = array('id'=>'0000', 'name'=> '--'.$this->lang->translate('Year').'--');
+		$y = date('Y') - $options['end_year'];
 		$i = 1;
 		do {
 		    $years[] = array('id'=>$y, 'name'=>($y+543) );
@@ -237,9 +237,9 @@ class form_Fn extends _function{
 		} while ($i <= 70);
 
 		$fields[] = array( 
-		    'id' =>  $options['field_first_name'] . 'birthday_year' . $options['field_last_name'], 
-		    'name' => 'birthday[year]', 
-		    'label' => 'ปี',
+		    'id' =>  $options['field_first_name'] . '_year', 
+		    'name' => $options['field_first_name'].'[year]', 
+		    'label' => $this->lang->translate('Year'),
 		    'type' => 'select',
 		    'options' => $years,
 		    'value' => !empty($data['birthday']) ? date('Y', strtotime($data['birthday']) ):''
@@ -278,26 +278,26 @@ class form_Fn extends _function{
 	}
 	public function _contact_label_email() {
 		$labels = array();
-		$labels[] = array('text'=>'อีเมล์ส่วนตัว');
-		$labels[] = array('text'=>'อีเมล์ที่ทำงาน');
-		$labels[] = array('text'=>'อีเมล์อื่นๆ');
+		$labels[] = array('text'=> $this->lang->translate('Personal Email') );
+		$labels[] = array('text'=> $this->lang->translate('Work Email') );
+		$labels[] = array('text'=> $this->lang->translate('Other Email') );
 
 		return $labels;
 	}
 	public function _contact_label_phone($value='') {
 		$labels = array();
-		$labels[] = array('text'=>'เบอร์มือถือ');
-		$labels[] = array('text'=>'เบอร์ที่ทำงาน');
-		$labels[] = array('text'=>'เบอร์บ้าน');
-		$labels[] = array('text'=>'เบอร์โทรอื่นๆ');
+		$labels[] = array('text'=> $this->lang->translate('Mobile Phone') );
+		$labels[] = array('text'=> $this->lang->translate('Work Phone') );
+		$labels[] = array('text'=> $this->lang->translate('Home Phone') );
+		$labels[] = array('text'=> $this->lang->translate('Other phone') );
 		return $labels;
 	}
 	public function _contact_label_social($value='') {
 		$labels = array();
 		$labels = array();
-		$labels[] = array('text'=>'Line ID');
-		$labels[] = array('text'=>'facebook');
-		$labels[] = array('text'=>'อื่นๆ');
+		$labels[] = array('text'=> $this->lang->translate('Line ID') );
+		$labels[] = array('text'=> $this->lang->translate('Facebook') );
+		$labels[] = array('text'=> $this->lang->translate('Other') );
 		return $labels;
 	}
 	public function _contacts($type, $options=array(), $name='', $label='', $value='' ) {
