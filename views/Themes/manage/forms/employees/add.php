@@ -152,7 +152,7 @@ if( !empty($this->item['birthday']) ){
 
 $form   ->field("birthday")
         ->label($this->lang->translate('Birthday'))
-        ->text( $this->fn->q('form')->birthday( $birthday, array('field_first_name'=>'emp_') ) );
+        ->text( $this->fn->q('form')->birthday( $birthday, array('field_first_name'=>'birthday') ) );
 
 $form   ->field("emp_phone_number")
         ->label($this->lang->translate('Phone').'*')
