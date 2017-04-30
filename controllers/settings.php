@@ -146,31 +146,7 @@ class Settings extends Controller {
         $this->view->render( $render );
     }
 
-    /**/
-    /* products */
-    /**/
-    public function brands(){
-        $this->view->setPage('on', 'settings');
-        $this->view->setData('section', 'products');
-        $this->view->setData('tap', 'brands');
 
-        $this->view->setData('data', $this->model->query('brands')->lists());
-        $this->view->render('settings/display');
-    }
-    public function models() {
-        $this->view->setPage('on', 'settings');
-        $this->view->setData('section', 'products');
-        $this->view->setData('tap', 'models');
-
-        $this->view
-        ->js(VIEW .'Themes/manage/assets/js/bootstrap-colorpicker.min.js', true)
-        ->css( VIEW .'Themes/manage/assets/css/bootstrap-colorpicker.min.css', true);
-
-
-        $this->view->setData('data', $this->model->query('models')->lists( array('colors'=>true) ) );
-        $this->view->render('settings/display');
-        
-    }
     public function dealer() {
 
         $this->view->setPage('on', 'settings');
@@ -179,32 +155,6 @@ class Settings extends Controller {
         $this->view->setData('paytype', $this->model->query('paytype')->lists());
         $this->view->setData('data', $this->model->query('dealer')->lists());
         $this->view->render('settings/display');
-    }
-    public function accessory($tap='accessory') {
-
-        $this->view->setPage('on', 'settings');
-        $this->view->setData('section', 'products');
-        $this->view->setData('tap', $tap);
-        $render = 'settings/display';
-
-        if( $tap=='stores' ){
-            $data = $this->model->query('stores')->lists();
-        }
-        elseif( $tap=='accessory' ){
-            if( $this->format=='json' ){ 
-
-                $this->view->setData('results', $this->model->query('accessory')->lists());
-                $render = 'settings/sections/products/accessory/lists/json';
-            }
-            $this->view->setData('model', $this->model->query('accessory')->model() );
-            $this->view->setData('store', $this->model->query('accessory')->store() );
-            $data = array();
-            
-        }else{
-            $this->error();
-        }
-        $this->view->setData('data', $data);
-        $this->view->render( $render );
     }
 
     public function paytype(){
@@ -224,18 +174,13 @@ class Settings extends Controller {
         $this->view->setData('on','settings');
         $this->view->setData('section', 'rooms');
 
-        if( $tap=='' ){
+        Session::init();
+        $dealer_id = Session::get('dealer_id');
 
-            $status = $this->model->query('rooms')->status();
-            $data = $this->model->query('rooms')->lists();
-            // print_r($status); die;
-
-            $this->view->setData('status', $status );
-            $this->view->setData('data', $data);
-        }
+        $this->view->setData('dealer_id', $dealer_id); 
+        $this->view->setData('dealer', $this->model->query('dealer')->lists()); 
 
         $this->view->render('settings/display');
-
     }
 
     public function customers( $tap='level' ){

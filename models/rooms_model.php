@@ -33,7 +33,7 @@ class Rooms_Model extends Model{
         $this->db->delete('room_bed', "bed_id={$id}");
     }
 
-    public function lists( $options=array() ) {
+    /*public function lists( $options=array() ) {
         $options = array_merge(array(
             'pager' => isset($_REQUEST['pager'])? $_REQUEST['pager']:1,
             'limit' => isset($_REQUEST['limit'])? $_REQUEST['limit']:50,
@@ -52,6 +52,9 @@ class Rooms_Model extends Model{
 
         $where_str = "";
         $where_arr = array();
+
+
+
 
         if( !empty($_REQUEST['status']) ){
         	$options['status'] = $_REQUEST['status'];
@@ -100,7 +103,7 @@ class Rooms_Model extends Model{
         $arr['options'] = $options;
 
         return $arr;
-    }
+    }*/
     public function buildFrag($results) {
         $data = array();
         foreach ($results as $key => $value) {
@@ -217,4 +220,132 @@ class Rooms_Model extends Model{
         return !empty($data[0]['floor']) ? $data[0]['floor'] : array();
     }
 
+    public function floors(){
+
+        $where_str = '';
+        $where_arr = array();
+        if( isset($_REQUEST['dealer']) ){
+
+            Session::init();
+            Session::set('dealer_id', $_REQUEST['dealer']);
+
+            $where_str .= !empty($where_str) ? ' AND ': '';
+            $where_str .= "`floor_dealer_id`=:dealer";
+            $where_arr[':dealer'] = $_REQUEST['dealer'];
+        }
+
+        $where = !empty($where_str) ? "WHERE {$where_str}" : '';
+
+        // echo "SELECT floor_id as id, floor_name as name FROM rooms_floors {$where}"; die;
+        return $this->buildFragFloor( $this->db->select("SELECT floor_id as id, floor_name as name FROM rooms_floors {$where}", $where_arr) );
+
+    }
+    public function insertFloor(&$data){
+        $this->db->insert('rooms_floors', $data);
+        $data['floor_id'] = $this->db->lastInsertId();
+
+        $data = $this->convertFloor($data);
+    }
+    public function buildFragFloor($results) {
+        $data = array();
+        foreach ($results as $key => $value) {
+            if( empty($value) ) continue;
+            $data[] = $this->convertFloor( $value );
+        }
+
+        return $data;
+    }
+    public function convertFloor($data){
+
+        $data = $this->cut('floor_', $data);
+
+        if( is_numeric($data['name'])  ){
+            $data['name'] = 'Floor '.$data['name'];
+        }
+
+        return $data;
+    }
+
+    public function lists() {
+        $where_str = '';
+        $where_arr = array();
+        if( isset($_REQUEST['floor']) ){
+
+            $where_str .= !empty($where_str) ? ' AND ': '';
+            $where_str .= "`room_floor`=:floor";
+            $where_arr[':floor'] = $_REQUEST['floor'];
+        }
+
+        $where = !empty($where_str) ? "WHERE {$where_str}" : '';
+
+        // echo "SELECT floor_id as id, floor_name as name FROM rooms_floors {$where}"; die;
+        return $this->buildFragRoom( $this->db->select("SELECT room_id as id, room_name as name FROM rooms {$where}", $where_arr) );
+    }
+    public function buildFragRoom($results) {
+        $data = array();
+        foreach ($results as $key => $value) {
+            if( empty($value) ) continue;
+            $data[] = $this->convertRoom( $value );
+        }
+
+        return $data;
+    }
+    public function insertRoom(&$data) {
+
+        $this->db->insert('rooms', $data);
+        $data['room_id'] = $this->db->lastInsertId();
+
+        $data = $this->convertRoom($data);
+    }
+    public function convertRoom($data) {
+        $data = $this->cut('room_', $data);
+
+        if( is_numeric($data['name'])  ){
+            $data['name'] = 'Room '.$data['name'];
+        }
+
+        return $data;
+    }
+
+    /**/
+    /* Bed */
+    /**/
+    public function insertBed(&$data) {
+        $this->db->insert('rooms_bed', $data);
+        $data['bed_id'] = $this->db->lastInsertId();
+
+        $data = $this->convertBed($data);
+    }
+    public function convertBed($data) {
+        $data = $this->cut('bed_', $data);
+
+        if( is_numeric($data['name'])  ){
+            $data['name'] = 'Bed '.$data['name'];
+        }
+
+        return $data;
+    }
+    public function beds() {
+        $where_str = '';
+        $where_arr = array();
+        if( isset($_REQUEST['room']) ){
+
+            $where_str .= !empty($where_str) ? ' AND ': '';
+            $where_str .= "`bed_room_id`=:room";
+            $where_arr[':room'] = $_REQUEST['room'];
+        }
+
+        $where = !empty($where_str) ? "WHERE {$where_str}" : '';
+
+        return $this->buildFragBed( $this->db->select("SELECT bed_id as id, bed_name as name FROM rooms_bed {$where}", $where_arr) );
+    }
+    public function buildFragBed($results) {
+        $data = array();
+        foreach ($results as $key => $value) {
+            if( empty($value) ) continue;
+            $data[] = $this->convertBed( $value );
+        }
+
+        return $data;
+    }
 }

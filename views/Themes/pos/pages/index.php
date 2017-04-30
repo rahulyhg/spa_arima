@@ -1,7 +1,9 @@
 <div id="container" class="hasLeft">
 
-	<div id="leftCol" role="left" data-width="550">
+	<div id="leftCol" role="left" data-width="400">
 		<?php 
+
+			require 'signin.php';
 
 			// require 'slips/bill.php';
 
@@ -27,7 +29,7 @@
 
 			// require 'members/profile/display.php'; 
 
-			// require 'queue/lists/display.php'; 
+			require 'queue/lists/display.php'; 
 
 			?>
 		</div>	

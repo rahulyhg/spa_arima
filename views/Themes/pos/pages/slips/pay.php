@@ -48,7 +48,7 @@
 			</header>
 
 			<div class="payment-pay-number">
-													<ul class="clearfix">
+				<ul class="clearfix">
 					 
 					<li><a class="js-enter-pay btn" data-event="next" data-value="7">7</a></li>
 					 

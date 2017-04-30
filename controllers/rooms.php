@@ -157,4 +157,51 @@ class Rooms extends Controller {
 			$this->view->render('del');
 		}
 	}
+
+
+	public function floors() {
+		
+		echo json_encode($this->model->floors());
+	}
+
+	public function set_floor(){
+
+		$data = array(
+			'floor_dealer_id' => $_POST['dealer_id'],
+			'floor_name' => $_POST['name'],
+		);
+
+		$this->model->insertFloor( $data );
+		echo json_encode($data);
+	}
+
+
+	public function lists(){
+
+		echo json_encode($this->model->lists());
+	}
+	public function set_room(){
+		
+		$data = array(
+			'room_floor' => $_POST['floor_id'],
+			'room_name' => $_POST['name'],
+		);
+
+		$this->model->insertRoom( $data );
+		echo json_encode($data);
+	}
+
+	public function set_bed(){
+		
+		$data = array(
+			'bed_room_id' => $_POST['room_id'],
+			'bed_name' => $_POST['name'],
+		);
+
+		$this->model->insertBed( $data );
+		echo json_encode($data);
+	}
+	public function beds() {
+		echo json_encode($this->model->beds());
+	}
 }

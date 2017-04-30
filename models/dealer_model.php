@@ -118,4 +118,16 @@ class Dealer_Model extends Model{
     public function unsetPaytype( $id=null ){
         $this->db->delete('dealer_paytype_permit', "{$this->_cutNamefield}id={$id}", $this->db->count('dealer_paytype_permit', "{$this->_cutNamefield}id={$id}") );
     }
+
+    public function setFloor($id, $number=0){
+        
+        if( !is_numeric($number) ) $number = 0;
+        
+        
+        for ($i=1; $i <= $number; $i++) { 
+            $this->db->insert('rooms_floors', array(
+
+            ));
+        }
+    }
 }

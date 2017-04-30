@@ -82,6 +82,10 @@ class Dealer extends Controller {
                     }
                 }
 
+                if( !empty($_POST['floor']) ){
+                    $this->model->setFloor( $id, $_POST['floor'] );
+                }
+
                 $arr['message'] = 'บันทึกเรียบร้อย';
                 $arr['url'] = 'refresh';
             }

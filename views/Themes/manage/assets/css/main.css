@@ -2718,3 +2718,110 @@ table.table-plan td{vertical-align: top;}
 	position: absolute;
 	margin-top: 0;
 }
+
+
+.ui-list-rooms li{
+	position: relative;
+	margin-top: 5px;
+	margin-bottom: 5px
+}
+.ui-list-rooms ul{
+	position: relative;
+	margin-left: 20px;
+	padding-left: 10px;
+	padding-bottom: 10px;
+	display: none;
+}
+.ui-list-rooms .active>ul{
+	display: block;
+}
+.ui-list-rooms ul:before{
+	content: '';
+	position: absolute;
+	left: 0;
+	top: 0;
+	bottom: 0;
+	border-left: 1px dotted #000
+}
+.ui-list-rooms ul.h{
+	padding-left: 0;
+	padding-top: 5px
+}
+.ui-list-rooms ul.h>li{
+	display: inline-block;
+	float: left;
+	margin-left: 10px
+}
+
+.ui-list-rooms .box{
+	padding: 3px 6px;
+	background-color: #fff;
+	border: 1px solid #000;
+	/*border-radius: 3px;*/
+	display: inline-block;
+	position: relative;
+}
+.ui-list-rooms .box:before{
+	content: '';
+	position: absolute;
+	top: 50%;
+	right: 100%;
+	height: 1px;
+	width: 10px;
+	/*background-color: #000;*/
+	border-top: 1px dotted #000
+}
+.ui-list-rooms .inner{
+	/*display: inline-block;*/
+}
+.ui-list-rooms .inner .actions{
+	display: none;
+	position: absolute;
+	left: 100%;
+	top: 0;
+	z-index: 5;
+	margin-top: 4;
+	margin-left: 4px;
+	white-space: nowrap;
+}
+.ui-list-rooms .inner:hover .actions{
+	display: block;
+}
+.ui-list-rooms a{
+	opacity: .8;
+	display: inline-block;
+	color: #fff;
+	width: 20px;
+	height: 20px;
+	line-height: 22px;
+	background-color: #aaa;
+	text-align: center;
+	border-radius: 2px;
+	box-shadow: 0 1px 1px rgba(0,0,0,.3);
+	font-size: 13px
+}
+.ui-list-rooms a + a{
+	margin-left: 4px
+}
+.ui-list-rooms a:hover{
+	opacity: 1;
+	text-decoration: none;
+}
+
+/*.ui-list-rooms .h .actions{
+	position: initial;
+	display: inline-block !important;
+}*/
+
+
+
+/*
+.ui-list-rooms ul.h .box:after{
+	content: '';
+	position: absolute;
+	bottom: 100%;
+	left: 50%;
+	width: 1px;
+	height: 10px;
+	border-left: 1px dotted #000
+}*/

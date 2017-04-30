@@ -76,7 +76,8 @@ foreach ($this->paytype['lists'] as $key => $value) {
 $form   ->field("paytype")
         ->label($this->lang->translate('Payment Type'))
         ->text( $paytype );
-        
+ 
+
 # set form
 $arr['form'] = '<form class="js-submit-form" method="post" action="'.URL. 'dealer/save"></form>';
 

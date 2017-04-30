@@ -141,6 +141,209 @@ if ( typeof Object.create !== 'function' ) {
 	$.fn.addrooms.options = {};
 
 
+	var SetRooms = {
+		init: function (options, elem) {
+			var self = this;
+
+			self.$elem = $(elem);
+
+			// Event
+
+			// floor
+			self.load_floors( self.$elem.find('[name=dealer]').val() );
+			self.$elem.find('[name=dealer]').change(function () {
+				self.load_floors( $(this).val() );
+			});
+
+			// 
+			self.$elem.delegate('[name=floor_name]', 'keyup', function(e){
+			    if(e.keyCode == 13 && $(this).val()!='') {
+			        self.set_floors( $(this).closest('ul'), $.trim( $(this).val() ) );
+			        $(this).val('');
+			    }
+			});
+
+			self.$elem.delegate('[name=room_name]', 'keyup', function(e){
+			    if(e.keyCode == 13 && $(this).val()!='') {
+			        self.set_room( $(this).closest('ul'), $.trim( $(this).val() ) );
+			        $(this).val('');
+			    }
+			});
+
+			self.$elem.delegate('[name=bed_name]', 'keyup', function(e){
+			    if(e.keyCode == 13 && $(this).val()!='') {
+			        self.set_bed( $(this).closest('ul'), $.trim( $(this).val() ) );
+			        $(this).val('');
+			    }
+			});
+		},
+		load_floors: function ( val ) {
+			var self = this;
+
+			var $el = self.$elem.find('ul.floors');
+			$el.empty().append(
+				'<li><div class="inner"><div class="box"><input type="text" name="floor_name" autocomplete="off" placeholder="+ Add Floor"></div></div></li>'
+			);
+			$.get( Event.URL + 'rooms/floors', { dealer: val }, function (res) {
+				
+				self.dealer = val;
+				$.each(res, function (i, obj) {
+					self.set_item_floor( $el, obj );
+				});
+			}, 'json');
+		},
+
+		isInt: function isInt(value) {
+		  return !isNaN(value) && (function(x) { return (x | 0) === x; })(parseFloat(value))
+		},
+
+		set_floors: function( $el,  val ) {
+			var self = this;
+
+			$.post( Event.URL + 'rooms/set_floor', { dealer_id: self.dealer, name: val }, function (data) {
+
+				self.set_item_floor($el, data, true);
+			}, 'json');
+		},
+		set_item_floor: function ($el, data, active) {
+			var self = this;
+			var li = self.setItem(data);
+			li.find('.actions').append(
+				  $('<a>', {class: 'icon-pencil'})
+				, $('<a>', {class: 'icon-plus'})
+				, $('<a>', {class: 'icon-minus'})
+				, $('<a>', {class: 'icon-remove'})
+			);
+
+			li.find('ul').append( '<li><div class="inner"><div class="box"><input type="text" name="room_name" autocomplete="off" placeholder="+ Add Room in '+ data.name +'"></div></div></li>' );
+
+			li.attr({
+				'data-type': 'floor',
+				'data-id': data.id,
+			}); //
+
+			
+
+			$el.find('li').last().before( li );
+
+			// if( active ){
+				li.addClass( 'active');
+				self.load_rooms( data.id );
+			// }
+		},
+
+		setItem: function ( data ) {
+			var self = this;
+
+			var li = $('<li>').append(
+				$('<div>', {class:'inner'}).append(
+					$('<div>', {class: 'box'}).append(
+						  $('<span>', {class: 'fwb', text: data.name})
+						, $('<div>', {class: 'actions'})
+					)
+				)
+				, $('<ul>')
+			);
+
+			return li;
+		},
+
+		load_rooms: function (id) {
+			var self = this;
+
+			var $el = self.$elem.find('[data-type=floor][data-id='+ id +']').find('ul');
+
+			$.get( Event.URL + 'rooms/lists', { floor: id }, function (res) {
+				
+				$.each(res, function (i, obj) {
+					self.set_item_room( $el, obj, true );
+				});
+			}, 'json');
+		},
+		set_room: function ( $el, val ) {
+			var self = this;
+
+			$.post( Event.URL + 'rooms/set_room', { floor_id: $el.closest('[data-id]').data('id'), name: val }, function (data) {
+
+				self.set_item_room( $el, data, true );
+			}, 'json');
+		},
+		set_item_room: function ( $el, data, active ) {
+			var self = this;
+
+			var li = self.setItem(data);
+
+			li.find('.actions').append(
+				  $('<a>', {class: 'icon-pencil'})
+				, $('<a>', {class: 'icon-plus'})
+				, $('<a>', {class: 'icon-minus'})
+				, $('<a>', {class: 'icon-remove'})
+			);
+
+			li.find('ul').addClass('h clearfix').append( '<li><div class="inner"><div class="box"><input type="text" name="bed_name" autocomplete="off" placeholder="+ Add Bed in '+ data.name +'"></div></div></li>' );
+
+			li.attr({
+				'data-type': 'room',
+				'data-id': data.id
+			});
+
+
+			$el.find('li').last().before( li );
+
+			if( active ){
+				li.addClass('active');
+				self.load_bed( data.id );
+			}
+		},
+
+		set_bed: function ( $el, val ) {
+			var self = this;
+
+			$.post( Event.URL + 'rooms/set_bed', { room_id: $el.closest('[data-id]').data('id'), name: val }, function (data) {
+
+				self.set_item_bed( $el, data );
+			}, 'json');
+		},
+
+		set_item_bed: function ( $el, data ) {
+			var self = this;
+
+			var li = self.setItem( data );
+
+			li.find('.actions').append(
+				  $('<a>', {class: 'icon-pencil'})
+				, $('<a>', {class: 'icon-remove'})
+			);
+
+			li.attr('data-type', 'bed');
+			li.find('ul').remove();
+
+			$el.find('li').last().before( li );
+		},
+
+		load_bed: function ( id ) {
+			var self = this;
+
+			var $el = self.$elem.find('[data-type=room][data-id='+ id +']').find('ul');
+
+			$.get( Event.URL + 'rooms/beds', { room: id }, function (res) {
+				
+				$.each(res, function (i, obj) {
+					self.set_item_bed( $el, obj, true );
+				});
+			}, 'json');
+		}
+	}
+	$.fn.setrooms = function( options ) {
+		return this.each(function() {
+			var $this = Object.create( SetRooms );
+			$this.init( options, this );
+			$.data( this, 'setrooms', $this );
+		});
+	};
+	$.fn.setrooms.options = {};
+
+
 	var listRoomsbox = {
 		init: function ( options, elem ) {
 			var self = this;

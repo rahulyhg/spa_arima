@@ -2,7 +2,7 @@
 $url = URL .'dealer/';
 ?>
 <section class="setting-section">
-	<table class="settings-table admin"><tbody>
+	<table class="settings-table"><tbody>
 		<tr>
 			<th class="name">Name</th>
 			<?php foreach ($this->paytype['lists'] as $key => $value) {
