@@ -101,6 +101,11 @@ if ( typeof Object.create !== 'function' ) {
 			var left   = parseInt( self.$left.attr('data-width') ) || 550,
 				height = $(window).height() - self.$header.outerHeight();
 
+
+			if( self.$left.attr('data-width-percent') ){
+				left = (left * $(window).width()) / 100;
+			}
+
 			self.$left.css({
 				width: left,
 				height: height

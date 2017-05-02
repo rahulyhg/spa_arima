@@ -21,7 +21,8 @@ class Promotions extends Controller {
         $this->view->setData('status', $this->model->status());
         $this->view->setData('type', $this->model->type());
 
-        $this->view->render("promotions/forms/add");
+        $this->view->setPage('path','Themes/manage/forms/promotions');
+        $this->view->render("add");
     }
 
     public function edit($id=null) {
@@ -35,7 +36,8 @@ class Promotions extends Controller {
 
         $this->view->setData('item', $item);
 
-        $this->view->render("promotions/forms/add");
+        $this->view->setPage('path','Themes/manage/forms/promotions');
+        $this->view->render("add");
     }
 
     public function save() {
@@ -100,8 +102,7 @@ class Promotions extends Controller {
         echo json_encode($arr);
     }
 
-    public function del($id=null)
-    {
+    public function del($id=null) {
         $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : $id;
         if( empty($this->me) || empty($id) ) $this->error();
 
@@ -128,4 +129,16 @@ class Promotions extends Controller {
         }
     }
 
+
+    public function invite() {
+        if( empty($this->me) || $this->format!='json' ) $this->error();
+
+        $objects['package'] = array('name'=> $this->lang->translate('Package') );
+        $options = array(
+            'limit'=> isset($_REQUEST['limit']) ? $_REQUEST['limit']: 20
+        );
+
+        $results = $this->model->query('search')->results( $objects, $options );
+        echo json_encode($results);
+    }
 }

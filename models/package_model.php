@@ -40,6 +40,10 @@ class Package_Model extends Model {
 		$where_str = "";
 		$where_arr = array();
 
+		if( isset($_REQUEST['view_stype']) ){
+            $options['view_stype'] = $_REQUEST['view_stype'];
+        }
+
 		if( !empty($options['q']) ){
 
             $arrQ = explode(' ', $options['q']);
@@ -108,26 +112,6 @@ class Package_Model extends Model {
 	}
 	public function convert($data, $options=array()){
 
-
-		/*$data = $this->cut($this->_cutNamefield, $data);
-
-		$data['permit']['del'] = true;
-		if( $data['amount_balance']>0 ){
-			$data['permit']['del'] = false;
-		}
-
-		if( !empty($options['colors']) ){
-            $data['colors'] = $this->getColors($data['id']);
-        }
-         if( !empty($data['image_cover']) ){
-            $image = $this->query('media')->get($data['image_cover']);
-
-            if(!empty($image)){
-	            $data['image_arr'] = $image;
-	            $data['image_url'] = $image['url'];
-            }
-        }*/
-
 		$data = $this->_convert($data);
 
 		$data = $this->cut($this->_cutNamefield, $data);
@@ -136,8 +120,33 @@ class Package_Model extends Model {
 
 		$data['permit']['del'] = true;
 
-		return $data;
+
+
+		// 
+		$view_stype = !empty($options['view_stype']) ? $options['view_stype']:'convert';
+        if( !in_array($view_stype, array('bucketed', 'convert')) ) $view_stype = 'convert';
+
+        return $view_stype == 'bucketed' 
+               ? $this->bucketed( $data )
+               : $data;
 	}
+	public function bucketed($data) {
+
+        // $text = $data['fullname'];
+
+        return array(
+            'id'=> $data['id'],
+            // 'created' => $data['created'],
+            'text'=> $data['name'],
+            "category"=> 'Price: '. number_format($data['price'], 0).'฿',
+            // "subtext"=>isset($subtext)?$subtext:"",
+            "type"=>"package",
+            'icon' => '',
+            // "image_url"=>isset($image_url)?$image_url:"",
+            // 'status' => isset($status)?$status:"",
+            // 'data' => $data,
+        );
+    }
 
 
 	/*Process*/

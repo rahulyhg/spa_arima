@@ -181,20 +181,20 @@ class Events extends Controller {
 
     public function invite($value='') {
         
-        // if( empty($this->me) || $this->format!='json' ) $this->error();
+        if( empty($this->me) || $this->format!='json' ) $this->error();
 
         if( isset($_REQUEST['objects']) ){
             if( $_REQUEST['objects']=='employees' ){
-                $objects['employees'] = array('name'=>'พนักงาน');
+                $objects['employees'] = array('name'=> $this->lang->translate('Employee') );
             }
             else if( $_REQUEST['objects']=='customers' ){
-                $objects['customers'] = array('name'=>'ลูกค้า');
+                $objects['customers'] = array('name'=> $this->lang->translate('Customer') );
             }
         }
 
         if( empty($objects) ){
-            $objects['employees'] = array('name'=>'พนักงาน');
-            $objects['customers'] = array('name'=>'ลูกค้า');
+            $objects['employees'] = array('name'=> $this->lang->translate('Employee') );
+            $objects['customers'] = array('name'=> $this->lang->translate('Customer') );
         }
 
         $results = $this->model->query('search')->results($objects, array('limit'=>5));

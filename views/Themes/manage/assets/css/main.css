@@ -2825,3 +2825,11 @@ table.table-plan td{vertical-align: top;}
 	height: 10px;
 	border-left: 1px dotted #000
 }*/
+
+.table-plan-promotions .td-plan-detail {
+    width: 350px;
+    background-color: #f0f0f0
+}
+.table-plan-promotions .ui-bucketed .text{
+	max-width: 200px
+}

@@ -1224,9 +1224,9 @@ if ( typeof Object.create !== 'function' ) {
 
 			var textDate = 	
 				self.string.day( self.date.selected.getDay(), self.options.style ) + 
-				(self.options.style=='normal' ? "ที่ ": ' ') +
+				(self.options.style=='normal' && self.options.lang=='th' ? "ที่ ": ', ') +
 				self.date.selected.getDate() + " " +
-				self.string.month( self.date.selected.getMonth(), self.options.style ) + " " +
+				self.string.month( self.date.selected.getMonth(), self.options.style ) + (self.options.lang=='th' ? " ": ', ') +
 				self.gYear( self.date.selected );
 
 			var date_str = self.date.selected.getDate();

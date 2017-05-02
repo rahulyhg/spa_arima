@@ -45,12 +45,9 @@ if( !empty($this->captcha) ){
 
 }
 
-$form->hr( !empty($this->next)
-    ? '<input type="hidden" autocomplete="off" value="'.$this->next .'" name="next">' 
-    : ''
-    )
+$form->hr( !empty($this->next) ? '<input type="hidden" autocomplete="off" value="'.$this->next .'" name="next">': '' )
 
-->hr('<input type="hidden" autocomplete="off" value="1" name="path_admin">' )
+// ->hr('<input type="hidden" autocomplete="off" value="1" name="path_admin">' )
 
 ->submit()
 ->addClass('btn btn-blue btn-large')
@@ -59,7 +56,8 @@ $form->hr( !empty($this->next)
 
 echo '<div class="bgs"></div>';
 
-
+$title = $this->getPage('title');
+$name = $this->getPage('name');
 ?>
 
 <div class="section">
@@ -68,10 +66,10 @@ echo '<div class="bgs"></div>';
         <div class="login-header-bar login-logo">
             <div class="text">
                 <?php if( !empty($this->getPage['image']) ){ ?><div class="pic"><img src="<?=$this->getPage['image']?>"></div><?php } ?>
-                <h2><?= !empty( $this->getPage('title') ) ? $this->getPage('title') :'Admin Zone'?></h2>
+                <h2><?= !empty( $title ) ? $title :''?></h2>
             </div>
 
-            <div class="subtext mvm"><span><?= !empty( $this->getPage('name') ) ? $this->getPage('name') :''?></span></div>
+            <div class="subtext mvm"></div>
 
             
         </div>
@@ -79,7 +77,7 @@ echo '<div class="bgs"></div>';
 
         <div class="login-container-wrapper auth-box">
             <div class="login-container">
-                <!-- <div class="login-title"><span class="fwb">Login</span></div> -->
+                <div class="login-title"><span class="fwb">Login</span></div>
                 <?=$form->html()?>
             </div>
 
@@ -88,7 +86,7 @@ echo '<div class="bgs"></div>';
 
         <div class="login-footer-text">
             <!-- <a href="<?=URL?>"><i class="icon-home mrs"></i><span>Back To Home</span></a><span class="mhm">·</span> -->
-            <a href="<?=URL?>forgot_password" class="forgot_password"><span>Forgot password?</span></a>
+            <!-- <a href="<?=URL?>forgot_password" class="forgot_password"><span>Forgot password?</span></a> -->
         </div>
         <!-- end: login-footer -->
         

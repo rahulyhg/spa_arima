@@ -66,7 +66,7 @@ class Search_Model extends Model {
         return $data;
     }
 
-    public function cars($q=''){
+    /*public function cars($q=''){
 
     	return $this->query('cars')->buildFrag( $this->db->select(
     		"SELECT cus_id, cus_prefix_name, cus_first_name, cus_last_name, cus_nickname,  cus_created, cus_updated, cus_birthday, cus_card_id, cus_phone, cus_email, cus_lineID, cus_bookmark, cus_address, cus_zip, cus_city_id, city_name, cus_emp_id 
@@ -90,7 +90,7 @@ class Search_Model extends Model {
         	":full"=> $q,
         )) );
 
-    }
+    }*/
 
     // public function customer($q='') {
 
