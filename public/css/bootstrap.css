@@ -296,6 +296,9 @@ a.btn-icon:hover{text-decoration:none}
 .form-insert .inputtext,.form-insert select{width:100%}
 .form-insert .w-auto{width:auto}
 .form-insert .inputnumber{width:100px}
+.form-insert .openset>.content{display:none}
+.form-insert .sidetip p{font-size:13px;margin-top:2px;color:#999;display:none}
+.form-insert .sidetip p.active,.form-insert .openset.active .content,.form-insert .openset .content.active{display:block}
 .form-search{position:relative}
 .form-search .search-input{padding-right:30px}
 .form-search .search-icon{position:absolute;top:0;right:0;display:block;width:30px;height:30px;line-height:30px;cursor:pointer;text-align:center}
@@ -305,6 +308,7 @@ a.btn-icon:hover{text-decoration:none}
 .form-large .control-group.has-error,.signin-screen .control-group.has-error{position:relative}
 .form-large .control-group.has-error .notification,.signin-screen .control-group.has-error .notification{white-space:nowrap;position:absolute;left:100%;top:6px;background-color:#fff;border:1px solid #e74c3c;margin-left:10px;padding:0 12px;font-size:13px;height:30px;line-height:28px;box-shadow:0 1px 1px rgba(0,0,0,.3)}
 .form-large .control-group.has-error .notification:before,.signin-screen .control-group.has-error .notification:before{content:'';height:0;width:0;pointer-events:none;display:inline-block;position:absolute;border-color:transparent #e74c3c;border-style:solid;border-width:6px 6px 6px 0;left:-6px;top:50%;margin-top:-6px}
+
 /**/
 /* avatar */
 /**/

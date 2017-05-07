@@ -792,15 +792,15 @@ $(function () {
 
 	Event.plugins();
 
-	// submit
+	/**/
+	/* Set Form */
+	/**/ 
 	$('body').delegate('form.js-submit-form','submit',function(e){
 		var $form = $(this);
 		e.preventDefault();
-
 		Event.inlineSubmit( $form ).done(function( result ) {
 			Event.processForm($form, result);
 		});
-
 	});
 
 	Event.scroll();

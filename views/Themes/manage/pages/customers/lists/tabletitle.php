@@ -37,7 +37,6 @@ function dataTH($value, $cal) {
 
     '</th>';
 
-
     return $th;
 }
 
@@ -45,6 +44,11 @@ if( $this->titleStyle=='row-2' ){
 
     $tr = '';
     foreach ($this->tabletitle as $key => $rows) {
+
+        if( isset($next) ){
+            $cal = $next-1;
+            unset($next);
+        }
         
         foreach ($rows as $i => $cell) {
 
@@ -53,7 +57,11 @@ if( $this->titleStyle=='row-2' ){
             $cal++;
 
             $colspan = isset($cell['colspan']) ? $cell['colspan'] : 1;
-            if( $colspan > 1 ) $cal--;
+
+            if( $colspan > 1 ){
+                $next = $cal;
+                $cal+=$cell['colspan']-1;
+            }
         }
 
         $tr .= "<tr>{$th}</tr>";

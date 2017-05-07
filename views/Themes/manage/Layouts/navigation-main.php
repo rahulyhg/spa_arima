@@ -30,6 +30,7 @@ if( !empty($info) ){
 
 #customer
 $cus[] = array('key'=>'customers','text'=>$this->lang->translate('menu','Members'),'link'=>$url.'customers','icon'=>'address-card-o');
+$cus[] = array('key'=>'masseuse','text'=>$this->lang->translate('menu','Masseuse'),'link'=>$url.'masseuse','icon'=>'user-circle-o');
 foreach ($cus as $key => $value) {
 	if( empty($this->permit[$value['key']]['view']) ) unset($cus[$key]);
 }

@@ -70,6 +70,11 @@ class Create_Form
 		return $this;
 	}
 
+	public function sidetip( $options ) {
+		$this->_field[$this->_currentField]['sidetip'] = $options;
+		return $this;
+	}
+
 	public function value($value){
 		$this->attr('value', $value);
 		return $this;
@@ -292,12 +297,23 @@ class Create_Form
 				$error = ' has-error';
 			}
 
+			$sidetip = '';
+			if( !empty($value['sidetip']) ){
+				$ps = '';
+				foreach ($value['sidetip']['options'] as $val) {
+					$ps .= '<p data-name="'.$value['sidetip']['keys']['name'].'" data-value="'.$val[ $value['sidetip']['keys']['value'] ].'">'.$val[ $value['sidetip']['keys']['text'] ].'</p>';
+				}
+
+				$sidetip = '<div class="sidetip">'.$ps.'</div>';
+			}
+
 			$field_str.='<fieldset'.$fieldId.' class="control-group'.$error.'">'.
 				
 				$label.
 
 				'<div class="controls">'.
 					$string.
+					$sidetip.
 					(!empty($value['note'])? '<div class="note">'.$value['note'].'</div>': '').
 					'<div class="notification">'.(!empty($value['notify'])? $value['notify']: "").'</div>'.
 				'</div>'.

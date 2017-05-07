@@ -33,6 +33,8 @@ class Employees_Model extends Model{
                         , emp_lang
                         , emp_permission
 
+                        , emp_dealer_id
+                        
                         , d.dep_id
                         , d.dep_name
                         , d.dep_access as access
@@ -51,7 +53,7 @@ class Employees_Model extends Model{
             'pager' => isset($_REQUEST['pager'])? $_REQUEST['pager']:1,
             'limit' => isset($_REQUEST['limit'])? $_REQUEST['limit']:50,
 
-            'sort' => isset($_REQUEST['sort'])? $_REQUEST['sort']: 'created',
+            'sort' => isset($_REQUEST['sort'])? $_REQUEST['sort']: 'updated',
             'dir' => isset($_REQUEST['dir'])? $_REQUEST['dir']: 'DESC',
 
             'time'=> isset($_REQUEST['time'])? $_REQUEST['time']:time(),
@@ -112,7 +114,8 @@ class Employees_Model extends Model{
             $wq = '';
             foreach ($arrQ as $key => $value) {
                 $wq .= !empty( $wq ) ? " OR ":'';
-                $wq .= "emp_first_name LIKE :q{$key} OR emp_last_name LIKE :q{$key} OR emp_phone_number LIKE :s{$key} OR emp_phone_number=:f{$key}";
+                $wq .= "emp_first_name LIKE :q{$key} OR emp_last_name LIKE :q{$key} OR emp_phone_number LIKE :s{$key} OR emp_phone_number=:f{$key} OR
+                     emp_code=:f{$key} OR emp_code LIKE :s{$key}";
                 $where_arr[":q{$key}"] = "%{$value}%";
                 $where_arr[":s{$key}"] = "{$value}%";
                 $where_arr[":f{$key}"] = $value;
@@ -467,7 +470,6 @@ class Employees_Model extends Model{
         ,skill_name as name
     ";
     public function skill() {
-
         $data = $this->db->select("SELECT {$this->select_skill} FROM emp_skill");
         return $data;
     }

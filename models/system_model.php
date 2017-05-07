@@ -21,6 +21,7 @@ class System_Model extends Model{
             'my' => array('view'=>1,'edit'=>1),
 
             'customers' => array('view'=>1, 'add'=>1),
+            'masseuse' => array('view'=>1, 'add'=>1),
 
             'package' => array('view'=>1),
             'promotions' => array('view'=>1),
@@ -244,10 +245,10 @@ class System_Model extends Model{
     public function _prefixNameCustomer($options=array()){
 
         //$a['-'] = array('id'=>'', 'name'=> '-');
-        $a['Mr.'] = array('id'=>'Mr.', 'name'=> 'นาย');
-        $a['Mrs.'] = array('id'=>'Mrs.', 'name'=> 'นาง');
-        $a['Ms.'] = array('id'=>'Ms.', 'name'=> 'น.ส.');
-        $a['Co'] = array('id'=>'Co', 'name'=> 'บจก.');
+        $a['Mr.'] = array('id'=>'Mr.', 'name'=> $this->lang->translate('Mr.') );
+        $a['Mrs.'] = array('id'=>'Mrs.', 'name'=> $this->lang->translate('Mrs.') );
+        $a['Ms.'] = array('id'=>'Ms.', 'name'=> $this->lang->translate('Ms.') );
+        $a['Co'] = array('id'=>'Co.', 'name'=> $this->lang->translate('Co.') );
         //$a['Part'] = array('id'=>'Part', 'name'=>'หจก.');
 
         return array_merge($a, $options);
@@ -325,7 +326,7 @@ class System_Model extends Model{
         $a[] = array('id'=>'2', 'name'=>'Manager');
         $a[] = array('id'=>'3', 'name'=>'Accounting');
         $a[] = array('id'=>'4', 'name'=>'Cashier');
-        $a[] = array('id'=>'5', 'name'=>'Service');
+        $a[] = array('id'=>'5', 'name'=>'Masseuse');
 
         return $a;
     }

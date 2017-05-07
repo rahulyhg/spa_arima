@@ -18,15 +18,6 @@ if( !empty($this->results['lists']) ){
 
         $created = strtotime( $item['created'] );
         $createdStr = date('j', $created) .' ' . $this->fn->q('time')->month( date('n', $created) ) .' '. ( date('Y', $created)+543 );
-       
-        $passportStr = '';
-        if( !empty($item['options']['passport']) ){
-
-            if( !empty($item['options']['passport']['id']) ){
-                $passportStr .= $item['options']['passport']['id'];
-            }
-            
-        }
 
         $image = '';
         if( !empty($item['image_url']) ){
@@ -74,25 +65,26 @@ if( !empty($this->results['lists']) ){
 
             // '<td class="check-box"><label class="checkbox"><input id="toggle_checkbox" type="checkbox" value="'.$item['id'].'"></label></td>'.
 
-            '<td class="date">'. $createdStr. '</td>'.
+            
+            // '<td class="date">'. $createdStr. '</td>'.
 
             '<td class="name">'.
                 '<div class="anchor clearfix">'.
                     $image.
                     '<div class="content"><div class="spacer"></div><div class="massages">'.
                         '<div class="fullname"><a class="fwb" href="'.URL .'customers/'.$item['id'].'">'. $item['fullname'].'</a></div>'.
-                        // '<div class="subname fsm meta">'.$subname.'</div>'.
+                        '<div class="subname fsm meta fcg">Last Date: '.$this->fn->q('time')->live( $item['updated'] ).'</div>'.
                     '</div>'.
                 '</div></div>'.
             '</td>'.
 
+            '<td class="phone">'.$item['nickname'].'</td>'.
+
             '<td class="express"><ul class="fsm">'.$express.'</ul></td>'.
 
-            // '<td class="status">'.(!empty($item['total_car']) ? $item['total_car'] : '-').'</td>'.
-
-            // '<td class="status">'.(!empty($item['total_booking']) ? $item['total_booking'] : '-').'</td>'.
-
-            // '<td class="status">'.(!empty($item['total_cancel']) ? $item['total_cancel'] : '-').'</td>'.
+            '<td class="date">'.$createdStr.' - '.$createdStr.' (241)</td>'.
+            
+            '<td class="status"><span class="ui-status" style="background-color: rgb(219, 21, 6);">RUN</span></td>'.
 
         '</tr>';
         

@@ -145,8 +145,6 @@ class promotions_model extends Model {
 
 		$data['pro_created'] = date('c');
 
-		// print_r($data);die;
-
 		$this->db->insert($this->_objType, $data);
 		$data['id'] = $this->db->lastInsertId();
 
@@ -173,11 +171,12 @@ class promotions_model extends Model {
 	public function type(){
 
 		$a = array();
-		$a[] = array('id'=>'percent', 'name'=>$this->lang->translate('Percent'));
-		$a[] = array('id'=>'item', 'name'=>$this->lang->translate('Item'));
-		$a[] = array('id'=>'total', 'name'=>$this->lang->translate('Total'));
-		$a[] = array('id'=>'total_item', 'name'=>$this->lang->translate('All Item'));
-		$a[] = array('id'=>'total_customer', 'name'=>$this->lang->translate('All Customer'));
+		$a[] = array('id'=>'percent', 'name'=>$this->lang->translate('Discount Total/Percent'),'note'=>'ลดราคาจากผลรวมทั้งหมด คิดเป็นเปอร์เซนต์');
+		$a[] = array('id'=>'amount', 'name'=>$this->lang->translate('Discount Total/Amount'),'note'=>'ลดราคาจากผลรวมทั้งหมด คิดเป็นจำนวนเงิน');
+		$a[] = array('id'=>'item_percent', 'name'=>$this->lang->translate('Discount Item/Percent'),'note'=>'ลดราคาต่อชิ้น คิดเป็นเปอร์เซนต์');
+		$a[] = array('id'=>'item_amount', 'name'=>$this->lang->translate('Discount Item/Amount'),'note'=>'ลดราคาต่อชิ้น คิดเป็นจำนวนเงิน');
+		// $a[] = array('id'=>'total_item', 'name'=>$this->lang->translate('All Item'));
+		// $a[] = array('id'=>'total_customer', 'name'=>$this->lang->translate('All Customer'));
 
 		return $a;
 	}
@@ -212,9 +211,17 @@ class promotions_model extends Model {
             }
         }
 
-        return $data;
-        
+        return $data;  
     }
+
+    public function clearProduct($id){
+    	$this->db->delete('promotions_permit', "`pro_id`={$id}", $this->db->count('promotions_permit', "`pro_id`=:id", array(':id'=>$id)) );
+    }
+
+    public function joinProduct($data){
+  		$this->db->insert('promotions_permit', $data);
+    }
+
 	/* End Status & Type */
 	/**/
 }

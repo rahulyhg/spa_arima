@@ -8,10 +8,45 @@ class Promotions extends Controller {
 
     public function index(){
         
-        $data = $this->model->lists();
+        $this->view->setPage('on', 'promotions' );
+           
+        if( !empty($id) ){
+
+            $options = array();
+
+            $options['options'] = 1;
+
+            $item = $this->model->query('promotions')->get( $id, $options );
+            if( empty($item) ) $this->error();
+
+            $this->view->setData('id', $id );
+            $this->view->setData('item', $item );
+            $this->view->setData('tab', $section); 
+            $this->view->render("promotions/profile/display");
+        }
+        else{
+
+            if( $this->format=='json' ) {
+                $this->view->setData('results', $this->model->lists() );
+                $render = "promotions/lists/json";
+            }
+            else{
+
+                $this->view->setData('status', $this->model->status() );
+                $this->view->setData('type', $this->model->type() );
+
+                $render = "promotions/lists/display";
+            }
+
+            $this->view->render($render);
+        }
+
+
+
+        /*$data = $this->model->lists();
         // print_r($data);die;
         $this->view->setData('data', $data);
-        $this->view->render('promotions/lists/display');
+        $this->view->render('promotions/lists/display');*/
     }
 
     public function add() {
@@ -42,6 +77,7 @@ class Promotions extends Controller {
 
     public function save() {
         if( empty($_POST) ) $this->error();
+        // print_r($_POST); die;
 
         $id = isset($_POST['id']) ? $_POST['id']: null;
         if( !empty($id) ){
@@ -51,44 +87,88 @@ class Promotions extends Controller {
 
         try {
             $form = new Form();
-            $form   ->post('pro_type')
+            $form   ->post('pro_type')->val('is_empty')
                     ->post('pro_name')->val('is_empty')
-                    ->post('pro_discount')
-                    ->post('pro_qty');
+                    ->post('pro_discount')->val('is_empty');
 
             $form->submit();
             $postData = $form->fetch();
 
-            $has_name = true;
-            if( !empty($id) ){
-                if( $postData['pro_name'] == $item['name']){
-                    $has_name = false;
+            
+            $postData['pro_has_qty'] = isset($_POST['has_qty']) ? $_POST['has_qty']:0;
+            if( !empty($postData['pro_has_qty']) ){
+                if( empty($_POST['pro_qty']) ){
+                    $arr['error']['pro_qty'] = 'Input Quantity!';
+                }
+                elseif( !is_numeric($_POST['pro_qty']) ){
+                    $arr['error']['pro_qty'] = 'Input is Number';
                 }
             }
 
-            if( $this->model->is_name($postData['pro_name']) && $has_name == true ){
-                $arr['error']['pro_name'] = "มีชื่อนี้อยู่ในระบบแล้ว";
+            $postData['pro_has_time'] = isset($_POST['has_time']) ? $_POST['has_time']:0;
+            if( isset($_POST['has_time']) ){
+
+
+                $postData['pro_time_allday'] = isset($_POST['allday']) ? $_POST['allday']:0;
+
+                $startTime = '00:00';
+                if( empty($postData['pro_time_allday']) ){
+                    $startTime = $_POST['start_time'];
+                }
+                $postData['pro_start_date'] = date("{$_POST['start_date']} {$startTime}:00");
+                
+
+                $postData['pro_has_enddate'] = isset($_POST['allday']) ? $_POST['allday']:0;
+                if( !empty($postData['pro_has_enddate']) ){
+
+                    $endTime = '00:00';
+                    if( empty($postData['pro_time_allday']) ){
+                        $endTime = $_POST['end_time'];
+                    }
+
+                    $postData['pro_end_date'] = date("{$_POST['end_date']} {$endTime}:00");
+
+
+                    if( strtotime($postData['pro_end_date']) > strtotime($postData['pro_start_date']) ){
+                        $arr['error']['pro_time'] = 'กำหนดเวลาไม่ถูกต้อง';
+                    }
+                }
             }
 
-            if( !empty($_POST['start_date']) ){
-            	$postData['pro_start_date'] = $_POST['start_date'];
-            }
 
-            if( !empty($_POST['end_date']) ){
-            	$postData['pro_end_date'] = $_POST['end_date'];
+
+
+            $postData['pro_is_join'] = isset($_POST['is_join']) ? $_POST['is_join']:0;
+            if( empty($_POST['invite']['id']) && !empty($postData['pro_is_join']) ){
+                $arr['error']['invite'] = 'กำหนดสินค้าที่อยู่ในรายการ';
+                $arr['message'] = array('text'=>'กำหนดสินค้าที่ร่วมรายการ','bg'=>'red','load'=>1,'auto'=>1);
             }
 
             if( empty($arr['error']) ){
 
-                $postData['pro_emp_id'] = $this->me['id'];
-
                 if( !empty($item) ){
-                    
+
+                    $this->model->clearProduct($id);
+
                     $this->model->update( $id, $postData );
                 }
                 else{
+
+                    $postData['pro_emp_id'] = $this->me['id'];
                     $this->model->insert( $postData );
                     $id = $postData['id'];
+                }
+
+                if( !empty($_POST['invite']['id']) && !empty($postData['is_join']) ){
+
+                    foreach ($_POST['invite']['id'] as $val) {
+
+                        $this->model->joinProduct( array(
+                            'pro_id' => $id,
+                            'obj_type' => 'package',
+                            'obj_id' => $val
+                        ) );
+                    }
                 }
 
                 $arr['message'] = 'บันทึกเรียบร้อย';

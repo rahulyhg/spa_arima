@@ -1,11 +1,8 @@
 <?php
 
-
-class th extends Langs
-{
+class th extends Langs {
 	public $data = array();
 	
-
 	public function basics($text=null) {
 
 		$data['home'] = 'บ้าน';
@@ -21,6 +18,10 @@ class th extends Langs
 		$data['our customers'] = 'ลูกค้า';
 
 		$data['employees'] = 'พนักงาน';
+
+		$data['mr.'] = 'นาย';
+		$data['mrs.'] = 'นาง';
+		$data['ms.'] = 'น.ส.';
 
 		$str = strtolower($text);
 		return !empty($data[$str]) ? $data[$str]: $text;

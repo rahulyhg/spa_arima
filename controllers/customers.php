@@ -6,7 +6,7 @@ class Customers extends Controller {
         parent::__construct();
     }
 
-    public function index( $id=null, $section='services' ) {
+    public function index( $id=null, $section='history' ) {
     	$this->view->setPage('on', 'customers' );
            
         if( !empty($id) ){

@@ -57,7 +57,7 @@ $url = URL.'employees/';
 				<option<?=$s?> value="<?=$value['id']?>"><?=$value['name']?></option>
 			<?php } ?>
 			</select></li>
-			<li><select ref="selector" name="display" class="inputtext">
+			<li><label>Display:</label> <select ref="selector" name="display" class="inputtext">
 			<?php foreach ($this->display as $key => $value) {
 				$s = '';
 				if( isset($_GET['display']) ){
@@ -73,7 +73,9 @@ $url = URL.'employees/';
 
 		</ul>
 		<ul class="rfloat SettingCol-headerActions clearfix">
-			<li><form class="form-search" action="#">
+			<li>
+				<label for="search-query">Search:</label>
+				<form class="form-search" action="#">
 				<input class="search-input inputtext" type="text" id="search-query" placeholder="ค้นหา" name="q" autocomplete="off">
 				<span class="search-icon">
 			 		 <button type="submit" class="icon-search nav-search" tabindex="-1"></button>

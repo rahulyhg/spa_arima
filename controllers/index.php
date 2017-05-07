@@ -10,18 +10,11 @@ class Index extends Controller {
         header('Location: '. URL.'dashboard' );
     }
 
-    private function _getUrl() {
-        $url = isset( $_GET['url'] ) ? $_GET['url']:null;
-        if( empty($url) ) $this->error();
-        $url = rtrim($url, '/');
-        $this->_url = explode('/', $url);
-    }
+    public function search($_url) {
 
-    public function search($page=null) {
-        $this->_getUrl();
-        // $this->getPage($page);
-
-        // $this->view->render('search');
+        $this->pathName = $_url[0];
+        $this->_modify();
+        
         $this->error();
     }
 }

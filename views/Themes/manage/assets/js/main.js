@@ -95,6 +95,50 @@ if ( typeof Object.create !== 'function' ) {
 
 (function( $, window, document, undefined ) {
 
+
+	var ActiveForm = {
+		init: function (options, elem) {
+			var self = this;
+			self.$elem = $(elem);
+
+
+			$.each( self.$elem.find(':input.js-change'), function () {
+				self.change( $(this).attr('name'), $(this).val() );
+			} );
+			self.$elem.find(':input.js-change').change(function () {
+				self.change( $(this).attr('name'), $(this).val() );
+			});
+
+			$.each( self.$elem.find(':input.js-openset'), function () {
+				self.openset( $(this).attr('name'), $(this).prop('checked') );
+			} );
+			self.$elem.find(':input.js-openset').change(function () {
+				self.openset( $(this).attr('name'), $(this).prop('checked') );
+			});
+			
+		},
+
+		change: function ( name, val ) {
+			var self = this;
+
+			self.$elem.find('.sidetip').find('[data-name='+ name +'][data-value='+ val +']').addClass('active').siblings().removeClass('active');
+		},
+
+		openset: function (name, checked) {
+			var self = this;
+
+			self.$elem.find('[data-name='+ name +']').toggleClass('active', checked);
+		}
+	}
+	$.fn.activeform = function( options ) {
+		return this.each(function() {
+			var $this = Object.create( ActiveForm );
+			$this.init( options, this );
+			$.data( this, 'activeform', $this );
+		});
+	};
+
+
 	var Addrooms ={
 		init: function ( options, elem ) {
 			var self = this;

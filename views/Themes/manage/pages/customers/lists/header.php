@@ -14,7 +14,7 @@
 			
 			<li class="mt"><a class="btn js-refresh" data-plugins="tooltip" data-options="<?=$this->fn->stringify(array('text'=>'refresh'))?>"><i class="icon-refresh"></i></a></li>
 			
-			<li><label for="closedate" class="label">Close date</label>
+			<!-- <li><label for="closedate" class="label">Close date</label>
 			<select ref="closedate" name="closedate" class="inputtext">
 				<option value="daily"><?=$this->lang->translate('Now')?></option>
 				<option selected value="weekly"><?=$this->lang->translate('Weekly')?></option>
@@ -23,7 +23,14 @@
 				<option value="latest"><?=$this->lang->translate('Lastest')?></option>
 				<option divider></option>
 				<option value="custom"><?=$this->lang->translate('Custom')?></option>
-			</select></li>
+			</select></li> -->
+
+			<li><label for="position" class="label">Expired Date</label>
+			<select ref="selector" name="display" class="inputtext"><?php
+				echo '<option value="enabled">Enabled</option>';
+				echo '<option value="disabled">Disabled</option>';
+			?></select></li>
+			
 
 			<li class="divider"></li>
 

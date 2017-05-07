@@ -1,10 +1,12 @@
 <?php 
 
 $this->nav = array();
-$this->nav[] = array('id'=>'orders','name'=> $this->lang->translate('menu','Orders'), 'icon'=>'file-text-o','url'=>URL.'pos');
-$this->nav[] = array('id'=>'booking','name'=> $this->lang->translate('menu','Booking'), 'icon'=>'address-book-o','url'=>URL.'pos');
-$this->nav[] = array('id'=>'members','name'=> $this->lang->translate('menu','Members'), 'icon'=>'address-card-o','url'=>URL.'pos');
-$this->nav[] = array('id'=>'queue','name'=> $this->lang->translate('menu','Queue'), 'icon'=>'list-ol','url'=>URL.'pos');
+$this->nav[] = array('id'=>'orders','name'=> $this->lang->translate('menu','Orders'), 'icon'=>'file-text-o','url'=>URL.'pos/orders');
+$this->nav[] = array('id'=>'booking','name'=> $this->lang->translate('menu','Booking'), 'icon'=>'address-book-o','url'=>URL.'pos/booking');
+$this->nav[] = array('id'=>'members','name'=> $this->lang->translate('menu','Members'), 'icon'=>'address-card-o','url'=>URL.'pos/members');
+$this->nav[] = array('id'=>'queue','name'=> $this->lang->translate('menu','Queue'), 'icon'=>'list-ol','url'=>URL.'pos/queue');
+
+
 // $this->nav[] = array('id'=>'orders','name'=> $this->lang->translate('menu','Service Changes'), 'icon'=>'file-text-o','url'=>URL.'pos');
 // $this->nav[] = array('id'=>'orders','name'=> $this->lang->translate('menu','Promotions'), 'icon'=>'file-text-o','url'=>URL.'pos');
 
@@ -58,8 +60,8 @@ else{
 }
 
 
-$pageNavR .= '<li class="uiToggle headerAvatarWrap">
-    <a data-plugins="toggleLink">'.$imageAvatar.'</a>'.
+$pageNavR .= '<li class="uiToggle headerAvatarWrap">'.
+    '<a data-plugins="toggleLink">'.$imageAvatar.'</a>'.
 
     '<div class="uiToggleFlyout uiToggleFlyoutRight uiToggleFlyoutPointer" id="accountSettingsFlyout"><ul role="menu" class="uiMenu">'.
             '<li class="menuItem head"><a class="itemAnchor" href="#"><span class="itemLabel"><div class="clearfix"><div class="anchor"><div class="clearfix">'.$imageAvatarBig.'<div class="content"><div class="spacer"></div><div class="massages"><div class="fullname">'.$this->me['fullname'].'</div><div class="fcg">'.$this->lang->translate('menu','Profile').'</div></div></div></div></div></div></span></a></li>'.

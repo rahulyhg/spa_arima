@@ -10,6 +10,8 @@ if ( typeof Object.create !== 'function' ) {
 
 (function( $, window, document, undefined ) {
 
+
+
 	var POS = {
 		init: function (options, elem) {
 			var self = this;
@@ -48,7 +50,7 @@ if ( typeof Object.create !== 'function' ) {
 
 			if( !$el ) $el = self.$elem;
 
-			self.$header = self.$elem.find('#header-primary');
+			$el = self.$elem.find('#header-primary');
 			self.$left = self.$elem.find('#leftCol');
 			self.$content = self.$elem.find('#content');
 			self.$main = self.$elem.find('#mainContent');
@@ -185,6 +187,37 @@ if ( typeof Object.create !== 'function' ) {
 })( jQuery, window, document );
 
 
+function setClock($el, lang) {
+	var self = this;
+	var theDate = new Date();
+
+	var ampm = 'AM';
+	var hour = theDate.getHours();
+
+	if( lang=='th' ){
+		ampm = '';
+	}else if( hour > 12 ){
+		hour -= 12;
+		ampm = 'PM';
+	}
+
+	var minute = theDate.getMinutes();
+	minute = minute<10 ? '0'+minute:minute;
+
+	var second = theDate.getSeconds();
+	second = second<10 ? '0'+second:second;
+
+	$el.find('.time').html( $.trim( hour + ':' + minute + ':' + second + ' ' + ampm ) );
+
+	$el.find('.date').html( Datelang.day(theDate.getDay(),'normal',lang) +', '+ theDate.getDate()+' '+ Datelang.month( theDate.getMonth(),'normal',lang) + ', '+ theDate.getFullYear() ); 
+}
+function RefClock( $el, lang ) {
+	setTimeout(function() {			
+		self.setClock($el, lang);
+
+		RefClock($el, lang);
+	}, 1000);
+}
 
 $(function () {
 
@@ -216,6 +249,9 @@ $(function () {
 
 		}
 	});
+
+	RefClock( $('.headerClock'), $('html').attr('lang') );
+	// 
 
 });
 

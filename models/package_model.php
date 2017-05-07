@@ -141,7 +141,7 @@ class Package_Model extends Model {
             "category"=> 'Price: '. number_format($data['price'], 0).'฿',
             // "subtext"=>isset($subtext)?$subtext:"",
             "type"=>"package",
-            'icon' => '',
+            'icon' => 'cube',
             // "image_url"=>isset($image_url)?$image_url:"",
             // 'status' => isset($status)?$status:"",
             // 'data' => $data,

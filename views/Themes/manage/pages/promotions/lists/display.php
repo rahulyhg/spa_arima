@@ -1,69 +1,43 @@
-<?php
-
-$url = URL .'promotions/';
-
-
-?>
-<div id="mainContainer" class="clearfix" data-plugins="main">
+    <div id="mainContainer" class="clearfix listpage2-container" data-plugins="main">
 
 	<div role="content">
 		<div role="main">
 
+<?php require_once 'init.php'; ?>
 
-<div class="setting-main" role="main"><div class="pal">
+<div class="listpage2 has-loading offline listpage2-mg" data-plugins="listpage2" data-options="<?= $this->fn->stringify( array(
+		'url' => $this->getURL,
+		'lists' => array(),
+		'options' => array()
+	) )?>">
 
+	<!-- header -->
+	<?php require 'header.php'; ?>
 
-	<div class="setting-header cleafix">
+	<!-- table -->
+	<div ref="table" class="listpage2-table table-mg">
+		<div ref="tabletitle"><?php require 'tabletitle.php'; echo $tabletitle; ?></div>
+		<div ref="tablelists"></div>
+                
 
-		<div class="rfloat">
-
-			<span class="gbtn"><a class="btn btn-blue" data-plugins="dialog" href="<?=$url?>add"><i class="icon-plus mrs"></i><span><?=$this->lang->translate('Add New')?></span></a></span>
-
+		<!-- <div class="listpage2-table-overlay"></div> -->
+		<div class="listpage2-table-empty">
+	        <div class="empty-icon"><i class="icon-users"></i></div>
+	        <div class="empty-title">ไม่พบข้อมูล</div>
 		</div>
-
-		<div class="setting-title"><i class="icon-cubes"></i> <?=$this->lang->translate('Promotions')?></div>
+		
 	</div>
-	<!-- end: header -->
 
-<section class="setting-section">
-	<table class="settings-table admin"><tbody>
-		<tr>
-
-			<th class="status"><?=$this->lang->translate('Type')?></th>
-			<th class="name"><?=$this->lang->translate('Name')?></th>
-			<th class="qty"><?=$this->lang->translate('Quantity')?></th>
-			<th class="date"><?=$this->lang->translate('Start Date')?></th>
-			<th class="date"><?=$this->lang->translate('End Date')?></th>
-			<th class="status"><?=$this->lang->translate('Status')?></th>
-			<th class="actions"><?=$this->lang->translate('Action')?></th>
-		</tr>
-
-		<?php foreach ($this->data['lists'] as $key => $item) { ?>
-		<tr>
-
-			<td class="status"><?=$item['type']['name']?></td>
-			<td class="name"><?=$item['name']?></td>
-			<td class="qty"><?=$item['qty']?></td>
-			<td class="date"><?=$item['start_date']?></td>
-			<td class="date"><?=$item['end_date']?></td>
-			<td class="status"><?=$item['status']['name']?></td>
-
-			<td class="actions whitespace">
-				
-				<span class="gbtn"><a data-plugins="dialog" href="<?=$url?>edit/<?=$item['id'];?>" class="btn btn-no-padding"><i class="icon-pencil"></i></a></span>
-				<span class='gbtn'><a data-plugins="dialog" href="<?=$url?>del/<?=$item['id'];?>" class="btn btn-no-padding"><i class="icon-trash"></i></a></span>
-					
-			</td>
-
-		</tr>
-		<?php } ?>
-	</tbody></table>
-</section>
-<!-- end: section -->
-
-</div></div>
-<!-- end: main -->
-
+	<div class="listpage2-table-overlay-warp">
+		<div class="listpage2-table-overlay"></div>
+		<div class="listpage2-alert">
+			<div class="listpage2-loading">
+				<div class="listpage2-loading-icon loader-spin-wrap"><div class="loader-spin"></div></div>
+				<div class="listpage2-loading-text">กำลังโหลด...</div> 
+			</div>
+		</div>
+	</div>
+</div>
 
 		</div>
 		<!-- end: main -->

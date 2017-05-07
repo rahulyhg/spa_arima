@@ -9,7 +9,7 @@ class Bootstrap {
     private $_modelPath = 'models/'; // Always include trailing slash
     private $_errorFile = 'error.php';
     private $_defaultFile = 'index.php';
-    private $_itemsPath = array('customers','sales','products', 'booking', 'services', 'cars','stocks', 'employees', 'events');
+    private $_itemsPath = array('customers','sales','products', 'booking', 'services', 'masseuse','stocks', 'employees', 'events');
     
     /**
      * Starts the Bootstrap
@@ -110,12 +110,10 @@ class Bootstrap {
             require $file;
 
             $page = str_replace('-', '', $this->_url[0]);
-
             $this->_controller = new $page;
             $this->_controller->loadModel($page, $this->_modelPath);
         } else {
 
-            
             $this->_search();
             
             // $this->_error( $this->_url[0] );
@@ -128,7 +126,7 @@ class Bootstrap {
         require $this->_controllerPath . $this->_defaultFile;
         $this->_controller = new Index();
         $this->_controller->loadModel('index', $this->_modelPath);
-        $this->_controller->search( $this->_url[0] );
+        $this->_controller->search( $this->_url );
         exit;
     }
     
@@ -150,7 +148,9 @@ class Bootstrap {
         if ($length > 1) {
             if (!method_exists($this->_controller, $this->_url[1])) {
 
+
                 if( $length >= 2 && $length <= 3 && in_array($this->_url[0], $this->_itemsPath ) ){
+
                     if( is_numeric($this->_url[1]) ){
 
                         switch ($length) {
@@ -170,7 +170,7 @@ class Bootstrap {
                 $this->_search();
             }
         }
-        
+
         // Determine what to load
         switch ($length) {
             case 5:
@@ -205,6 +205,7 @@ class Bootstrap {
      * @return boolean
      */
     private function _error($path=null) {
+
         require $this->_controllerPath . $this->_errorFile;
         $this->_controller = new Error();
         $this->_controller->index($path);

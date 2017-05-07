@@ -198,7 +198,7 @@ class Employees extends Controller {
                 }
 
                 $arr['message'] = 'บันทึกเรียบร้อย';
-                $arr['url'] = 'refresh';
+                // $arr['url'] = 'refresh';
             }
 
         } catch (Exception $e) {

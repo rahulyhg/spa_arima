@@ -14,26 +14,8 @@ $form = new Form();
 $form = $form->create()
 	// set From
 	->elem('div')
-	->addClass('form-insert pal');
+	->addClass('form-insert pal form-promotion');
 
-$type = '';
-foreach ($this->type as $key => $value) {
-	
-	$sel = '';
-	if( !empty($this->item['type']) ){
-
-		if( $this->item['type'] == $value['id'] ){
-			$sel = ' selected="1"';
-		}
-	}
-	$type .= '<option'.$sel.' value="'.$value['id'].'">'.$value['name'].'</option>';
-}
-
-$type = '<select class="inputtext" name="pro_type">'.$type.'</select>';
-
-$form 	->field("pro_type")
-		->label($this->lang->translate("Type"))
-		->text( $type );
 
 $form   ->field("pro_name")
         ->label($this->lang->translate('Name'))
@@ -42,19 +24,45 @@ $form   ->field("pro_name")
         ->autocomplete("off")
         ->value( !empty($this->item['name']) ? $this->item['name']:'' );
 
+/*
+'<div class="sidetip">'.
+	'<p data-name="pro_type" data-value="percent">ลดราคาจากผลรวมทั้งหมด เป็นเปอร์เซนต์<p>'.
+	'<p data-name="pro_type" data-value="amount">ลดราคาจากผลรวมทั้งหมด เป็นจำนวนเงิน<p>'.
+	'<p data-name="pro_type" data-value="item">ลดราคาต่อชิ้น<p>'.
+'<div>'*/  
+
+$form 	->field("pro_type")
+		->label( $this->lang->translate('Discount') . ' ' .$this->lang->translate("Type"))
+		->select( $this->type, 'id', 'name', false )
+		->addClass('inputtext js-change')
+		->value( !empty($this->item['type'])? $this->item['type']:'' )
+		->sidetip( array(
+			'keys' => array(
+				'name' => 'pro_type',
+				'value' => 'id',
+				'text' => 'note'
+			),
+			'options' => $this->type,
+		) );
+
 $form   ->field("pro_discount")
-        ->label($this->lang->translate('Discount'))
+        ->label( $this->lang->translate('Discount'). ' ' .$this->lang->translate("Value") )
         ->addClass('inputtext')
         ->autocomplete("off")
         ->type('number')
-        ->value( !empty($this->item['discount']) ? round($this->item['discount']):'' );
+        ->value( !empty($this->item['discount']) ? round($this->item['discount']):'' )
+        ->note( 'จำนวนส่วนลด' );
 
 $form 	->field("pro_qty")
-		->label($this->lang->translate('Quantity'))
-		->addClass('inputtext')
-		->autocomplete('off')
-		->type('number')
-		->value( !empty($this->item['qty']) ? $this->item['qty']:'' );
+		->text( '<div class="openset">'.
+			'<label class="checkbox mbs"><input type="checkbox" name="has_qty" class="js-openset" value="1"><span>Set Quantity</span></label>'.
+			'<div class="content" data-name="has_qty">'.
+				'<input id="pro_qty" class="inputtext" autocomplete="off" type="number" name="pro_qty">'.
+			'</div>'.
+			// '<div class="note"></div>'.
+			// '<div class="notification"></div>'.
+		'</div>' )
+		->note( 'กำหนดเมื่อเลือกสินค้าครบจำนวนหรือมากกว่า จะสามารถใช้โปรโมชั่นนี้' );
 
 if( !empty($this->item['end']) ){
 	if( $this->item['end']=='0000-00-00 00:00:00' ){
@@ -62,16 +70,20 @@ if( !empty($this->item['end']) ){
 	}
 }
 
-$form 	->field("event_start")
-		->label($this->lang->translate('Close Date'))
-		->text( '<div data-plugins="setdate" data-options="'.$this->fn->stringify( array(
+$form 	->field("pro_time")
+		// ->label($this->lang->translate('Set Time'))
+		->text( '<div class="openset">'.
+
+		'<label class="checkbox mbs"><input type="checkbox" name="has_time"  class="js-openset" value="1"><span>Set Time</span></label>'.
+
+		'<div class="content" data-name="has_time" data-plugins="setdate" data-options="'.$this->fn->stringify( array(
 
 			'startDate' => $startDate,
 			'endDate' => !empty($this->item['end']) ? $this->item['end']:'',
 
-			'allday' => 'disabled',
+			'allday' => true,
 			'endtime' => false,
-			'time' => 'disabled',
+			// 'time' => 'disabled',
 
 			'str' => array(
 				$this->lang->translate('Start'),
@@ -82,38 +94,41 @@ $form 	->field("event_start")
 
 			'lang' => $this->lang->getCode()
 
-		) ).'"></div>' );
+		) ).'"></div>'.
 
-$status = '';
-foreach ($this->status as $key => $value) {
-	
-	$sel = "";
-	if( !empty($this->item['status']) ){
+	'</div>' )
+		->note( 'กำหนดวันเริ่มและวันสิ้นสุดของโปรโมชั่น' );
 
-		if( $this->item['status'] == $value['id'] ){
-			$sel = ' selected="1"';
-		}
-	}
-
-	$status .= '<option'.$sel.' value="'.$value['id'].'">'.$value['name'].'</option>';
-}
-
-$status = '<select class="inputtext" name="pro_status">'.$status.'</select>';
-
-$form   ->field("pro_status")
+/*$form   ->field("pro_status")
         ->label($this->lang->translate('Status'))
-        ->text( $status );
+        ->select( $this->status )
+        ->addClass('inputtext')
+        ->value( !empty($this->item['status']) ? $this->item['status']: '' );
 
-
+*/
 $formDetail = $form->html();
 
+
+$optionsInvite = array(
+	'url' => URL.'promotions/invite',
+);
+
+if( !empty( $this->item['invite'] ) ){
+	$optionsInvite['invite'] = $this->item['invite'];
+}
 
 // 
 $form = new Form();
 	$form = $form->create()->elem('div')->addClass('form-insert');
-	$form 	->field("event_invite")
-			->label( $this->lang->translate('Package') )
-			->text( //'<div class="">'.
+
+	$form 	->field("invite")
+			// ->label( $this->lang->translate('Package') )
+			->text( '<div class="openset">'.
+
+'<label class="checkbox mbs"><input type="checkbox" name="is_join" class="js-openset" value="1"><span>Set Package</span></label>'.
+'<div class="mts mbm pam uiBoxYellow fsm">กำหนดสินค้าที่ร่วมรายการ *หากไม่กำหนดจะถือว่าใช่ได้กับสินค้าทุกชนิด</div>'.
+
+'<div class="content" data-name="is_join" style="position: relative;margin-right: -20px;height: 347px;"  data-plugins="invite" data-options="'.$this->fn->stringify($optionsInvite).'">'.
 
 '<div class="ui-invite-content">'.
 
@@ -174,26 +189,19 @@ $form = new Form();
 	'</div>'.
 '</div>'.
 
-'');
+'</div>'.
+
+'</div>');
 
 $formInvite = $form->html();
-$optionsInvite = array(
-	'url' => URL.'promotions/invite',
-);
-
-if( !empty( $this->item['invite'] ) ){
-	$optionsInvite['invite'] = $this->item['invite'];
-}
-
-
 
 # set form
 $arr['form'] = '<form class="js-submit-form" method="post" action="'.URL. 'promotions/save"></form>';
 
 # body
-$arr['body'] = '<div class="table-plan-wrap"><div class="table-plan table-plan-promotions">'.
+$arr['body'] = '<div class="table-plan-wrap"><div class="table-plan table-plan-promotions" data-plugins="activeform">'.
     '<div class="td-plan-detail">'.$formDetail.'</div>'.
-    '<div class="td-plan-invite ui-invite" data-plugins="invite" data-options="'.$this->fn->stringify($optionsInvite).'">'.$formInvite.'</div>'.
+    '<div class="td-plan-invite ui-invite">'.$formInvite.'</div>'.
 '</div></div>';
 
 # title

@@ -58,10 +58,12 @@ $addr[] = array('label'=>'','key'=>'zip');
 				}
 			}
 
-			echo '<tr>'.
-				'<td class="label">'.$label.'</td>'.
-				'<td class="data">'.$data.'</td>'.
-			'</tr>';
+			if( !empty($data) ){
+				echo '<tr>'.
+					'<td class="label">'.$label.'</td>'.
+					'<td class="data">'.$data.'</td>'.
+				'</tr>';
+			}
 		}
 		?>
 	</tbody></table>

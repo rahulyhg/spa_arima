@@ -29,6 +29,7 @@ class Calendar extends Controller {
 				: null
 		);
 
+		
 		// print_r($data); die;
 
 		echo json_encode( $data['lists'] );

@@ -44,7 +44,7 @@ class Controller {
      * @param string $path Location of the models
      */
     public function loadModel($name, $modelPath = 'models/') {
-        
+
         $path = $modelPath . $name.'_model.php';
         $this->pathName = $name;
         
@@ -63,7 +63,6 @@ class Controller {
             $this->setSystem();
             $this->view->setData('system', $this->system);
         }
-        
 
         $this->handleLogin();
         
@@ -185,7 +184,9 @@ class Controller {
         }
     }
     public function error(){
-        $this->loadModel('error');
+        if( !$this->model ){
+            $this->loadModel('error');
+        }
 
         $this->view->setPage('title', $this->lang->getCode()=='th'?'ไม่พบเพจ': 'Page not found');
         $this->view->elem('body')->addClass('page-errors');
@@ -296,13 +297,33 @@ class Controller {
             'has_menu' => true,
         );
 
-        if( empty($this->system['theme']) ){
+        if( $this->pathName == 'pos' ){
+
+            $options['has_topbar'] = true;
+            $options['has_footer'] = true;
+
+            if( count($this->me['access']) == 1 ){
+                $theme_options['has_menu'] = false;
+            }
+
+            $this->system['theme'] = 'pos';
+
+            if( $options['has_menu'] ){
+                Session::init();                          
+                Session::set('isPushedLeft', 0);
+                $this->view->elem('body')->addClass('has_menu');
+            }
+
+            $this->view->setPage('image_url', !empty( $this->system['image_url'] ) ? $this->system['image_url']: IMAGES.'logo/logo1.gif' );
+            $this->view->setPage('name', !empty( $this->system['name'] ) ? $this->system['name']: 'POS' );
+
+
+        }
+        elseif( empty($this->system['theme']) ){
             $this->system['theme'] = 'manage';
         }
 
         $this->view->setPage('theme', $this->system['theme']);
-        $this->view->setPage('theme_options', $options);
-
-        
+        $this->view->setPage('theme_options', $options);  
     }
 }

@@ -15,7 +15,15 @@ if ( typeof Object.create !== 'function' ) {
 			self.elem = elem;
 
 			self.setElem();
-			self.data = $.extend( {}, $.fn.listpage2.options, options );
+			self.settings = $.extend( {}, $.fn.listpage2.options, options );
+
+			self.data = {
+				total: 0,
+				options: {
+					pager: 1,
+				},
+				url: self.settings.url
+			};
 
 			self.resize();
 			$( window ).resize(function () {
@@ -88,6 +96,7 @@ if ( typeof Object.create !== 'function' ) {
 
 			var totalW = 0;
 			if(self.$tablelists.find('table tr:first>td').hasClass('empty')){ return false; }
+
 				self.$tablelists.find('table tr:first>td').each(function ( i ) {
 
 				var td = $(this);
@@ -287,7 +296,16 @@ if ( typeof Object.create !== 'function' ) {
 					self.refresh( 1 );
 				});
 			}
-					
+			
+
+			/*self.$elem.delegate('.js-change', 'change', function() {
+				var url = $(this).data('url') || $(this).attr('stringify'),
+					name = $(this).attr('name')
+					val = $(this).val();
+
+				console.log( url, name, val );
+				if( !url ) return false;
+			});*/	
 		},
 
 		search: function (text) {
@@ -392,24 +410,25 @@ if ( typeof Object.create !== 'function' ) {
 		fetch: function() {
 			var self = this;
 
+			// console.log( self.data.options );
 			// var qLoad = setTimeout( function () {
 			
 			// set url
-			var returnLocation = history.location || document.location,
+			/*var returnLocation = history.location || document.location,
 				href = self.data.url+"?"+$.param(self.data.options),
-				title = "";
+				title = "";*/
 			// history.pushState('', title, href);
 			// document.title = title;
 
-			if( self.is_search ){
-				self.$elem.find('.search-input').attr('disabled', true);
-			}
+			if( self.is_search ) self.$elem.find('.search-input').attr('disabled', true);
+
 			return $.ajax({
 				url: self.data.url,
 				data: self.data.options,
 				dataType: 'json'
 			}).always(function () {
 
+				// console.log( self.data.options );
 				self.$elem.removeClass('has-loading');
 
 				if( self.is_search ){
