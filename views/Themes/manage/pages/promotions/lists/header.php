@@ -11,14 +11,18 @@
 			<li class="mt"><a class="btn js-refresh" data-plugins="tooltip" data-options="<?=$this->fn->stringify(array('text'=>'refresh'))?>"><i class="icon-refresh"></i></a></li>
 
 			<li><label for="position" class="label">Type</label>
-			<select ref="selector" name="position" class="inputtext"><?php
+			<select ref="selector" name="type" class="inputtext">
+				<option value="">--- Select <?=$this->lang->translate("Type")?> ---</option>
+			<?php
 				foreach ($this->type as $key => $value) {
 					echo '<option value="'.$value['id'].'">'.$value['name'].'</option>';
 				}
 			?></select></li>
 
 			<li><label for="position" class="label">Status</label>
-			<select ref="selector" name="display" class="inputtext"><?php
+			<select ref="selector" name="status" class="inputtext">
+				<option value="">--- Select <?=$this->lang->translate("Status")?> ---</option>
+			<?php
 				foreach ($this->status as $key => $value) {
 					echo '<option value="'.$value['id'].'">'.$value['name'].'</option>';
 				}

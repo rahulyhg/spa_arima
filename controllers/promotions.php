@@ -26,13 +26,14 @@ class Promotions extends Controller {
         }
         else{
 
+            $this->view->setData('status', $this->model->status() );
+
             if( $this->format=='json' ) {
                 $this->view->setData('results', $this->model->lists() );
                 $render = "promotions/lists/json";
             }
             else{
 
-                $this->view->setData('status', $this->model->status() );
                 $this->view->setData('type', $this->model->type() );
 
                 $render = "promotions/lists/display";
@@ -103,40 +104,42 @@ class Promotions extends Controller {
                 elseif( !is_numeric($_POST['pro_qty']) ){
                     $arr['error']['pro_qty'] = 'Input is Number';
                 }
+                else{
+                    $postData['pro_qty'] = $_POST['pro_qty'];
+                }
             }
 
             $postData['pro_has_time'] = isset($_POST['has_time']) ? $_POST['has_time']:0;
             if( isset($_POST['has_time']) ){
 
-
+                /* SET Default */ 
+                $postData['pro_has_enddate'] = isset($_POST['has_end']) ? 1:0;
                 $postData['pro_time_allday'] = isset($_POST['allday']) ? $_POST['allday']:0;
 
                 $startTime = '00:00';
+                $endTime = '00:00';
+                /**/
+
+                /* SET DATA TIME  */
                 if( empty($postData['pro_time_allday']) ){
                     $startTime = $_POST['start_time'];
-                }
-                $postData['pro_start_date'] = date("{$_POST['start_date']} {$startTime}:00");
-                
 
-                $postData['pro_has_enddate'] = isset($_POST['allday']) ? $_POST['allday']:0;
-                if( !empty($postData['pro_has_enddate']) ){
-
-                    $endTime = '00:00';
-                    if( empty($postData['pro_time_allday']) ){
+                    if( !empty($postData['pro_has_enddate']) ){
                         $endTime = $_POST['end_time'];
                     }
+                }
 
-                    $postData['pro_end_date'] = date("{$_POST['end_date']} {$endTime}:00");
+                /* SET TIME */
+                $postData['pro_start_date'] = date("{$_POST['start_date']} {$startTime}:00");
+                $postData['pro_end_date'] = date("{$_POST['end_date']} {$endTime}:00");
+                /**/
 
-
-                    if( strtotime($postData['pro_end_date']) > strtotime($postData['pro_start_date']) ){
+                if( !empty($postData['pro_has_enddate']) ){
+                    if( strtotime($postData['pro_end_date']) < strtotime($postData['pro_start_date']) ){
                         $arr['error']['pro_time'] = 'กำหนดเวลาไม่ถูกต้อง';
                     }
                 }
             }
-
-
-
 
             $postData['pro_is_join'] = isset($_POST['is_join']) ? $_POST['is_join']:0;
             if( empty($_POST['invite']['id']) && !empty($postData['pro_is_join']) ){
@@ -149,7 +152,6 @@ class Promotions extends Controller {
                 if( !empty($item) ){
 
                     $this->model->clearProduct($id);
-
                     $this->model->update( $id, $postData );
                 }
                 else{
@@ -220,5 +222,16 @@ class Promotions extends Controller {
 
         $results = $this->model->query('search')->results( $objects, $options );
         echo json_encode($results);
+    }
+
+    public function setdata($id='', $field=null)
+    {
+        if( empty($id) || empty($field) || empty($this->me) ) $this->error();
+
+        $data['pro_'.$field] = isset($_REQUEST['value'])? $_REQUEST['value']:'';
+        $this->model->update($id, $data);
+
+        $arr['message'] = 'บันทึกเรียบร้อย';
+        echo json_encode($arr);
     }
 }

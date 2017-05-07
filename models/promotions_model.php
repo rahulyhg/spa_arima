@@ -58,6 +58,22 @@ class promotions_model extends Model {
             }
         }
 
+        if( !empty($_REQUEST['type']) ){
+            $options['type'] = $_REQUEST['type'];
+
+            $where_str .=  !empty($where_str) ? ' AND ':'';
+            $where_str .=  "`pro_type`=:type";
+            $where_arr[':type'] = $options['type'];
+        }
+
+        if( !empty($_REQUEST['status']) ){
+        	$options['status'] = $_REQUEST['status'];
+
+        	$where_str .=  !empty($where_str) ? ' AND ':'';
+            $where_str .=  "`pro_status`=:status";
+            $where_arr[':status'] = $options['status'];
+        }
+
 		$arr['total'] = $this->db->count($this->_table, $where_str, $where_arr);
 
 		$where_str = !empty($where_str) ? "WHERE {$where_str}":'';
@@ -130,6 +146,11 @@ class promotions_model extends Model {
 
 		$data = $this->cut($this->_cutNamefield, $data);
 
+		if( !empty($data['is_join']) ){
+
+			$data['invite'] = $this->listInvite( $data['id'] );
+		}
+
 		$data['status'] = $this->getStatus($data['status']);
 		$data['type'] = $this->getType($data['type']);
 
@@ -150,11 +171,14 @@ class promotions_model extends Model {
 
 		$data = $this->cut($this->_cutNamefield, $data);
 	}
-	public function update($id, $data) {
+	public function update($id, &$data) {
 
 		$this->db->update($this->_objType, $data, "{$this->_cutNamefield}id={$id}");
+		$data = $this->cut($this->_cutNamefield, $data);
 	}
 	public function delete($id) {
+
+		$this->clearProduct( $id );
 		$this->db->delete($this->_objType, "{$this->_cutNamefield}id={$id}");
 	}
 
@@ -214,6 +238,9 @@ class promotions_model extends Model {
         return $data;  
     }
 
+    /* End Status & Type */
+	/**/
+
     public function clearProduct($id){
     	$this->db->delete('promotions_permit', "`pro_id`={$id}", $this->db->count('promotions_permit', "`pro_id`=:id", array(':id'=>$id)) );
     }
@@ -222,6 +249,20 @@ class promotions_model extends Model {
   		$this->db->insert('promotions_permit', $data);
     }
 
-	/* End Status & Type */
-	/**/
+    public function listInvite( $id ){
+
+    	$options = array('view_stype'=>'bucketed');
+
+    	$select_package = "pack_id AS id,
+    					   pack_code AS code,
+    					   pack_name AS name,
+    					   pack_timer AS timer,
+    					   pack_price AS price";
+
+    	$package = $this->db->select("SELECT {$select_package} FROM package p LEFT JOIN promotions_permit pm ON p.pack_id = pm.obj_id WHERE pm.pro_id=:id AND pm.obj_type='package'" , array(':id'=>$id) );
+
+    	$data['package'] = $this->query('package')->buildFrag( $package , $options );
+
+        return $data;
+    }
 }

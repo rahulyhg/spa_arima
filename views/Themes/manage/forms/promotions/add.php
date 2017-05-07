@@ -1,11 +1,20 @@
 <?php
 
 $startDate = '';
-if( !empty($this->item['start']) ){
-	$startDate = $this->item['start'];
+if( !empty($this->item['start_date']) ){
+	if( $this->item['start_date'] != '0000-00-00 00:00:00' ){
+		$startDate = $this->item['start_date'];
+	}
 }
 elseif( isset($_REQUEST['date']) ){
 	$startDate = $_REQUEST['date'];
+}
+
+$endDate = '';
+if( !empty($this->item['end_date']) ){
+	if( $this->item['end_date'] != '0000-00-00 00:00:00' ){
+		$endDate = $this->item['end_date'];
+	}
 }
 
 $title = $this->lang->translate('Promotions');
@@ -53,11 +62,18 @@ $form   ->field("pro_discount")
         ->value( !empty($this->item['discount']) ? round($this->item['discount']):'' )
         ->note( 'จำนวนส่วนลด' );
 
+$ck = '';
+$qty = '';
+if( !empty($this->item['has_qty']) ){
+	$ck = ' checked="1"';
+	$qty = 'value="'.$this->item['qty'].'"';
+}
+
 $form 	->field("pro_qty")
 		->text( '<div class="openset">'.
-			'<label class="checkbox mbs"><input type="checkbox" name="has_qty" class="js-openset" value="1"><span>Set Quantity</span></label>'.
+			'<label class="checkbox mbs"><input type="checkbox"'.$ck.' name="has_qty" class="js-openset" value="1"><span>Set Quantity</span></label>'.
 			'<div class="content" data-name="has_qty">'.
-				'<input id="pro_qty" class="inputtext" autocomplete="off" type="number" name="pro_qty">'.
+				'<input id="pro_qty" class="inputtext" autocomplete="off" type="number" name="pro_qty" '.$qty.'>'.
 			'</div>'.
 			// '<div class="note"></div>'.
 			// '<div class="notification"></div>'.
@@ -70,19 +86,24 @@ if( !empty($this->item['end']) ){
 	}
 }
 
+$ck_start = '';
+if( !empty($this->item['has_time']) ){
+	$ck_start = ' checked="1"';
+}
+
 $form 	->field("pro_time")
 		// ->label($this->lang->translate('Set Time'))
 		->text( '<div class="openset">'.
 
-		'<label class="checkbox mbs"><input type="checkbox" name="has_time"  class="js-openset" value="1"><span>Set Time</span></label>'.
+		'<label class="checkbox mbs"><input type="checkbox"'.$ck_start.' name="has_time"  class="js-openset" value="1"><span>Set Time</span></label>'.
 
 		'<div class="content" data-name="has_time" data-plugins="setdate" data-options="'.$this->fn->stringify( array(
 
 			'startDate' => $startDate,
-			'endDate' => !empty($this->item['end']) ? $this->item['end']:'',
+			'endDate' => $endDate,
 
 			'allday' => true,
-			'endtime' => false,
+			'endtime' => !empty($this->item['has_enddate']) ? true : false,
 			// 'time' => 'disabled',
 
 			'str' => array(
@@ -117,6 +138,11 @@ if( !empty( $this->item['invite'] ) ){
 	$optionsInvite['invite'] = $this->item['invite'];
 }
 
+$ck_join = '';
+if( !empty($this->item['is_join']) ){
+	$ck_join = ' checked="1"';
+}
+
 // 
 $form = new Form();
 	$form = $form->create()->elem('div')->addClass('form-insert');
@@ -125,7 +151,7 @@ $form = new Form();
 			// ->label( $this->lang->translate('Package') )
 			->text( '<div class="openset">'.
 
-'<label class="checkbox mbs"><input type="checkbox" name="is_join" class="js-openset" value="1"><span>Set Package</span></label>'.
+'<label class="checkbox mbs"><input type="checkbox"'.$ck_join.' name="is_join" class="js-openset" value="1"><span>Set Package</span></label>'.
 '<div class="mts mbm pam uiBoxYellow fsm">กำหนดสินค้าที่ร่วมรายการ *หากไม่กำหนดจะถือว่าใช่ได้กับสินค้าทุกชนิด</div>'.
 
 '<div class="content" data-name="is_join" style="position: relative;margin-right: -20px;height: 347px;"  data-plugins="invite" data-options="'.$this->fn->stringify($optionsInvite).'">'.
@@ -217,7 +243,11 @@ else{
 $arr['width'] = 900;
 
 # fotter: button
-$arr['button'] = '<button type="submit" class="btn btn-primary btn-submit"><span class="btn-text">'.$this->lang->translate('Save').'</span></button>';
+$arr['button'] = '';
+if( !empty($this->item) ){
+	$arr['button'] .= '<a data-plugins="dialog" href="'.URL.'promotions/del/'.$this->item['id'].'" class="btn btn-red">ลบ</a>';
+}
+$arr['button'] .= '<button type="submit" class="btn btn-primary btn-submit"><span class="btn-text">'.$this->lang->translate('Save').'</span></button>';
 $arr['bottom_msg'] = '<a class="btn" role="dialog-close"><span class="btn-text">'.$this->lang->translate('Cancel').'</span></a>';
 
 echo json_encode($arr);
