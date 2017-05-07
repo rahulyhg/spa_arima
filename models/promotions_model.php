@@ -46,10 +46,8 @@ class promotions_model extends Model {
             $wq = '';
             foreach ($arrQ as $key => $value) {
                 $wq .= !empty( $wq ) ? " OR ":'';
-                $wq .= "model_name LIKE :q{$key} OR model_name=:f{$key}";
+                $wq .= "pro_name LIKE :q{$key}";
                 $where_arr[":q{$key}"] = "%{$value}%";
-                // $where_arr[":s{$key}"] = "{$value}%";
-                $where_arr[":f{$key}"] = $value;
             }
 
             if( !empty($wq) ){
