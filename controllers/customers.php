@@ -198,6 +198,7 @@ class Customers extends Controller {
             $ex = array(
                 'ex_start_date'=>$_POST['start_date'],
                 'ex_end_date'=>$_POST['end_date'],
+                'ex_emp_id'=>$this->me['id'],
             );
 
             // if( strlen($_POST['address']['zip']) != 5 ){
