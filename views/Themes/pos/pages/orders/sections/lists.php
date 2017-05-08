@@ -14,14 +14,12 @@
 					<input type="text" class="inputtext input-search" maxlength="100" placeholder="">
 				</td>
 				<td class="" style="width: 30px">
-					<span class="gbtn radius"><a class="btn btn-blue"><i class="icon-plus"></i></a></span>
+					<span class="gbtn radius"><a class="btn btn-blue" data-global-action="bill"><i class="icon-plus"></i></a></span>
 				</td>
 			</tr>
 		</table>
 		
 		</form>
-
-		
 	</header>
 	<div class="section-package-content">
 		<ul class="ui-list ui-list-orders">
@@ -56,7 +54,7 @@
 
 			<li class="ui-item head">10:00 PM</li>
 			<?php for ($i=0; $i < 20; $i++) { ?>
-			<li class="ui-item ">
+			<li class="ui-item" data-id="<?=$i?>">
 				<div class="ui-item-inner clearfix">
 					<abbr class="rfloat timestamp fcg fsm">9:25</abbr>
 					

@@ -37,7 +37,20 @@ class Pos extends Controller{
 
     public function orders(){
         
+        $this->view->setData('package', $this->model->query('package')->lists());
+        
         $this->view->setPage('on', 'orders');
         $this->view->render("orders/display");
+    }
+
+    public function queue() {
+        
+        $this->view->js('jquery/jquery-ui.min');
+        $this->view->js('jquery/jquery.sortable');
+
+
+        $this->view->setData('lists', $this->model->query('masseuse')->lists() );
+        $this->view->setPage('on', 'queue');
+        $this->view->render("queue/display");
     }
 }

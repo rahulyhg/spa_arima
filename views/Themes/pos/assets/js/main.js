@@ -14,49 +14,198 @@ if ( typeof Object.create !== 'function' ) {
 		init: function (options, elem) {
 			var self = this;
 
-
+			// set Elem
 			self.$elem = $(elem);
+			self.setElem();
 
-			self.resize();
 			self.Events();
-		},
 
-		resize: function () {
+			self.active( 'lists' );
+		},
+		setElem: function () {
 			var self = this;
 
-			var fw = $(window).width(),
-				fh = $(window).height();
 
-			// set Slip
-
-			self.$elem.find('.slipPaper-main').css({
-				bottom: self.$elem.find('.slipPaper-footer').outerHeight(),
-			});
-
-			self.$elem.find('.slipPaper-bodyContent').css({
-				top: self.$elem.find('.slipPaper-bodyHeader').outerHeight() + 30,
-				bottom: self.$elem.find('.slipPaper-bodyFooter').outerHeight(),
-			});
-
-
-			self.$elem.find('.slipPaper-bodyContent-body').css({
-				top: self.$elem.find('.slipPaper-bodyContent-header').outerHeight()
-			});
+			$.each( self.$elem.find('[data-global]'), function () {
+				self[ '$e_'+ $(this).attr('data-global') ] = $(this);
+			} );
 			
-
-			
-			
-			// slipPaper-bodyContent
 		},
 
 		Events: function() {
 			var self = this;
-			
+
+			self.$e_lists.delegate('[data-id]', 'click', function () {
+				
+				$(this).addClass('active').siblings().removeClass('active');
+
+				self.active( 'invoice' );
+			});
+
+			self.$e_lists.delegate('[data-global-action]', 'click', function () {
+				
+				self.active( $(this).attr('data-global-action') );
+			});
+
 			/*setTimeout(function () {
 
 				self.$elem.find('.ui-effect-top').addClass('active');
 				
 			}, 1);*/
+		},
+
+		active: function ( val ) {
+			var self = this;
+
+			var el = self.$elem.find('[data-global='+ val +']');
+			if( el.hasClass('active') ) return false;
+
+			el.addClass('active').siblings().removeClass('active');
+			self[ val ].init( {}, el, self, function () {
+				
+			} );
+		},
+
+		lists: {
+			init: function (options, elem, then, callback ) {
+				var self = this;
+
+				self.$elem = $elem;
+				self.then = then;
+
+				self.then.active( 'invoice' );
+			}
+		},
+
+		invoice: {
+			init: function (options, $elem, then, callback ) {
+				var self = this;
+
+				self.$elem = $elem;
+				self.then = then;
+
+				self.resize();
+				$(window).resize(function () {
+					self.resize();
+				});
+			},
+			resize: function () {
+				var self = this;
+
+				var fw = $(window).width(),
+					fh = $(window).height();
+
+				// set Slip
+
+				self.$elem.find('.slipPaper-main').css({
+					bottom: self.$elem.find('.slipPaper-footer').outerHeight(),
+				});
+
+				self.$elem.find('.slipPaper-bodyContent').css({
+					top: self.$elem.find('.slipPaper-bodyHeader').outerHeight() + 30,
+					bottom: self.$elem.find('.slipPaper-bodyFooter').outerHeight(),
+				});
+
+
+				self.$elem.find('.slipPaper-bodyContent-body').css({
+					top: self.$elem.find('.slipPaper-bodyContent-header').outerHeight()
+				});
+			}
+		},
+
+		bill: {
+			init: function (options, $elem, then, callback ) {
+				var self = this;
+				self.$elem = $elem;
+				self.then = then;
+
+				self.Events();
+				self.then.active( 'menu' );
+
+
+				self.resize();
+				$(window).resize(function () {
+					self.resize();
+				});
+			},
+
+			Events: function () {
+				var self = this;
+
+				self.$elem.find('[data-bill-action]').click( function () {
+					var action = $(this).attr('data-bill-action');
+					console.log( action );
+
+					if( action == 'hold' ){
+						self.then.active( 'lists' );
+					}
+					else if( action=='pay' ){
+						self.then.active( 'pay' );
+					}
+					else if( action=='menu' ){
+						self.then.active( 'menu' );
+					}
+				});
+			},
+
+			resize: function () {
+				var self = this;
+
+				var fw = $(window).width(),
+					fh = $(window).height();
+
+				// set Slip
+
+				self.$elem.find('.slipPaper-main').css({
+					bottom: self.$elem.find('.slipPaper-footer').outerHeight(),
+				});
+
+				self.$elem.find('.slipPaper-bodyContent').css({
+					top: self.$elem.find('.slipPaper-bodyHeader').outerHeight() + 30,
+					bottom: self.$elem.find('.slipPaper-bodyFooter').outerHeight(),
+				});
+
+
+				self.$elem.find('.slipPaper-bodyContent-body').css({
+					top: self.$elem.find('.slipPaper-bodyContent-header').outerHeight()
+				});
+			}
+
+		},
+
+		menu: {
+			init: function (options, $elem, then, callback ) {
+				var self = this;
+
+				self.$elem = $elem;
+
+				// Event
+				self.$elem.find('.memu-tab > a').click(function () {
+					$(this).addClass('active').siblings().removeClass('active');
+				});
+
+
+				self.$elem.delegate('.memu-table [data-id]', 'click', function () {
+				
+					then.active( 'change' );
+				});
+			}
+		},
+
+		change: {
+			init: function (options, $elem, then, callback ) {
+				var self = this;
+
+				self.$elem = $elem;
+
+			}
+		},
+
+		pay: {
+			init: function (options, $elem, then, callback ) {
+				var self = this;
+				self.$elem = $elem;
+			}
 		}
 	}
 
@@ -70,8 +219,6 @@ if ( typeof Object.create !== 'function' ) {
 	$.fn.order.options = {
 		lang: 'en'
 	};
-
-
 
 	var POS = {
 		init: function (options, elem) {
@@ -211,7 +358,7 @@ if ( typeof Object.create !== 'function' ) {
 			self.$elem = $(elem);
 			self.options = $.extend( {}, $.fn.jopQueue.options, options );
 
-			self.$listsbox = self.$elem.find('[rel=listsbox]');
+			self.$listsbox = self.$elem.find('[ref=listsbox]');
 
 			self.$listsbox.sortable({
 				stop: function (event, ui) {

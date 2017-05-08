@@ -29,7 +29,7 @@
 						
 					</div>
 					<div class="rfloat">
-						<span class="gbtn radius"><a class="js-add-item btn btn-blue"><i class="icon-plus"></i></a></span>
+						<span class="gbtn radius"><a class="btn btn-blue" data-bill-action="menu"><i class="icon-plus"></i></a></span>
 					</div>
 				</div>
 
@@ -128,16 +128,19 @@
 
 				<div class="slipPaper-bodyFooter-actions mvm clearfix">
 					<div class="lfloat">
-						<span class="gbtn"><a class="btn"><i class="icon-arrow-left mrs"></i>Hide</a></span>
-
-						<span class="gbtn"><a class="js-cancel-order btn btn-red disabled"><i class="icon-remove mrs"></i>Cancel</a></span>
+						
+						<span class="gbtn"><a class="btn"><i class="icon-clone mrs" data-bill-action="clone"></i>Clone</a></span>
+						
 						<!-- <span class="gbtn"><a class="btn"><i class="icon-envelope"></i></a></span> -->
 					</div>
 					<div class="rfloat">
 
+						<span class="gbtn"><a class="btn btn-red" data-bill-action="cancel"><i class="icon-remove mrs"></i>Cancel</a></span>
 
-						<span class="gbtn"><a class="btn"><i class="icon-clone mrs"></i>Clone</a></span>
-						<span class="gbtn"><a class="js-send-order btn btn-blue disabled"><i class="icon-floppy-o mrs"></i>Save</a></span>
+
+						<span class="gbtn"><a class="btn" data-bill-action="hold"><i class="icon-arrow-up mrs"></i>Hold</a></span>
+
+						<span class="gbtn"><a class="js-send-order btn btn-blue"><i class="icon-floppy-o mrs" data-bill-action="send"></i>Send</a></span>
 					</div>
 				</div>
 			</div>
@@ -164,7 +167,7 @@
 		</nav>
 
 		<div class="pay button">
-			<span class="gbtn radius large"><a class="btn btn-blue js-payment"><i class="icon-thailand-baht"></i></a></span>
+			<span class="gbtn radius large"><a class="btn btn-blue" data-bill-action="pay"><i class="icon-thailand-baht"></i></a></span>
 			<span class="t">Pay</span>
 		</div>
 	</footer>

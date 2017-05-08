@@ -1,4 +1,4 @@
-<div class="ui-effect-top" style="position: absolute;top: 0;left: 0;right: 0;bottom: 0; max-width: 640px">
+<div style="position: absolute;top: 0;left: 0;right: 0;bottom: 0; max-width: 640px">
 <div class="slipPaper-container">
 	<div class="slipPaper-main">
 		<div class="slipPaper-content clearfix">
