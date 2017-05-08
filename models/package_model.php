@@ -44,13 +44,19 @@ class Package_Model extends Model {
             $options['view_stype'] = $_REQUEST['view_stype'];
         }
 
+        if( isset($_REQUEST['period_start']) && isset($_REQUEST['period_end']) ){
+
+        	$options['period_start'] = $_REQUEST['period_start'];
+        	$options['period_end'] = $_REQUEST['period_end'];
+        }
+
 		if( !empty($options['q']) ){
 
             $arrQ = explode(' ', $options['q']);
             $wq = '';
             foreach ($arrQ as $key => $value) {
                 $wq .= !empty( $wq ) ? " OR ":'';
-                $wq .= "model_name LIKE :q{$key} OR model_name=:f{$key}";
+                $wq .= "pack_name LIKE :q{$key} OR pack_name=:f{$key}";
                 $where_arr[":q{$key}"] = "%{$value}%";
                 // $where_arr[":s{$key}"] = "{$value}%";
                 $where_arr[":f{$key}"] = $value;
@@ -115,6 +121,39 @@ class Package_Model extends Model {
 		$data = $this->_convert($data);
 
 		$data = $this->cut($this->_cutNamefield, $data);
+
+		if( !empty($options['dashboard']) ){
+
+			/* SUM PACKAGE */
+			$where_total = '`item_pack_id`=:pack_id';
+			$where_total_arr = array(
+				':pack_id'=>$data['id'],
+			);
+
+			if( (!empty($options['period_start']) && !empty($options['period_end'])) || (!empty($_REQUEST['period_start']) && !empty($_REQUEST['period_end'])) ){
+
+				$period_start = !empty($options['period_start']) ? $options['period_start'] : $_REQUEST['period_start'];
+				$period_end = !empty($options['period_end']) ? $options['period_end'] : $_REQUEST['period_end'];
+
+				$where_total .= ' AND (`item_created` BETWEEN :startDate AND :endDate)';
+				$where_total_arr[':startDate'] = $period_start;
+				$where_total_arr[':endDate'] = $period_end;
+			}
+
+			$select = "SUM(item_qty) AS total_qty, 
+					   SUM(item_discount) AS total_discount";
+
+			$results = $this->db->select("SELECT {$select} FROM orders_items WHERE {$where_total}", $where_total_arr);
+
+			$data['total_qty'] = $results[0]['total_qty'];
+			$data['total_discount'] = $results[0]['total_discount'];
+			/**/
+
+			/* COUNT CUSTOMER */
+			$form = 'orders o LEFT JOIN orders_items oi ON o.order_id = oi.item_order_id';
+			$data['total_customer'] = $this->db->count($form, 'oi.item_pack_id=:pack_id GROUP BY order_cus_id', array(':pack_id'=>$data['id']));
+			/**/
+		}
 
 		$data['skill'] = $this->listSkill( $data['id'] );
 

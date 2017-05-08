@@ -2,25 +2,28 @@
 
     <div class="duration-tubes">
         <ul class="ui-list ui-list-duration" ref="listsbox">
-        <?php for ($i=0; $i < 30; $i++) { ?>
+        <?php foreach ($this->item['expired'] as $key => $value) {?>
+
             <li class="ui-item ui-item-topBorder">
                 <div class="clearfix ui-item-inner" href="#">
 
                     <ul class="disc ui-list-meta">
                         
                         <li>
-                            <i class="icon-clock-o"></i> <label>Time:</label> <strong><?=date('Y-m-d')?></strong> <span class="fcg">-</span> <strong><?=date('Y-m-d')?></strong>
+                            <i class="icon-clock-o"></i> <label>Time:</label> <strong><?=$value['start_date']?></strong> <span class="fcg">-</span> <strong><?=$value['end_date']?></strong>
                         </li>
                         <li>
-                            <i class="icon-user-circle-o"></i> <label>Create By:</label> <i class="icon"></i><strong>ภุชงค์ สวนแจ้ง</strong> <?=$this->fn->q('time')->live( date('Y-m-d') )?>
+                            <i class="icon-user-circle-o"></i> <label>Create By:</label> <i class="icon"></i><strong><?=$value['emp']['text']?></strong> <?=$this->fn->q('time')->live( $value['updated'] )?>
                         </li>
                     </ul>
 
 
                 </div>
-
-                <div class="status-wrap"><a class="ui-status" style="background-color: rgb(219, 21, 6);">RUN</a></div>
-
+                <?php if( $value['status'] == 'run' ) { ?>
+                <div class="status-wrap"><a class="ui-status" style="background-color: rgb(11, 195, 57);">RUN</a></div>
+                <?php }else{ ?>
+                <div class="status-wrap"><a class="ui-status" style="background-color: rgb(219, 21, 6);">EXPIRED</a></div>
+                <?php } ?>
 
             </li>
         <?php } ?>

@@ -9,7 +9,7 @@ class customers_model extends Model
 
     private $_objName = "customers";
     private $_table = "customers LEFT JOIN city ON customers.cus_city_id = city.city_id";
-    private $_field = "cus_id, cus_prefix_name, cus_first_name, cus_last_name, cus_nickname,  cus_created, cus_updated, cus_birthday, cus_card_id, cus_phone, cus_email, cus_lineID, cus_bookmark, cus_address, cus_zip, cus_city_id, city_name, cus_emp_id";
+    private $_field = "cus_id, cus_prefix_name, cus_first_name, cus_last_name, cus_nickname,  cus_created, cus_updated, cus_birthday, cus_card_id, cus_phone, cus_email, cus_lineID, cus_bookmark, cus_address, cus_zip, cus_city_id, city_name, cus_emp_id, cus_status";
     private $_cutNamefield = "cus_";
 
     private function _setDate($data) {
@@ -80,6 +80,50 @@ class customers_model extends Model
                 'id' => $value['id'],
                 'name' => $value['label'],
                 'value' => $value['value'],
+            );
+        }
+
+        return $results;
+    }
+
+    public function setExpired( $data ){
+
+        $data['ex_updated'] = date('c');
+
+        if( empty($data['ex_id']) ){
+            $this->db->insert('customers_expired', $data);
+        }
+        else{
+            $this->db->update('customers_expired', $data, "`ex_id`={$data['ex_id']}");
+        }
+    }
+
+    public function getExpired( $id ){
+        $data = $this->db->select("SELECT
+            ex_id AS id,
+            ex_start_date AS start_date,
+            ex_end_date AS end_date,
+            ex_updated AS updated,
+            ex_emp_id AS emp_id,
+            ex_status AS status,
+            DATEDIFF(ex_end_date, ex_start_date) AS total_date
+        FROM customers_expired WHERE ex_cus_id=:id ORDER BY ex_end_date DESC",
+            array(
+                ':id' => $id
+            )
+        );
+
+        $results = array();
+
+        foreach ($data as $key => $value) {
+            $results[] = array(
+                'id' => $value['id'],
+                'start_date' => $value['start_date'],
+                'end_date' => $value['end_date'],
+                'updated' => $value['updated'],
+                'total_date' => $value['total_date'],
+                'status' => $value['status'],
+                'emp' => $this->query('employees')->get( $value['emp_id'] , array('view_stype'=>'bucketed') ),
             );
         }
 
@@ -229,6 +273,8 @@ class customers_model extends Model
                 $data['age'] = $this->fn->q('time')->age( $data['birthday'] );
             }
         }
+
+        $data['expired'] = $this->getExpired( $data['id'] );
 
         $data['total_booking'] = $this->db->count('booking', "book_cus_id={$data['id']} AND book_status='booking'");
 

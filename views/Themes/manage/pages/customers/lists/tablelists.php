@@ -7,6 +7,36 @@ if( !empty($this->results['lists']) ){
     $seq = 0;
     foreach ($this->results['lists'] as $i => $item) { 
 
+        /* Expired Date */
+        $startDateStr = '';
+        $endDateStr = '';
+
+        if( !empty($item['expired']) ){
+            $startDate = strtotime($item['expired'][0]['start_date']);
+            $endDate = strtotime($item['expired'][0]['end_date']);
+
+            $startDateStr = date('j', $startDate) .' ' . $this->fn->q('time')->month( date('n', $startDate) ) .' '. ( date('Y', $startDate)+543 );
+            $endDateStr = date('j', $endDate) .' ' . $this->fn->q('time')->month( date('n', $endDate) ) .' '. ( date('Y', $endDate)+543 );
+        }
+
+        $total_date = strtotime($endDate) - date("Y-m-d");
+        if( $total_date <= 0 ){
+            $strDate = 'หมดอายุ';
+        }
+        else{
+            $strDate = $total_date;
+        }
+        /**/
+
+        /* Status */
+        $status = '';
+        if( $item['status'] == 'run' ){
+            $status = '<span class="ui-status" style="background-color: rgb(11, 195, 57);">RUN</span>';
+        }
+        else{
+            $status = '<span class="ui-status" style="background-color: rgb(219, 21, 6);">EXPIRED</span>';
+        }
+        /**/
 
         // $item = $item;
         $cls = $i%2 ? 'even' : "odd";
@@ -16,8 +46,8 @@ if( !empty($this->results['lists']) ){
         $updatedStr = date('j/m/Y', $updatedTime);
         $updatedStr .= '<div class="fsm fcg">' .date('H:i:s').'</div>';*/
 
-        $created = strtotime( $item['created'] );
-        $createdStr = date('j', $created) .' ' . $this->fn->q('time')->month( date('n', $created) ) .' '. ( date('Y', $created)+543 );
+        /*$created = strtotime( $item['created'] );
+        $createdStr = date('j', $created) .' ' . $this->fn->q('time')->month( date('n', $created) ) .' '. ( date('Y', $created)+543 );*/
 
         $image = '';
         if( !empty($item['image_url']) ){
@@ -82,9 +112,9 @@ if( !empty($this->results['lists']) ){
 
             '<td class="express"><ul class="fsm">'.$express.'</ul></td>'.
 
-            '<td class="date">'.$createdStr.' - '.$createdStr.' (241)</td>'.
+            '<td class="date">'.$startDateStr.' - '.$endDateStr.' ('.$strDate.')</td>'.
             
-            '<td class="status"><span class="ui-status" style="background-color: rgb(219, 21, 6);">RUN</span></td>'.
+            '<td class="status">'.$status.'</td>'.
 
         '</tr>';
         

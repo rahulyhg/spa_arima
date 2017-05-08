@@ -190,6 +190,16 @@ class Customers extends Controller {
             ? $options['social'][0]['value']
             : '';
 
+            // Set Expired 
+            if( strtotime($_POST['start_date']) >= strtotime($_POST['end_date']) ){
+                $arr['error']['ex_time'] = 'กำหนดเวลาไม่ถูกต้อง';
+            }
+
+            $ex = array(
+                'ex_start_date'=>$_POST['start_date'],
+                'ex_end_date'=>$_POST['end_date'],
+            );
+
             // if( strlen($_POST['address']['zip']) != 5 ){
             //     $arr['error']['cus_address'] = 'กรุณากรอกรหัสไปรษณีย์ให้ครบ 5 หลัก';
             // }
@@ -204,9 +214,21 @@ class Customers extends Controller {
                     $this->model->update( $id, $postData );
                 }
                 else{
+
                     $postData['cus_emp_id'] = $this->me['id'];
+                    $ex['ex_status'] = 'run';
+
+                    if( $_POST['end_date'] < date("Y-m-d") ){
+                        $postData['cus_status'] = 'expired';
+                        $ex['ex_status'] = 'expired';
+                    }
+                    
                     $this->model->insert( $postData );
                     $id = $postData['cus_id'];
+
+                    $ex['ex_cus_id'] = $id;
+                    $this->model->setExpired( $ex );
+
                     $arr['url'] = URL.'customers/'.$postData['cus_id'];
                 }
 

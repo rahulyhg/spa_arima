@@ -14,7 +14,7 @@ if( $this->item['birthday'] != '0000-00-00' ){
 	<header class="clearfix">
 		<h2 class="title"><i class="icon-address-card-o mrs"></i>ข้อมูลพื้นฐาน</h2>
 		<?php if( $this->has_edit ){ ?>
-		<a data-plugins="dialog" href="<?=URL?><?=$this->obj_type?>/edit_basic/<?=$this->obj_id?>" class="btn-icon btn-edit"><i class="icon-pencil"></i></a>
+		<a data-plugins="dialog" href="<?=URL?><?=$this->obj_type?>edit_basic/<?=$this->obj_id?>" class="btn-icon btn-edit"><i class="icon-pencil"></i></a>
 		<?php } ?>
 	</header>
 	

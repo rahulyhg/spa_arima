@@ -121,6 +121,15 @@ class Dashboard extends Controller {
 		$total_services = array();
 		$this->view->setData('total_services', $total_services);
 
+		/* Package List */
+		$package_options = array(
+			'period_start'=>$start,
+			'period_end'=>$end,
+			'dashboard'=>true
+		);
+		// print_r($this->model->query('package')->lists( $package_options ));die;
+		$this->view->setData('package', $this->model->query('package')->lists( $package_options ));
+
 		/* ยอดสินค้า */
 		$total_products = $this->model->query('products')->lists( array('sum'=>true) );
 		$this->view->setData('total_products', $total_products);

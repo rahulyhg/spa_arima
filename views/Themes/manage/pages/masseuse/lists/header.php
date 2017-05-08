@@ -12,7 +12,7 @@
 
 				<li class="divider"></li>
 
-				<li class="mt"><a data-plugins="dialog" href="<?=URL?>customers/add" class="btn btn-primary"><i class="icon-plus mrs"></i><span class="btn-text"><?=$this->lang->translate('Add New')?></span></a></li>
+				<li class="mt"><a data-plugins="dialog" href="<?=URL?>employees/add" class="btn btn-primary"><i class="icon-plus mrs"></i><span class="btn-text"><?=$this->lang->translate('Add New')?></span></a></li>
 
 			</ul>
 			

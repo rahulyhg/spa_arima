@@ -1,5 +1,22 @@
 <?php
 
+$startDate = '';
+if( !empty($this->item['start_date']) ){
+    if( $this->item['start_date'] != '0000-00-00 00:00:00' ){
+        $startDate = $this->item['start_date'];
+    }
+}
+elseif( isset($_REQUEST['date']) ){
+    $startDate = $_REQUEST['date'];
+}
+
+$endDate = '';
+if( !empty($this->item['end_date']) ){
+    if( $this->item['end_date'] != '0000-00-00 00:00:00' ){
+        $endDate = $this->item['end_date'];
+    }
+}
+
 $options = array(
     'url' => URL.'media/set',
     'data' => array(
@@ -61,7 +78,7 @@ if( !empty($this->item['birthday']) ){
 
 $form   ->field("birthday")
         ->label('วันเกิด')
-        ->text( $this->fn->q('form')->birthday( $birthday, array('field_first_name'=>'cus_') ) );
+        ->text( $this->fn->q('form')->birthday( $birthday, array('field_first_name'=>'birthday') ) );
 
 $form   ->field("cus_card_id")
         ->label($this->lang->translate('ID Card / Passport'))
@@ -95,6 +112,36 @@ $form->hr( $this->fn->q('form')->contacts(
     !empty($this->item['options']['social'])? $this->item['options']['social']:array(), 
     array( 'field_first_name'=>'options[social]' )
 ) );
+
+if( empty($this->item) ){
+
+$form   ->field("ex_time")
+        ->label($this->lang->translate('Set Expired'))
+        ->text(
+
+        '<div class="content" data-name="ex_time" data-plugins="setdate" data-options="'.$this->fn->stringify( array(
+
+            'startDate' => $startDate,
+            'endDate' => $endDate,
+
+            'allday' => 'disabled',
+            'endtime' => true,
+            'time' => 'disabled',
+
+            'str' => array(
+                $this->lang->translate('Start'),
+                $this->lang->translate('End'),
+                $this->lang->translate('All day'),
+                $this->lang->translate('End Time'),
+            ),
+
+            'lang' => $this->lang->getCode()
+
+        ) ).'"></div>'
+
+        )
+        ->note( 'กำหนดวันหมดอายุสมาชิก' );
+}
 
 # set form
 $arr['form'] = '<form class="js-submit-form" method="post" action="'.URL. 'customers/save"></form>';
