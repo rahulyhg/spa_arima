@@ -35,12 +35,12 @@ if ( typeof Object.create !== 'function' ) {
 		Events: function() {
 			var self = this;
 
-			self.$e_lists.delegate('[data-id]', 'click', function () {
+			/*self.$e_lists.delegate('[data-id]', 'click', function () {
 				
 				$(this).addClass('active').siblings().removeClass('active');
 
 				self.active( 'invoice' );
-			});
+			});*/
 
 			self.$e_lists.delegate('[data-global-action]', 'click', function () {
 				
@@ -374,7 +374,7 @@ if ( typeof Object.create !== 'function' ) {
 			$.each(self.$listsbox.find('li'), function (i, obj) {
 				n++;
 
-				$( obj ).find('.number').text( n );
+				// $( obj ).find('.number').text( n )
 				
 			});
 			
