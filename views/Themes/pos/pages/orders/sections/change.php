@@ -7,12 +7,12 @@
 
 			<div class="lfloat">
 				<div style="padding-top: 7px; display: inline-block;">
-				<h2><i class="icon-cube mrs"></i><span>SHOWER ROOM</span></h2>
+				<h2><i class="icon-cube mrs"></i><span data-text="title">SHOWER ROOM</span></h2>
 				</div>
 			</div>
 
 			<div class="rfloat">
-				<span class="gbtn"><a class="btn"><i class="icon-arrow-left mrs"></i>Hide</a></span>
+				<span class="gbtn"><a class="btn" data-global-action="menu"><i class="icon-arrow-left mrs"></i>Hide</a></span>
 				<!-- <span class="gbtn"><a class="btn btn-red"><i class="icon-remove mrs"></i>Cancel</a></span> -->
 			</div>
 

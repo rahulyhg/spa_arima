@@ -524,4 +524,17 @@ class Employees_Model extends Model{
         return $data;
     }
     /* End skill */
+
+
+    public function firstMasseuse() {
+
+        $sth = $this->db->prepare("SELECT {$this->_field} FROM job_queue q 
+            INNER JOIN ($this->_table) ON q.emp_id=e.emp_id WHERE q.status=:status
+            ORDER BY sequence ASC LIMIT 1");
+        $sth->execute(array(':status'=>'on'));
+
+        return $sth->rowCount()==1
+            ? $this->convert( $sth->fetch( PDO::FETCH_ASSOC ) )
+            : array();
+    }
 }

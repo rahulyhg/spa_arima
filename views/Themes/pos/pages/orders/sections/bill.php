@@ -33,7 +33,6 @@
 					</div>
 				</div>
 
-				
 			</div>
 			<div class="slipPaper-bodyContent" style="padding-top: 29px; top: 85px; bottom: 164px;">
 				<div class="slipPaper-bodyContent-header">

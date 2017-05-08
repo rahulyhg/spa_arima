@@ -48,7 +48,7 @@ if ( typeof Object.create !== 'function' ) {
 				self.active( 'invoice' );
 			});*/
 
-			self.$e_lists.delegate('[data-global-action]', 'click', function () {
+			self.$elem.delegate('[data-global-action]', 'click', function () {
 				
 				self.active( $(this).attr('data-global-action') );
 			});
@@ -64,6 +64,7 @@ if ( typeof Object.create !== 'function' ) {
 					// set bill
 					// set menu profile
 					self.setBill( res );
+					self.setChange( res );
 
 					self.active( 'change' );
 				}, 'json');
@@ -71,9 +72,7 @@ if ( typeof Object.create !== 'function' ) {
 
 
 			/*setTimeout(function () {
-
 				self.$elem.find('.ui-effect-top').addClass('active');
-				
 			}, 1);*/
 		},
 
@@ -94,7 +93,37 @@ if ( typeof Object.create !== 'function' ) {
 
 			self.currOrder.items.push( data );
 
-			console.log( self.currOrder );
+
+			var $tr = $('<tr>').append( '' +
+				'<td class="no">1.</td>' + 
+				'<td class="name">'+
+					'<div class="title">'+
+						'<strong>'+ data.name +'</strong>'+
+						// '<span class="ui-status">50%</span>'+
+					'</div>'+
+					'<div class="order-title fsm">'+
+						'<span><label>Room: </label> 101</span>'+
+						'<span><label>By:</label> <i class="icon-user-circle-o"></i>ภุชงค์</span>'+
+					'</div>'+
+				'</td>' + 
+
+				'<td class="time">1</td>'+
+				'<td class="unittime">TIME</td>'+
+
+				'<td class="price has-discount">'+
+					'<div class="full">0</div>'+
+					'<div class="discount">0</div>'+
+				'</td>'+
+			'' );
+
+			self.$elem.find('[data-global=bill]').find('[role=orderlists]').append( $tr );
+		},
+		setChange: function (data) {
+			var self = this;
+
+			var $box = self.$elem.find('[data-global=change]');
+
+			$box.find('[data-text=title]').text( data.name );
 		},
 
 		lists: {
@@ -224,7 +253,6 @@ if ( typeof Object.create !== 'function' ) {
 			setTitle: function () {
 				var self = this;
 
-
 			},
 
 			Events: function () {
@@ -286,8 +314,6 @@ if ( typeof Object.create !== 'function' ) {
 
 					self.refresh( $(this).data('type') );
 				});
-
-
 				
 			},
 
@@ -460,7 +486,7 @@ if ( typeof Object.create !== 'function' ) {
 		lang: 'en'
 	};
 
-	
+
 	var JopQueue = {
 		init: function (options, elem) {
 			var self = this;
@@ -483,7 +509,7 @@ if ( typeof Object.create !== 'function' ) {
 			var n = 0
 			$.each(self.$listsbox.find('li'), function (i, obj) {
 				n++;
-				
+
 				// $( obj ).find('.number').text( n )
 			});
 			

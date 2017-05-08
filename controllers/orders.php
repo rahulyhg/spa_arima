@@ -26,6 +26,8 @@ class Orders extends Controller {
     	if( $type=='package' ){
     		if( !empty($_GET['id']) ){
     			$data = $this->model->query('package')->get( $_GET['id'] );
+    			
+    			$data['masseuse'] = $this->model->query('employees')->firstMasseuse();
     		}
     		else{
 
@@ -35,7 +37,6 @@ class Orders extends Controller {
     	else{
     		$data = $this->model->query('promotions')->lists();
     	}
-
 
     	echo json_encode( $data );
     }
