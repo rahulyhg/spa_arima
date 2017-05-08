@@ -1,8 +1,8 @@
 <div style="position: absolute;top: 0;left: 0;right: 0;bottom: 0;overflow-y: hidden;">
 		<div style="position: absolute;padding-top: 30px;padding-left: 30px;right: 0;left: 0;background-color: rgba(245,248,250,.98);z-index: 5;max-width: 700px;">
 			<header class="memu-tab clearfix" style="max-width: 600px;">
-				<a class="active">package</a>
-				<a hdata-filter="promotions">Promotions</a>
+				<a data-type="package" class="active">package</a>
+				<a data-type="promotions" hdata-filter="promotions">Promotions</a>
 			</header>
 		</div>
 
@@ -10,7 +10,7 @@
 		<table class="memu-table"><tbody>
 
 			<?php foreach ($this->package['lists'] as $key => $value) { ?>
-			<tr data-id="<?=$key?>">
+			<tr data-type="package" data-id="<?=$value['id']?>">
 				<td class="td_box"><div class="box"></div></td>
 				
 				<td class="name">

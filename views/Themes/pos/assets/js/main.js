@@ -14,6 +14,12 @@ if ( typeof Object.create !== 'function' ) {
 		init: function (options, elem) {
 			var self = this;
 
+			// set data 
+			self.currOrder = {
+				items: []
+			};
+
+
 			// set Elem
 			self.$elem = $(elem);
 			self.setElem();
@@ -47,6 +53,23 @@ if ( typeof Object.create !== 'function' ) {
 				self.active( $(this).attr('data-global-action') );
 			});
 
+			self.$elem.find('[data-global=menu]').delegate('.memu-table [data-id]', 'click', function () {
+					
+				$.get(Event.URL + 'orders/menu/', {
+					type: $(this).data('type'), 
+					id: $(this).data('id') 
+				}, function (res) {
+					console.log( res );
+
+					// set bill
+					// set menu profile
+					self.setBill( res );
+
+					self.active( 'change' );
+				}, 'json');
+			});
+
+
 			/*setTimeout(function () {
 
 				self.$elem.find('.ui-effect-top').addClass('active');
@@ -66,6 +89,14 @@ if ( typeof Object.create !== 'function' ) {
 			} );
 		},
 
+		setBill: function (data) {
+			var self = this;
+
+			self.currOrder.items.push( data );
+
+			console.log( self.currOrder );
+		},
+
 		lists: {
 			init: function (options, elem, then, callback ) {
 				var self = this;
@@ -73,7 +104,56 @@ if ( typeof Object.create !== 'function' ) {
 				self.$elem = $elem;
 				self.then = then;
 
-				self.then.active( 'invoice' );
+				self.setElem();
+				// self.then.active( 'invoice' );
+
+				self.refresh();
+			},
+			setElem: function () {
+				var self = this;
+
+				self.$listsbox = self.$elem.find('.ui-list-orders');
+				self.$listsbox.empty();
+			},
+
+			refresh: function () {
+				var self = this;
+
+				$.get( Event.URL + 'orders/lists', {}, function (res) {
+					
+					$.each( res.lists, function (i, obj) {
+						self.$listsbox.append( self.setItem( obj ) );
+					} );
+				}, 'json');
+			},
+
+			setItem: function (data) {
+				var self = this;
+
+				$li = $('<li>');
+
+				$('<li>', {class: "ui-item"}).append( ''+ 
+				'<div class="ui-item-inner clearfix">'+
+					'<div class="rfloat"><abbr class="timestamp fsm">9:25</abbr></div>'+
+					
+					'<div class="text">' +
+						'<span><label>No.</label> <strong>1</strong></span>' +
+						'<span><i class="icon-address-card-o"></i>ภุชงค์</span>' +
+					'</div>' +
+					
+					'<div class="subtext clearfix">' +
+						'<span><label>Package:</label> AKASURI, SAUNA</span>' +
+						'<div class="rfloat"><span class="ui-status">RUN</span></div>' +
+					'</div>' +
+
+					'<div class="subtext clearfix">' +
+						'<span><label>Total Time:</label> 10.00 - 11.00 PM</span>' +
+
+					'</div>' +
+				'</div>' );
+
+				$li.data( data );
+				return $li;
 			}
 		},
 
@@ -122,11 +202,29 @@ if ( typeof Object.create !== 'function' ) {
 				self.Events();
 				self.then.active( 'menu' );
 
+				self.then.currOrder = {
+					bill: {},
+					items: []
+				};
+				$.get( Event.URL + 'orders/lastNumber', function (number) {
+					self.then.currOrder.bill.number = number;
+
+					// self.setTitle();
+
+					self.$elem.find('[data-title=number]').text(number);
+
+				}, 'json');
 
 				self.resize();
 				$(window).resize(function () {
 					self.resize();
 				});
+			},
+
+			setTitle: function () {
+				var self = this;
+
+
 			},
 
 			Events: function () {
@@ -177,18 +275,30 @@ if ( typeof Object.create !== 'function' ) {
 			init: function (options, $elem, then, callback ) {
 				var self = this;
 
+				console.log( 'This menu' );
 				self.$elem = $elem;
 
 				// Event
+
+				self.refresh( self.$elem.find('.memu-tab > a.active').data('type') );
 				self.$elem.find('.memu-tab > a').click(function () {
 					$(this).addClass('active').siblings().removeClass('active');
+
+					self.refresh( $(this).data('type') );
 				});
 
 
-				self.$elem.delegate('.memu-table [data-id]', 'click', function () {
 				
-					then.active( 'change' );
-				});
+			},
+
+			refresh: function ( type ) {
+				var self = this; 
+
+				$.get( Event.URL + 'orders/menu/', {type: type}, function (res) {
+					console.log( res );
+
+				}, 'json');
+				
 			}
 		},
 
@@ -350,7 +460,7 @@ if ( typeof Object.create !== 'function' ) {
 		lang: 'en'
 	};
 
-
+	
 	var JopQueue = {
 		init: function (options, elem) {
 			var self = this;
@@ -373,9 +483,8 @@ if ( typeof Object.create !== 'function' ) {
 			var n = 0
 			$.each(self.$listsbox.find('li'), function (i, obj) {
 				n++;
-
-				// $( obj ).find('.number').text( n )
 				
+				// $( obj ).find('.number').text( n )
 			});
 			
 		}

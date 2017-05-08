@@ -48,7 +48,7 @@
 					</tbody></table>
 				</div>
 				<div class="slipPaper-bodyContent-body" style="height: 153px; overflow-y: auto;"><table><tbody role="orderlists">
-					<?php for ($i=0; $i < 5; $i++) { ?>
+					<?php for ($i=0; $i < 0; $i++) { ?>
 					<tr>
 						<td class="no">1.</td>
 						<td class="name">

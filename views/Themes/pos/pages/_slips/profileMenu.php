@@ -1,6 +1,5 @@
 <div style="position: absolute;top: 0;left: 0;right: 0;bottom: 0;overflow-y: hidden;">
 
-
 	<div style="position: absolute;padding-top: 30px;padding-left: 30px;right: 0;left: 0;background-color: rgba(245,248,250,.98);z-index: 5;max-width: 700px;">
 		
 		<div class="clearfix" style="max-width: 600px;">

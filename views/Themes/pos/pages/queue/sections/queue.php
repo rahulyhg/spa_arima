@@ -4,19 +4,18 @@
 <div style="position: fixed;top: 53px;
 left: 0;right: 16px;background-color: rgba(245,248,250,.98);z-index: 100;"><div class="ptl pbs clearfix" style="padding-left: 50px;padding-right: 50px">
 
-		<form class="">
-		<table>
-			<tr>
-				<td>
-					<input type="text" class="inputtext input-search" maxlength="100" placeholder="Check In" style="background-color: #fff">
-				</td>
-				<td>
-					<button class="btn btn-blue">Check In</button>
-				</td>
-				<td style="width: 100%"></td>
-			</tr>
-		</table>
-		
+		<form action="<?=URL?>job_queue">
+			<table>
+				<tr>
+					<td>
+						<input type="text" class="inputtext input-search" maxlength="100" placeholder="Check In" style="background-color: #fff">
+					</td>
+					<td>
+						<button class="btn btn-blue">Check In</button>
+					</td>
+					<td style="width: 100%"></td>
+				</tr>
+			</table>
 		</form>
 
 

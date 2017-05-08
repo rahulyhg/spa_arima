@@ -8,18 +8,18 @@
 					<div class="lfloat order-title">
 						<div class="text">
 							<span><label>Date:</label> <span><?=Date('j F Y')?></span></span>
-							<span><label>No.</label> <strong>001</strong></span>
+							<span><label>No.</label> <strong data-title="number"></strong></span>
 						</div>
 
-						<div class="subtext">
+						<!-- <div class="subtext">
 							<span><label>Time:</label> 8:10 PM</span>
 							<span><label>-</label> 10:10 PM</span>
 							<span> 30:45:11</span>
-						</div>
+						</div> -->
 
-						<div class="subtext">
+						<!-- <div class="subtext">
 							<span><label>Member:</label> <i class="icon-address-card-o"></i><span>ภุชงค์ 08436359502</span></span>
-						</div>
+						</div> -->
 						<!-- <div class="subtext">
 							<span><label>Room No.</label> 101</span>
 						</div>
@@ -48,7 +48,7 @@
 					</tbody></table>
 				</div>
 				<div class="slipPaper-bodyContent-body"><table><tbody role="orderlists">
-					<?php for ($i=0; $i < 5; $i++) { ?>
+					<?php for ($i=0; $i < -1; $i++) { ?>
 					<tr>
 						<td class="no">1.</td>
 						<td class="name">
@@ -69,19 +69,6 @@
 						</td>
 					</tr>
 					<?php } ?>
-					<tr>
-						<td class="no">2.</td>
-						<td class="name">
-							<div class="fwb">OIL MASSAGE</div>
-							<div class="order-title fsm">
-								<span><label>Room: </label> 101</span>
-								<span><label>By:</label> <i class="icon-user-circle-o"></i>ภุชงค์</span>
-							</div>
-						</td>
-						<td class="time">1</td>
-						<td class="unittime">HOUR</td>
-						<td class="price">0</td>
-					</tr>
 
 				</tbody></table></div>
 			</div>
@@ -95,14 +82,14 @@
 									<td class="label">ส่วนลด:</td>
 									<td class="data">฿<span summary="total-discount-text">0</span></td>
 								</tr>
-								<tr>
+								<!-- <tr>
 									<td class="label">ภาษี (7%):</td>
 									<td class="data">฿<span summary="service-text">0</span></td>
 								</tr>
 								<tr>
 									<td class="label">ค่าบริการ (20%):</td>
 									<td class="data">฿<span summary="service-text">0</span></td>
-								</tr>
+								</tr> -->
 							</tbody></table>
 						</td>
 						<td class="colright">
@@ -111,11 +98,11 @@
 								
 								<tr>
 									<td class="label">รวม:</td>
-									<td class="data">฿<span summary="subtotal-text">227</span></td>
+									<td class="data">฿<span summary="subtotal-text">0</span></td>
 								</tr>
 								<tr>
 									<td class="label">รวมหัก:</td>
-									<td class="data">- ฿<span summary="subtotal-text">227</span></td>
+									<td class="data">- ฿<span summary="subtotal-text">0</span></td>
 								</tr>
 								<tr>
 									<td class="label">รวมทั้งหมด:</td>
