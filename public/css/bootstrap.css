@@ -391,6 +391,7 @@ a.btn-icon:hover{text-decoration:none}
 .effect-4.model .model-container{opacity:0;-webkit-transform:scale(0) rotate(720deg);-moz-transform:scale(0) rotate(720deg);-ms-transform:scale(0) rotate(720deg);transform:scale(0) rotate(720deg);-webkit-transition:opacity .5s,-webkit-transform .5s;-moz-transition:opacity .5s,-webkit-transform .5s;transition:opacity .5s,-webkit-transform .5s}
 .effect-4.model.show .model-container{opacity:1;-webkit-transform:scale(1) rotate(0deg);-moz-transform:scale(1) rotate(0deg);-ms-transform:scale(1) rotate(0deg);transform:scale(1) rotate(0deg)}
 .effect-5.model .model-container{-webkit-transform:scale(1.2);-moz-transform:scale(1.2);-ms-transform:scale(1.2);transform:scale(1.2)}
+
 /**/
 /* dialog */
 /**/
@@ -2069,3 +2070,16 @@ to{opacity:0;margin-top:80px;-webkit-transform:rotate(10deg);transform:rotate(10
 .ui-more,.has-more.has-loading>.ui-more{display:none}
 .ui-more{width:100%;margin-top: 5px}
 .has-more>.ui-more{display:block}
+
+.link-hover:hover{
+	text-decoration: none;
+}
+.link-hover>i{
+	display: none;
+}
+.link-hover:hover>span{
+	text-decoration: underline;
+}
+.link-hover>span, .link-hover:hover>i{
+	display: inline-block;
+}

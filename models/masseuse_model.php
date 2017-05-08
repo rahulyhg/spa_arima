@@ -155,6 +155,13 @@ class Masseuse_Model extends Model{
         if( empty($data['prefix_name_th']) ){
             $data['prefix_name_th'] = '';
         }
+        else if( @ereg("[ก-๙]+$", $data['first_name']) ){
+            switch ($data['prefix_name_th']) {
+                case 'Mr.': $data['prefix_name_th'] = 'นาย'; break;
+                case 'Mrs.': $data['prefix_name_th'] = 'นาง'; break;
+                case 'Ms.': $data['prefix_name_th'] = 'น.ส.'; break;
+            }
+        }
 
         $data['fullname'] = "{$data['prefix_name_th']}{$data['first_name']} {$data['last_name']}";
 

@@ -81,7 +81,7 @@ $pageNavR .= '<li class="uiToggle headerAvatarWrap">'.
 
 $image_url = $this->getPage('image_url');
 
-echo '<div id="header-primary"><div class="topbar"><div class="global-nav clearfix">';
+echo '<div id="header-primary" class="topbar"><div class="global-nav clearfix">';
 
 		echo '<h1 class="topbar-logo">'.
 			'<img src="'.$image_url.'" />'.
@@ -94,7 +94,7 @@ echo '<div id="header-primary"><div class="topbar"><div class="global-nav clearf
 		echo '<ul class="clearfix rfloat nav mrl">'.$pageNavR.'</ul>';
 		echo '</div>';
 		
-echo '</div></div></div>';
+echo '</div></div>';
 
 if( !empty($this->topbar['back_url']) ){
 	

@@ -1,6 +1,6 @@
 <?php
 
-$url = URL .'promotions/';
+$url = URL .'package/';
 
 
 ?>
@@ -21,7 +21,7 @@ $url = URL .'promotions/';
 
 		</div>
 
-		<div class="setting-title"><i class="icon-cubes"></i> <?=$this->lang->translate('Promotions')?></div>
+		<div class="setting-title"><i class="icon-cubes"></i> <?=$this->lang->translate('Package')?></div>
 	</div>
 	<!-- end: header -->
 
@@ -29,24 +29,20 @@ $url = URL .'promotions/';
 	<table class="settings-table admin"><tbody>
 		<tr>
 
-			<th class="status"><?=$this->lang->translate('Type')?></th>
+			<th class="status"><?=$this->lang->translate('Code')?></th>
 			<th class="name"><?=$this->lang->translate('Name')?></th>
-			<th class="qty"><?=$this->lang->translate('Quantity')?></th>
-			<th class="date"><?=$this->lang->translate('Start Date')?></th>
-			<th class="date"><?=$this->lang->translate('End Date')?></th>
-			<th class="status"><?=$this->lang->translate('Status')?></th>
+			<th class="status"><?=$this->lang->translate('Price')?></th>
+			<th class="status"><?=$this->lang->translate('Type')?></th>
 			<th class="actions"><?=$this->lang->translate('Action')?></th>
 		</tr>
 
 		<?php foreach ($this->data['lists'] as $key => $item) { ?>
 		<tr>
 
-			<td class="status"><?=$item['type']['name']?></td>
+			<td class="status"><?=$item['code']?></td>
 			<td class="name"><?=$item['name']?></td>
-			<td class="qty"><?=$item['qty']?></td>
-			<td class="date"><?=$item['start_date']?></td>
-			<td class="date"><?=$item['end_date']?></td>
-			<td class="status"><?=$item['status']['name']?></td>
+			<td class="status"><?=$item['price']?></td>
+			<td class="status"><?=( !empty($item['is_time']) ? 'Per Time' : 'On Time' )?></td>
 
 			<td class="actions whitespace">
 				

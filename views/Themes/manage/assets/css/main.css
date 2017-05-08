@@ -892,6 +892,7 @@ to{transform:translateY(0)}}
 .item-plan .item-plan-clone{color:#168add;position:absolute;bottom:5px;right:5px}
 .item-plan .item-plan-clone:hover{color:#fff}
 .item-plan .date{display:inline-block}
+
 /**/
 /* listpage2 */
 /**/
@@ -955,6 +956,7 @@ to{transform:translateY(0)}}
 .listpage2-table table .image{width:32px;padding:3px 5px}
 .listpage2-table table .image .avatar-cover{float:left}
 .listpage2-table table .qty{width:50px}
+.listpage2-table table .unit{width:30px}
 .listpage2-table table th.content, .listpage2-table table td.content{width:180px}
 .listpage2-table table .price{width:50px;text-align:right;white-space:nowrap}
 .listpage2-table table .tap-actions-warp{min-height:25px;margin-top:3px;line-height:25px}
@@ -1014,10 +1016,11 @@ to{transform:translateY(0)}}
 .listpage2-table-overlay-warp{position:fixed;left:230px;top:0;right:0;bottom:0;display:none;z-index:100}
 .listpage2-actions .inputtext{display:inline-block}
 .listpage2.has-loading .listpage2-table-overlay-warp{display:block}
+.listpage2-container.listpage2-wrap .listpage2, .listpage2-container.listpage2-wrap .listpage2-header{max-width: 950px;}
+
 /**/
 /* MG */
 /**/
-.mg-anchor{border:1px solid #d13139;background-color:#fff;display:inline-block;padding-right:20px}
 .table-mg table th, .table-mg table td{border:1px solid #e5e5e5;background-color:#fff}
 .table-mg table th{height:30px;line-height:30px;background-color:#e9e9e9;border-color:#ccc}
 .table-mg table .odd td{background-color:#f8f8f8}
@@ -1317,10 +1320,18 @@ body.is-pushed-left .alert-messages-log{left:260px}
 .d-page-slideshow{width:640px}
 .d-page-slideshow .upload-gallery-lists-item .choosefile{height:280px}
 .d-page-slideshow .inputtext{width:100%;margin-bottom:2px}
-.form-pages #location_city_fieldset, .form-pages #co_logo_fieldset{float:left;margin-right:10px}
+
+.form-pages #location_city_fieldset, 
+.form-pages #co_logo_fieldset,
+.form-package #pack_code_fieldset,
+.form-package #pack_qty_fieldset{float:left;margin-right:10px}
 .form-pages #co_location_city_fieldset{width:200px}
 .form-pages #co_description_fieldset{clear:both}
 .form-pages #location_city_fieldset{width:200px}
+
+.form-package #pack_qty_fieldset{width: 70%}
+.form-package #pack_code_fieldset{width: 80px}
+
 .control-group .select-box .inputtext{border-width:1px}
 .control-group .labelselect{border-width:0;width:auto;padding:0;font-size:13px;color:#999;display:inline-block;padding:0 4px;height:20px;line-height:20px;border-width:0 0 1px}
 .control-label input.labelselect{border-width:0 0 1px}
@@ -1717,10 +1728,10 @@ a.link-text:hover span{text-decoration:underline}
 	margin-left: -12px;
 	margin-right: -12px;
 }
-.ui-card_tableWrap tr th:first-child, .ui-card_tableWrap tr td:first-child{
+.u-boxShadow-2 .ui-card_tableWrap tr th:first-child,.u-boxShadow-2 .ui-card_tableWrap tr td:first-child{
 	border-left-width: 0
 }
-.ui-card_tableWrap tr th:last-child, .ui-card_tableWrap tr td:last-child{
+.u-boxShadow-2 .ui-card_tableWrap tr th:last-child,.u-boxShadow-2 .ui-card_tableWrap tr td:last-child{
 	border-right-width: 0
 }
 .ui-card_table{
@@ -1734,11 +1745,22 @@ a.link-text:hover span{text-decoration:underline}
 	background: #f6f7f9;
     /*background: linear-gradient(#fff, #f6f7f9);*/
     font-weight: bold;
+    white-space: nowrap;text-align: left;
 }
 .ui-card_table .status{
 	width: 80px;
 	text-align: center;
 }
+.ui-card_table .unit,
+.ui-card_table .qty{
+	width: 80px;
+	text-align: center;
+}
+.ui-card_table .price,.ui-card_table .total{
+	width: 80px;
+	text-align: right;
+}
+
 .ui-card_tableWrap tr th.name:first-child,.ui-card_tableWrap tr td.name:first-child{
 	padding-left: 12px
 }
@@ -2901,3 +2923,11 @@ table.table-plan td{vertical-align: top;}
 .timeline .item .time{background-color:#ddd;display:inline-block;border-radius:2px;padding:3px 5px;position:relative}
 .timeline .item .time:before{content:' ';position:absolute;top:50%;right:100%;display:block;width:0;height:0;margin-top:-4px;border-right:4px solid #ddd;border-top:4px solid transparent;border-bottom:4px solid transparent}
 .timeline .item .disc{padding:5px}
+
+
+body, input, textarea, select, button{font-size: 20px}
+.fsm{font-size: 18px}
+@media (max-width:1600px) {
+	body, input, textarea, select, button{font-size: 18px}
+	.fsm{font-size: 16px}
+}

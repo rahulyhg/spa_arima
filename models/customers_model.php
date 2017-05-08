@@ -180,25 +180,7 @@ class customers_model extends Model
         }
         return $data;
     }
-    public function bucketed($data) {
 
-        $text = $data['fullname'];
-        // $subtext = 'ทะเบียน: '.$data['plate'];
-        // $category = $data['cus']['fullname'];
-        //pro
-
-        return array(
-            'id'=> $data['id'],
-            'created' => $data['created'],
-            'text'=> isset($text)?$text:"",
-            "category"=>isset($category)?$category:"",
-            "subtext"=>isset($subtext)?$subtext:"",
-            "type"=>"customers",
-            // "image_url"=>isset($image_url)?$image_url:"",
-            // 'status' => isset($status)?$status:"",
-            // 'data' => $data,
-        );
-    }
     public function convert($data, $options=array()){
 
         $data = $this->cut($this->_cutNamefield, $data);
@@ -222,6 +204,13 @@ class customers_model extends Model
 
         if( empty($data['prefix_name_th']) ){
             $data['prefix_name_th'] = '';
+        }
+        else if( @ereg("[ก-๙]+$", $data['first_name']) ){
+            switch ($data['prefix_name_th']) {
+                case 'Mr.': $data['prefix_name_th'] = 'นาย'; break;
+                case 'Mrs.': $data['prefix_name_th'] = 'นาง'; break;
+                case 'Ms.': $data['prefix_name_th'] = 'น.ส.'; break;
+            }
         }
 
         $data['fullname'] = "{$data['prefix_name_th']}{$data['first_name']} {$data['last_name']}";
@@ -265,6 +254,26 @@ class customers_model extends Model
         return $view_stype == 'bucketed' 
                ? $this->bucketed( $data )
                : $data;
+    }
+    
+    public function bucketed($data) {
+
+        $text = $data['fullname'];
+        // $subtext = 'ทะเบียน: '.$data['plate'];
+        // $category = $data['cus']['fullname'];
+        //pro
+
+        return array(
+            'id'=> $data['id'],
+            'created' => $data['created'],
+            'text'=> isset($text)?$text:"",
+            "category"=>isset($category)?$category:"",
+            "subtext"=>isset($subtext)?$subtext:"",
+            "type"=>"customers",
+            // "image_url"=>isset($image_url)?$image_url:"",
+            // 'status' => isset($status)?$status:"",
+            // 'data' => $data,
+        );
     }
 
     public function setAddress($str) {

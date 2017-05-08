@@ -8,18 +8,31 @@ class Package extends Controller {
 
     public function index(){
         
-        $data = $this->model->lists();
-        // print_r($data);die;
-        $this->view->setData('data', $data);
-        $this->view->render('package/lists/display');
+
+        if( $this->format=='json' ) {
+            $this->view->setData('results', $this->model->lists() );
+            $render = "package/lists/json";
+        }
+        else{
+
+            $this->view->setData('skill', $this->model->query('employees')->skill() );
+            $this->view->setData('unit', $this->model->unit() );
+            $this->view->setData('status', $this->model->status() );
+
+            $render = "package/lists/display";
+        }
+
+        $this->view->render( $render );
     }
 
     public function add() {
-
         if( empty($this->me) || $this->format!='json' ) $this->error();
 
         $this->view->setData('skill', $this->model->query('employees')->skill() );
-        $this->view->render("package/forms/add");
+        $this->view->setData('unit', $this->model->unit() );
+
+        $this->view->setPage('path','Themes/manage/forms/package');
+        $this->view->render("add");
     }
 
     public function edit($id=null) {
@@ -27,11 +40,13 @@ class Package extends Controller {
 
         $item = $this->model->get($id);
         if( empty($item) ) $this->error();
-
         $this->view->setData('item', $item);
-        $this->view->setData('skill', $this->model->query('employees')->skill() );
 
-        $this->view->render("package/forms/add");
+        $this->view->setData('skill', $this->model->query('employees')->skill() );
+        $this->view->setData('unit', $this->model->unit() );
+
+        $this->view->setPage('path','Themes/manage/forms/package');
+        $this->view->render("add");
     }
 
     public function save() {
@@ -47,9 +62,9 @@ class Package extends Controller {
             $form = new Form();
             $form   ->post('pack_code')
                     ->post('pack_name')->val('is_empty')
-                    ->post('pack_timer')
-                    ->post('pack_is_time')
-                    ->post('pack_price');
+                    ->post('pack_qty')->val('is_empty')
+                    ->post('pack_unit')->val('is_empty')
+                    ->post('pack_price')->val('is_empty');
 
             $form->submit();
             $postData = $form->fetch();
@@ -68,8 +83,7 @@ class Package extends Controller {
             if( empty($arr['error']) ){
 
                 // 0 = ตามเวลา(Ontime) , 1 ครั้ง(Pertime)
-                $postData['pack_is_time'] = $postData['pack_is_time'] == 'pertime' ? 1 : 0;
-                $postData['pack_emp_id'] = $this->me['id'];
+               
 
                 if( !empty($item) ){
 
@@ -80,6 +94,7 @@ class Package extends Controller {
                     $this->model->update( $id, $postData );
                 }
                 else{
+                    $postData['pack_emp_id'] = $this->me['id'];
                     $this->model->insert( $postData );
                     $id = $postData['id'];
                 }
@@ -98,7 +113,7 @@ class Package extends Controller {
                 }
 
                 $arr['message'] = 'บันทึกเรียบร้อย';
-                $arr['url'] = 'refresh';
+                // $arr['url'] = 'refresh';
             }
 
         } catch (Exception $e) {

@@ -191,6 +191,7 @@ class Employees_Model extends Model{
         if( empty($data['prefix_name_th']) ){
             $data['prefix_name_th'] = '';
         }
+        
 
         $data['fullname'] = "{$data['prefix_name_th']}{$data['first_name']} {$data['last_name']}";
 

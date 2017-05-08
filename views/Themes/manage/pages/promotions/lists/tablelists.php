@@ -20,9 +20,43 @@ if( !empty($this->results['lists']) ){
 
         $status = '<select data-id="'.$item['id'].'" selector name="status" data-plugins="_update" data-options="'.$this->fn->stringify( array('url'=> URL.'promotions/setdata/'.$item['id'].'/status') ).'">'.$status.'</select>';
 
-        $time = 'ไม่มีกำหนด';
+        $time = '<div class="tac">-</div>';
         if( $item['start_date'] != '0000-00-00 00:00:00' ){
             $time = $this->fn->q('time')->str_event_date($item['start_date'], $item['end_date']);
+        }
+
+
+        $desc = '';
+        // $desc .= $item['type']['id'];
+
+        switch ($item['type']['id']) {
+            case 'item_amount':
+                $desc .= 'ลดราคาต่อชิ้น ชิ้นละ';
+                break;
+
+            case 'percent':
+                $desc .= 'ลดราคาจากผลรวมทั้งหมด';
+                break;
+            
+            default:
+                $desc .= $item['type']['note'];
+                break;
+        }
+
+        $desc .= ' ' . number_format( $item['discount'], 0 );
+        switch ($item['type']['id']) {
+            case 'item_amount':
+                $desc .= '฿';
+                break;
+
+            case 'percent':
+                $desc .= '%';
+                break;
+        }
+
+
+        if( !empty($item['has_qty']) ){
+            $desc .= " เมื่อซื้อสินค้าครบ {$item['qty']} ชิ้น";
         }
           
         // print_r($item['type']['name']);        die();
@@ -38,13 +72,16 @@ if( !empty($this->results['lists']) ){
             // '<td class="ID">'. $item['code'] .'</td>'.
 
 
-            '<td class="name"><a data-plugins="dialog" href="'.URL.'promotions/edit/'.$item['id'].'">'.$item['name'].'</a></td>'.
+            '<td class="name">'.
+                '<a class="fwb link-hover" data-plugins="dialog" href="'.URL.'promotions/edit/'.$item['id'].'"><span>'.$item['name'].'</span><i class="icon-pencil mls"></i></a>'.
+                '<div class="fsm fcg">'. $desc . '</div>'.
+            '</td>'.
             
             '<td class="type">'.$item['type']['name'].
                 '<div class="date-float fsm fcg">'.$item['type']['note'].'</div>'.
             '</td>'.
 
-            '<td class="price">'.$item['discount'].'</td>'.
+            '<td class="price">'. number_format( $item['discount'], 0 ).'</td>'.
             '<td class="date">'.$time.'</td>'.
 
             //'<td class="status">'.$item['status']['name'].'</td>'.

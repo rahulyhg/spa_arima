@@ -86,6 +86,10 @@ class Theme extends View{
             $this->elem('body')->addClass( $mode );
         }
 
+        if( !empty($this->options['has_topbar']) ){
+            $this->elem('body')->addClass( 'hasTopbar' );
+        }
+
 
         $this   ->css( VIEW ."Themes/{$this->getPage('theme')}/assets/css/main.css", true )
                 ->css('bootstrap')

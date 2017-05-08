@@ -10,6 +10,67 @@ if ( typeof Object.create !== 'function' ) {
 
 (function( $, window, document, undefined ) {
 
+	var Order = {
+		init: function (options, elem) {
+			var self = this;
+
+
+			self.$elem = $(elem);
+
+			self.resize();
+			self.Events();
+		},
+
+		resize: function () {
+			var self = this;
+
+			var fw = $(window).width(),
+				fh = $(window).height();
+
+			// set Slip
+
+			self.$elem.find('.slipPaper-main').css({
+				bottom: self.$elem.find('.slipPaper-footer').outerHeight(),
+			});
+
+			self.$elem.find('.slipPaper-bodyContent').css({
+				top: self.$elem.find('.slipPaper-bodyHeader').outerHeight() + 30,
+				bottom: self.$elem.find('.slipPaper-bodyFooter').outerHeight(),
+			});
+
+
+			self.$elem.find('.slipPaper-bodyContent-body').css({
+				top: self.$elem.find('.slipPaper-bodyContent-header').outerHeight()
+			});
+			
+
+			
+			
+			// slipPaper-bodyContent
+		},
+
+		Events: function() {
+			var self = this;
+			
+			/*setTimeout(function () {
+
+				self.$elem.find('.ui-effect-top').addClass('active');
+				
+			}, 1);*/
+		}
+	}
+
+	$.fn.order = function( options ) {
+		return this.each(function() {
+			var $this = Object.create( Order );
+			$this.init( options, this );
+			$.data( this, 'order', $this );
+		});
+	};
+	$.fn.order.options = {
+		lang: 'en'
+	};
+
 
 
 	var POS = {

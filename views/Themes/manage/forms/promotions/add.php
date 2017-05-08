@@ -44,7 +44,7 @@ $form 	->field("pro_type")
 		->label( $this->lang->translate('Discount') . ' ' .$this->lang->translate("Type"))
 		->select( $this->type, 'id', 'name', false )
 		->addClass('inputtext js-change')
-		->value( !empty($this->item['type'])? $this->item['type']:'' )
+		->value( !empty($this->item['type']['id'])? $this->item['type']['id']:'' )
 		->sidetip( array(
 			'keys' => array(
 				'name' => 'pro_type',

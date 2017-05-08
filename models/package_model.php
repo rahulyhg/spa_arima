@@ -23,8 +23,8 @@ class Package_Model extends Model {
 			'pager' => isset($_REQUEST['pager'])? $_REQUEST['pager']:1,
 			'limit' => isset($_REQUEST['limit'])? $_REQUEST['limit']:50,
 			
-			'sort' => isset($_REQUEST['sort'])? $_REQUEST['sort']: 'id',
-            'dir' => isset($_REQUEST['dir'])? $_REQUEST['dir']: 'DESC',
+			'sort' => isset($_REQUEST['sort'])? $_REQUEST['sort']: 'sequence',
+            'dir' => isset($_REQUEST['dir'])? $_REQUEST['dir']: 'ASC',
 			
 			'time'=> isset($_REQUEST['time'])? $_REQUEST['time']:time(),
 			
@@ -197,5 +197,25 @@ class Package_Model extends Model {
     public function unsetSkill( $id ){
     	$this->db->delete('package_skill', "{$this->_cutNamefield}id={$id}", $this->db->count('packet_skill', "{$this->_cutNamefield}id={$id}") );
     }
-    
+
+
+
+    public function unit() {
+    	
+    	$a = array();
+		$a[] = array('id'=>'minute','name'=>'MINUTE');
+		$a[] = array('id'=>'hour','name'=>'HOUR');
+		$a[] = array('id'=>'time','name'=>'TIME');
+
+		return $a;
+    }
+
+    public function status() {
+
+    	$a = array();
+		$a[] = array('id'=>'run','name'=>'Run');
+		$a[] = array('id'=>'cancel','name'=>'Cancel');
+
+		return $a;
+    }
 }

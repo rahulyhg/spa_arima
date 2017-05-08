@@ -140,6 +140,10 @@ class Promotions extends Controller {
                     }
                 }
             }
+            else{
+                $postData['pro_start_date'] = "0000-00-00 00:00:00";
+                $postData['pro_end_date'] = "0000-00-00 00:00:00";
+            }
 
             $postData['pro_is_join'] = isset($_POST['is_join']) ? $_POST['is_join']:0;
             if( empty($_POST['invite']['id']) && !empty($postData['pro_is_join']) ){

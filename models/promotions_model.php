@@ -35,6 +35,10 @@ class promotions_model extends Model {
 			$options['q'] = $_REQUEST['q'];
 		}
 
+		if( isset($_REQUEST['type']) ){
+			$options['type'] = $_REQUEST['type'];
+		}
+
 		$date = date('Y-m-d H:i:s', $options['time']);
 
 		$where_str = "";
@@ -56,9 +60,8 @@ class promotions_model extends Model {
             }
         }
 
-        if( !empty($_REQUEST['type']) ){
-            $options['type'] = $_REQUEST['type'];
-
+        if( !empty($options['type']) ){
+            
             $where_str .=  !empty($where_str) ? ' AND ':'';
             $where_str .=  "`pro_type`=:type";
             $where_arr[':type'] = $options['type'];
@@ -122,25 +125,6 @@ class promotions_model extends Model {
 	}
 	public function convert($data, $options=array()){
 
-
-		/*$data = $this->cut($this->_cutNamefield, $data);
-
-		$data['permit']['del'] = true;
-		if( $data['amount_balance']>0 ){
-			$data['permit']['del'] = false;
-		}
-
-		if( !empty($options['colors']) ){
-            $data['colors'] = $this->getColors($data['id']);
-        }
-         if( !empty($data['image_cover']) ){
-            $image = $this->query('media')->get($data['image_cover']);
-
-            if(!empty($image)){
-	            $data['image_arr'] = $image;
-	            $data['image_url'] = $image['url'];
-            }
-        }*/
 
 		$data = $this->cut($this->_cutNamefield, $data);
 

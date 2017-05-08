@@ -87,7 +87,7 @@ if ( typeof Object.create !== 'function' ) {
 			var offset = self.$elem.offset();
 			var right = 0, leftw = 0;
 			var fullw = outer.width() - (offset.left+right);
-			var fullh = (outer.height() + outer.scrollTop()) - $('#tobar').height();
+			var fullh = (outer.height() + outer.scrollTop()) - $('#header-primary').outerHeight();
 
 			if( self.$right ){
 				var rightWPercent = self.$right.attr('data-w-percent') || 30;
