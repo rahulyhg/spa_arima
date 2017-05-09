@@ -769,7 +769,6 @@ body.has_menu .m-menu-toggle{display:block}
     left: 0;
     right: 0;
     bottom: 0;
-    max-width: 550px;
 }
 .slipPaper-main {
     position: absolute;
@@ -1291,6 +1290,10 @@ body.has_menu .m-menu-toggle{display:block}
     border-color: transparent;
     text-align: right;
 }
+.profile-menu-table .ID{
+    width: 20px;
+    text-align: center;
+}
 .profile-menu-table .price{
     text-align: right;
     width: 20px
@@ -1388,9 +1391,10 @@ body.has_menu .m-menu-toggle{display:block}
 }
 
 .section-package-header label{
-	font-size: 10px;
+	font-size: 60%;
 	font-weight: bold;
-	color: #666
+	color: #666;
+    display: inline-block;
 }
 .section-package-header .textbox{
 	line-height: 30px;
@@ -1398,16 +1402,24 @@ body.has_menu .m-menu-toggle{display:block}
 .section-package-header .inputtext{
 	width: 100%;background-color: #fff
 }
+.section-package-header .uiPopover{
+    display: block;
+}
 .section-package-header .theDate .btn-box{
-    background: transparent;
-    border:none;
-    box-shadow: none;
-    padding: 0
+    background: #fff;
+    display: block;
+    text-align: left;
+    /*border:none;*/
+    /*box-shadow: none;*/
+    /*padding: 0*/
 }
-.section-package-header .theDate .btn-box:before{
+.section-package-header .theDate .btn-box .icon-angle-down{
+    float: right;
+    margin-top: 5px
+}
+/*.section-package-header .theDate .btn-box:before{
     display: none;
-
-}
+}*/
 .section-package-content{
 	position: absolute;
 	top: 70px;
@@ -2037,4 +2049,63 @@ body, input, textarea, select, button{font-size: 20px}
     body.hasTopbar #page-container{
         top: 53px;
     }
+}
+.pos-summary-table .hdr-text{
+    padding: 8px 10px;
+}
+.pos-summary-table td, .pos-summary-table th{
+    border-top:1px solid #111;
+    /*background-color: #fff;*/
+    text-align: left;
+}
+.pos-summary-table thead th{
+    font-size: 80%;
+    padding-top: 3px;
+    padding-bottom: 3px
+}
+.pos-summary-table .ID{
+    width: 20px;
+    text-align: right;
+    border-right: none;
+}
+
+.pos-summary-table .price{
+    width: 80px;
+    text-align: right;
+    white-space: nowrap;
+}
+.pos-summary-table .highlight{
+    border-bottom: 1px solid #111
+}
+.pos-summary-table th{
+    background-color: #eee
+}
+.pos-summary-table .total th{
+    background-color: transparent
+}
+.pos-summary-table .total th.name, .pos-summary-table .subtotal th.name{
+    text-align: right;
+}
+.pos-summary-table .minus td{
+    border-color: transparent;
+    background-color: transparent;
+    color: #666
+}
+.pos-summary-table .minus .hdr-text{
+    padding-top: 3px;
+    padding-bottom: 3px;
+}
+.pos-summary-table .minus .name{
+    padding-left: 20px
+}
+.pos-summary-table .subtotal th{
+    border-color: transparent;
+    background-color: transparent;
+}
+.pos-summary-table .subtotal .highlight{
+    border-bottom-style: double;
+    border-width: 3px
+}
+.pos-summary-table .subtotal{
+    font-size: 120%
 }

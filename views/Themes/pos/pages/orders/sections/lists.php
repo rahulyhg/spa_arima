@@ -6,7 +6,7 @@
 			<tr>
 				<td class="prm theDate">
 					<label>Date:</label>
-					<div class="textbox fwb fsxl" style="white-space: nowrap;"><input type="date" name="date" data-plugins="datepicker" data-options="<?=$this->fn->stringify( array('lang'=>$this->lang->getCode() ) )?>"></div>
+					<div class=""><input type="date" name="date" data-plugins="datepicker" data-options="<?=$this->fn->stringify( array('lang'=>$this->lang->getCode() ) )?>"></div>
 				</td>
 				
 				<td class="prs">
@@ -27,6 +27,7 @@
 			<li class="ui-item head">10:00 PM</li>
 			<li class="ui-item active">
 				<div class="ui-item-inner clearfix">
+					
 					<div class="rfloat"><abbr class="timestamp fsm">9:25</abbr></div>
 					
 					<div class="text">

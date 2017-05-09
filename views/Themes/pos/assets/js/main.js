@@ -19,7 +19,6 @@ if ( typeof Object.create !== 'function' ) {
 				items: []
 			};
 
-
 			// set Elem
 			self.$elem = $(elem);
 			self.setElem();
@@ -27,6 +26,7 @@ if ( typeof Object.create !== 'function' ) {
 			self.Events();
 
 			self.active( 'lists' );
+			self.active( 'summary' );
 		},
 		setElem: function () {
 			var self = this;
@@ -70,10 +70,50 @@ if ( typeof Object.create !== 'function' ) {
 				}, 'json');
 			});
 
+			self.$elem.find('[data-global=bill]').delegate('[role=orderlists] > tr', 'click', function () {
+					
+				var data = $(this).data();
+				self.setChange( data );
 
+				self.active( 'change' );
+			});
+
+
+			// 
+			self.$elem.find('[data-global=bill]').find('[data-bill-action]').click( function () {
+				var action = $(this).attr('data-bill-action');
+				console.log( action );
+
+				if( action == 'hold' ){
+					self.active( 'lists' );
+				}
+				else if( action=='pay' ){
+					self.active( 'pay' );
+				}
+				else if( action=='menu' ){
+					self.active( 'menu' );
+				}
+				else if( action=='send' ){
+
+					self.saveBill();
+
+					// console.log('save', self.currOrder );
+					// self.active( 'lists' );
+				}
+
+			});
 			/*setTimeout(function () {
 				self.$elem.find('.ui-effect-top').addClass('active');
 			}, 1);*/
+		},
+
+		saveBill: function () {
+			var self = this;
+
+			$.post( Event.URL + 'orders/save', self.currOrder, function (res) {
+				
+				console.log( res );
+			}, 'json');	
 		},
 
 		active: function ( val ) {
@@ -92,7 +132,6 @@ if ( typeof Object.create !== 'function' ) {
 			var self = this;
 
 			self.currOrder.items.push( data );
-
 
 			var $tr = $('<tr>').append( '' +
 				'<td class="no">1.</td>' + 
@@ -116,6 +155,7 @@ if ( typeof Object.create !== 'function' ) {
 				'</td>'+
 			'' );
 
+			$tr.data( data );
 			self.$elem.find('[data-global=bill]').find('[role=orderlists]').append( $tr );
 		},
 		setChange: function (data) {
@@ -124,6 +164,26 @@ if ( typeof Object.create !== 'function' ) {
 			var $box = self.$elem.find('[data-global=change]');
 
 			$box.find('[data-text=title]').text( data.name );
+
+			var $listsbox = $box.find('[role=listsbox]');
+
+			$listsbox.empty();
+
+
+			var $tr = $('<tr>').append( '' +
+
+				'<td>101</td>' + 
+				'<td><div class="anchor clearfix"><div class="avatar lfloat mrm no-avatar"><div class="initials">1</div></div><div class="content"><div class="spacer"></div><div class="massages"><div class="fullname"></div><span class="subname fsm"></span></div></div></div></td>' + 
+				'<td class="time"><div>1 TIME</div><div>8:10 PM - 10:10 PM</div></td>' + 
+				'<td class="price">350฿</td>' + 
+				'<td class="actions">'+
+					'<span class="gbtn"><a class="btn btn-no-padding"><i class="icon-remove"></i></a></span>'+
+				'</td>' + 
+
+			'' );
+
+			$listsbox.append( $tr );
+
 		},
 
 		lists: {
@@ -142,7 +202,7 @@ if ( typeof Object.create !== 'function' ) {
 				var self = this;
 
 				self.$listsbox = self.$elem.find('.ui-list-orders');
-				self.$listsbox.empty();
+				// self.$listsbox.empty();
 			},
 
 			refresh: function () {
@@ -258,20 +318,7 @@ if ( typeof Object.create !== 'function' ) {
 			Events: function () {
 				var self = this;
 
-				self.$elem.find('[data-bill-action]').click( function () {
-					var action = $(this).attr('data-bill-action');
-					console.log( action );
-
-					if( action == 'hold' ){
-						self.then.active( 'lists' );
-					}
-					else if( action=='pay' ){
-						self.then.active( 'pay' );
-					}
-					else if( action=='menu' ){
-						self.then.active( 'menu' );
-					}
-				});
+				
 			},
 
 			resize: function () {
@@ -338,6 +385,13 @@ if ( typeof Object.create !== 'function' ) {
 		},
 
 		pay: {
+			init: function (options, $elem, then, callback ) {
+				var self = this;
+				self.$elem = $elem;
+			}
+		},
+
+		summary: {
 			init: function (options, $elem, then, callback ) {
 				var self = this;
 				self.$elem = $elem;
@@ -530,7 +584,8 @@ if ( typeof Object.create !== 'function' ) {
 })( jQuery, window, document );
 
 
-function setClock($el, lang) {
+function RefClock($el, lang) {
+
 	var self = this;
 	var theDate = new Date();
 
@@ -550,16 +605,18 @@ function setClock($el, lang) {
 	var second = theDate.getSeconds();
 	second = second<10 ? '0'+second:second;
 
-	$el.find('.time').html( $.trim( hour + ':' + minute + ':' + second + ' ' + ampm ) );
+	var time = $.trim( hour + ':' + minute + ':' + second + ' ' + ampm );
+	var date = Datelang.day(theDate.getDay(),'normal',lang) +', '+ theDate.getDate()+' '+ Datelang.month( theDate.getMonth(),'normal',lang) + ', '+ theDate.getFullYear();
 
-	$el.find('.date').html( Datelang.day(theDate.getDay(),'normal',lang) +', '+ theDate.getDate()+' '+ Datelang.month( theDate.getMonth(),'normal',lang) + ', '+ theDate.getFullYear() ); 
-}
-function RefClock( $el, lang ) {
-	setTimeout(function() {			
-		self.setClock($el, lang);
+	$el.find('.time').html( time );
+	$el.find('.date').html( date );
 
-		RefClock($el, lang);
-	}, 1000);
+	// document.getElementById('clockTime').innerHTML = time; 
+	// document.getElementById('clockDate').innerHTML = date; 
+
+	var t = setTimeout(function () {
+		RefClock($el, lang)
+	}, 500);
 }
 
 $(function () {

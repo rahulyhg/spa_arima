@@ -40,4 +40,11 @@ class Orders extends Controller {
 
     	echo json_encode( $data );
     }
+
+    public function save() {
+
+        // order_number
+        
+        echo json_encode( $_POST );
+    }
 }

@@ -4,7 +4,7 @@ require 'init.php';
 
 ?><div id="mainContainer" class="clearfix hasLeft" data-plugins="main"><div id="order" data-plugins="order">
 
-	<div role="left" data-width="550">
+	<div role="left" data-w-percent="50">
 	<?php 
 
 		$a = array();
@@ -26,6 +26,7 @@ require 'init.php';
 		<div role="main"><?php
 
 		$a = array();
+		$a[] = array('id'=>'summary','name'=>'');
 		$a[] = array('id'=>'invoice','name'=>'');
 		$a[] = array('id'=>'menu','name'=>'');
 		$a[] = array('id'=>'change','name'=>'');

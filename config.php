@@ -3,7 +3,6 @@
 date_default_timezone_set("Asia/Bangkok");
 
 // Always provide a TRAILING SLASH (/) AFTER A PATH
-
 define('URL', 'http://localhost/spa_arima/');
 
 define('DB_TYPE', 'mysql');

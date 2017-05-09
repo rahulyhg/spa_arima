@@ -120,7 +120,6 @@ if ( typeof Object.create !== 'function' ) {
 					rightw = parseInt( self.$colRigth.attr('data-width') );
 				}
 
-
 				self.$main.css({
 					marginRight: rightw,
 				});
@@ -140,6 +139,9 @@ if ( typeof Object.create !== 'function' ) {
 				var leftw = (fullw*25) / 100;
 				if( self.$left.attr('data-width') ){
 					leftw = parseInt( self.$left.attr('data-width') );
+				}
+				else if( self.$left.attr('data-w-percent') ){
+					leftw = (fullw*parseInt( self.$left.attr('data-w-percent') )) / 100;
 				}
 
 				self.$left.css({

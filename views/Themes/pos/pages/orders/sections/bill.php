@@ -126,7 +126,7 @@
 
 						<span class="gbtn"><a class="btn" data-bill-action="hold"><i class="icon-arrow-up mrs"></i>Hold</a></span>
 
-						<span class="gbtn"><a class="js-send-order btn btn-blue"><i class="icon-floppy-o mrs" data-bill-action="send"></i>Send</a></span>
+						<span class="gbtn"><a class="btn btn-blue" data-bill-action="send"><i class="icon-floppy-o mrs"></i>Send</a></span>
 					</div>
 				</div>
 			</div>
