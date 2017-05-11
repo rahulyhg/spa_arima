@@ -1,25 +1,27 @@
- <section class="section section-package">
+<?php
+
+?><section class="section section-package">
 
 	<header class="section-package-header">
-		<form class="">
+		
 		<table>
 			<tr>
-				<td class="prm theDate">
+				<td class="prs theDate">
 					<label>Date:</label>
-					<div class=""><input type="date" name="date" data-plugins="datepicker" data-options="<?=$this->fn->stringify( array('lang'=>$this->lang->getCode() ) )?>"></div>
+					<div class=""><input type="date" name="date" class="inputtext js-datepicker"></div>
 				</td>
 				
-				<td class="prs">
+				<!-- <td class="prs">
 					<label>Search:</label>
 					<input type="text" class="inputtext input-search" maxlength="100" placeholder="">
-				</td>
-				<td class="" style="width: 30px">
-					<span class="gbtn radius"><a class="btn btn-blue" data-global-action="bill"><i class="icon-plus"></i></a></span>
+				</td> -->
+				<td>
+					<label>&nbsp;</label>
+					<div><span class="gbtn"><a class="btn btn-blue" data-global-action="bill"><i class="icon-plus mrs"></i>New Order</a></span></div>
 				</td>
 			</tr>
 		</table>
 		
-		</form>
 	</header>
 	<div class="section-package-content">
 		<ul class="ui-list ui-list-orders">
@@ -79,20 +81,20 @@
 			<?php } ?>
 		</ul>
 
-		<a class="ui-more btn" role="more">โหลดเพิ่มเติม</a>
+		<a class="ui-more btn" role="more">Load more</a>
 		<div class="ui-alert">
 			<div class="ui-alert-loader">
 				<div class="ui-alert-loader-icon loader-spin-wrap"><div class="loader-spin"></div></div>
-				<div class="ui-alert-loader-text">กำลังโหลด...</div> 
+				<div class="ui-alert-loader-text">Loading...</div> 
 			</div>
 
 			<div class="ui-alert-error">
 				<div class="ui-alert-error-icon"><i class="icon-exclamation-triangle"></i></div>
-				<div class="ui-alert-error-text">ไม่สามารถเชื่อมต่อได้</div> 
+				<div class="ui-alert-error-text">Can not connect</div> 
 			</div>
 
 			<div class="ui-alert-empty">
-				<div class="ui-alert-empty-text">ไม่มีนัดหมาย </div> 
+				<div class="ui-alert-empty-text">No Result Found</div> 
 			</div>
 		</div>
 	</div>

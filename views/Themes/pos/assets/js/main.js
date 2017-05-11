@@ -34,8 +34,7 @@ if ( typeof Object.create !== 'function' ) {
 
 			$.each( self.$elem.find('[data-global]'), function () {
 				self[ '$e_'+ $(this).attr('data-global') ] = $(this);
-			} );
-			
+			} );			
 		},
 
 		Events: function() {
@@ -208,6 +207,13 @@ if ( typeof Object.create !== 'function' ) {
 				self.$listsbox = self.$elem.find('.ui-list-orders');
 				self.$listsbox.empty();
 
+
+				self.$elem.find('.js-datepicker').datepicker({
+					onChange: function () {
+						
+						console.log( 1 );
+					}
+				});
 			},
 
 			refresh: function () {

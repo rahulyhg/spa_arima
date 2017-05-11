@@ -1404,6 +1404,7 @@ body.has_menu .m-menu-toggle{display:block}
 }
 .section-package-header .uiPopover{
     display: block;
+    position: relative;
 }
 .section-package-header .theDate .btn-box{
     background: #fff;
