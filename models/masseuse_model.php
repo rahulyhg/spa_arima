@@ -6,6 +6,7 @@ class Masseuse_Model extends Model{
         parent::__construct();
     }
 
+    private $_dep = 5;
     private $_objType = "employees";
     private $_table = "employees e 
         LEFT JOIN emp_department d ON e.emp_dep_id=d.dep_id 
@@ -71,7 +72,7 @@ class Masseuse_Model extends Model{
         
         $where_str .= !empty( $where_str ) ? " AND ":'';
         $where_str .= "d.dep_id=:dep";
-        $where_arr[':dep'] = 5;
+        $where_arr[':dep'] = $this->_dep;
         
         if( isset($_REQUEST['position']) ) {
             $options['position'] = $_REQUEST['position'];
@@ -227,4 +228,155 @@ class Masseuse_Model extends Model{
         );
     }
 
+    public function getCode($code, $options=array()){
+
+        $sth = $this->db->prepare("SELECT {$this->_field} FROM {$this->_table} WHERE emp_code=:code AND d.dep_id=:dep AND emp_code!='' LIMIT 1");
+        $sth->execute( array(
+            ':code' => $code,
+            ':dep' => $this->_dep
+        ) );
+
+        return $sth->rowCount()==1
+            ? $this->convert( $sth->fetch( PDO::FETCH_ASSOC ) , $options )
+            : array();
+    }
+
+    public function firstMasseuse() {
+
+        $sth = $this->db->prepare("SELECT {$this->_field} FROM job_queue q 
+            INNER JOIN ($this->_table) ON q.emp_id=e.emp_id 
+            WHERE q.status=:status AND d.dep_id=:dep 
+            ORDER BY sequence ASC LIMIT 1");
+        $sth->execute(array(':status'=>'on', ':dep'=>$this->_dep));
+
+        return $sth->rowCount()==1
+            ? $this->convert( $sth->fetch( PDO::FETCH_ASSOC ) )
+            : array();
+    }
+    
+    /* JOB */
+    public function listJob( $options=array() ){
+
+        $options = array_merge(array(
+            
+            'sort' => isset($_REQUEST['sort'])? $_REQUEST['sort']: 'sequence',
+            'dir' => isset($_REQUEST['dir'])? $_REQUEST['dir']: 'ASC',
+
+            'date'=> isset($_REQUEST['date'])? $_REQUEST['date']:date('c')
+
+        ), $options);
+
+        $where_str = "";
+        $where_arr = array();
+
+        $where_str .= !empty($where_str) ? " AND ": '';
+        $where_str .= "d.dep_id=:dep";
+        $where_arr[':dep'] = $this->_dep;
+
+
+        if( !empty( $options['date'] ) ){
+
+            $date = $this->setJobDate($options['date']);
+            $where_arr[':start'] = $date[0];
+            $where_arr[':end'] = $date[1];
+
+            $where_str .= !empty($where_str) ? " AND ": '';
+            $where_str .= "(`job_date` BETWEEN :start AND :end)";
+        }
+
+
+        $where_str = !empty($where_str) ? "WHERE {$where_str}":'';
+        $orderby = $this->orderby( 'job_'.$options['sort'], $options['dir'] );
+
+        $data = $this->db->select("SELECT {$this->_field} FROM emp_job_queue j INNER JOIN ($this->_table) ON j.job_emp_id=e.emp_id {$where_str} {$orderby}", $where_arr);
+
+        return $this->buildFrag( $data );
+    }
+    public function getJob( $id, $options=array() ){
+
+        $options = array_merge(array(
+
+            'date'=> isset($_REQUEST['date'])? $_REQUEST['date']:date('c')
+
+        ), $options);
+
+
+        $where_str = "e.emp_id=:id";
+        $where_arr = array(":id" => $id);
+
+        if( !empty($options['date']) ){
+
+            $date = $this->setJobDate($options['date']);
+            $where_arr[':start'] = $date[0];
+            $where_arr[':end'] = $date[1];
+
+            $where_str .= !empty($where_str) ? " AND ": '';
+            $where_str .= "(`job_date` BETWEEN :start AND :end)";
+        }
+
+        if( !empty($options['status']) ){
+
+            $where_str .= !empty($where_str) ? " AND ": '';
+            $where_str .= "`job_status`=:status";
+
+            $where_arr[':status'] = $options['status'];
+        }
+
+        $where_str = !empty($where_str) ? "WHERE {$where_str}":'';
+
+        $sth = $this->db->prepare("SELECT {$this->_field} FROM emp_job_queue j INNER JOIN ($this->_table) ON j.job_emp_id=e.emp_id {$where_str} LIMIT 1");
+        $sth->execute( $where_arr );
+
+        return $sth->rowCount()==1
+            ? $this->convert( $sth->fetch( PDO::FETCH_ASSOC ) )
+            : array();
+    }
+
+    public function setJob( $id ){
+
+        /*$start = date('Y-m-01 00:00:00');
+        $end = date('Y-m-j 23:59:59');*/
+
+        $date = $this->setJobDate( date('c') );
+        $where_arr[':s'] = $date[0];
+        $where_arr[':e'] = $date[1];
+
+        // $sequence = $this->getJobSequence( $start, $end );
+
+        $sth = $this->db->prepare("SELECT job_sequence as q FROM emp_job_queue j WHERE (`job_date` BETWEEN :s AND :e) ORDER BY job_sequence DESC LIMIT 1");
+        $sth->execute( $where_arr );
+
+        if( $sth->rowCount()==1 ){
+            $fdata = $sth->fetch( PDO::FETCH_ASSOC );
+            $sequence = $fdata['q'] + 1;
+        }
+        else{
+            $sequence = 1;
+        }
+
+        $job = array(
+            'job_emp_id' => $id,
+            'job_sequence' => $sequence,
+            'job_date' => date('c'),
+            'job_status' =>'on'
+        );
+
+        $this->db->insert("emp_job_queue", $job);
+    }
+
+    // public function getJobSequence( $start, $end ){
+        // return $this->db->count("job_queue", "date BETWEEN :start AND :end", array(":start"=>$start , ":end"=>$end));
+    // }
+
+    private function setJobDate( $date ){
+
+        $start = date('Y-m-d 05:00:00', strtotime($date));
+
+        $end = new DateTime( $start );
+        $end->modify('+1 day');
+        $end = $end->format('Y-m-d 04:00:00');
+
+        return array($start, $end);
+    }
+    
 }

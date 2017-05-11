@@ -6,7 +6,7 @@
 			</header>
 		</div>
 
-		<div style="position: absolute;top: 0;left: 30px;right: 0;bottom: 0;overflow-y: auto;"><div style="padding-top: 65px;padding-bottom: 30px; max-width: 600px;">
+		<div style="position: absolute;top: 0;left: 30px;right: 0;bottom: 0;overflow-y: auto;"><div style="padding-top: 65px;padding-bottom: 30px; padding-right: 30px">
 		<table class="memu-table"><tbody>
 
 			<?php foreach ($this->package['lists'] as $key => $value) { ?>

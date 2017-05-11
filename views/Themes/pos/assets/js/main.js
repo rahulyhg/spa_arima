@@ -193,6 +193,10 @@ if ( typeof Object.create !== 'function' ) {
 				self.$elem = $elem;
 				self.then = then;
 
+				// set Data
+				self.data = {};
+
+
 				self.setElem();
 				// self.then.active( 'invoice' );
 
@@ -202,18 +206,74 @@ if ( typeof Object.create !== 'function' ) {
 				var self = this;
 
 				self.$listsbox = self.$elem.find('.ui-list-orders');
-				// self.$listsbox.empty();
+				self.$listsbox.empty();
+
 			},
 
 			refresh: function () {
 				var self = this;
 
-				$.get( Event.URL + 'orders/lists', {}, function (res) {
+				if( self.$listsbox.parent().hasClass('has-empty') ){
+					self.$listsbox.parent().removeClass('has-empty');
+				}
+				self.$listsbox.parent().addClass('has-loading');
+
+				setTimeout(function () {
+					self.fetch().done(function( results ) {
+
+						self.data = $.extend( {}, self.data, results.options );
+
+						if( results.total==0 ){
+							self.$listsbox.parent().addClass('has-empty');
+							return false;
+						}
+
+						self.buildFrag( results.lists );
+					});
+				}, length || 1);
+
+				/*$.get( Event.URL + 'orders/lists', {}, function (res) {
 					
 					$.each( res.lists, function (i, obj) {
 						self.$listsbox.append( self.setItem( obj ) );
 					} );
-				}, 'json');
+				}, 'json');*/
+			},
+			fetch: function(){
+				var self = this;
+
+				return $.ajax({
+					url: Event.URL + 'orders/lists',
+					data: self.data,
+					dataType: 'json'
+				}).always(function() {
+					self.$listsbox.parent().removeClass('has-loading');
+				}).fail(function() {
+					self.$listsbox.parent().addClass('has-empty');
+				});
+			},
+			buildFrag: function ( results ) {
+				var self = this;
+
+				var currTime = '';
+				$.each(results, function (i, obj) {
+
+					var time = new Date(  );
+
+					self.display( obj );
+				});
+
+
+				/*if( self.$listsbox.find('li.active').length==0 && self.$listsbox.find('li').not('.head').first().length==1 ){
+					self.active( self.$listsbox.find('li').not('.head').first() );
+				}*/
+			},
+			display: function ( data ) {
+				var self = this;
+
+				var item = self.setItem( data );
+
+				self.$listsbox.append( item );
 			},
 
 			setItem: function (data) {
@@ -343,7 +403,6 @@ if ( typeof Object.create !== 'function' ) {
 					top: self.$elem.find('.slipPaper-bodyContent-header').outerHeight()
 				});
 			}
-
 		},
 
 		menu: {
@@ -410,137 +469,9 @@ if ( typeof Object.create !== 'function' ) {
 		lang: 'en'
 	};
 
-	var POS = {
-		init: function (options, elem) {
-			var self = this;
-			self.$elem = $(elem);
-
-			self.options = $.extend( {}, $.fn.pos.options, options );
-
-			/*self.loadPageTimeOut = setTimeout( function () {
-				self.$elem.find('#page-loading').animate({
-					opacity: 0,
-				}, 300, "linear", function() {
-					self.$elem.removeClass('off');
-
-					
-				});
-			}, 3000);*/
-
-			self.$elem.removeClass('off');
-
-			self.setElem();
-			
-			self.resize();
-			$(window).resize(function () {
-				self.resize();
-			});
-
-
-			self.Events();
-			
-
-
-		},
-
-		setElem:function ( $el ) {
-			var self = this;
-
-			if( !$el ) $el = self.$elem;
-
-			$el = self.$elem.find('#header-primary');
-			self.$left = self.$elem.find('#leftCol');
-			self.$content = self.$elem.find('#content');
-			self.$main = self.$elem.find('#mainContent');
-
-			// headerClock
-			self.refClock();
-		},
-
-		refClock: function () {
-			var self = this;
-
-			setTimeout(function() {
-				
-				self.setClock();
-			}, 1000);
-		},
-		setClock: function () {
-			var self = this;
-
-			var theDate = new Date();
-
-			var ampm = 'AM';
-			var hour = theDate.getHours();
-
-			if( self.options.lang=='th' ){
-				ampm = '';
-			}else if( hour > 12 ){
-				hour -= 12;
-				ampm = 'PM';
-			}
-
-			var minute = theDate.getMinutes();
-			minute = minute<10 ? '0'+minute:minute;
-
-			var second = theDate.getSeconds();
-			second = second<10 ? '0'+second:second;
-
-			self.$header.find('.time').html( $.trim( hour + ':' + minute + ':' + second + ' ' + ampm ) );
-
-
-			self.$header.find('.date').html( Datelang.day(theDate.getDay(),'normal',self.options.lang) +', '+ theDate.getDate()+' '+ Datelang.month( theDate.getMonth(),'normal',self.options.lang) + ', '+ theDate.getFullYear() ); 
-
-
-			self.refClock();
-		},
-		resize: function () {
-			var self = this;
-
-			var parent = self.$left.parent();
-			var left   = parseInt( self.$left.attr('data-width') ) || 550,
-				height = $(window).height() - self.$header.outerHeight();
-
-
-			if( self.$left.attr('data-width-percent') ){
-				left = (left * $(window).width()) / 100;
-			}
-
-			self.$left.css({
-				width: left,
-				height: height
-			});
-
-			self.$content.css({
-				marginLeft: parent.hasClass('hasLeft') ? left : 0
-			});
-
-			self.$main.css({
-				height: height
-			});
-		},
-
-		Events: function () {
-			var self = this;
-
-			self.$header.find('[data-nav]').click(function (e) {
-				e.preventDefault();
-				$(this).parent().addClass('active').siblings().removeClass('active');
-			});
-		}
-	};
-	$.fn.pos = function( options ) {
-		return this.each(function() {
-			var $this = Object.create( POS );
-			$this.init( options, this );
-			$.data( this, 'pos', $this );
-		});
-	};
-	$.fn.pos.options = {
-		lang: 'en'
-	};
-
-
+	/**/
+	/* JopQueue */
+	/**/
 	var JopQueue = {
 		init: function (options, elem) {
 			var self = this;

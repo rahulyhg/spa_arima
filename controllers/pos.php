@@ -50,25 +50,26 @@ class Pos extends Controller{
 
         if( !empty($_POST) ){
 
-            $item = $this->model->query('employees')->getCode( $_POST['code'] );
-            if( empty($item) ) $arr['message'] = 'ไม่พบข้อมูล';
+            $item = $this->model->query('masseuse')->getCode( $_POST['code'] );
+            if( !empty($item) ){
+                
 
-            $start = date('Y-m-01 00:00:00');
-            $end = date('Y-m-j 23:59:59');
-            $job = $this->model->query('employees')->getJob( $item['id'], $start, $end );
-            if( !empty($job) ) $arr['message'] = 'ไม่สามารถ CheckIn ซ้ำได้';
-
-            if( empty($job) ){
-                $this->model->query('employees')->setJob( $item['id'] );
+                $job = $this->model->query('masseuse')->getJob( $item['id'], array('status'=>'on') );
+                
+                if( !empty($job) ){
+                    $arr['message'] = 'ไม่สามารถ CheckIn ซ้ำได้';
+                } else{
+                    $this->model->query('masseuse')->setJob( $item['id'] );
+                }
+            }
+            else{
+                $arr['message'] = 'ไม่พบข้อมูล';
             }
         }
 
-
         // $this->view->setData('lists', $this->model->query('masseuse')->lists() );
-        $start = date('Y-m-01 00:00:00');
-        $end = date('Y-m-j 23:59:59');
 
-        $this->view->setData('lists', $this->model->query('employees')->listJob($start, $end));
+        $this->view->setData('lists', $this->model->query('masseuse')->listJob() );
         $this->view->setPage('on', 'queue');
         $this->view->render("queue/display");
     }

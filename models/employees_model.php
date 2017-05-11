@@ -161,18 +161,6 @@ class Employees_Model extends Model{
             : array();
     }
 
-    public function getCode($code, $options=array()){
-
-        $sth = $this->db->prepare("SELECT {$this->_field} FROM {$this->_table} WHERE {$this->_cutNamefield}code=:code LIMIT 1");
-        $sth->execute( array(
-            ':code' => $code
-        ) );
-
-        return $sth->rowCount()==1
-            ? $this->convert( $sth->fetch( PDO::FETCH_ASSOC ) , $options )
-            : array();
-    }
-
     public function bucketed($data , $options=array()) {
 
         return array(
@@ -536,52 +524,4 @@ class Employees_Model extends Model{
         return $data;
     }
     /* End skill */
-
-
-    public function firstMasseuse() {
-
-        $sth = $this->db->prepare("SELECT {$this->_field} FROM job_queue q 
-            INNER JOIN ($this->_table) ON q.emp_id=e.emp_id WHERE q.status=:status
-            ORDER BY sequence ASC LIMIT 1");
-        $sth->execute(array(':status'=>'on'));
-
-        return $sth->rowCount()==1
-            ? $this->convert( $sth->fetch( PDO::FETCH_ASSOC ) )
-            : array();
-    }
-    
-    /* JOB */
-    public function listJob( $start, $end ){
-
-        $data = $this->db->select("SELECT * FROM job_queue j LEFT JOIN employees e ON j.emp_id = e.emp_id ORDER BY j.sequence ASC");
-
-        $data['lists'] = $this->buildFrag( $data );
-        return $data;
-    }
-    public function getJob( $id , $start, $end ){
-
-        return $this->db->count("job_queue", "emp_id=:id AND (date BETWEEN :start AND :end)", array(":id"=>$id , ":start"=>$start , ":end"=>$end));
-    }
-
-    public function setJob( $id ){
-
-        $start = date('Y-m-01 00:00:00');
-        $end = date('Y-m-j 23:59:59');
-        $number = $this->NumberJob( $start, $end );
-
-        $sequence = empty($number) ? 1 : $number+1;
-
-        $job = array(
-            'emp_id'=>$id,
-            'sequence'=>$sequence,
-            'date'=>date('c'),
-            'status'=>'on'
-        );
-
-        $this->db->insert("job_queue", $job);
-    }
-
-    public function NumberJob( $start, $end ){
-        return $this->db->count("job_queue", "date BETWEEN :start AND :end", array(":start"=>$start , ":end"=>$end));
-    }
 }

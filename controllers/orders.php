@@ -27,7 +27,7 @@ class Orders extends Controller {
     		if( !empty($_GET['id']) ){
     			$data = $this->model->query('package')->get( $_GET['id'] );
     			
-    			$data['masseuse'] = $this->model->query('employees')->firstMasseuse();
+    			$data['masseuse'] = $this->model->query('masseuse')->firstMasseuse();
     		}
     		else{
 

@@ -772,10 +772,10 @@ body.has_menu .m-menu-toggle{display:block}
 }
 .slipPaper-main {
     position: absolute;
-    left: 30px;
+    left: 50px;
     right: 10px;
     bottom: 30px;
-    top: 20px;
+    top: 30px;
     border: 1px solid #ccc;
     border-radius: 5px 5px 0 0;
     background-color: #fcfbfd;
@@ -1382,7 +1382,7 @@ body.has_menu .m-menu-toggle{display:block}
 }
 .section-package-header{
 	/*height: 70px;*/
-	padding-top: 10px;
+	padding-top: 30px;
 	padding-left: 50px;
     padding-right: 50px;
 }
@@ -1417,12 +1417,9 @@ body.has_menu .m-menu-toggle{display:block}
     float: right;
     margin-top: 5px
 }
-/*.section-package-header .theDate .btn-box:before{
-    display: none;
-}*/
 .section-package-content{
 	position: absolute;
-	top: 70px;
+	top: 100px;
 	left: 0;
 	right: 0;
 	bottom: 0;
