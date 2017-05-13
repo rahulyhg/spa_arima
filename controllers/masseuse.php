@@ -9,19 +9,21 @@ class Masseuse extends Controller {
 	public function index($id='', $section='services'){
 		$this->view->setPage('on', 'masseuse' );
 
-        // $data = $this->model->db->select( "SELECT emp_id, emp_code FROM employees" );
-        // // WHERE `emp_dep_id`=5 AND`emp_pos_id`=4"
+        // $data = $this->model->db->select( "SELECT emp_id, emp_code FROM employees WHERE `emp_dep_id`=5 AND`emp_pos_id`=6" );
+        // 
 
-        // // $n = 0;
+        // $n = 0;
         // foreach ($data as $key => $value) {
-        //     // $n++;
+            // $n++;
 
-        //     // preg_match('/[^0-9]*([0-9]+)[^0-9]*/', $value['emp_code'], $regs);
-        //     // $n = intval($regs[1]);
+            // preg_match('/[^0-9]*([0-9]+)[^0-9]*/', $value['emp_code'], $regs);
+            // $n = intval($regs[1]);
 
-        //     // $code = 'P'. sprintf("%03d",$n);
+            // $code = 'P'. sprintf("%03d",$n);
 
-        //     $this->model->db->update( "employees", array('emp_dealer_id'=> 1), "`emp_id`={$value['emp_id']}" );
+            // $data[$key]['emp_code'] = ; //$value['emp_code']);
+
+            // $this->model->db->update( "employees", array('emp_code'=>'B'.round(substr($value['emp_code'],1)) ), "`emp_id`={$value['emp_id']}" );
         // }
 
         // echo count($data); die;

@@ -7,8 +7,8 @@
 					<div class="orderID"><span header="code"></span></div>
 					<div class="lfloat order-title">
 						<div class="text">
-							<span><label>Date:</label> <span><?=Date('j F Y')?></span></span>
-							<span><label>No.</label> <strong data-title="number"></strong></span>
+							<span><label>Date:</label> <span data-bill="date"></span></span>
+							<span><label>No.</label> <strong data-bill="number"></strong></span>
 						</div>
 
 						<!-- <div class="subtext">
@@ -40,8 +40,9 @@
 						<tbody><tr>
 							<th class="no">#</th>
 							<th class="name">Items</th>
-							<th class="time">Time</th>
-							<th class="unittime"></th>
+							<th class="status"></th>
+							<th class="qty">Time</th>
+							<th class="unit"></th>
 							<th class="price">Price</th>
 						</tr>
 					</tbody></table>
@@ -78,9 +79,14 @@
 							<table><tbody>
 								
 								<tr>
-									<td class="label">ส่วนลด:</td>
-									<td class="data">฿<span summary="total-discount-text">0</span></td>
+									<td class="label"><?=$this->lang->translate('Sub total')?>:</td>
+									<td class="data"><span summary="subtotal">0</span> ฿</td>
 								</tr>
+								<tr>
+									<td class="label"><?=$this->lang->translate('Discount')?>:</td>
+									<td class="data discount">-<span summary="discount">0</span> ฿</td>
+								</tr>
+								
 								<!-- <tr>
 									<td class="label">ภาษี (7%):</td>
 									<td class="data">฿<span summary="service-text">0</span></td>
@@ -93,19 +99,15 @@
 						</td>
 						<td class="colright">
 							<table><tbody>
-
 								
+
 								<tr>
-									<td class="label">รวม:</td>
-									<td class="data">฿<span summary="subtotal-text">0</span></td>
+									<td class="label"><?=$this->lang->translate('Drink')?>:</td>
+									<td class="data"><span summary="drink">0</span> ฿</td>
 								</tr>
 								<tr>
-									<td class="label">รวมหัก:</td>
-									<td class="data">- ฿<span summary="subtotal-text">0</span></td>
-								</tr>
-								<tr>
-									<td class="label">รวมทั้งหมด:</td>
-									<td class="data Balance">฿<span summary="balance-text">0</span></td>
+									<td class="label TOTAL"><?=$this->lang->translate('Total')?>:</td>
+									<td class="data TOTAL"><span summary="total">0</span> ฿</td>
 								</tr>
 							</tbody></table>
 						</td>
@@ -126,7 +128,7 @@
 
 						<span class="gbtn"><a class="btn" data-bill-action="hold"><i class="icon-arrow-up mrs"></i>Hold</a></span>
 
-						<span class="gbtn"><a class="btn btn-blue" data-bill-action="send"><i class="icon-floppy-o mrs"></i>Send</a></span>
+						<span class="gbtn"><a class="btn btn-blue" data-bill-action="send"><i class="icon-paper-plane-o mrs"></i>Send</a></span>
 					</div>
 				</div>
 			</div>
@@ -138,15 +140,31 @@
 		
 		<nav>
 			<ul class="clearfix" style="width:800px">
-										
+				
 				<li class="button">
-					<span class="gbtn radius"><a class="btn js-set-option" data-type=""><i class="icon-address-card-o"></i></a></span>
-					<span class="t">สมาชิก</span>
+					<span class="gbtn radius"><a class="btn" data-bill-set="drink"><i class="icon-glass"></i></a></span>
+					<span class="t"><?=$this->lang->translate('DRINK')?></span>
+				</li>
+				
+
+				<li class="button">
+					<span class="gbtn radius"><a class="btn" data-bill-set="member"><i class="icon-address-card-o"></i></a></span>
+					<span class="t"><?=$this->lang->translate('Member')?></span>
 				</li>
 										
+				<!-- <li class="button">
+					<span class="gbtn radius"><a class="btn js-set-option" data-type=""><i class="icon-percent"></i></a></span>
+					<span class="t">Discount</span>
+				</li> -->
+
 				<li class="button">
-					<span class="gbtn radius"><a class="btn js-set-option" data-type=""><i class="icon-retweet"></i></a></span>
-					<span class="t">ส่วนลด</span>
+					<span class="gbtn radius"><a class="btn" data-bill-set="masseuse"><i class="icon-user-circle-o"></i></a></span>
+					<span class="t"><?=$this->lang->translate('Masseuse')?></span>
+				</li>
+
+				<li class="button">
+					<span class="gbtn radius"><a class="btn" data-bill-set="room"><i class="icon-bed"></i></a></span>
+					<span class="t"><?=$this->lang->translate('Room')?>/<?=$this->lang->translate('Bed')?></span>
 				</li>
 
 			</ul>

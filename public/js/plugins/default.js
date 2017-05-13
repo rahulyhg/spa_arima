@@ -240,7 +240,7 @@ if ( typeof Object.create !== 'function' ) {
 			self.$elem.attr('maxlength', 12).keydown(function (e) {
 				var value = $(this).val();
 
-				console.log( e.keyCode, value.length, $.inArray(value.length, [3,6] ) );
+				
 				if((e.keyCode>=48&&e.keyCode<=57) || (e.keyCode>=96&&e.keyCode<=105) ) {
 					if( $.inArray(value.length, [3,7])>=0 ){
 						$(this).val( value+"-" )

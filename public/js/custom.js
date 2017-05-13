@@ -166,6 +166,20 @@ var Datelang = {
 		return this.day( theDate.getDay() ) +" "+ theDate.getDate() + " " + this.month( theDate.getMonth() ) +" "+ fullYear;
 	},
 
+	fulldate: function( theDate, type, lang ){
+
+		lang = lang||this.lang||'th';
+
+		var _DS = [', ', ', '];
+		if( lang=='th' ){ 
+			var _DS = ['ที่ ', ' '];
+		}
+
+		return this.day( theDate.getDay(), type, lang ) + _DS[0] +
+			theDate.getDate() + " " + this.month( theDate.getMonth(), type, lang) +_DS[1]+
+			this.year( theDate.getFullYear(), type, lang );
+	},
+
 	day: function( numbar, type, lang ){
 		return this._day[type||this.type||'short'][lang||this.lang||'th'][numbar];
 	},
@@ -782,6 +796,15 @@ var PHP = {
 	    }
 
 	    return s.join(dec);
+	},
+
+	dateJStoPHP: function ( date ) {
+		m = date.getMonth()+1;
+		m = m < 10 ? '0'+m:m;
+
+		d = date.getDate();
+		d = d < 10 ? '0'+d:d;
+		return date.getFullYear() + '-' + m + '-' + d;	
 	}
 }
 

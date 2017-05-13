@@ -32,7 +32,6 @@ if ( typeof Object.create !== 'function' ) {
 
 				self.$load = self.$elem.find('[data-load]');
 
-
 				// set data
 				self.data = {
 					options: {}

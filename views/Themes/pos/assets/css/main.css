@@ -295,8 +295,10 @@ body.hasTopbar #page-container{
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    right: 0;
+    bottom: 0;
+    /*width: 100%;
+    height: 100%;*/
 
     opacity:0;-webkit-transform:translateY(20%);-moz-transform:translateY(20%);-ms-transform:translateY(20%);transform:translateY(20%);-webkit-transition:opacity .15s,-webkit-transform .15s cubic-bezier(0.25,0.5,0.5,0.9);-moz-transition:opacity .15s,-webkit-transform .15s cubic-bezier(0.25,0.5,0.5,0.9);transition:opacity .15s,-webkit-transform .15s cubic-bezier(0.25,0.5,0.5,0.9);
     z-index: 0;
@@ -813,6 +815,16 @@ body.has_menu .m-menu-toggle{display:block}
     margin: 15px 20px 5px;
     position: relative;
 }
+.slipPaper-bodyHeader .btn-box{
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    /*height: auto;
+    line-height: 1.2;
+    padding:0;
+    font-weight: normal;*/
+
+}
 
 .slipPaper-bodyContent {
     position: absolute;
@@ -846,22 +858,35 @@ body.has_menu .m-menu-toggle{display:block}
 .slipPaper-bodyContent table .no {
     width: 20px;
     text-align: center;
-    vertical-align: top;
+    /*vertical-align: top;*/
     padding-right: 0
 }
 .slipPaper-bodyContent table .name {
     text-align: left;
 }
+.slipPaper-bodyContent table .status{
+    width: 30px;
+    padding-left: 0;
+    padding-right: 0;
+    white-space: nowrap;
+    text-align: center;
+    text-transform: uppercase;
+}
 .slipPaper-bodyContent table .qty {
     text-align: center;
     width: 50px;
 }
-.slipPaper-bodyContent table .price, .slipPaper-bodyContent table .total {
+.slipPaper-bodyContent table .price {
     text-align: right;
-    width: 80px;
+    width: 60px;
+    white-space: nowrap;
 }
-.slipPaper-bodyContent table .time,.slipPaper-bodyContent table .unittime{
-    width: 30px;
+.slipPaper-bodyContent table .unit{
+    width: 20px;
+    white-space: nowrap;
+    text-transform: uppercase;
+    padding-left: 0;
+    padding-right: 0;
 }
 .slipPaper-bodyContent table .ui-status{
     font-size: 80%;
@@ -884,14 +909,26 @@ body.has_menu .m-menu-toggle{display:block}
     background-image: -o-linear-gradient(top, #dd4b39, #d14836);
     background-image: linear-gradient(top, #dd4b39, #d14836);
 }
-.slipPaper-bodyContent table .price .discount{
+.slipPaper-bodyContent table .price .cost, .slipPaper-bodyContent table .price .discount{
     display: none;
+    font-size: 70%;
+    
 }
-.slipPaper-bodyContent table .price.has-discount .discount{
-    display: block;
+.slipPaper-bodyContent table .price .cost{
+    text-decoration: line-through;
+    margin-right: 10px;
+}
+.slipPaper-bodyContent table .price .discount{
+    color: red;
+}
+.slipPaper-bodyContent table .price.has-discount .cost, .slipPaper-bodyContent table .price.has-discount .discount{
+    display: inline-block;
 }
 .slipPaper-bodyContent table .price.has-discount.full{
 
+}
+.slipPaper-bodyContent table tr.active td{
+    background-color: #f2f2f2
 }
 
 .slipPaper-bodyContent-header {
@@ -940,21 +977,25 @@ body.has_menu .m-menu-toggle{display:block}
     line-height: 30px;
 }
 .slipPaper-bodyFooter-summary .TOTAL {
-    font-size: 22px;
+    font-size: 120%;
     color: #000;
     font-weight: bold;
+    text-transform: uppercase;
 }
 .slipPaper-bodyFooter-summary .Balance {
-    font-size: 18px;
+    font-size: 110%;
     color: #aa3d54;
     font-weight: bold;
+}
+.slipPaper-bodyFooter-summary .discount{
+    color: #d14836
 }
 
 
 .slipPaper-footer {
     /*height: 90px;*/
     position: absolute;
-    left: 20px;
+    left: 40px;
     right: 20px;
     bottom: 0px;
 }
@@ -980,6 +1021,7 @@ body.has_menu .m-menu-toggle{display:block}
     margin-top: 3px;
     display: block;
     font-size: 12px;
+    white-space: nowrap;
 }
 .slipPaper-footer .pay {
     position: absolute;
@@ -1203,6 +1245,16 @@ body.has_menu .m-menu-toggle{display:block}
 .profile-menu>div.has-edit:hover{
     background-color: #f2f2f2
 }
+.profile-menu .profile-menu-staps .w100{
+    width: 100%;
+}
+
+.profile-menu .profile-menu-staps td{
+    padding-right: 10px
+}
+.profile-menu .profile-menu-staps .label{
+    white-space: nowrap;
+}
 /*.profile-menu>div.has-edit .btn-edit{
     display: none;
 }
@@ -1296,7 +1348,32 @@ body.has_menu .m-menu-toggle{display:block}
 }
 .profile-menu-table .price{
     text-align: right;
-    width: 20px
+    width: 20px;
+    white-space: nowrap;
+}
+.profile-menu-table .price .cost,.profile-menu-table .price .discount{
+    display: none;
+    font-size: 70%;
+}
+.profile-menu-table .price .cost{
+    text-decoration: line-through;
+    margin-right: 10px;
+}
+.profile-menu-table .price .discount{
+        color: red;
+}
+.profile-menu-table .price.has-discount .cost,.profile-menu-table .price.has-discount .discount{
+    display: inline-block;
+}
+
+.profile-menu-table .no{
+    width: 10px;
+    text-align: center;
+    white-space: nowrap;
+}
+.profile-menu-table .time{
+    width: 20px;
+     white-space: nowrap;
 }
 .profile-menu-table .actions{
     width: 30px;
@@ -1410,13 +1487,12 @@ body.has_menu .m-menu-toggle{display:block}
     background: #fff;
     display: block;
     text-align: left;
-    /*border:none;*/
-    /*box-shadow: none;*/
-    /*padding: 0*/
+    padding-right: 20px
 }
 .section-package-header .theDate .btn-box .icon-angle-down{
-    float: right;
-    margin-top: 5px
+    position: absolute;
+    top: 5px;
+    right: 5px;
 }
 .section-package-content{
 	position: absolute;
@@ -2106,4 +2182,11 @@ body, input, textarea, select, button{font-size: 20px}
 }
 .pos-summary-table .subtotal{
     font-size: 120%
+}
+
+.ui-effect-top>.memu-tab-content{
+    display: none;
+}
+.ui-effect-top.active>.memu-tab-content{
+    display: block;
 }

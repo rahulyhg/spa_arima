@@ -17,7 +17,7 @@ echo '<div class="navigation-main-header"><div class="anchor clearfix">'.$image.
 echo '<div class="navigation-main-content">';
 
 #info
-$info[] = array('key'=>'dashboard','text'=>'Dashboard','link'=>$url.'dashboard','icon'=>'home');
+$info[] = array('key'=>'dashboard','text'=>$this->lang->translate('menu','Dashboard'),'link'=>$url.'dashboard','icon'=>'home');
 // $info[] = array('key'=>'notifications','text'=>$this->lang->translate('menu','Notifications'),'link'=>$url.'notifications','icon'=>'bell-o');
 // $info[] = array('key'=>'calendar','text'=>$this->lang->translate('menu','Calendar'),'link'=>$url.'calendar','icon'=>'calendar');
 foreach ($info as $key => $value) {

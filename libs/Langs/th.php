@@ -23,13 +23,27 @@ class th extends Langs {
 		$data['mrs.'] = 'นาง';
 		$data['ms.'] = 'น.ส.';
 
+		$data['dashboard'] = 'ภาพรวม';
+
+		$data['masseuse'] = 'พนง.ผู้บริการ';
+		$data['time'] = 'เวลา';
+		$data['price'] = 'ราคา';
+		$data['member'] = 'สมาชิก';
+		$data['members'] = 'สมาชิก';
+		$data['promotions'] = 'โปรโมชั่น';
+		$data['add new'] = 'เพิ่ม';
+		$data['settings'] = 'ตั้งค่า';
+		$data['name'] = 'ชื่อ';
+		$data['quantity'] = 'จำนวน';
+		$data['unit'] = 'หน่วย';
+		$data['reports'] = 'รายงาน';
+
 		$str = strtolower($text);
 		return !empty($data[$str]) ? $data[$str]: $text;
 	}
 
-	
-	public function menu($text=null)
-	{
+	public function menu($text=null) {
+
 		$data['home'] = 'หน้าแรก';
 		$data['store'] = 'สินค้า';
 		$data['trainer'] = 'เทรนเนอร์';
@@ -41,9 +55,33 @@ class th extends Langs {
 		$data['our customers'] = 'ลูกค้า';
 		$data['contact us'] = 'ติดต่อเรา';
 
-		$text = strtolower($text);
+		
 
-		return !empty($data[$text]) ? $data[$text]: $text;
+
+		$txt = strtolower($text);
+
+		return !empty($data[$txt])? $data[$txt]: $this->basics($text);
+	}
+
+	public function package($text=''){
+
+
+		
+		$data['traditional thai body massage'] = 'นวดไทย';
+		$data['head massage'] = 'นวดหัว';
+		$data['foot massage'] = 'นวดเท้า';
+		$data['ear cleaning'] = 'แคะหู';
+		$data['manicure'] = 'ตัดแต่ง-ทาสีเล็บมือ';
+		$data['pedicure'] = 'ตัดแต่ง-ทาสีเล็บเท้า';
+		$data['oil massage'] = 'นวดน้ำมัน';
+		$data['facial massage'] = 'นวดหน้า';
+		$data['facial massage, facial pack'] = 'นวดหน้า, แพ็คหน้า';
+		$data['shower'] = 'อาบน้ำ';
+		/*$data['sauna'] = 'เพิ่ม';
+		$data['akasuri'] = 'เพิ่ม';*/
+
+		$txt = strtolower($text);
+		return !empty($data[$txt]) ? $data[$txt]: $this->basics($text);
 	}
 
 	public function translations()
@@ -177,7 +215,6 @@ class th extends Langs {
 		);
 
 		$this->data['user'] = array(
-			
 		);
 		
 	}

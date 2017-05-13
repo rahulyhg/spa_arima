@@ -83,7 +83,7 @@ class Package extends Controller {
             if( empty($arr['error']) ){
 
                 // 0 = ตามเวลา(Ontime) , 1 ครั้ง(Pertime)
-               
+                $postData['pack_has_masseuse'] = isset($_POST['has_masseuse']) ? 1: 0;
 
                 if( !empty($item) ){
 

@@ -21,8 +21,8 @@ $summary[] = array('label'=>'DRINK','value'=>3761, 'sub'=> array(
 	), 'note'=>'');
 
 $discount = array();
-$discount[] = array('label'=>'ลบคูปอง','value'=>600, 'note'=>'');
-$discount[] = array('label'=>'เฮีย','value'=>1860, 'note'=>'');
+// $discount[] = array('label'=>'ลบคูปอง','value'=>600, 'note'=>'');
+// $discount[] = array('label'=>'เฮีย','value'=>1860, 'note'=>'');
 
 
 ?><div style="position: absolute;top: 0;left: 0;right: 0;bottom: 0;">
@@ -91,10 +91,12 @@ $discount[] = array('label'=>'เฮีย','value'=>1860, 'note'=>'');
 		</tr>
 		<?php } ?>
 
+		<?php if( $minus > 0 ) { ?>
 		<tr>
 			<td class="name"><div class="hdr-text"> - รวมหัก</div></td>
 			<td class="price"><div class="hdr-text highlight"><?= number_format( $minus )?></div></td>
 		</tr>
+		<?php } ?>
 	</tbody>
 
 
