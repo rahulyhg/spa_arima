@@ -10,6 +10,74 @@ if ( typeof Object.create !== 'function' ) {
 
 (function( $, window, document, undefined ) {
 
+	var DatePicker2 = {
+		init: function (options, elem) {
+			var self = this;
+
+			self.$elem = $(elem);
+			self.options = $.extend( {}, $.fn.datepicker2.options, options );
+
+
+			if( self.$elem.val() ){
+				self.options.selectedDate = new Date( self.$elem.val() );
+			}
+
+			self.options.selectedDate.setHours(0, 0, 0, 0);
+
+
+			console.log( self.options );
+
+			self.setElem();
+
+			
+
+		},
+
+		setElem: function () {
+			var self = this;
+
+			self.selectedInput = $('<input>', {
+				class: 'hiddenInput',
+				type: 'hidden',
+				name: self.$elem.attr('name')
+			});
+			
+			self.selectedInput.addClass( self.$elem.attr('class') );
+			self.selectedText = $('<span>', {class: 'btn-text'});
+				
+			self.original = self.$elem;
+
+			var placeholder = $('<div/>', {class: 'uiPopover'});
+			
+			self.$elem.replaceWith(placeholder);
+            self.$elem = placeholder;	
+		},
+
+	}
+
+	$.fn.datepicker2 = function( options ) {
+		return this.each(function() {
+			var $this = Object.create( DatePicker2 );
+			$this.init( options, this );
+			$.data( this, 'datepicker2', $this );
+		});
+	};
+	$.fn.datepicker2.options = {
+		lang: 'en',
+
+		selectedDate: new Date(),
+
+		start: null,
+		end: null,
+
+		weekDayStart: 1,
+		style: 'normal',
+		format : '',
+
+		onSelected: function () { },
+	};
+
+
 	var Order = {
 		init: function (options, elem) {
 			var self = this;
@@ -30,7 +98,6 @@ if ( typeof Object.create !== 'function' ) {
 		},
 		setElem: function () {
 			var self = this;
-
 
 			$.each( self.$elem.find('[data-global]'), function () {
 				self[ '$e_'+ $(this).attr('data-global') ] = $(this);
@@ -207,8 +274,7 @@ if ( typeof Object.create !== 'function' ) {
 				self.$listsbox = self.$elem.find('.ui-list-orders');
 				self.$listsbox.empty();
 
-
-				self.$elem.find('.js-datepicker').datepicker({
+				self.$elem.find('.js-datepicker').removeClass('js-datepicker').datepicker({
 					onChange: function () {
 						
 						console.log( 1 );
@@ -433,7 +499,8 @@ if ( typeof Object.create !== 'function' ) {
 				var self = this; 
 
 				$.get( Event.URL + 'orders/menu/', {type: type}, function (res) {
-					console.log( res );
+
+					console.log( 'menu', res );
 
 				}, 'json');
 				

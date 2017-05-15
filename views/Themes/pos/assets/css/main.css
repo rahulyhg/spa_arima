@@ -1410,13 +1410,15 @@ body.has_menu .m-menu-toggle{display:block}
     background: #fff;
     display: block;
     text-align: left;
+    padding-right: 20px
     /*border:none;*/
     /*box-shadow: none;*/
     /*padding: 0*/
 }
 .section-package-header .theDate .btn-box .icon-angle-down{
-    float: right;
-    margin-top: 5px
+    position: absolute;
+    top: 6px;
+    right: 5px;
 }
 .section-package-content{
 	position: absolute;
@@ -1442,7 +1444,6 @@ body.has_menu .m-menu-toggle{display:block}
 .section-package-actions>li + li{
     padding-left: 10px
 }
-
 
 /**/
 /* ui status */

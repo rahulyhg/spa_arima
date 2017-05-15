@@ -29,7 +29,7 @@ $discount[] = array('label'=>'เฮีย','value'=>1860, 'note'=>'');
 
 
 <div style="position: absolute;top: 0;left: 0; right: 100px;background-color: rgba(245,248,250,.98);z-index: 1">
-<header class="clearfix" style="padding-top: 30px;padding-left: 30px;padding-right: 30px">
+<header class="clearfix" style="padding-top: 60px;padding-left: 30px;padding-right: 30px">
 	<div class="lfloat"><h1 style="display: inline-block;"><i class="icon-line-chart mrs"></i><span>สรุปยอดรายรับ</span></h1>
 	</div>
 	<div class="tar fsm mbm">วันที่ <input style="display:inline-block;background-color: #fff" type="date" name="date" class="inputtext"></div>
@@ -38,7 +38,7 @@ $discount[] = array('label'=>'เฮีย','value'=>1860, 'note'=>'');
 
 <div style="position: absolute;top: 0;left: 30px;overflow-y: auto;bottom: 0;right: 0">
 
-<div style="margin-right: 100px;padding-top: 70px">
+<div style="margin-right: 100px;padding-top: 100px">
 	
 
 <div class="mvm pbl">

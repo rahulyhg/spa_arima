@@ -42,9 +42,9 @@ $pageNavR .= '<li class="headerClock">'.
 	'</div>'.
 '</li>';
 
-$pageNavR .= '<li class="lbtn">'.
+/*$pageNavR .= '<li class="lbtn">'.
 	'<span class="gbtn"><a class="btn btn-red"><i class="icon-plus mrs"></i><span>New Order</span></a></span>'.
-'</li>';
+'</li>';*/
 
 $pageNavR .= '<li class="divider"></li>';
 

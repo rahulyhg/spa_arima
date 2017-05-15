@@ -37,7 +37,7 @@ class Orders extends Controller {
     	else{
     		$data = $this->model->query('promotions')->lists();
     	}
-
+        
     	echo json_encode( $data );
     }
 

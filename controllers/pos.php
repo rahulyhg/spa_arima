@@ -73,4 +73,6 @@ class Pos extends Controller{
         $this->view->setPage('on', 'queue');
         $this->view->render("queue/display");
     }
+
+    
 }
