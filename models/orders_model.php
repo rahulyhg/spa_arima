@@ -28,6 +28,26 @@ class Orders_Model extends Model {
 		$where_str = "";
 		$where_arr = array();
 
+		if( !empty($options['status']) ){
+
+			$where_str .= !empty( $where_str ) ? " AND ":'';
+			$where_str .= "order_status=:status";
+			$where_arr[':status'] = $options['status'];
+		}
+
+		if( isset($_REQUEST['period_start']) && isset($_REQUEST['period_end']) ){
+
+			$options['period_start'] = $_REQUEST['period_start'];
+			$options['period_end'] = $_REQUEST['period_end'];
+		}
+
+		if( !empty($options['period_start']) && !empty($options['period_end']) ){
+
+			$where_str .= !empty( $where_str ) ? " AND ":'';
+			$where_str .= "(order_start_date BETWEEN :startDate AND :endDate)";
+            $where_arr[':startDate'] = $options['period_start'];
+            $where_arr[':endDate'] = $options['period_end'];
+		}
 
 		$arr['total'] = $this->db->count($this->_table, $where_str, $where_arr);
 
@@ -125,5 +145,138 @@ class Orders_Model extends Model {
 		else{
 			return 1;
 		}
+	}
+
+	/* GET ORDER MASSEUSE */
+	public function get_masseuse_item( $id ){
+
+		$select_item = "item_id as id
+						, item_pack_id as pack_id
+						, item_price as price
+						, item_masseuse as masseuse
+						, item_start_date as start_date
+						, item_end_date as end_date
+						, item_room_id as room_id
+						, item_bed_id as bed_id
+						, item_room_price as room_price
+						, item_discount as discount
+
+						, p.pack_code
+						, p.pack_name
+
+						, r.room_id
+						, r.room_name
+						, r.room_floor
+						, r.room_price
+						, r.room_level
+
+						, b.bed_id
+						, b.bed_code
+						, b.bed_name";
+
+		$form_item = "orders_items i 
+				 LEFT JOIN package p on i.item_pack_id=p.pack_id
+				 LEFT JOIN rooms r on i.item_room_id=r.room_id
+				 LEFT JOIN rooms_bed b on i.item_bed_id=b.bed_id";
+
+		return $this->db->select("SELECT {$select_item} FROM {$form_item} WHERE item_masseuse=:id", array(':id'=>$id));
+	}
+
+	public function get_customer_item( $id, $options=array() ){
+
+		$select_item = "o.order_id AS id
+						, o.order_number AS number
+						, o.order_total_price AS total_price
+						, o.order_status AS status
+
+						, i.item_id
+						, i.item_pack_id
+						, i.item_price
+						, i.item_masseuse
+						, i.item_start_date AS start_date
+						, i.item_end_date AS end_date
+						, i.item_room_id
+						, i.item_bed_id
+						, i.item_room_price
+						, i.item_discount
+
+						, p.pack_code
+						, p.pack_name
+
+						, r.room_id
+						, r.room_name
+						, r.room_floor
+						, r.room_price
+						, r.room_level
+
+						, b.bed_id
+						, b.bed_code
+						, b.bed_name
+
+						, e.emp_id
+						, e.emp_prefix_name AS prefix_name
+						, e.emp_first_name AS first_name
+						, e.emp_last_name AS last_name
+						, e.emp_nickname AS nickname";
+
+		$form_item = "orders o
+				 LEFT JOIN orders_items i on o.order_id=i.item_order_id
+				 LEFT JOIN package p on i.item_pack_id=p.pack_id
+				 LEFT JOIN rooms r on i.item_room_id=r.room_id
+				 LEFT JOIN rooms_bed b on i.item_bed_id=b.bed_id
+				 LEFT JOIN employees e on i.item_masseuse=e.emp_id";
+
+		$where_str = "order_cus_id=:id";
+
+		$where_arr = array();
+		$where_arr[':id'] = $id;
+
+		if( !empty($options['status']) ){
+
+			$where_str .= !empty($where_str) ? " AND " : "";
+			$where_str .= "o.order_status=:status";
+			$where_arr[':status'] = $options['status'];
+		}
+
+		return $this->db->select("SELECT {$select_item} FROM {$form_item} WHERE {$where_str}", $where_arr);
+	}
+
+	/**/
+	public function summary( $options=array() ){
+
+		$select = "SUM(order_total_price) AS sum_price, SUM(order_total_discount) AS sum_discount";
+		$form = "orders";
+
+		$where_str = '(order_start_date BETWEEN :startDate AND :endDate)';
+		$where_arr[':startDate'] = $options['period_start'];
+		$where_arr[':endDate'] = $options['period_end'];
+
+		if( $options['type'] == 'revenue' ){
+
+			$where_str .= ' AND order_status=:status';
+			$where_arr[':status'] = 'finish';
+
+			$data = $this->db->select("SELECT {$select} FROM {$form} WHERE {$where_str}", $where_arr);
+		}
+		elseif( $options['type'] == 'sell' ){
+
+			$where_str .= ' AND order_status!=:status';
+			$where_arr[':status'] = 'booking';
+
+			$data = $this->db->select("SELECT {$select} FROM {$form} WHERE {$where_str}", $where_arr);
+		}
+		elseif( $options['type'] == 'service' ){
+
+			$select = "COUNT(order_cus_id) AS total_customer";
+			$where_str .= ' AND order_status!=:status';
+			$where_arr[':status'] = 'booking';
+
+			$data = $this->db->select("SELECT {$select} FROM {$form} WHERE {$where_str}", $where_arr);
+		}
+		else{
+			$data = array();
+		}
+
+		return $data[0];
 	}
 }

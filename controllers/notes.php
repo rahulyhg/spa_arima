@@ -12,7 +12,7 @@ class Notes extends Controller {
 
     public function notes(){
         if( empty($this->me) || $this->format!='json') $this->error();
-        echo json_encode($this->model->query('notes')->notes());
+        echo json_encode($this->model->notes());
     }
 
     public function save_note(){
@@ -31,8 +31,9 @@ class Notes extends Controller {
                 'note_emp_id' => $this->me['id'],
                 'note_obj_id' => $_POST['obj_id'],
                 'note_obj_type' => $_POST['obj_type'],
-                );
-            $this->model->query('notes')->save_note( $data );
+            );
+
+            $this->model->save_note( $data );
 
             $arr['data'] = $data;
 

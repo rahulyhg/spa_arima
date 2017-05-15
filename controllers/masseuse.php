@@ -41,8 +41,12 @@ class Masseuse extends Controller {
             if( empty($item) ) $this->error();
             // print_r($item); die;
 
+            $order = $this->model->query('orders')->get_masseuse_item( $id );
+            // --- SET ORDER --- //
+
             $this->view->setData('id', $id );
             $this->view->setData('item', $item );
+            $this->view->setData('order', $order);
             $this->view->setData('tab', $section); 
             $this->view->render("masseuse/profile/display");
         }

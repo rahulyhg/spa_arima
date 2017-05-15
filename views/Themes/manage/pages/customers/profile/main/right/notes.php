@@ -1,7 +1,7 @@
 <?php
 
 
-$options = array('load'=> URL .'notes/notes?obj_id='.$this->item['id'].'&obj_type=customers',
+$options = array('load'=> URL .'notes/notes?obj_id='.$this->item['id'].'&obj_type=customer',
 		'settings' => array(
 			'axisX' => 'right'
 		)
