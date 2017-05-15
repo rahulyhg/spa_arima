@@ -41,7 +41,7 @@ $discount = array();
 <div style="margin-right: 100px;padding-top: 100px">
 	
 
-<div class="mvm pbl">
+<div class="mvm pbl" style="background-color: #fff;box-shadow:0 1px 3px rgba(0,0,0,.3); padding: 10px;border:1px solid rgba(0,0,0,.3);border-radius: 3px;">
 	<table class="pos-summary-table">
 		
 

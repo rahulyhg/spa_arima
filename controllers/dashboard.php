@@ -9,12 +9,16 @@ class Dashboard extends Controller {
 	public function index(  ){
 
 		if( empty($this->permit['dashboard']['view']) ){
-			if( $this->me['dep_is_sale'] == 1 ){
-				header('location:'.URL.'sales');
+
+			if( count($this->me['access']) == 1 ){
+
+				if( $this->me['access'][0]==5 ){
+					header('location:'.URL.'pos');
+				}
+				
 			}
-			else{
-				header('location:'.URL.'calendar');
-			}
+			
+			header('location:'.URL.'package');
 		}
 
 		$start = date('Y-m-d 00:00:00');

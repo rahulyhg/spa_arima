@@ -4,10 +4,10 @@
 			<div class="slipPaper-bodyHeader">
 
 				<div class="clearfix">
-					<div class="orderID"><span header="code"></span></div>
 					<div class="lfloat order-title">
+
+						<div><span data-bill="date"></span></div>
 						<div class="text">
-							<span><label>Date:</label> <span data-bill="date"></span></span>
 							<span><label>No.</label> <strong data-bill="number"></strong></span>
 						</div>
 
@@ -26,9 +26,8 @@
 						<div class="subtext">
 							<span><label>By:</label> <i class="icon-user-circle-o"></i><a>ภุชงค์</a></span>
 						</div> -->
-						
 					</div>
-					<div class="rfloat">
+					<div class="rfloat order-title-btn">
 						<span class="gbtn radius"><a class="btn btn-blue" data-bill-action="menu"><i class="icon-plus"></i></a></span>
 					</div>
 				</div>
@@ -117,14 +116,13 @@
 				<div class="slipPaper-bodyFooter-actions mvm clearfix">
 					<div class="lfloat">
 						
-						<span class="gbtn"><a class="btn"><i class="icon-clone mrs" data-bill-action="clone"></i>Clone</a></span>
+						<span class="gbtn"><a class="btn"><i class="icon-clone" data-bill-action="clone"></i><span class="text-btn mls">Clone</span></a></span>
 						
 						<!-- <span class="gbtn"><a class="btn"><i class="icon-envelope"></i></a></span> -->
 					</div>
 					<div class="rfloat">
 
-						<span class="gbtn"><a class="btn btn-red" data-bill-action="cancel"><i class="icon-remove mrs"></i>Cancel</a></span>
-
+						<span class="gbtn"><a class="btn btn-red" data-bill-action="cancel"><i class="icon-remove"></i><span class="text-btn mls">Cancel</span></a></span>
 
 						<span class="gbtn"><a class="btn" data-bill-action="hold"><i class="icon-arrow-up mrs"></i>Hold</a></span>
 

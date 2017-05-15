@@ -113,7 +113,6 @@ class Controller {
         $this->system['url'] = URL.$on;
         $keys = array('site_name', 'type', 'url', 'image', 'keywords', 'color', 'facebook_app_id');
         foreach ($keys as $key) {
-            
             if( !empty($this->system[$key]) ){
 
                 if( $key=='site_name' ){
@@ -302,8 +301,9 @@ class Controller {
             $options['has_topbar'] = true;
             $options['has_footer'] = true;
 
+
             if( count($this->me['access']) == 1 ){
-                $theme_options['has_menu'] = false;
+                $options['has_menu'] = false;
             }
 
             $this->system['theme'] = 'pos';
@@ -316,7 +316,6 @@ class Controller {
 
             $this->view->setPage('image_url', !empty( $this->system['image_url'] ) ? $this->system['image_url']: IMAGES.'logo/logo1.gif' );
             $this->view->setPage('name', !empty( $this->system['name'] ) ? $this->system['name']: 'POS' );
-
 
         }
         elseif( empty($this->system['theme']) ){

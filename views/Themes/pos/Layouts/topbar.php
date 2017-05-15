@@ -58,12 +58,11 @@ else{
 	$imageAvatarBig = '<div class="avatar lfloat no-avatar mrm"><div class="initials"><i class="icon-user"></i></div></div>';
 }
 
-
 $pageNavR .= '<li class="uiToggle headerAvatarWrap">'.
     '<a data-plugins="toggleLink">'.$imageAvatar.'</a>'.
 
     '<div class="uiToggleFlyout uiToggleFlyoutRight uiToggleFlyoutPointer" id="accountSettingsFlyout"><ul role="menu" class="uiMenu">'.
-            '<li class="menuItem head"><a class="itemAnchor" href="#"><span class="itemLabel"><div class="clearfix"><div class="anchor"><div class="clearfix">'.$imageAvatarBig.'<div class="content"><div class="spacer"></div><div class="massages"><div class="fullname">'.$this->me['fullname'].'</div><div class="fcg">'.$this->lang->translate('menu','Profile').'</div></div></div></div></div></div></span></a></li>'.
+            '<li class="menuItem head"><a class="itemAnchor" href="#"><span class="itemLabel"><div class="clearfix"><div class="anchor"><div class="clearfix">'.$imageAvatarBig.'<div class="content"><div class="spacer"></div><div class="massages"><div class="fullname">'.$this->me['fullname'].'</div><div class="fcg">'.$this->me['fullname'].'</div></div></div></div></div></div></span></a></li>'.
 
             /*<li class="menuItemDivider" role="separator"></li>
 
@@ -71,7 +70,7 @@ $pageNavR .= '<li class="uiToggle headerAvatarWrap">'.
 
             '<li class="menuItemDivider" role="separator"></li>'.
             
-            '<li class="menuItem"><a class="itemAnchor" href="#"><span class="itemLabel">'.$this->lang->translate('menu','Settings').'</span></a></li>'.
+            '<li class="menuItem"><a class="itemAnchor" href="'.URL.'pos/settings"><span class="itemLabel">'.$this->lang->translate('menu','Settings').'</span></a></li>'.
 
             '<li class="menuItem"><a class="itemAnchor" data-plugins="dialog" href="'.URL.'logout/admin"><span class="itemLabel">'.$this->lang->translate('menu','Sign Out').'</span></a></li>'.
         '</ul></div>'.
@@ -107,5 +106,9 @@ if( !empty($this->topbar['back_url']) ){
 }
 else{
 
+	$theme_options = $this->getPage('theme_options');
+
+	if( !empty($theme_options['has_menu']) ){
 	echo '<a class="m-menu-toggle js-navigation-trigger"><span class="m-menuicon-bread m-menuicon-bread-top"><span class="m-menuicon-bread-crust m-menuicon-bread-crust-top"></span></span><span class="m-menuicon-bread m-menuicon-bread-bottom"><span class="m-menuicon-bread-crust m-menuicon-bread-crust-bottom"></span></span></a>';
+	}
 }

@@ -1,5 +1,5 @@
 <div class="clearfix mvl">
-	<div class="ui-card ">
+	<div class="ui-card u-boxShadow-2 mvl bg-green">
 		<div class="ui-card_header">
 	        <h3 class="ui-card_headerTitle">สรุปยอดรายรับ</h3>
 	        <div class="ui-card_headerDesc"><?=$this->date_str?></div>

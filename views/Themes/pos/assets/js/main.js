@@ -10,236 +10,6 @@ if ( typeof Object.create !== 'function' ) {
 
 (function( $, window, document, undefined ) {
 
-	var DatePicker2 = {
-		init: function (options, elem) {
-			var self = this;
-
-			self.$elem = $( elem );
-			self.options = $.extend( {}, $.fn.datepicker2.options, options );
-
-			self.setElem();
-			self.setData();
-
-			self.Events();
-
-			self.display();
-		},
-		setElem: function () {
-			var self = this;
-
-			self.$input = $('<input>', {
-				class: 'hiddenInput',
-				type: 'hidden',
-				name: self.$elem.attr('name')
-			});
-			
-			// self.$input.addClass( self.$elem.attr('class') );
-			self.$display = $('<span>', {class: 'btn-text'});
-			self.original = self.$elem;
-
-			var placeholder = $('<div/>', {class: 'uiPopover'});
-			self.$elem.replaceWith(placeholder);
-            self.$elem = placeholder;
-			
-			self.$btn = $('<a>', {class: 'btn btn-box btn-toggle'}).append( self.$display );
-
-			if( !self.options.icon ){
-				self.$btn.append( $('<i/>', {class: 'img mls icon-angle-down'}) );
-			}
-
-			self.$elem.append( self.$btn, self.$input );
-		},
-		setData: function () {
-			var self = this;
-
-			if( self.$elem.val() ){
-				self.options.selectedDate = new Date( self.$elem.val() );
-			}
-			self.options.selectedDate.setHours(0, 0, 0, 0);
-
-			self.is_open = false;
-
-			self.calendar = {
-				$elem: $('<div>', {class: 'uiContextualPositioner'}),
-				today: new Date(),
-				theDate: new Date( self.options.selectedDate ),
-				lists: []
-			};
-			self.calendar.today.setHours(0, 0, 0, 0);
-
-		},
-
-		Events: function () {
-			var self = this;
-
-			self.$btn.click(function(e){
-
-				if( self.is_open ){
-					self.is_open = false;
-				}
-				else{
-					self.is_open = true;
-
-					self.updateCalendar();
-				}
-			});
-		},
-
-		setCalendar: function () {
-			var self = this;
-
-			self.calendar.$elem = $('<div>', {class: 'uiContextualPositioner'});
-
-			self.$calendar = $('<div>', {class: 'toggleFlyout calendarGridTableSmall'});
-			self.calendar.$elem.append( self.$calendar );
-
-
-			
-
-			// var startDate = new Date( theDate );
-			// startDate.setDate( 1 );
-
-			var firstDate = new Date( self.calendar.theDate );
-	        firstDate.setDate(1);
-	        var firstTime = firstDate.getTime();
-			var lastDate = new Date(firstDate);
-	        lastDate.setMonth(lastDate.getMonth() + 1);
-	        lastDate.setDate(0);
-	        var lastTime = lastDate.getTime();
-	        var lastDay = lastDate.getDate();
-
-	        // Calculate the last day in previous month
-	        var prevDateLast = new Date(firstDate);
-	        prevDateLast.setDate(0);
-	        var prevDateLastDay = prevDateLast.getDay();
-	        var prevDateLastDate = prevDateLast.getDate();
-
-	        var prevweekDay = self.options.weekDayStart;
-	        prevweekDay = prevweekDay>prevDateLastDay
-				? 7-prevweekDay
-				: prevDateLastDay-prevweekDay;
-
-			for (var y = 0, i = 0; y < 7; y++){
-
-				var row = [];
-				var weekInMonth = false;
-
-				for (var x = 0; x < 7; x++, i++) {
-					var p = ((prevDateLastDate - prevweekDay ) + i);
-
-					var call = {};
-					var n = p - prevDateLastDate;
-					call.date = new Date( theDate ); 
-					call.date.setHours(0, 0, 0, 0); 
-					call.date.setDate( n );
-
-					// If value is outside of bounds its likely previous and next months
-	            	if (n >= 1 && n <= lastDay){
-	            		weekInMonth = true;
-
-	            		if( self.calendar.today.getTime()==call.date.getTime()){
-	                    	call.today = true;
-	                    }
-
-	                    if( self.calendar.theDate.getTime()==call.date.getTime() ){
-	                    	call.selected = true;
-	                    }
-	            	}
-	            	else{
-	            		call.noday = true;
-	            	}
-
-	            	/*if( self.calendar.startDate ){
-                    	if( self.date.startDate.getTime()>call.date.getTime() ){
-                    		call.empty = true;
-                    	}
-                    }*/
-                    
-					row.push(call);
-				}
-
-				if( row.length>0 && weekInMonth ){
-					self.calendar.lists.push(row);
-				}
-			}
-
-			self.calendar.header = [];
-			for (var x=0,i=self.options.weekDayStart; x<7; x++, i++) {
-				if( i==7 ) i=0;
-				self.calendar.header.push({
-	        		key: i,
-	        		text: Datelang.day( i, 'short', self.options.lang )
-	        	});
-			};
-
-			// self.$calendar = 
-			console.log( self.calendar );
-		},
-		updateCalendar: function () {
-			var self = this;
-
-			self.setCalendar();
-
-			// title
-			var year = self.date.theDate.getFullYear();
-			if( self.options.lang=='th' ){
-				year = year+543;
-			}
-
-			var month = Datelang.month( self.date.theDate.getMonth(), self.options.format, self.options.lang );
-
-			var $title = $('<thead>').html( $("<tr>", {class: 'title'}).append( 
-				  $('<td>', {class: 'title', colspan: 5, text: month + " " + year })
-				, $('<td>', {class: 'prev'}).append( $('<i/>', {class:'icon-angle-left'}) )
-				, $('<td>', {class: 'next'}).append( $('<i/>', {class:'icon-angle-right'}) )
-			);
-
-			// header
-			var $header = $("<tr>", {class: 'header'});
-			$.each( self.calendar.header, function(i, obj){
-				$header.append( $('<th>', {text: obj.text}) );
-			});
-			$thead = $('<thead/>').html( $header );
-
-
-			// body
-			
-		},
-
-		hide: function () {
-				
-		},
-		show: function () {
-			
-		},
-		change: function () {
-			
-		},
-
-		display: function () {
-			var self = this;
-
-
-			self.$display.text( Datelang.fulldate( self.options.selectedDate, self.options.format, self.options.lang ) );
-			self.$input.val( PHP.dateJStoPHP( self.options.selectedDate ) );
-		}
-	}
-	$.fn.datepicker2 = function( options ) {
-		return this.each(function() {
-			var $this = Object.create( DatePicker2 );
-			$this.init( options, this );
-			$.data( this, 'datepicker2', $this );
-		});
-	};
-	$.fn.datepicker2.options = {
-		lang: 'th',
-		selectedDate: new Date(),
-		start: null,
-		end: null,
-		weekDayStart: 0,
-		format: 'normal',
-		onSelected: function () { },
-	};
 
 	var Order = {
 		init: function (options, elem) {
@@ -1221,12 +991,11 @@ if ( typeof Object.create !== 'function' ) {
 				// Datelang.fulldate( self.then.currOrder.theDate, 'normal', self.options.lang )
 				self.$elem.find('[data-bill=date]').html( $date );
 
-				$date.datepicker2({
+				$date.datepicker({
 					lang: self.options.lang,
-					onChange: function ( e ) {
+					onSelected: function ( date ) {
 						
-						self.then.currOrder.theDate = new Date( e.date.selected );
-
+						self.then.currOrder.theDate = new Date( date );
 						self.getNumber();
 					}
 				});
@@ -1554,9 +1323,15 @@ function RefClock($el, lang) {
 
 	if( lang=='th' ){
 		ampm = '';
-	}else if( hour > 12 ){
-		hour -= 12;
-		ampm = 'PM';
+	}else{
+		if( hour > 12 ){
+			hour -= 12;
+			ampm = 'PM';
+		}
+
+		if( hour==0 ){
+			hour = 12;
+		}
 	}
 
 	var minute = theDate.getMinutes();
@@ -1612,6 +1387,20 @@ $(function () {
 
 	RefClock( $('.headerClock'), $('html').attr('lang') );
 	// 
+
+	$('.js-global-actions>[data-global-action]').click(function (e) {
+		if( $(this).hasClass('active') && $(window).width() <= 1300 ){
+			e.stopPropagation();
+			e.preventDefault();
+			$(this).parent().addClass('active');
+		}
+	});
+
+	$(window).click(function () {
+		if( $('.js-global-actions').hasClass('active') ){
+			$('.js-global-actions').removeClass('active');
+		}
+	});
 
 });
 

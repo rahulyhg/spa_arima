@@ -1706,6 +1706,10 @@ a.link-text:hover span{text-decoration:underline}
     color: #4b4f56;
     border-radius: 2px;
     position: relative;
+    border: 1px solid rgba(0,0,0,.3);
+}
+.ui-card:hover{
+	border: 1px solid rgba(0,0,0,.5);
 }
 .ui-card>div{
 	margin: 5px 12px;
@@ -1718,14 +1722,18 @@ a.link-text:hover span{text-decoration:underline}
 	padding-bottom: 10px;
 	margin-bottom: 0
 }
+
 .ui-card_headerDesc{
 	opacity: .8;
 	font-size: 12px;
 }
 
 .ui-card_tableWrap{
-	margin-left: -12px;
+	margin-left: -11px;
 	margin-right: -12px;
+}
+.ui-card>div:last-child .ui-card_tableWrap{
+	margin-bottom: -10px
 }
 .u-boxShadow-2 .ui-card_tableWrap tr th:first-child,.u-boxShadow-2 .ui-card_tableWrap tr td:first-child{
 	border-left-width: 0
@@ -1735,17 +1743,23 @@ a.link-text:hover span{text-decoration:underline}
 }
 .ui-card_table{
 	width: 100%;
+	color: #000;
+	background-color: #fff;
 }
 .ui-card_table th, .ui-card_table td{
 	padding: 3px 4px;
-	border: 1px solid rgba(0, 0, 0, .1);
+	border: 1px solid #666;
+	
 }
 .ui-card_table th{
-	background: #f6f7f9;
-    /*background: linear-gradient(#fff, #f6f7f9);*/
+	background-color: #fff;
+	background-color: #f6f7f9;
     font-weight: bold;
     white-space: nowrap;text-align: left;
 }
+/*.ui-card_table tr:nth-child(odd) td{
+	background-color:#f8f8f8
+}*/
 .ui-card_table .status{
 	width: 80px;
 	text-align: center;

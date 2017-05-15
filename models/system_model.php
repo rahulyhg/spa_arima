@@ -324,9 +324,10 @@ class System_Model extends Model{
         $a = array();
         $a[] = array('id'=>'1', 'name'=>'Admin');
         $a[] = array('id'=>'2', 'name'=>'Manager');
-        $a[] = array('id'=>'3', 'name'=>'Accounting');
-        $a[] = array('id'=>'4', 'name'=>'Cashier');
-        $a[] = array('id'=>'5', 'name'=>'Masseuse');
+        $a[] = array('id'=>'3', 'name'=>'Person');
+        $a[] = array('id'=>'4', 'name'=>'Product');
+        $a[] = array('id'=>'5', 'name'=>'Cashier');
+        $a[] = array('id'=>'6', 'name'=>'Masseuse');
 
         return $a;
     }

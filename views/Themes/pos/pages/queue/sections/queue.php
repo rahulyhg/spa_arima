@@ -68,9 +68,9 @@ left: 0;right: 16px;background-color: rgba(245,248,250,.98);z-index: 100;"><div 
 	
 	$('.js-date').datepicker({
 		lang: $('.js-date').data('lang'),
-		onChange: function ( data) {
+		onSelected: function ( date  ) {
 
-			window.location = "<?=URL.'pos/queue'?>" + "?date=" + PHP.dateJStoPHP(data.date.selected);
+			window.location = "<?=URL.'pos/queue'?>" + "?date=" + PHP.dateJStoPHP(date);
 			// console.log( data, PHP.dateJStoPHP(data.date.selected) );
 		}
 	});

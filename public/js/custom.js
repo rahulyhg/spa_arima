@@ -258,7 +258,7 @@ var Datelang = {
 		return this.day( theDate.getDay() ) +" "+ theDate.getDate() + " " + this.month( theDate.getMonth() ) +" "+ fullYear;
 	},
 
-	fulldate: function( theDate, type, lang ){
+	fulldate: function( theDate, type, lang, displayYear ){
 
 		lang = lang||this.lang||'th';
 
@@ -267,9 +267,14 @@ var Datelang = {
 			var _DS = ['ที่ ', ' '];
 		}
 
+
+		var year = '';
+		if( displayYear ){
+			year = _DS[1]+this.year( theDate.getFullYear(), type, lang );
+		}
+
 		return this.day( theDate.getDay(), type, lang ) + _DS[0] +
-			theDate.getDate() + " " + this.month( theDate.getMonth(), type, lang) +_DS[1]+
-			this.year( theDate.getFullYear(), type, lang );
+			theDate.getDate() + " " + this.month( theDate.getMonth(), type, lang) + year;
 	},
 
 	day: function( numbar, type, lang ){

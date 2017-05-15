@@ -340,7 +340,6 @@ a.btn-icon:hover{text-decoration:none}
 .anchor .spacer,.anchor .massages{display:inline-block;vertical-align:middle}
 .anchor .spacer{height:48px}
 .anchor .content{overflow:hidden}
-/*.anchor .text{font-weight:normal;text-overflow:ellipsis;width:135px;white-space:nowrap;overflow:hidden;line-height:1}*/
 .anchor .fullname{font-weight:bold}
 .anchor .metadata{font-size:12px;color:#999}
 .anchor .avatar.icon{font-size:48px}
@@ -689,6 +688,7 @@ sup.tooltip:hover{cursor:pointer}
 .uiSearchMenu .calltoaction a{border-top:1px solid #e1e1e1;border-bottom:none;margin-bottom:-4px}
 .uiSearchMenu .selected a{background-color:#2a2a2a;border-color:#1a1a1a;color:#fff}
 .uiSearchMenu .selected .text,.uiSearchMenu .selected .subtext,.uiSearchMenu .selected .category,.uiSearchMenu .selected .seeMore,.uiSearchMenu .selected .seeMore strong{color:#fff}
+
 /**/
 /* calendar Small*/
 /**/
@@ -700,7 +700,7 @@ sup.tooltip:hover{cursor:pointer}
 .calendarGridTableSmall .calendarGridTable .title td{font-size:20px}
 .calendarGridTableSmall .calendarGridTable .title .prevnext{opacity:0}
 .calendarGridTableSmall .calendarGridTable:hover .title .prevnext{opacity:1}
-.calendarGridTableSmall .calendarGridTable .title td.title{color:#333;cursor:default;background-color:transparent}
+.calendarGridTableSmall .calendarGridTable .title td.title{color:#333;cursor:default;background-color:transparent;text-align:left}
 .calendarGridTableSmall .calendarGridTable td.selected{background-color:#e0dfe0}
 .calendarGridTableSmall .calendarGridTable td.today{background-color:#b9484a!important;color:#fff}
 .calendarGridTableSmall .calendarGridTable td.have{font-weight:bold}
