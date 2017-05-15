@@ -18,6 +18,14 @@ class Customers extends Controller {
             $item = $this->model->query('customers')->get( $id, $options );
             if( empty($item) ) $this->error();
 
+            /* ประวัติการรับบริการ */
+            $services = $this->model->query('orders')->get_customer_item( $id );
+            $this->view->setData('services', $services);
+
+            /* ประวัติการจอง */
+            $booking = $this->model->query('orders')->get_customer_item( $id, array('status'=>'booking') );
+            $this->view->setData('booking', $booking);
+
             $this->view->setData('id', $id );
             $this->view->setData('item', $item );
             $this->view->setData('tab', $section); 

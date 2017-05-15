@@ -30,7 +30,9 @@
 						<div class="ui-card_headerDesc"><?=$this->date_str?></div>
 					</div>
 					<div class="ui-card_content">
-				    	<div class="ui-card_number"><?=number_format($this->total_finish['total_net_price'] + $this->total_finish['total_pro_price'])?> ฿</div>
+						<?php $sum_price = !empty($this->revenue['sum_price']) ? $this->revenue['sum_price']:0;?>
+						<?php $sum_discount = !empty($this->revenue['sum_discount']) ? $this->revenue['sum_discount']:0;?>
+				    	<div class="ui-card_number"><?=number_format($sum_price-$sum_discount)?> ฿</div>
 					</div>
 				</div>
 
@@ -41,7 +43,9 @@
 						<div class="ui-card_headerDesc"><?=$this->date_str?></div>
 					</div>
 					<div class="ui-card_content">
-				    	<div class="ui-card_number"><?=number_format($this->total_finish['total_net_price'] + $this->total_finish['total_pro_price'])?> ฿</div>
+						<?php $sum_price = !empty($this->revenue['sum_price']) ? $this->revenue['sum_price']:0;?>
+						<?php $sum_discount = !empty($this->revenue['sum_discount']) ? $this->revenue['sum_discount']:0;?>
+				    	<div class="ui-card_number"><?=number_format($sum_price-$sum_discount)?> ฿</div>
 					</div>
 				</div>
 
@@ -52,7 +56,7 @@
 						<div class="ui-card_headerDesc"><?=$this->date_str?></div>
 					</div>
 					<div class="ui-card_content">
-				    	<div class="ui-card_number"><?=number_format($this->total_finish['total_net_price'] + $this->total_finish['total_pro_price'])?> ฿</div>
+				    	<div class="ui-card_number"><?=number_format($this->booking['total'])?> ฿</div>
 					</div>
 				</div>
 				
@@ -63,7 +67,7 @@
 						<div class="ui-card_headerDesc"><?=$this->date_str?></div>
 					</div>
 					<div class="ui-card_content">
-				    	<div class="ui-card_number"><?=number_format($this->total_finish['total_net_price'] + $this->total_finish['total_pro_price'])?> ฿</div>
+				    	<div class="ui-card_number"><?=number_format($this->service['total_customer'])?> ฿</div>
 					</div>
 				</div>
 				

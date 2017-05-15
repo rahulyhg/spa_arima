@@ -4,8 +4,8 @@ class Notes_Model extends Model {
 		parent::__construct();
 	}
 
-    private $_objType = "notes";
-    private $_table = "notes c INNER JOIN employees u ON c.note_emp_id=u.emp_id";
+    private $_objType = "system_notes";
+    private $_table = "system_notes c INNER JOIN employees u ON c.note_emp_id=u.emp_id";
     private $_field = "note_emp_id as emp_id, 
                        note_id as id, 
                        note_text as text, 
@@ -74,7 +74,7 @@ class Notes_Model extends Model {
 
     public function save_note(&$data)
     {
-        $this->db->insert( 'notes', $data );
+        $this->db->insert( $this->_objType, $data );
         $data['note_id'] = $this->db->lastInsertId();
 
         $data = $this->cut('note_', $data);
@@ -124,13 +124,13 @@ class Notes_Model extends Model {
 
     public function updateNote($id, $data)
     {
-        $this->db->update('notes', $data, "`note_id`={$id}" );
+        $this->db->update($this->_objType, $data, "`note_id`={$id}" );
     }
     public function deleteNote($id)
     {
-        $this->db->delete('notes', "`note_id`={$id}" );
+        $this->db->delete($this->_objType, "`note_id`={$id}" );
     }
     public function deleteNoteObj( $obj_id , $obj_type ){
-        $this->db->delete('notes', "`note_obj_id`={$obj_id} AND `note_obj_type`='{$obj_type}'", $this->db->count('notes', "`note_obj_id`=:obj_id AND `note_obj_type`=':obj_type'" , array(':obj_id'=>$obj_id , ':obj_type'=>$obj_type) ) );
+        $this->db->delete($this->_objType, "`note_obj_id`={$obj_id} AND `note_obj_type`='{$obj_type}'", $this->db->count('notes', "`note_obj_id`=:obj_id AND `note_obj_type`=':obj_type'" , array(':obj_id'=>$obj_id , ':obj_type'=>$obj_type) ) );
     }
 }

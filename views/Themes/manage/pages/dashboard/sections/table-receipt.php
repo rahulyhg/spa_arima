@@ -20,13 +20,21 @@
 	    		</thead>
 
 	    		<tbody>
-	    		<?php foreach ($this->package['lists'] as $key => $value) { ?>
+	    		<?php 
+
+	    		$total_price = 0;
+	    		$total_customer = 0;
+	    		$total_qty = 0;
+	    		$total_discount = 0;
+	    		$total_all = 0;
+
+	    		foreach ($this->package['lists'] as $key => $value) { ?>
 	    			<tr>
 	    				<td class="name"><?=$value['name']?></td>
-	    				<td class="unit"><?=(!empty($value['total_customer']) ? $value['total_customer'] : 0)?></td>
-	    				<td class="qty"><?=(!empty($value['total_qty']) ? $value['total_qty'] : 0)?></td>
-	    				<td class="qty"><?=$value['price']?></td>
-	    				<td class="price"><?=(!empty($value['total_discount']) ? $value['total_discount'] : 0)?></td>
+	    				<td class="unit"><?=$customer = !empty($value['total_customer']) ? $value['total_customer'] : 0?></td>
+	    				<td class="qty"><?=$qty = !empty($value['total_qty']) ? $value['total_qty'] : 0?></td>
+	    				<td class="qty"><?=$price = round($value['price'])?></td>
+	    				<td class="price"><?=$discount = !empty($value['total_discount']) ? round($value['total_discount']) : 0?></td>
 	    				<td class="total">
 	    					<?php
 	    					$total = 0; 
@@ -36,11 +44,27 @@
 	    					}
 
 	    					echo number_format($total);
+
+	    					$total_customer = $total_customer + $customer;
+	    					$total_qty = $total_qty + $qty;
+	    					$total_price = $total_price + $price;
+	    					$total_discount = $total_discount + $discount;
+	    					$total_all = $total_all + $total;
 	    					?>
 	    				</td>
 	    			</tr>
 	    		<?php } ?>
 	    		</tbody>
+	    		<tfoot>
+	    			<tr>
+	    				<th class="name"></th>
+	    				<th class="unit"><?=number_format($total_customer)?></th>
+	    				<th class="qty"><?=number_format($total_qty)?></th>
+	    				<th class="qty"><?=number_format($total_price)?></th>
+	    				<th class="price"><?=number_format($total_discount)?></th>
+	    				<th class="total"><?=number_format($total_all)?></th>
+	    			</tr>
+	    		</tfoot>
 	    							    		
 	    	</tbody></table>
 	    	</div>

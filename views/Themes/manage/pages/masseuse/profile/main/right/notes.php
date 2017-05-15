@@ -1,7 +1,7 @@
 <?php
 
 
-$options = array('load'=> URL .'notes/notes?obj_id='.$this->item['id'].'&obj_type=customers',
+$options = array('load'=> URL .'notes/notes?obj_id='.$this->item['id'].'&obj_type=employee',
 		'settings' => array(
 			'axisX' => 'right'
 		)
@@ -38,7 +38,7 @@ if( $this->has_edit ){
 		<form class="post post-form" method="post" action="<?=URL?>notes/save_note">
 			<div class="post-form--loader"></div>
 			<input type="hidden" name="obj_id" value="<?=$this->obj_id?>" />
-			<input type="hidden" name="obj_type" value="<?=$this->obj_type?>" />
+			<input type="hidden" name="obj_type" value="employee" />
 			<div class="post-form--content post-form--input">
 				
 				<div class="title-field"></div>
