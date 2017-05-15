@@ -9,7 +9,7 @@ class Dashboard extends Controller {
 	public function index(  ){
 
 		if( empty($this->permit['dashboard']['view']) ){
-			if( $this->me['dep_is_cashier'] == 1 ){
+			if( $this->permit['pos']['view'] == 1 ){
 				header('location:'.URL.'pos');
 			}
 			else{
