@@ -74,7 +74,7 @@ class Pos extends Controller{
         // $this->view->setData('lists', $this->model->query('masseuse')->lists() );
 
         $this->view->setData('date', $date );
-        $this->view->setData('lists', $this->model->query('masseuse')->listJob( array('date'=>$date) ) );
+        $this->view->setData('lists', $this->model->query('masseuse')->listJob( array('date'=>$date, 'unlimit'=>1 ) ) );
         $this->view->setPage('on', 'queue');
         $this->view->render("queue/display");
     }   

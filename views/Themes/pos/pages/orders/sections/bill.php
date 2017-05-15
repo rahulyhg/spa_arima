@@ -157,15 +157,15 @@
 					<span class="t">Discount</span>
 				</li> -->
 
-				<li class="button">
+				<!-- <li class="button">
 					<span class="gbtn radius"><a class="btn" data-bill-set="masseuse"><i class="icon-user-circle-o"></i></a></span>
 					<span class="t"><?=$this->lang->translate('Masseuse')?></span>
-				</li>
+				</li> -->
 
-				<li class="button">
+				<!-- <li class="button">
 					<span class="gbtn radius"><a class="btn" data-bill-set="room"><i class="icon-bed"></i></a></span>
 					<span class="t"><?=$this->lang->translate('Room')?>/<?=$this->lang->translate('Bed')?></span>
-				</li>
+				</li> -->
 
 			</ul>
 		</nav>

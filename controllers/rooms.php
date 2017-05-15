@@ -158,12 +158,13 @@ class Rooms extends Controller {
 		}
 	}
 
-
+	/* floor */
 	public function floors() {
-		
 		echo json_encode($this->model->floors());
 	}
-
+	public function get_floor($value='') {
+		# code...
+	}
 	public function set_floor(){
 
 		$data = array(
@@ -175,7 +176,7 @@ class Rooms extends Controller {
 		echo json_encode($data);
 	}
 
-
+	/* room */
 	public function lists(){
 
 		echo json_encode($this->model->lists());
@@ -191,6 +192,10 @@ class Rooms extends Controller {
 		echo json_encode($data);
 	}
 
+	/* bed */
+	public function beds() {
+		echo json_encode($this->model->beds());
+	}
 	public function set_bed(){
 		
 		$data = array(
@@ -201,7 +206,5 @@ class Rooms extends Controller {
 		$this->model->insertBed( $data );
 		echo json_encode($data);
 	}
-	public function beds() {
-		echo json_encode($this->model->beds());
-	}
+
 }

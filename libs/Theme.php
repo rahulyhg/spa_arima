@@ -54,8 +54,10 @@ class Theme extends View{
         // has Left Menu
         if( !empty($this->options['has_menu']) ){
             $hasPushedLeft = 1;
-            if( !empty($this->elem('body')->attr('class')) ){
-                if( in_array('is-overlay-left', explode(' ', $this->elem('body')->attr('class'))) ) {
+            $cls = $this->elem('body')->attr('class');
+            
+            if( !empty($cls) ){
+                if( in_array('is-overlay-left', explode(' ', $cls)) ) {
                     $hasPushedLeft = 0;
                 }
             }

@@ -331,4 +331,18 @@ class System_Model extends Model{
         return $a;
     }
 
+
+    public function working_time( $date ){
+
+        if( empty($date) ) $date = date('c');
+
+        $start = date('Y-m-d 05:00:00', strtotime($date));
+
+        $end = new DateTime( $start );
+        $end->modify('+1 day');
+        $end = $end->format('Y-m-d 04:00:00');
+
+        return array($start, $end);
+    }
+
 }

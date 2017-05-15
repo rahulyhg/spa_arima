@@ -43,7 +43,7 @@
 
 	</div>
 
-
+	
 	<div style="width: 200px; height: 80%;border:2px solid #000;border-top:none;  top: 0;position: absolute;left: 55%">
 		
 		<div style="height: 50%;border-bottom: 2px solid #000;top: 0;position: absolute;left: 0;right: 0">

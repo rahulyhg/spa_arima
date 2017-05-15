@@ -62,14 +62,36 @@ class Orders extends Controller {
         echo json_encode( $_POST );
     }
 
-
-
     public function set_bill() {
 
         $type = $_GET['type'];
+        $date = isset($_GET['date']) ? $_GET['date']: date('Y-m-d');
 
-        $this->view->setPage('path','Forms/orders/');
+        if( $type=='masseuse' ){
+
+            // $data = $this->model->query('masseuse')->listJob( array('limit'=>1) );
+
+            $this->view->setData('position', $this->model->query('employees')->position(5) );
+        }
+
+        if( $type=='member' ){
+            $this->view->setData('level', $this->model->query('customers')->level() );
+        }
+
+        if( $type=='room' ){
+            $this->view->setData('floors', $this->model->query('rooms')->floors() );
+        }
+
+        if( $type=='remove_item' ){
+
+            $this->view->setData('package', $this->model->query('package')->get( $_GET['package'] ) );
+        }
+
+
+        $this->view->setData('date', $date);
+        $this->view->setPage('path','Forms/orders');
         $this->view->render("set_bill_{$type}");
 
     }
+
 }

@@ -1,4 +1,4 @@
-    <div id="mainContainer" class="clearfix listpage2-container" data-plugins="main">
+<div id="mainContainer" class="clearfix listpage2-container" data-plugins="main">
 
 	<div role="content">
 		<div role="main">

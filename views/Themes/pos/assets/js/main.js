@@ -21,6 +21,7 @@ if ( typeof Object.create !== 'function' ) {
 			self.setElem();
 
 			// set data 
+			self._queueMenu = [];
 			self.currOrder = self.setOrderDefault();
 
 			self.Events();
@@ -50,9 +51,11 @@ if ( typeof Object.create !== 'function' ) {
 				self.active( $(this).attr('data-global-action') );
 			});
 
-
+			// lists
 			self.$elem.find('[data-global=lists]').find('.js-datepicker').datepicker({
 					onChange: function () {
+
+						console.log( this );
 						self.data.date = new Date( this.selectedDate );
 					}
 				});
@@ -98,6 +101,8 @@ if ( typeof Object.create !== 'function' ) {
 				}
 			});
 
+
+			/* Detail */
 			self.$elem.find('[data-global=detail]').find('.js-add-time').click(function () {
 				
 				self.chooseMenu( 'package', self.currMenu.id, function () {
@@ -107,9 +112,76 @@ if ( typeof Object.create !== 'function' ) {
 					self.$elem.find('[data-global=bill]').find('[role=orderlists] > tr[data-id='+ self.currMenu.id +']').addClass('active');
 				} );
 			});
-
-			self.$elem.find('[data-global=detail]').delegate('.js-remove-time', 'click', function () {
+			/*self.$elem.find('[data-global=detail]').delegate('.js-remove-time', 'click', function () {
 				console.log( 1 );
+			});*/
+			self.$elem.find('[data-global=detail]').delegate('[data-control]', 'click', function () {
+
+				var box = $(this).closest('tr');
+				var index = box.index();
+				var fdata = box.data();
+
+				var type = $(this).data('type');
+
+				var data = {
+		    		type: type,
+		    		date: PHP.dateJStoPHP( self.currOrder.theDate ) 
+		    	}
+
+		    	if( type=='remove_item' ){
+
+		    		data.package = self.currOrder.items[fdata.parent_KEY].id;
+		    		data.id = fdata.id;
+
+		    		self.removeItemDetail( index, fdata );
+		    		return false;
+		    	}
+
+				Dialog.load( Event.URL + 'orders/set_bill', data, {
+		    		onSubmit: function ( $el ) {
+		    			
+		    			var $form = $el.$pop.find('form');
+		    			if( type=='masseuse' ){
+		    				var id = $form.find('[ref=tokenbox]>[data-id]').data('id');
+
+		    				if(id){
+		    					$.get( Event.URL + 'masseuse/get/'+id, function( res ) {
+	    							
+		    						fdata.masseuse = res;
+	    							self.currOrder.items[fdata.parent_KEY].detail[index]=fdata;
+
+	    							self.refreshItemDetail( index, fdata );
+			    					Dialog.close();
+			    				}, 'json');
+		    				}
+		    			}
+
+		    			if( type=='room' ){
+
+		    				fdata.floor = {
+		    					id: $form.find(':input[data-name=floor]').val(),
+		    					name: $form.find(':input[data-name=floor]').data('label')
+		    				}
+
+		    				fdata.room = {
+		    					id: $form.find(':input[data-name=room]').val(),
+		    					name: $form.find(':input[data-name=room]').data('label')
+		    				}
+
+		    				fdata.bed = {
+		    					id: $form.find(':input[data-name=bed]').val(),
+		    					name: $form.find(':input[data-name=bed]').data('label')
+		    				}
+
+
+		    				self.currOrder.items[fdata.parent_KEY].detail[index]=fdata;
+
+		    				self.refreshItemDetail( index, fdata );
+			    			Dialog.close();
+
+		    			}
+		    		}
+		    	});
 			});
 
 
@@ -125,24 +197,35 @@ if ( typeof Object.create !== 'function' ) {
 		    	var type = $(this).attr('data-bill-set');
 
 		    	var data = {
-		    		type: type
+		    		type: type,
+		    		date: PHP.dateJStoPHP( self.currOrder.theDate ) 
 		    	}
 
 		    	if(  type=='drink' ){
 		    		data.drink = self.currOrder.summary.drink;
 		    	}
-		    	
+
 		    	Dialog.load( Event.URL + 'orders/set_bill', data, {
 		    		onSubmit: function ( $el ) {
-		    			
-		    			console.log( $el );
+		    			var err = false;
 
 		    			if(  type=='drink' ){
-		    				self.currOrder.summary.drink = $.trim($el.$pop.find('#drink').val());
+		    				self.currOrder.summary.drink = parseInt( $.trim($el.$pop.find('#drink').val()) );
 			    			self.summaryPrice();
 			    			self.summaryDisplay();
 		    			}
 		    			
+		    			if( type=='member' ){
+
+		    				var id = $el.$pop.find('form').find('[ref=tokenbox]>[data-id]').data('id');
+
+		    				// $.get( 'get/' );
+		    			}
+
+		    			if( err ){
+
+		    				return false;
+		    			}
 		    			console.log( 'Submit' );
 
 		    			Dialog.close();
@@ -154,9 +237,13 @@ if ( typeof Object.create !== 'function' ) {
 		saveBill: function () {
 			var self = this;
 
+			var dataPost = {
+				
+			};
+			console.log( self.currOrder );
 			$.post( Event.URL + 'orders/save', self.currOrder, function (res) {
 				
-				console.log( res );
+				// console.log( res );
 			}, 'json');	
 		},
 
@@ -187,21 +274,46 @@ if ( typeof Object.create !== 'function' ) {
 				if( type=='promotion' ){
 
 					$.each( res, function (i, obj) {
-						self.loadMenu( obj );
+
+
+						obj.active = false;
+						self._queueMenu.push( obj );
+						// 
 					} );
+
+					self.queueMenu();
 				}
 
 			}, 'json');
 		},
+		queueMenu: function () {
+			var self = this;
 
-		loadMenu: function ( data ) {
+			var has = true;
+			for (var i = 0; i < self._queueMenu.length; i++) {
+				
+				var obj = self._queueMenu[i];
+				if( obj.active==false && has ){
+					self._queueMenu[i].active = true;
+
+					self.loadMenu( obj, function () {
+						
+						self.queueMenu();
+					} );
+
+					has = false;
+				}				
+			}
+		},
+		loadMenu: function ( data, callback ) {
 			var self = this;
 
 			var KEY = data.id;
+			data.has_masseuse = parseInt(data.has_masseuse);
 
 			if( !self.currOrder.items[ KEY ] ){
 
-				var data = {
+				var fdata = {
 					KEY: KEY,
 					id: data.id,
 					name: data.name,
@@ -219,21 +331,36 @@ if ( typeof Object.create !== 'function' ) {
 					start_date: new Date(),
 				};
 
-				self.currOrder.items[ KEY ] = data;
+				self.currOrder.items[ KEY ] = fdata;
 
-				self.newItemBill(data);
+				self.newItemBill(fdata);
+			}
+			else{
+
+				if( self.currOrder.items[ KEY ].detail[0].masseuse ){
+					data.masseuse = self.currOrder.items[ KEY ].detail[0].masseuse;
+				}
+
+				if( self.currOrder.items[ KEY ].detail[0].floor ){
+					data.floor = self.currOrder.items[ KEY ].detail[0].floor;
+				}
+				
+				if( self.currOrder.items[ KEY ].detail[0].room ){
+					data.room = self.currOrder.items[ KEY ].detail[0].room;
+				}
+
+				if( self.currOrder.items[ KEY ].detail[0].bed ){
+					data.bed = self.currOrder.items[ KEY ].detail[0].bed;
+				}
 			}
 
 			self.currOrder.items[ KEY ].qty++;
-			self.currOrder.items[ KEY ].detail.push({
-				masseuse_id: '',
-				masseuse_name: '',
-				
-				room_id: '',
-				room_name: '',
 
-				bed_id: '',
-				bed_name: '',
+			var length = self.currOrder.items[ KEY ].detail.length;
+			var Detail = {
+				parent_KEY: KEY,
+				has_masseuse: data.has_masseuse,
+				
 				unit: data.unit,
 
 				price: parseInt( data.price ),
@@ -242,7 +369,36 @@ if ( typeof Object.create !== 'function' ) {
 				status: 'order',
 
 				start_date: new Date(),
-			} );
+			};
+
+			if( data.has_masseuse==1 && data.masseuse ){
+				Detail.masseuse = data.masseuse;
+			}
+
+			self.currOrder.items[ KEY ].detail.push( Detail );
+
+			// check masseuse
+			if( data.has_masseuse==1 && !data.masseuse ){
+
+				self.setMasseuse( {
+					fail: function () {
+
+						if( typeof callback === 'function' ){
+							callback();
+						}
+					},
+					done: function ( data ) {
+
+						self.currOrder.items[ KEY ].detail[length].masseuse = data;
+						if( typeof callback === 'function' ){
+							callback();
+						}
+					}
+				} );
+			}
+			else if( typeof callback === 'function' ){
+				callback();
+			}
 
 			self.updateItemBill( self.currOrder.items[ KEY ] );
 
@@ -250,7 +406,6 @@ if ( typeof Object.create !== 'function' ) {
 			// console.log( self.currOrder );
 			self.checkPromotion();
 			self.resizeBill();
-
 
 			self.summaryPrice(); 
 			self.summaryDisplay();
@@ -270,31 +425,26 @@ if ( typeof Object.create !== 'function' ) {
 				// }
 			}
 
-			if( qty>=2 ){
+			
+			for (var obj in self.currOrder.items) {
 
-				for (var obj in self.currOrder.items) {
+				var data = self.currOrder.items[obj];
+				var deduct = 0;
 
-					var data = self.currOrder.items[obj];
-					if( data.price==350 ){
-
-						var deduct = 50;
-
-						self.currOrder.items[obj].discount = data.qty*deduct;
-
-						$.each( self.currOrder.items[obj].detail, function (i) {
-							self.currOrder.items[obj].detail[i].discount = deduct;
-						} );
-
-						self.updateItemBill( data );
-					}
-					
+				// 1. ราคาสินราคา 350 ลด 50 หากซื้อมากว่า 1 รายการ 
+				if( data.price==350 && qty>1 ){
+					deduct = 50;
 				}
+
+				self.currOrder.items[obj].discount = data.qty*deduct;
+
+				$.each( self.currOrder.items[obj].detail, function (i) {
+					self.currOrder.items[obj].detail[i].discount = deduct;
+				} );
+
+				self.updateItemBill( data );
 			}
 
-			/*$.map(self.currOrder.items, function (key, obj) {
-
-				console.log( key, obj );
-			} );*/
 		},
 		newItemBill: function(data) {
 			var self = this;
@@ -370,8 +520,25 @@ if ( typeof Object.create !== 'function' ) {
 
 			$box.replaceWith( $item );
 
-
 			self.$elem.find('[data-global=menu]').find('[data-memu=package]').find('[data-id='+ data.id + ']').addClass('active').find('.countVal').text( data.qty );
+		},
+		removeItemBill: function ( key ) {
+			var self = this;
+
+			var $box = self.$elem.find('[data-global=bill]').find('[role=orderlists]');
+
+			var data = self.currOrder.items[ key ];
+
+			delete self.currOrder.items[ key ];
+			self.active( 'menu' );
+
+			$box.find('[data-id='+data.id+']').remove();
+
+			var $memu = self.$elem.find('[data-global=menu] [data-memu=package]'); 
+			var $item = $memu.find('[data-id='+data.id+']');
+			var countVal = parseInt($item.find('.countVal').text())-1;
+
+			$item.toggleClass('active', countVal>0).find('.countVal').text( countVal );
 		},
 		resizeBill: function () {
 			var self = this;
@@ -399,8 +566,6 @@ if ( typeof Object.create !== 'function' ) {
 		setDetail: function (data) {
 			var self = this;
 
-			console.log( 'setDetail', data );
-
 			var $box = self.$elem.find('[data-global=detail]');
 			$box.find('[data-text=title]').text( data.name );
 
@@ -413,13 +578,26 @@ if ( typeof Object.create !== 'function' ) {
 
 				$listsbox.append( self.itemDetail( obj ) );
 			} );
-
 		},
 		itemDetail: function (data ) {
+			var self = this;
 
-			console.log( data );
+			var $masseuse = $('<td>', {class: 'masseuse'});
 
-			var $masseuse = '<td><div class="anchor clearfix"><div class="avatar lfloat mrm no-avatar"><div class="initials">1</div></div><div class="content"><div class="spacer"></div><div class="massages"><div class="fullname"></div><span class="subname fsm"></span></div></div></div></td>';
+			// 
+			$masseuse.append( $('<div>', {class: 'clearfix ui-controls'}).append(
+
+				  $('<span>', {class: 'gbtn control before'}).html( $('<a>', {class: 'btn btn-small add', 'data-control': 'add', 'data-type': 'masseuse'}).append( $('<i>', {class: 'icon-plus mrs'}), 'Masseuse' ) )
+				, $('<span>', {class: 'gbtn control after'}).html( $('<a>', {class: 'btn btn-small btn-no-padding', 'data-control': 'change', 'data-type': 'masseuse'}).html( $('<i>', {class: 'icon-refresh'}) ) )
+			) );
+
+			if( data.has_masseuse==0 ){
+				$masseuse.html('-');
+			}else if( data.masseuse ){
+				$masseuse.find('.ui-controls').addClass('has-data');
+
+				$masseuse.append( $('<div>', {class: 'inner'}).html( self.setAnchorMasseuse( data.masseuse ) ) );
+			}
 
 			var cost = data.price;
 			var total = cost - data.discount;
@@ -434,6 +612,26 @@ if ( typeof Object.create !== 'function' ) {
 
 			var $time = $('<td>', {class: 'time'});
 
+			var $room = $('<td>', {class: 'room'});
+
+			$room.append( $('<div>', {class: 'clearfix ui-controls'}).append(
+
+				  $('<span>', {class: 'gbtn control before'}).html( $('<a>', {class: 'btn btn-small add', 'data-control': 'add', 'data-type': 'room'}).append( $('<i>', {class: 'icon-plus mrs'}), 'Room' ) )
+				, $('<span>', {class: 'gbtn control after'}).html( $('<a>', {class: 'btn btn-small btn-no-padding', 'data-control': 'change', 'data-type': 'room'}).html( $('<i>', {class: 'icon-refresh'}) ) )
+			) );
+
+
+
+			if( data.room ){
+				$room.find('.ui-controls').addClass('has-data');
+
+
+				$room.append( $('<div>', {class: 'fsm inner'}).append(
+					  $('<div>', {class: ''}).text( 'Floor:'+ data.floor.name )
+					, $('<div>', {class: ''}).text( 'Room:'+ data.room.name )
+					, $('<div>', {class: ''}).text( 'Bed:'+ data.bed.name )
+				) );
+			}
 
 			$time.append( 1, $('<span>', {class: 'mls'}).text(data.unit) );
 
@@ -443,17 +641,98 @@ if ( typeof Object.create !== 'function' ) {
 				$('<td>', {class: 'no'}).html( data.no + '.' ),
 
 				$masseuse,
+				$room,
 
 				$time, //'<td class="time"><div>1 TIME</div><div>8:10 PM - 10:10 PM</div></td>',
 
 				$price, 
 
-				$('<td>', {class: 'actions'}).html( '<span class="gbtn"><a class="btn btn-no-padding js-remove-time"><i class="icon-remove"></i></a></span>' )
+				$('<td>', {class: 'actions'}).html( '<span class="gbtn"><a class="btn btn-no-padding js-remove-time" data-control="click" data-type="remove_item"><i class="icon-remove"></i></a></span>' )
 			);
 
 			$tr.data( data );
 
 			return $tr;
+		},
+		refreshItemDetail: function (index, data) {
+			var self = this;
+
+			var $box = self.$elem.find('[data-global=detail]');
+			var $listsbox = $box.find('[role=listsbox]');
+
+			$listsbox.find('tr').eq( index ).replaceWith( self.itemDetail( data ) );
+		},
+
+		removeItemDetail: function (index, data) {
+			var self = this;
+
+			var $box = self.$elem.find('[data-global=detail]');
+			var $listsbox = $box.find('[role=listsbox]');
+
+			$listsbox.find('tr').eq( index ).remove();
+
+			var detail = [];
+			$.each( self.currOrder.items[data.parent_KEY].detail, function (i, obj) {
+
+				if( i!=index ){
+					detail.push( obj );
+				}
+			} );
+
+			self.currOrder.items[data.parent_KEY].detail = detail;
+			if( self.currOrder.items[data.parent_KEY].detail.length==0 ){
+
+				self.removeItemBill( data.parent_KEY );
+			}
+			else{
+				self.currOrder.items[data.parent_KEY].qty -= 1;
+				// self.updateItemBill( self.currOrder.items[data.parent_KEY] );
+			}
+
+			// console.log( self.currOrder.items[data.parent_KEY] );
+
+			self.checkPromotion();
+			self.resizeBill();
+
+			self.summaryPrice(); 
+			self.summaryDisplay();
+
+			if( detail.length > 0 ){
+				$.each( self.currOrder.items[data.parent_KEY].detail, function (i, obj) {
+					self.refreshItemDetail( i, obj );
+				});
+			}
+		},
+
+		setAnchorMasseuse: function (data) {
+			
+			var $anchor = $('<div>', {class: 'anchor clearfix'});
+
+			var $avatar = $('<div>', {class: 'avatar lfloat mrm'});
+
+			if( data.image_url ){
+				$avatar.html( $('<img>', {src: data.image_url}) );
+			}else if( data.icon ){
+				$avatar.addClass('no-avatar').html( $('<div>', {class: 'initials'}).html( $('<i>').addClass('icon-'+data.icon  ) ) );
+			}else if( data.icon_text ){
+				$avatar.addClass('no-avatar').html( $('<div>', {class: 'initials', text: data.icon_text}) );
+			}
+
+			$anchor.append(
+				  $avatar
+				, $('<div>', {class: 'content'}).append(
+					  $('<div>', {class: 'spacer'})
+					, $('<div>', {class: 'massages'}).append(
+						  $('<div>', {class: 'text'}).html( data.text )
+						, $('<div>', {class: 'category fsm fcg'}).html( data.category )
+					)
+				)
+			);
+
+			return $anchor;
+			// '<div class="anchor clearfix"><div class="avatar lfloat mrm no-avatar">
+
+			// <div class="initials">1</div></div><div class="content"><div class="spacer"></div><div class="massages"><div class="fullname"></div><span class="subname fsm"></span></div></div></div>'
 		},
 
 		summaryPrice: function () {
@@ -485,13 +764,38 @@ if ( typeof Object.create !== 'function' ) {
 			} );			
 		},
 
+
+		setMasseuse: function ( on ) {
+			var self = this;
+
+			var id = '';
+
+	    	Dialog.load( Event.URL + 'orders/set_bill', {
+	    		type: 'masseuse',
+	    		date: PHP.dateJStoPHP( self.currOrder.theDate ) 
+	    	}, {
+	    		onClose: on.fail,
+	    		onSubmit: function ( $el ) {
+
+	    			var id = $el.$pop.find('form').find('[ref=tokenbox]>[data-id]').data('id');
+
+					if( id ){ 			
+	    				$.get( Event.URL + 'masseuse/get/'+id, function( res ) {
+	    					
+	    					on.done( res );
+	    					Dialog.close();
+	    				}, 'json');
+	    			}
+	    		}
+	    	} );
+		},
+
 		lists: {
 			init: function (options, elem, then, callback ) {
 				var self = this;
 
 				self.$elem = $elem;
 				self.then = then;
-
 
 				self.options = options;
 
@@ -677,21 +981,23 @@ if ( typeof Object.create !== 'function' ) {
 				self.then.currOrder = self.then.setOrderDefault();
 				self.options = options;
 
+				console.log(  );
+
 				// set Elem 
 				self.$elem = $elem;
-				
-				
 
 				// get Data
-				var $date = $('<input>', {type: 'date'});
+				var $date = $('<input>', {type: 'date'}).val( PHP.dateJStoPHP(self.then.currOrder.theDate) );
 
 				// Datelang.fulldate( self.then.currOrder.theDate, 'normal', self.options.lang )
 				self.$elem.find('[data-bill=date]').html( $date );
 
 				$date.datepicker({
 					lang: self.options.lang,
-					onChange: function () {
+					onChange: function ( e ) {
 						
+						self.then.currOrder.theDate = new Date( e.date.selected );
+
 						self.getNumber();
 					}
 				});
@@ -929,6 +1235,80 @@ if ( typeof Object.create !== 'function' ) {
 	};
 	$.fn.jopQueue.options = {
 		lang: 'en'
+	};
+
+
+	/**/
+	/* chooseRooms */
+	/**/
+	var ChooseRooms = {
+		init: function (options, elem) {
+			var self = this;
+
+			self.$elem = $(elem);
+
+			self.$floor = self.$elem.find(':input[data-name=floor]');
+			self.$room = self.$elem.find(':input[data-name=room]');
+			self.$bed = self.$elem.find(':input[data-name=bed]');
+
+			self.changeFloor( self.$floor.val() );
+			self.$floor.change( function () {
+				self.changeFloor( $(this).val() );
+			} );
+			
+			self.$room.change( function () {
+				self.changeRoom( $(this).val() );
+			} );
+
+			self.$bed.change( function () {
+				self.changeBed( $(this).val() );
+			} );
+			
+		},
+
+		changeFloor: function (val) {
+			var self = this;
+
+			self.$floor.attr('data-label', self.$floor.find(':checked').text() );
+
+			$.get( Event.URL + 'rooms/lists', {floor: val}, function (res) {
+
+				self.$room.empty(); 
+				$.each( res, function (i, obj) {
+					self.$room.append( $('<option>', {value: obj.id, text: obj.name}) );
+				} );
+
+				self.changeRoom( self.$room.val() );
+			}, 'json');
+		},
+
+		changeRoom: function (val) {
+			var self = this;
+
+			self.$room.attr('data-label', self.$room.find(':checked').text() );
+			$.get( Event.URL + 'rooms/beds', {room: val}, function (res) {
+				
+
+				self.$bed.empty(); 
+				$.each( res, function (i, obj) {
+					self.$bed.append( $('<option>', {value: obj.id, text: obj.name}) );
+				} );
+
+				self.changeBed( self.$bed.val() );
+			}, 'json');
+		},
+		changeBed: function () {
+			var self = this;
+
+			self.$bed.attr('data-label', self.$bed.find(':checked').text() );
+		}
+	}	
+	$.fn.chooseRooms = function( options ) {
+		return this.each(function() {
+			var $this = Object.create( ChooseRooms );
+			$this.init( options,this );
+			$.data( this, 'chooseRooms', $this );
+		});
 	};
 	
 

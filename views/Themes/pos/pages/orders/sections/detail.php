@@ -36,6 +36,7 @@
 						<!-- <th>Room/Bed</th> -->
 						<th class="no">#</th>
 						<th class="masseuse"><?=$this->lang->translate('Masseuse')?></th>
+						<th class="room"><?=$this->lang->translate('Room')?>/<?=$this->lang->translate('Bed')?></th>
 						<th class="time"><?=$this->lang->translate('Time')?></th>
 						<th class="price"><?=$this->lang->translate('Price')?></th>
 						<th class="actions"></th>

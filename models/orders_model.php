@@ -107,8 +107,15 @@ class Orders_Model extends Model {
 
 	public function lastNumber() {
 
-		$sth = $this->db->prepare("SELECT order_number FROM {$this->_table} ORDER BY order_number DESC LIMIT 1");
-		$sth->execute();
+
+		$date = isset($_REQUEST['date']) ? $_REQUEST['date']: date('c');
+		$date = $this->query('system')->working_time( $date );
+
+		$sth = $this->db->prepare("SELECT order_number FROM {$this->_table} WHERE (`order_date` BETWEEN :s AND :e) ORDER BY order_number DESC LIMIT 1");
+		$sth->execute( array(
+			':s' => $date[0],
+			':e' => $date[1]
+		) );
 
 		if( $sth->rowCount()==1 ){
 			$fdata = $sth->fetch( PDO::FETCH_ASSOC );

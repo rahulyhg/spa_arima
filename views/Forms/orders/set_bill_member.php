@@ -1,12 +1,11 @@
 <?php
 
-
-$position = '';
-foreach ($this->position as $key => $value) {
-	$position .= '<option value="'.$value['id'].'">'.$value['name'].'</option>';
+$level = '';
+foreach ($this->level as $key => $value) {
+	$level .= '<option value="'.$value['id'].'">'.$value['name'].'</option>';
 }
 
-$form = new Form();
+	$form = new Form();
 	$form = $form->create()->elem('div')->addClass('form-insert');
 	$form 	->field("invite")
 			->text( //'<div class="">'.
@@ -19,13 +18,9 @@ $form = new Form();
 
 			'<header class="ui-invite-listsbox-header clearfix">'.
 				'<div class="lfloat ui-invite-actions">'.
-					'<select class="inputtext" act="selector" name="position">'.
-						// '<option>ทั้งหมด</option>'.
-						'<option value="queue">คิว '.$this->fn->q('time')->normal( $this->date ).'</option>'.
-						// '<option value="all">พนักงานทั้งหมด</option>'.
-						'<optgroup label="Position">'.
-							$position.
-						'</optgroup>'.
+					'<select class="inputtext" act="selector" name="level">'.
+						'<option value="">ทั้งหมด</option>'.
+						$level.
 					'</select>'.
 				'</div>'.
 				// '<div class="rfloat"><a class="js-selected-all">เลือกทั้งหมด</a></div>'.
@@ -51,7 +46,7 @@ $form = new Form();
 			</div>
 
 			<div class="ui-alert-empty">
-				<div class="ui-alert-empty-text">no result</div> 
+				<div class="ui-alert-empty-text">ไม่มีไฟล์ <a class="js-upload">เพิ่มไฟล์ใหม่</a></div> 
 			</div>'.
 		'</div>'.
 	'</div>'.	
@@ -73,21 +68,29 @@ $form = new Form();
 $formInvite = $form->html();
 
 $optionsInvite = array(
-	'url' => URL.'masseuse/invite?date='.$this->date,
+	'url' => URL.'customers/invite',
 );
 
+if( !empty( $this->item['invite'] ) ){
+	$optionsInvite['invite'] = $this->item['invite'];
+}
+
+$arr['hiddenInput'][] = array('name'=>'has_invite','value'=>1);
+
+
+$formDetail = '';
 # body
 $arr['body'] = '<div class="ui-invite-wrap" data-plugins="invite" data-options="'.$this->fn->stringify($optionsInvite).'">'.
+	// '<div class="td-plan-detail">'. $formDetail .'</div>'.
 	'<div class="ui-invite">'.$formInvite.'</div>'.
 '</div>';
-
-$arr['width'] = 550;
 
 # set form
 $arr['form'] = '<form></form>';
 
-$arr['title']= "Masseuse";
+$arr['width'] = 550;
 
+$arr['title']= "Members";
 
 $arr['button'] = '<button type="submit" role="submit" class="btn btn-primary btn-submit"><span class="btn-text">บันทึก</span></button>';
 $arr['bottom_msg'] = '<a class="btn" role="dialog-close"><span class="btn-text">ยกเลิก</span></a>';

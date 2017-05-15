@@ -9,7 +9,7 @@ class Masseuse extends Controller {
 	public function index($id='', $section='services'){
 		$this->view->setPage('on', 'masseuse' );
 
-        // $data = $this->model->db->select( "SELECT emp_id, emp_code FROM employees WHERE `emp_dep_id`=5 AND`emp_pos_id`=6" );
+        // $data = $this->model->db->select( "SELECT emp_id, emp_code, emp_code_order FROM employees WHERE `emp_dep_id`=5 AND`emp_pos_id`=3" );
         // 
 
         // $n = 0;
@@ -21,9 +21,11 @@ class Masseuse extends Controller {
 
             // $code = 'P'. sprintf("%03d",$n);
 
-            // $data[$key]['emp_code'] = ; //$value['emp_code']);
+            // $n = $value['emp_code']; //substr($value['emp_code'],1);
 
-            // $this->model->db->update( "employees", array('emp_code'=>'B'.round(substr($value['emp_code'],1)) ), "`emp_id`={$value['emp_id']}" );
+            // $data[$key]['emp_code_order'] = sprintf("%02d",$n);
+
+            // $this->model->db->update( "employees", array('emp_code_order'=>sprintf("%04d",$n) ), "`emp_id`={$value['emp_id']}" );
         // }
 
         // echo count($data); die;
@@ -64,6 +66,18 @@ class Masseuse extends Controller {
         }
 	}
 
+    public function get($id=null) {
+
+        $item = $this->model->get( $id, array('view_stype'=>'bucketed') );
+        if( empty($item) ) $this->error();
+        // print_r($item); die;
+
+
+        // $options[''] = $_REQUEST['view_stype'];
+
+        echo json_encode($item);
+    }
+
     public function set($id='', $name=''){
         
         $id = isset($_REQUEST['id']) ? $_REQUEST['id']: $id;
@@ -91,6 +105,33 @@ class Masseuse extends Controller {
         }
 
         echo json_encode($item);
+    }
+
+    public function invite() {
+        
+        $options = array('view_stype'=>'bucketed', 'limit' => 20);
+        if( isset($_REQUEST['position']) ){
+            if( $_REQUEST['position']=='queue' ){
+
+                $data = $this->model->listJob( $options );
+
+            }
+            else{
+
+                $data = $this->model->lists( $options );
+            }
+        }
+
+        
+        $results = array();
+        $results[] = array(
+            'object_type'=>'employees', 
+            'object_name'=>'Employee',
+            'data' => $data
+        );
+
+        echo json_encode($results); die;
+        print_r($results); die;
     }
 
 }

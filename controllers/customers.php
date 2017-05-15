@@ -75,6 +75,8 @@ class Customers extends Controller {
         $this->view->setData('prefixName', $this->model->query('system')->_prefixNameCustomer());
         $this->view->setData('sex', $this->model->lists_sex());
         $this->view->setData('city', $this->model->query('system')->city() );
+        $this->view->setData('level', $this->model->level() );
+
         $this->view->render("customers/forms/add_or_edit_dialog");
     }
 
@@ -90,6 +92,7 @@ class Customers extends Controller {
         $this->view->setData('prefixName', $this->model->query('system')->_prefixNameCustomer());
         $this->view->setData('sex', $this->model->lists_sex());
         $this->view->setData('city', $this->model->query('system')->city());
+        $this->view->setData('level', $this->model->level() );
 
         $this->view->render("customers/forms/add_or_edit_dialog");
     }
@@ -102,6 +105,8 @@ class Customers extends Controller {
 
         $this->view->setData('prefixName', $this->model->query('system')->_prefixNameCustomer());
         $this->view->setData('sex', $this->model->lists_sex());
+        $this->view->setData('level', $this->model->level() );
+        
         $this->view->setData('item', $item);
         $this->view->render('customers/forms/edit_basic');
     }
@@ -125,21 +130,11 @@ class Customers extends Controller {
             if( empty($item) ) $this->error();
         }
 
-        // $futureDate = date('Y-m-d',strtotime(date("Y-m-d", mktime()) . " -6 year")); // 2554 // 2011
-        // $birthday = date("{$_POST['birthday']['year']}-{$_POST['birthday']['month']}-{$_POST['birthday']['date']}");
-        // if( strtotime($birthday) > strtotime($futureDate) ){
-        //     $arr['error']['birthday'] = 'วันเกิดไม่ถูกต้อง';
-        // }
-
-        // foreach ($_POST['address'] as $key => $value) {
-        //     if( empty($value) && $key != 'village' && $key !='street' && $key != 'alley') {
-        //         $arr['error']['cus_address'] = 'กรุณากรอกข้อมูลในช่องที่มีเครื่องหมาย * ให้ครบถ้วน';
-        //     }
-        // }
 
         try {
             $form = new Form();
             $form   ->post('cus_prefix_name')
+                    ->post('cus_level_id')->val('is_empty')
                     ->post('cus_first_name')->val('is_empty')
                     ->post('cus_last_name')
                     ->post('cus_nickname')
@@ -659,5 +654,20 @@ class Customers extends Controller {
             $this->view->setPage('path', 'Themes/manage/forms/level');
             $this->view->render("del");
         }
+    }
+
+
+    public function invite() {
+        
+        $data = $this->model->lists( array('view_stype'=>'bucketed', 'limit' => 20) );
+
+        $results = array();
+        $results[] = array(
+            'object_type'=>'employees', 
+            'object_name'=>'Employee',
+            'data' => $data
+        );
+
+        echo json_encode($results); die;
     }
 }

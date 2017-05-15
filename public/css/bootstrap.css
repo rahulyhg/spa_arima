@@ -1741,7 +1741,7 @@ box-sizing:border-box}
 .slide-image .style-7 .caption>.container{display:table-cell;text-align:center;vertical-align:middle}
 .slide-image .style-7 .caption .text{display:block;margin-left:auto;margin-right:auto;max-width:860px}
 .slide-image .style-7 .caption .text:before,.slide-image .style-7 .caption .text:after{display:none}
- @media screen and (max-width:1070px) {
+@media screen and (max-width:1070px) {
 .slideshow img{width:auto;height:100%}
 .slideshow .slide-image .caption{position:relative;padding-left:0;text-align:center;top:50%;-ms-transform:translateY(-50%);-webkit-transform:translateY(-50%);transform:translateY(-50%)}
 .slide-image .caption .text{margin-left:auto;margin-right:auto}

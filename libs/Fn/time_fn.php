@@ -104,14 +104,19 @@ class Time_Fn extends _function {
         return $text;
     }
 
-    public function day($length,$style=false){
-        if($style===false)
-        $arr = array(0 => "อา.", "จ.", "อ.", "พ.", "พฤ.", "ศ.", "ส.");
+    public function day($length, $short=false, $lang='th'){
 
-        else
-        $arr = array(0 => "วันอาทิตย์", "วันจันทร์", "วันอังคาร", "วันพุธ", "วันพฤหัสษบดี", "วันศุกร์", "วันเสาร์");
-        
-        return $arr[$length];
+        $arr = $short
+            ? array(
+                'en' => array("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"),
+                'th' => array("วันอาทิตย์", "วันจันทร์", "วันอังคาร", "วันพุธ", "วันพฤหัสษบดี", "วันศุกร์", "วันเสาร์"),
+            )
+            : array(
+                'en' => array("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"),
+                'th' => array("อา.", "จ.", "อ.", "พ.", "พฤ.", "ศ.", "ส."),
+            );
+
+        return $arr[$lang][$length];
     }
 
     public function month($length, $short=false, $lang='th'){
@@ -149,8 +154,11 @@ class Time_Fn extends _function {
         return "$theDate $theMonth $theYear อายุ {$this->age($date)}";
     }
 
-    public function normal($timestamp) {
-        return date('j', $timestamp)." ". $this->month( date('n', $timestamp), true )." ". (date('Y', $timestamp)+543);
+    public function normal($date, $lang='th') {
+
+        $timestamp = strtotime($date);
+
+        return $this->day(date('w', $timestamp), true, $lang).', '. date('j', $timestamp)." ". $this->month( date('n', $timestamp), true, $lang )." ". (date('Y', $timestamp)+543);
     }
     public function str_event_date($start, $end, $full=false){
         $today = date('Y-m-d');

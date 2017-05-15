@@ -30,7 +30,7 @@ left: 0;right: 16px;background-color: rgba(245,248,250,.98);z-index: 100;"><div 
 <div class="tac">
 <ul class="ui-list ui-list-queue" ref="listsbox"><?php 
 
-	foreach ($this->lists as $key => $value) { 
+	foreach ($this->lists['lists'] as $key => $value) { 
 
 		$code = is_numeric($value['code'])
 			? round($value['code'])
