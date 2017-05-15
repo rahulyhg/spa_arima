@@ -128,13 +128,52 @@ class promotions_model extends Model {
 
 		$data = $this->cut($this->_cutNamefield, $data);
 
-		if( !empty($data['is_join']) ){
-
-			$data['invite'] = $this->listInvite( $data['id'] );
-		}
-
 		$data['status'] = $this->getStatus($data['status']);
 		$data['type'] = $this->getType($data['type']);
+
+		$data = $this->_convert($data);
+
+		if( !empty($data['is_join']) ){
+			$data['invite'] = $this->listInvite( $data['id'] );
+
+			// print_r($data['invite']); die;
+			$data['total_price'] = 0;
+			$data['total_discount'] = 0;
+
+			if( !empty($data['invite']['package']) ){
+
+				if( !empty($data['qty']) ){
+
+					if( count($data['invite']['package']) == 1 ){
+						$data['total_price'] = $data['invite']['package'][0]['price']*2;
+						$data['total_discount'] = $data['discount']*2;
+					}
+					else{
+						foreach ($data['invite']['package'] as $key => $value) {
+							$data['total_price'] += $value['price'];
+							$data['total_discount']+=$data['discount'];
+
+							if( $key==$data['qty'] ) break;
+						}
+					}
+
+				}
+				else{
+					foreach ($data['invite']['package'] as $key => $value) {
+						$data['total_price'] += $value['price'];
+						$data['total_discount']+=$data['discount'];
+					}
+				}
+			}
+
+
+			$data['total_balance'] = $data['total_price']-$data['total_discount'];
+		}
+
+
+
+		
+		
 
 		$data['permit']['del'] = true;
 
@@ -238,7 +277,8 @@ class promotions_model extends Model {
     	$select_package = "pack_id AS id,
     					   pack_code AS code,
     					   pack_name AS name,
-    					   pack_timer AS timer,
+    					   pack_qty AS qty,
+    					   pack_unit AS unit,
     					   pack_price AS price";
 
     	$package = $this->db->select("SELECT {$select_package} FROM package p LEFT JOIN promotions_permit pm ON p.pack_id = pm.obj_id WHERE pm.pro_id=:id AND pm.obj_type='package'" , array(':id'=>$id) );

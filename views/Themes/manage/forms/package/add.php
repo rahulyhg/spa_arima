@@ -42,6 +42,8 @@ $form   ->field("pack_price")
         ->type('number')
         ->value( !empty($this->item['price']) ? round($this->item['price']):'' );
 
+
+
 $skill = '';
 foreach ($this->skill as $key => $value) {
 
@@ -56,15 +58,22 @@ foreach ($this->skill as $key => $value) {
         }
     }
 
-    $skill .= '<label class="checkbox mrl"><input'.$ck.' type="checkbox" name="skill[]" value="'.$value['id'].'"><span class="fwb">'.$value['name'].'</span></label>';
+    $skill .= '<label class="checkbox mrl"><input'.$ck.' type="checkbox" name="skill[]" value="'.$value['id'].'"><span>'.$value['name'].'</span></label>';
 }
 
 $form   ->field("pack_skill")
-        ->label($this->lang->translate('Skill'))
-        ->text( $skill );
+        // ->label($this->lang->translate('Skill'))
+        ->text( '<div class="openset">'.
+
+            '<label class="checkbox"><input'.$ck.' type="checkbox" name="has_masseuse" value="1" class="js-openset"'.( !empty($this->item['has_masseuse']) ? ' checked':'' ).'><span class="fwb">มีการใช้ พนง.ผู้บริการ(หมอ) หรือไหม?</span></label>'.
+
+            '<div class="content" data-name="has_masseuse">' .$skill. '</div>'. 
+
+        '</div>' );
+        // ->note('');
 
 # set form
-$arr['form'] = '<form class="js-submit-form" method="post" action="'.URL. 'package/save"></form>';
+$arr['form'] = '<form class="js-submit-form" data-plugins="activeform" method="post" action="'.URL. 'package/save"></form>';
 
 # body
 $arr['body'] = $form->html();

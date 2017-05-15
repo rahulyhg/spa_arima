@@ -122,6 +122,7 @@ class Package_Model extends Model {
 
 		$data = $this->cut($this->_cutNamefield, $data);
 
+		$data['name'] = $this->lang->translate('package', $data['name']);
 		if( !empty($options['dashboard']) ){
 
 			/* SUM PACKAGE */
@@ -181,6 +182,8 @@ class Package_Model extends Model {
             // "subtext"=>isset($subtext)?$subtext:"",
             "type"=>"package",
             'icon' => 'cube',
+            'price' => $data['price'],
+            // 'qty' => $data['qty'],
             // "image_url"=>isset($image_url)?$image_url:"",
             // 'status' => isset($status)?$status:"",
             // 'data' => $data,

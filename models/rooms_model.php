@@ -33,77 +33,6 @@ class Rooms_Model extends Model{
         $this->db->delete('room_bed', "bed_id={$id}");
     }
 
-    /*public function lists( $options=array() ) {
-        $options = array_merge(array(
-            'pager' => isset($_REQUEST['pager'])? $_REQUEST['pager']:1,
-            'limit' => isset($_REQUEST['limit'])? $_REQUEST['limit']:50,
-            'more' => true,
-
-            'sort' => isset($_REQUEST['sort'])? $_REQUEST['sort']: 'number',
-            'dir' => isset($_REQUEST['dir'])? $_REQUEST['dir']: 'ASC',
-            
-            'time'=> isset($_REQUEST['time'])? $_REQUEST['time']:time(),
-            
-            'q' => isset($_REQUEST['q'])? $_REQUEST['q']:null,
-
-        ), $options);
-
-        $date = date('Y-m-d H:i:s', $options['time']);
-
-        $where_str = "";
-        $where_arr = array();
-
-
-
-
-        if( !empty($_REQUEST['status']) ){
-        	$options['status'] = $_REQUEST['status'];
-        }
-
-        if( !empty($_REQUEST['level']) ){
-        	$options['level'] = $_REQUEST['level'];
-        }
-
-        if( !empty($_REQUEST['floor']) ){
-        	$options['floor'] = $_REQUEST['floor'];
-        }
-
-        if( !empty($options['status']) ){
-
-            $where_str .= !empty( $where_str ) ? " AND ":'';
-            $where_str .= "room_status=:status";
-            $where_arr[':status'] = $options['status'];
-        }
-
-        if( !empty($options['level']) ){
-
-        	$where_str .= !empty( $where_str ) ? " AND ":'';
-            $where_str .= "room_level=:level";
-            $where_arr[':level'] = $options['level'];
-
-        }
-
-        if( !empty($options['floor']) ){
-
-        	$where_str .= !empty( $where_str ) ? " AND ":'';
-            $where_str .= "room_floor=:floor";
-            $where_arr[':floor'] = $options['floor'];
-
-        }
-
-        $arr['total'] = $this->db->count($this->_table, $where_str, $where_arr);
-        $arr['max_floor'] = $this->maxFloor();
-
-        $where_str = !empty($where_str) ? "WHERE {$where_str}":'';
-        $orderby = $this->orderby( $this->_cutNamefield.$options['sort'], $options['dir'] );
-        $limit = !empty($options['unlimit']) ? '' : $this->limited( $options['limit'], $options['pager'] );
-        $arr['lists'] = $this->buildFrag( $this->db->select("SELECT {$this->_field} FROM {$this->_table} {$where_str} {$orderby} {$limit}", $where_arr ) );
-
-        if( ($options['pager']*$options['limit']) >= $arr['total'] ) $options['more'] = false;
-        $arr['options'] = $options;
-
-        return $arr;
-    }*/
     public function buildFrag($results) {
         $data = array();
         foreach ($results as $key => $value) {
@@ -220,6 +149,9 @@ class Rooms_Model extends Model{
         return !empty($data[0]['floor']) ? $data[0]['floor'] : array();
     }
 
+    /**/
+    /* floors */
+    /**/
     public function floors(){
 
         $where_str = '';
@@ -238,7 +170,6 @@ class Rooms_Model extends Model{
 
         // echo "SELECT floor_id as id, floor_name as name FROM rooms_floors {$where}"; die;
         return $this->buildFragFloor( $this->db->select("SELECT floor_id as id, floor_name as name FROM rooms_floors {$where}", $where_arr) );
-
     }
     public function insertFloor(&$data){
         $this->db->insert('rooms_floors', $data);
@@ -266,6 +197,9 @@ class Rooms_Model extends Model{
         return $data;
     }
 
+    /**/
+    /* rooms */
+    /**/
     public function lists() {
         $where_str = '';
         $where_arr = array();

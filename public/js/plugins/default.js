@@ -1599,9 +1599,6 @@ if ( typeof Object.create !== 'function' ) {
 
 				e.stopPropagation();
 			});
-
-
-
 		},
 		
 		getOffset: function(){

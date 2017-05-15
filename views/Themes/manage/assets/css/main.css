@@ -17,14 +17,13 @@ input[type=checkbox]:active{appearance:none;border:none \0;border:none\9}
 input[type=radio]{border-radius:8px;-webkit-border-radius:8px;-moz-border-radius:8px;-ms-border-radius:8px}
 input[type=radio]:hover, input[type=radio]:focus{background-color:#777}
 input[type=radio]:active{background-color:#333}
- @media \0screen {
-input[type=radio], input[type=checkbox]{border:none}
-input[type=radio]:hover{background:none}
-input[type=checkbox]:hover{background:none}
- input[type=radio]:hover::active {
-background:none}
- input[type=checkbox]:hover::active {
-background:none}}
+@media \0screen {
+	input[type=radio], input[type=checkbox]{border:none}
+	input[type=radio]:hover{background:none}
+	input[type=checkbox]:hover{background:none}
+	input[type=radio]:hover::active {background:none}
+	input[type=checkbox]:hover::active {background:none}
+}
 input[type=checkbox], input[type=radio]{box-sizing:border-box;position:relative;padding:0;background-color:transparent;border:none;outline:0;box-sizing:border-box;-webkit-appearance:none;-webkit-user-select:none;height:18px;width:18px;cursor:pointer;border-radius:2px}
 input[type=checkbox]:before, input[type=radio]:before, input[type=checkbox]:after, input[type=radio]:after{content:'';position:absolute;top:0;left:0;right:0;bottom:0;box-sizing:border-box;border-radius:2px}
 input[type=radio]:after{top:4px;left:4px;right:4px;bottom:4px}

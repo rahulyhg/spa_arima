@@ -353,13 +353,11 @@ class customers_model extends Model
     /**/
 
     private $select_level = "
-    level_id as id
-    , level_name as name
+          level_id as id
+        , level_name as name
     ";
     public function level() {
-
-        $data = $this->db->select("SELECT {$this->select_level} FROM customers_level");
-        return $data;
+        return $this->db->select("SELECT {$this->select_level} FROM customers_level");
     }
     public function get_level($id){
         $sth = $this->db->prepare("

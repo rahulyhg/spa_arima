@@ -62,6 +62,14 @@ $form = $form->create()
     ->elem('div')
     ->addClass('form-insert pal');
 
+
+$form   ->field("cus_level_id")
+        ->label( $this->lang->translate('Level') )
+        ->addClass('inputtext')
+        ->select( $this->level, 'id', 'name', 0 )
+        ->value( !empty($this->item['level_id'])? $this->item['level_id']:'' );
+
+
 // $form   ->field("image")
 //         ->text( $picture_box );
 
@@ -116,7 +124,7 @@ $form->hr( $this->fn->q('form')->contacts(
 if( empty($this->item) ){
 
 $form   ->field("ex_time")
-        ->label($this->lang->translate('Set Expired'))
+        ->label($this->lang->translate('Expiry Date'))
         ->text(
 
         '<div class="content" data-name="ex_time" data-plugins="setdate" data-options="'.$this->fn->stringify( array(

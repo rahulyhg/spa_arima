@@ -2,7 +2,10 @@
 
 require 'init.php';
 
-?><div id="mainContainer" class="clearfix hasLeft" data-plugins="main"><div id="order" data-plugins="order">
+?><div id="mainContainer" class="clearfix hasLeft" data-plugins="main"><div id="order" data-plugins="order" data-options="<?=$this->fn->stringify( array( 
+	'lang'=>$this->lang->getCode(),
+
+) )?>">
 
 	<div role="left" data-w-percent="50">
 	<?php 
@@ -29,7 +32,7 @@ require 'init.php';
 		$a[] = array('id'=>'summary','name'=>'');
 		$a[] = array('id'=>'invoice','name'=>'');
 		$a[] = array('id'=>'menu','name'=>'');
-		$a[] = array('id'=>'change','name'=>'');
+		$a[] = array('id'=>'detail','name'=>'');
 		$a[] = array('id'=>'pay','name'=>'');
 
 		foreach ($a as $key => $value) {

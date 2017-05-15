@@ -11,12 +11,18 @@
 				</div>
 			</div>
 
-			<div class="rfloat">
-				<span class="gbtn"><a class="btn" data-global-action="menu"><i class="icon-arrow-left mrs"></i>Hide</a></span>
+
+
+			<!-- <div class="rfloat"> -->
+				<!-- <span class="gbtn"><a class="btn" data-global-action="menu"><i class="icon-arrow-left mrs"></i>Hide</a></span> -->
 				<!-- <span class="gbtn"><a class="btn btn-red"><i class="icon-remove mrs"></i>Cancel</a></span> -->
-			</div>
+			<!-- </div> -->
 
 		</div>
+	</div>
+
+	<div style="position: absolute;top: 10px;right: 10px;line-height: 30px;color: #888;font-size: 12px;font-weight: bold;z-index: 10">
+		Hide <span class="gbtn"><a class="js-link-back btn" data-global-action="menu"><i class="icon-arrow-right"></i></a></span>
 	</div>
 
 	<div style="position: absolute;top: 0;left: 30px;right: 0;bottom: 0;overflow-y: auto;"><div style="padding-top: 65px;padding-bottom: 30px; max-width: 600px;">
@@ -27,11 +33,13 @@
 			<table class="profile-menu-table">
 				<thead>
 					<tr>
-						<th>Room</th>
-						<th>Service By</th>
-						<th class="time">Time</th>
-						<th class="price">Price</th>
-						<th class="actions">Actions</th>
+						<!-- <th>Room/Bed</th> -->
+						<th class="no">#</th>
+						<th class="masseuse"><?=$this->lang->translate('Masseuse')?></th>
+						<th class="room"><?=$this->lang->translate('Room')?>/<?=$this->lang->translate('Bed')?></th>
+						<th class="time"><?=$this->lang->translate('Time')?></th>
+						<th class="price"><?=$this->lang->translate('Price')?></th>
+						<th class="actions"></th>
 					</tr>
 				</thead>
 				<tbody role="listsbox">
@@ -54,11 +62,11 @@
 			</table>
 
 			<div class="tac mts">
-				<span class="gbtn"><a class="btn btn-small btn-blue "><i class="icon-plus mrs"></i><span>Add Time</span></a></span>
+				<span class="gbtn"><a class="btn btn-large btn-blue js-add-time"><i class="icon-plus mrs"></i><span>Add Time</span></a></span>
 			</div>
 			</div>
 
-			<div>
+			<div class="hidden_elem">
 				<label class="label">Total Time: </label>
 
 				<div class="data">
@@ -68,15 +76,33 @@
 				</div>
 			</div>
 
-			<div>
-				<label class="label">Total Price: </label>
-				<div class="data">฿350</div>
+			<div class="hidden_elem">
+				<table class="profile-menu-staps">
+					<tr>
+						<td>
+							<label class="label">Total Discount: </label>
+							<div class="data">฿350</div>
+						</td>
+						<td>
+							<label class="label">Total Price: </label>
+							<div class="data">฿350</div>
+						</td>
+						<td>
+							<label class="label">Total: </label>
+							<div class="data" price-total->฿350</div>
+						</td>
+						<td class="w100">
+							
+						</td>
+					</tr>
+				</table>
 			</div>
 
-			<div>
+
+			<!-- <div>
 				<label class="label">Note: </label>
 				<div><textarea class="inputtext inputnote" data-plugins="autosize"></textarea></div>
-			</div>
+			</div> -->
 
 			<!-- <div class="qty">
 				<label class="label">Quantity</label>
@@ -93,18 +119,19 @@
 			</div> -->
 		</div>
 
-		<!-- <div class="profile-menu-action clearfix">
-			<span class="gbtn"><a class="btn btn-large">Discount</a></span>
-		</div> -->
+		<div class="profile-menu-action clearfix hidden_elem">
+			<span class="gbtn"><a class="btn btn-large"><i class="icon-percent mrs"></i><span>Discount</span></a></span>
+			<span class="gbtn"><a class="btn btn-red btn-large"><i class="icon-remove mrs"></i><span>Cancel</span></a></span>
+		</div>
 
-		<div class="profile-menu clearfix mtl">
-			<div class="lfloat">
+		<div class="profile-menu clearfix mtl hidden_elem">
+			<!-- <div class="lfloat">
 				<span class="gbtn"><a class="btn btn-red"><i class="icon-remove mrs"></i>Cancel</a></span>
 
-			</div>
-			<div class="rfloat">
+			</div> -->
+			<!-- <div class="rfloat">
 				<span class="gbtn radius"><a class="btn btn-blue">Done</a></span>
-			</div>
+			</div> -->
 		</div>
 	</div></div>
 

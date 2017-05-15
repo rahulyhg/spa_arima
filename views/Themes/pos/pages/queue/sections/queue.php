@@ -1,4 +1,7 @@
+<?php
 
+
+?>
 <div class="queue-wrap pal" style="padding-top:90px" data-plugins="jopQueue">
 
 <div style="position: fixed;top: 53px;
@@ -8,7 +11,10 @@ left: 0;right: 16px;background-color: rgba(245,248,250,.98);z-index: 100;"><div 
 			<table>
 				<tr>
 					<td>
-						<input type="text" name="code" class="inputtext input-search" maxlength="100" placeholder="Check In" style="background-color: #fff">
+						<input type="date" name="date" class="inputtext js-date" style="background-color: #fff" value="<?=$this->date?>" data-lang="<?=$this->lang->getCode()?>">
+					</td>
+					<td>
+						<input type="text" name="code" class="inputtext input-search" maxlength="100" placeholder="Check In" style="background-color: #fff" autofocus>
 					</td>
 					<td>
 						<button class="btn btn-blue">Check In</button>
@@ -24,7 +30,7 @@ left: 0;right: 16px;background-color: rgba(245,248,250,.98);z-index: 100;"><div 
 <div class="tac">
 <ul class="ui-list ui-list-queue" ref="listsbox"><?php 
 
-	foreach ($this->lists as $key => $value) { 
+	foreach ($this->lists['lists'] as $key => $value) { 
 
 		$code = is_numeric($value['code'])
 			? round($value['code'])
@@ -34,11 +40,18 @@ left: 0;right: 16px;background-color: rgba(245,248,250,.98);z-index: 100;"><div 
 			? $value['nickname']
 			: $value['first_name'];
 
+
+		$avatar = '<div class="avatar no-avatar"><div class="initials">'.$code.'</div></div>';
+
+		if( !empty($value['image_url']) ){
+			$avatar = '<div class="avatar"><img class="img" src="'.$value['image_url'].'"></div>';
+		}
+
 	?><li><div class="inner">
 		<div class="number"><?= $code ?></div>
 		<div class="box"><div class="box-inner">
-			<div class="avatar no-avatar"><div class="initials"><?=$code?></div></div>
-
+			
+			<?=$avatar?>
 			<div class="box-content">
 				<!-- <h3>101</h3> -->
 				<div class="name"><?=$name?></div>
@@ -50,3 +63,15 @@ left: 0;right: 16px;background-color: rgba(245,248,250,.98);z-index: 100;"><div 
 ?></ul>
 </div>
 </div>
+
+<script type="text/javascript">
+	
+	$('.js-date').datepicker({
+		lang: $('.js-date').data('lang'),
+		onChange: function ( data) {
+
+			window.location = "<?=URL.'pos/queue'?>" + "?date=" + PHP.dateJStoPHP(data.date.selected);
+			// console.log( data, PHP.dateJStoPHP(data.date.selected) );
+		}
+	});
+</script>

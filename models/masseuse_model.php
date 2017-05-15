@@ -52,19 +52,26 @@ class Masseuse_Model extends Model{
             'pager' => isset($_REQUEST['pager'])? $_REQUEST['pager']:1,
             'limit' => isset($_REQUEST['limit'])? $_REQUEST['limit']:100,
 
-            'sort' => isset($_REQUEST['sort'])? $_REQUEST['sort']: 'code',
+            'sort' => isset($_REQUEST['sort'])? $_REQUEST['sort']: 'code_order',
             'dir' => isset($_REQUEST['dir'])? $_REQUEST['dir']: 'ASC',
 
             'time'=> isset($_REQUEST['time'])? $_REQUEST['time']:time(),
-            'q' => isset($_REQUEST['q'])? $_REQUEST['q']:null,
 
             'more' => true
         ), $options);
+
+        if( $options['sort']=='sequence' ){
+            $options['sort']='code_order';
+        }
 
         $date = date('Y-m-d H:i:s', $options['time']);
 
         if( isset($_REQUEST['view_stype']) ){
             $options['view_stype'] = $_REQUEST['view_stype'];
+        }
+
+        if(isset($_REQUEST['q']) ){
+            $options['q'] = $_REQUEST['q'];
         }
 
         $where_str = "";
@@ -97,7 +104,7 @@ class Masseuse_Model extends Model{
             $wq = '';
             foreach ($arrQ as $key => $value) {
                 $wq .= !empty( $wq ) ? " OR ":'';
-                $wq .= "emp_first_name LIKE :q{$key} OR emp_last_name LIKE :q{$key} OR emp_phone_number LIKE :s{$key} OR emp_phone_number=:f{$key}";
+                $wq .= "emp_first_name LIKE :q{$key} OR emp_last_name LIKE :q{$key} OR emp_phone_number LIKE :s{$key} OR emp_phone_number=:f{$key} OR emp_code=:f{$key}";
                 $where_arr[":q{$key}"] = "%{$value}%";
                 $where_arr[":s{$key}"] = "{$value}%";
                 $where_arr[":f{$key}"] = $value;
@@ -215,14 +222,27 @@ class Masseuse_Model extends Model{
     }
     public function bucketed($data , $options=array()) {
 
+        $category = '';
+        // if( !empty($data['image_url']) ){
+            $category .= 'No.'.$data['code'];
+        // }
+
+        if( !empty($data['phone_number']) ){
+            $category .= !empty($category) ? ", ":'';
+            $category .= $data['phone_number'];
+        }
+
         return array(
             'id'=> $data['id'],
             // 'created' => $data['created'],
             'text'=> $data['fullname'],
-            "category"=>isset($category)?$category:"",
-            "subtext"=>!empty($data['phone_number']) ? $data['phone_number']:"",
+            "category"=> $category,
+            "subtext"=> '', //!empty($data['phone_number']) ? $data['phone_number']:"",
             "image_url"=>!empty($data['image_url']) ? $data['image_url']:"",
             "type"=>"employees",
+
+            "image_url"=>!empty($data['image_url']) ? $data['image_url']:"",
+            'icon_text' => $data['code'],
             // 'status' => isset($status)?$status:"",
             // 'data' => $data,
         );
@@ -259,12 +279,20 @@ class Masseuse_Model extends Model{
 
         $options = array_merge(array(
             
+            'pager' => isset($_REQUEST['pager'])? $_REQUEST['pager']:1,
+            'limit' => isset($_REQUEST['limit'])? $_REQUEST['limit']:100,
+
             'sort' => isset($_REQUEST['sort'])? $_REQUEST['sort']: 'sequence',
             'dir' => isset($_REQUEST['dir'])? $_REQUEST['dir']: 'ASC',
+            'more' => true,
 
             'date'=> isset($_REQUEST['date'])? $_REQUEST['date']:date('c')
 
         ), $options);
+
+        if( isset($_REQUEST['view_stype']) ){
+            $options['view_stype'] = $_REQUEST['view_stype'];
+        }
 
         $where_str = "";
         $where_arr = array();
@@ -276,7 +304,7 @@ class Masseuse_Model extends Model{
 
         if( !empty( $options['date'] ) ){
 
-            $date = $this->setJobDate($options['date']);
+            $date = $this->query('system')->working_time($options['date']);
             $where_arr[':start'] = $date[0];
             $where_arr[':end'] = $date[1];
 
@@ -284,13 +312,26 @@ class Masseuse_Model extends Model{
             $where_str .= "(`job_date` BETWEEN :start AND :end)";
         }
 
+        $_table = "emp_job_queue j INNER JOIN ({$this->_table}) ON j.job_emp_id=e.emp_id";
 
+        $arr['total'] = $this->db->count($_table, $where_str, $where_arr);
+
+        $where_str = !empty($where_str) ? "WHERE {$where_str}":'';
+        $orderby = $this->orderby( 'job_'.$options['sort'], $options['dir'] );
+        $limit = !empty($options['unlimit']) ?'': $this->limited( $options['limit'], $options['pager'] );
+
+        $arr['lists'] = $this->buildFrag( $this->db->select("SELECT {$this->_field} FROM {$_table} {$where_str} {$orderby} {$limit}", $where_arr ), $options  );
+
+        if( ($options['pager']*$options['limit']) >= $arr['total'] ) $options['more'] = false;
+        $arr['options'] = $options;
+
+/*
         $where_str = !empty($where_str) ? "WHERE {$where_str}":'';
         $orderby = $this->orderby( 'job_'.$options['sort'], $options['dir'] );
 
         $data = $this->db->select("SELECT {$this->_field} FROM emp_job_queue j INNER JOIN ($this->_table) ON j.job_emp_id=e.emp_id {$where_str} {$orderby}", $where_arr);
-
-        return $this->buildFrag( $data );
+*/
+        return $arr;
     }
     public function getJob( $id, $options=array() ){
 
@@ -306,7 +347,7 @@ class Masseuse_Model extends Model{
 
         if( !empty($options['date']) ){
 
-            $date = $this->setJobDate($options['date']);
+            $date = $this->query('system')->working_time($options['date']);
             $where_arr[':start'] = $date[0];
             $where_arr[':end'] = $date[1];
 
@@ -332,12 +373,16 @@ class Masseuse_Model extends Model{
             : array();
     }
 
-    public function setJob( $id ){
+    public function setJob( $id, $options = array() ){
 
-        /*$start = date('Y-m-01 00:00:00');
-        $end = date('Y-m-j 23:59:59');*/
+        $options = array_merge(array(
 
-        $date = $this->setJobDate( date('c') );
+            'date'=> isset($_REQUEST['date'])? $_REQUEST['date']:date('c'),
+
+        ), $options);
+
+
+        $date = $this->query('system')->working_time( $options['date'] );
         $where_arr[':s'] = $date[0];
         $where_arr[':e'] = $date[1];
 
@@ -354,10 +399,14 @@ class Masseuse_Model extends Model{
             $sequence = 1;
         }
 
+        $theDate = new DateTime();
+        $theTime = strtotime($options['date']);
+        $theDate->setDate( date('Y', $theTime), date('n', $theTime), date('j', $theTime));
+
         $job = array(
             'job_emp_id' => $id,
             'job_sequence' => $sequence,
-            'job_date' => date('c'),
+            'job_date' => $theDate->format('Y-m-d H:i:s'),
             'job_status' =>'on'
         );
 
@@ -367,16 +416,5 @@ class Masseuse_Model extends Model{
     // public function getJobSequence( $start, $end ){
         // return $this->db->count("job_queue", "date BETWEEN :start AND :end", array(":start"=>$start , ":end"=>$end));
     // }
-
-    private function setJobDate( $date ){
-
-        $start = date('Y-m-d 05:00:00', strtotime($date));
-
-        $end = new DateTime( $start );
-        $end->modify('+1 day');
-        $end = $end->format('Y-m-d 04:00:00');
-
-        return array($start, $end);
-    }
     
 }

@@ -1,3 +1,95 @@
+var __ui = {
+	anchorBucketed: function (data) {
+		
+		var anchor = $('<div>', {class: 'anchor ui-bucketed clearfix'});
+		var avatar = $('<div>', {class: 'avatar lfloat no-avatar mrm'});
+		var content = $('<div>', {class: 'content'});
+		var icon = '';
+
+		if( !data.image_url || data.image_url=='' ){
+
+			icon = 'user';
+			if( data.icon ){
+				icon = '<i class="icon-'+data.icon+'"></i>';
+			}
+			else if( data.icon_text ){
+				icon = '<div class="initials">'+data.icon_text+'</div>';
+			}
+			else{
+				icon = '<i class="icon-user"></i>';
+			}
+			icon = '<div class="initials">'+icon+'</div>';
+		}
+		else{
+			icon = $('<img>', {
+				class: 'img',
+				src: data.image_url,
+				alt: data.text
+			});
+		}
+
+		avatar.append( icon );
+
+		var massages = $('<div>', {class: 'massages'});
+
+		if( data.text ){
+			massages.append( $('<div>', {class: 'text fwb u-ellipsis'}).html( data.text ) );
+		}
+
+		if( data.category ){
+			massages.append( $('<div>', {class: 'category'}).html( data.category ) );
+		}
+		
+		if( data.subtext ){
+			massages.append( $('<div>', {class: 'subtext'}).html( data.subtext ) );
+		}
+
+		content.append(
+			  $('<div>', {class: 'spacer'})
+			, massages
+		);
+		anchor.append( avatar, content );
+
+        return anchor;
+	},
+	anchorFile: function ( data ) {
+		
+		if( data.type=='jpg' ){
+			icon = '<div class="initials"><i class="icon-file-image-o"></i></div>';
+		}
+		else{
+			icon = '<div class="initials"><i class="icon-file-text-o"></i></div>';
+		}
+		
+		var anchor = $('<div>', {class: 'anchor clearfix'});
+		var avatar = $('<div>', {class: 'avatar lfloat no-avatar mrm'});
+		var content = $('<div>', {class: 'content'});
+		var meta =  $('<div>', {class: 'subname fsm fcg'});
+
+		if( data.emp ){
+			meta.append( 'Added by ',$('<span>', {class: 'mrs'}).text( data.emp.fullname ) );
+		}
+
+		if( data.created ){
+			var theDate = new Date( data.created );
+			meta.append( 'on ', $('<span>', {class: 'mrs'}).text( theDate.getDate() + '/' + (theDate.getMonth()+1) + '/' + theDate.getFullYear() ) );
+		}
+
+		avatar.append( icon );
+
+		content.append(
+			  $('<div>', {class: 'spacer'})
+			, $('<div>', {class: 'massages'}).append(
+				  $('<div>', {class: 'fullname u-ellipsis'}).text( data.name )
+				, meta
+			)
+		);
+		anchor.append( avatar, content );
+
+        return anchor;
+	}
+}
+
 var Calendar = {
 	init: function( options ){
 		var self = this;
@@ -164,6 +256,20 @@ var Datelang = {
 			: theDate.getFullYear();
 
 		return this.day( theDate.getDay() ) +" "+ theDate.getDate() + " " + this.month( theDate.getMonth() ) +" "+ fullYear;
+	},
+
+	fulldate: function( theDate, type, lang ){
+
+		lang = lang||this.lang||'th';
+
+		var _DS = [', ', ', '];
+		if( lang=='th' ){ 
+			var _DS = ['ที่ ', ' '];
+		}
+
+		return this.day( theDate.getDay(), type, lang ) + _DS[0] +
+			theDate.getDate() + " " + this.month( theDate.getMonth(), type, lang) +_DS[1]+
+			this.year( theDate.getFullYear(), type, lang );
 	},
 
 	day: function( numbar, type, lang ){
@@ -782,6 +888,15 @@ var PHP = {
 	    }
 
 	    return s.join(dec);
+	},
+
+	dateJStoPHP: function ( date ) {
+		m = date.getMonth()+1;
+		m = m < 10 ? '0'+m:m;
+
+		d = date.getDate();
+		d = d < 10 ? '0'+d:d;
+		return date.getFullYear() + '-' + m + '-' + d;	
 	}
 }
 

@@ -9,7 +9,7 @@ foreach ($this->skill as $key => $value) {
 
 $title = array( 0 => 
 	array(
-	0 =>   array('key'=>'ID', 'text'=>'เบอร์', 'sort'=>'code','rowspan'=>2)
+	0 =>   array('key'=>'ID', 'text'=>'เบอร์', 'sort'=>'code_order','rowspan'=>2)
 
 		 , array('key'=>'name', 'text'=>'ชื่อ-นามสกุล', 'sort'=>'first_name','rowspan'=>2)
 		 , array('key'=>'status', 'text'=>'ชื่อเล่น', 'sort'=>'nickname','rowspan'=>2)

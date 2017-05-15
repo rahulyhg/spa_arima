@@ -587,3 +587,6 @@ ul.icons li [class^="icon-"], ul.icons li [class*=" icon-"]{width:.75em}
 .icon-clone:before {
     content: "\f24d";
 }
+.icon-percent:before {
+    content: "\f295";
+}

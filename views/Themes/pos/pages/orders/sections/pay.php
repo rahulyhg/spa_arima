@@ -2,7 +2,7 @@
 	
 	<div class="payment-wrapper clearfix">
 		<div class="payment-btn-hide">
-			Hide <span class="gbtn"><a class="js-link-back btn"><i class="icon-arrow-right"></i></a></span>
+			Hide <span class="gbtn"><a class="js-link-back btn" data-global-action="menu"><i class="icon-arrow-right"></i></a></span>
 		</div>
 		<div class="payment-right">
 
@@ -30,17 +30,17 @@
 					<tbody><tr>
 						<td>
 							<div class="label clearfix">
-								<span class="lfloat">Balance Due</span>
-								<span class="rfloat">Amount Tendered</span>
+								<span class="lfloat"><?=$this->lang->translate('Total')?></span><!-- Balance Due -->
+								<span class="rfloat"><?=$this->lang->translate('Pay')?></span><!-- Amount Tendered -->
 							</div>
 							<div class="input clearfix">
-								<div class="lfloat">฿<span summary="total-text">227</span></div>
-								<div class="rfloat Payment">฿<span summary="pay-text">0</span></div>
+								<div class="lfloat">฿<span summary="total">0</span></div>
+								<div class="rfloat Payment">฿<span summary="pay">0</span></div>
 							</div>
-							<div class="label Tip">Tip: ฿<span summary="tip-text">0</span></div>
+							<div class="label Tip"><?=$this->lang->translate('Tip')?>: ฿<span summary="tip">0</span></div>
 						</td>
 						<td class="change">
-							<div class="label">Change</div>
+							<div class="label"><?=$this->lang->translate('Change')?></div>
 							<div class="input">฿<span summary="change-text">0</span></div>
 						</td>
 					</tr>
@@ -56,7 +56,7 @@
 					 
 					<li><a class="js-enter-pay btn" data-event="next" data-value="9">9</a></li>
 					 
-					<li><a class="js-enter-pay btn btn-blue" data-event="plus" data-value="50">฿50</a></li>
+					<li><a class="js-enter-pay btn btn-blue" data-event="plus" data-value="50">฿20</a></li>
 					 
 					<li><a class="js-enter-pay btn" data-event="next" data-value="4">4</a></li>
 					 
