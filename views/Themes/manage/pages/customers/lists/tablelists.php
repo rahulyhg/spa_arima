@@ -19,12 +19,18 @@ if( !empty($this->results['lists']) ){
             $endDateStr = date('j', $endDate) .' ' . $this->fn->q('time')->month( date('n', $endDate) ) .' '. ( date('Y', $endDate)+543 );
         }
 
-        $total_date = strtotime($endDate) - date("Y-m-d");
-        if( $total_date <= 0 ){
+        $dateNow = date("Y-m-d");
+
+        $arrDate1 = explode("-",$item['expired'][0]['end_date']);
+        $arrDate2 = explode("-",$dateNow);
+        $timStmp1 = mktime(0,0,0,$arrDate1[1],$arrDate1[2],$arrDate1[0]);
+        $timStmp2 = mktime(0,0,0,$arrDate2[1],$arrDate2[2],$arrDate2[0]);
+
+        if( $timStmp1 < $timStmp2 ){
             $strDate = 'หมดอายุ';
         }
         else{
-            $strDate = $total_date;
+            $strDate = $this->fn->q('time')->DateDiff( $dateNow, $item['expired'][0]['end_date'] ).' วัน';
         }
         /**/
 

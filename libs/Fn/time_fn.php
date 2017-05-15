@@ -272,4 +272,8 @@ class Time_Fn extends _function {
 
         return $arr;
     }
+
+    public function DateDiff($strDate1,$strDate2){
+        return (strtotime($strDate2) - strtotime($strDate1))/  ( 60 * 60 * 24 );
+    }
 }

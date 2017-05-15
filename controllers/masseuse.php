@@ -134,4 +134,98 @@ class Masseuse extends Controller {
         print_r($results); die;
     }
 
+    public function update( $id=null , $section=null ){
+
+        $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : $id;
+        $section = isset($_REQUEST['section']) ? $_REQUEST['section'] : $section;
+        if( empty($id) || empty($section) ||  empty($this->me) ) $this->error();
+
+        $item = $this->model->query('masseuse')->get( $id );
+
+        if( !empty($_POST) ){
+
+            $postData = array();
+
+            if( $section == 'basic' ){
+                try{
+
+                    $form = new Form();
+                    $form   ->post('emp_prefix_name')
+                            ->post('emp_first_name')->val('is_empty')
+                            ->post('emp_last_name')
+                            ->post('emp_nickname');
+
+                    $form->submit();
+                    $postData = $form->fetch();
+
+                    $futureDate = date('Y-m-d',strtotime(date("Y-m-d", mktime()) . " -6 year"));
+                    $birthday = date("{$_POST['birthday']['year']}-{$_POST['birthday']['month']}-{$_POST['birthday']['date']}");
+
+                    if( $birthday != '0000-00-00' ){
+                        if( strtotime($birthday) > strtotime($futureDate) ){
+                            $arr['error']['birthday'] = 'วันเกิดไม่ถูกต้อง';
+                        }
+                    }
+
+                    $postData['emp_first_name'] = trim($postData['emp_first_name']);
+                    $postData['emp_last_name'] = trim($postData['emp_last_name']);
+                    $postData['emp_birthday'] = $birthday;
+
+                }catch (Exception $e) {
+                    $arr['error'] = $this->_getError($e->getMessage());
+                }
+            }
+            elseif( $section == 'contact' ){
+
+                try{
+
+                    $form = new Form();
+                    $form   ->post('emp_phone_number')
+                            ->post('emp_email')
+                            ->post('emp_line_id')
+                            ->post('emp_notes');
+
+                    $form->submit();
+                    $postData = $form->fetch();
+
+                    // foreach ($_POST['address'] as $key => $value) {
+                    //     if( empty($value) && $key != 'village' && $key !='street' && $key != 'alley') {
+                    //         $arr['error']['emp_address'] = 'กรุณากรอกข้อมูลในช่องที่มีเครื่องหมาย * ให้ครบถ้วน';
+                    //     }
+                    // }
+
+                    // if( !empty($_POST['address']['zip']) && strlen($_POST['address']['zip']) != 5 ){
+                    //     $arr['error']['emp_address'] = 'กรุณากรอกรหัสไปรษณีย์ให้ครบ 5 หลัก';
+                    // }
+
+                    $postData['emp_address'] = json_encode($_POST['address']);
+                    $postData['emp_city_id'] = $_POST['address']['city'];
+                    $postData['emp_zip'] = $_POST['address']['zip'];
+
+                }catch (Exception $e) {
+                    $arr['error'] = $this->_getError($e->getMessage());
+                }
+            }
+            else{
+                $this->error();
+            }
+
+            if( empty($arr['error']) ){
+
+                $this->model->query('employees')->update( $id, $postData );
+                $arr['message'] = 'บันทึกเรียบร้อย';
+                $arr['url'] = 'refresh';
+            }
+
+            echo json_encode($arr);
+        }
+        else{
+
+            $this->view->setData('city', $this->model->query('system')->city());
+            $this->view->setData('prefixName', $this->model->query('system')->_prefixName());
+            $this->view->setData('item', $item);
+            $this->view->render('masseuse/forms/edit_'.$section);
+        }
+
+    }
 }

@@ -25,7 +25,7 @@ $addr[] = array('label'=>'','key'=>'zip');
 	<header class="clearfix">
 		<h2 class="title"><i class="icon-map-marker mrs"></i>ข้อมูลการติดต่อ</h2>
 		<?php if( $this->has_edit ){ ?>
-		<a data-plugins="dialog" href="<?=URL?><?=$this->obj_type?>edit_contact/<?=$this->obj_id?>" class="btn-icon btn-edit"><i class="icon-pencil"></i></a>
+		<a data-plugins="dialog" href="<?=URL?>masseuse/update/<?=$this->obj_id?>/contact" class="btn-icon btn-edit"><i class="icon-pencil"></i></a>
 		<?php } ?>
 	</header>
 	

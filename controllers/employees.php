@@ -152,6 +152,8 @@ class Employees extends Controller {
 
                 if( !empty($_FILES['file1']) ){
 
+                    $userfile = $_FILES['file1'];
+
                     if( !empty($item['image_id']) ){
                         $this->model->query('media')->del($item['image_id']);
                         $this->model->update( $id, array('emp_image_id'=>0 ) );
@@ -167,27 +169,44 @@ class Employees extends Controller {
                     }
 
                     /**/
-                    /* set Media */
+                    /* get Data Album */
                     /**/
+                    $options = array(
+                        'album_obj_type' => isset( $_REQUEST['obj_type'] ) ? $_REQUEST['obj_type']: 'public',
+                        'album_obj_id' => isset( $_REQUEST['obj_id'] ) ? $_REQUEST['obj_id']: 1,
+                        );
+
+                    if( isset( $_REQUEST['album_name'] ) ){
+                        $options['album_name'] = $_REQUEST['album_name'];
+                    }
+                    $album = $this->model->query('media')->searchAlbum( $options );
+
+                    if( empty($album) ){
+                        $this->model->query('media')->setAlbum( $options );
+                        $album = $options;
+                    }
+
+                    // set Media Data
                     $media = array(
                         'media_album_id' => $album['album_id'],
-                        'media_type' => isset($_REQUEST['media_type']) ? $_REQUEST['media_type']: strtolower(substr(strrchr($_FILES['file1']['name'],"."),1))
+                        'media_type' => isset($_REQUEST['media_type']) ? $_REQUEST['media_type']: strtolower(substr(strrchr($userfile['name'],"."),1))
                         );
 
                     $options = array(
-
-                        'dir' => $structure.DS,
-                        'url' => UPLOADS.$album['album_id'].'/',
+                        'folder' => $album['album_id'],
+                        'has_quad' => true,
                         );
 
-                    if( isset($_REQUEST['minimize']) ){
-                        $options['minimize'] = explode(',', $_REQUEST['minimize']);
+                    if( !isset($media['media_emp_id']) ){
+                        $media['media_emp_id'] = $this->me['id'];
                     }
-                    
-                    $options['has_quad'] = true;
 
-                    $this->model->query('media')->upload_picture( $_FILES['file1'], $media , $options );
-                    $item['image_id'] = $media['media_id'];
+                    $this->model->query('media')->set( $userfile, $media, $options );
+
+                    if( empty($media['error']) ){
+                        $media = $this->model->query('media')->convert($media);
+                    }
+                    $item['image_id'] = $media['id'];
                     $this->model->update( $id, array('emp_image_id'=>$item['image_id'] ) );
                     
                 }
