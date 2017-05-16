@@ -324,6 +324,8 @@ if ( typeof Object.create !== 'function' ) {
 				}
 			});
 
+			// console.log( 'saveBill', dataPost );
+
 			dataPost.date = PHP.dateJStoPHP( dataPost.date );
 			$.post( Event.URL + 'orders/save', dataPost, function (res) {
 				
@@ -415,6 +417,8 @@ if ( typeof Object.create !== 'function' ) {
 					start_date: new Date(),
 				};
 
+				fdata.total = fdata.price;
+
 				self.currOrder.items[ KEY ] = fdata;
 
 				self.newItemBill(fdata);
@@ -449,12 +453,13 @@ if ( typeof Object.create !== 'function' ) {
 
 				total: parseInt( data.price ),
 				discount: 0,
-				balance: 0,
 
 				status: 'order',
 
 				start_date: new Date(),
 			};
+
+			Detail.balance = Detail.total - Detail.discount;
 
 			if( data.has_masseuse==1 && data.masseuse ){
 				Detail.masseuse = data.masseuse;
@@ -517,7 +522,7 @@ if ( typeof Object.create !== 'function' ) {
 				var deduct = 0;
 
 				// 1. ราคาสินราคา 350 ลด 50 หากซื้อมากว่า 1 รายการ 
-				if( data.total==350 && qty>1 ){
+				if( data.price==350 && qty>1 ){
 					deduct = 50;
 				}
 
@@ -526,8 +531,10 @@ if ( typeof Object.create !== 'function' ) {
 				self.currOrder.items[obj].balance = (data.total*qty) - discount;
 
 				$.each( self.currOrder.items[obj].detail, function (i) {
+
+					
 					self.currOrder.items[obj].detail[i].discount = deduct;
-					self.currOrder.items[obj].detail[i].balance = data.total-deduct;
+					self.currOrder.items[obj].detail[i].balance = data.price-deduct;
 				} );
 
 				self.updateItemBill( data );
