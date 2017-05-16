@@ -41,7 +41,7 @@
 						<div class="ui-card_headerDesc"><?=$this->date_str?></div>
 					</div>
 					<div class="ui-card_content">
-				    	<div class="ui-card_number"><?=number_format($this->booking['total'])?> ฿</div>
+				    	<div class="ui-card_number"><?=number_format($this->booking['total'])?> คน</div>
 					</div>
 				</div>
 				
@@ -52,7 +52,7 @@
 						<div class="ui-card_headerDesc"><?=$this->date_str?></div>
 					</div>
 					<div class="ui-card_content">
-				    	<div class="ui-card_number"><?=number_format($this->service['total_customer'])?> ฿</div>
+				    	<div class="ui-card_number"><?=number_format($this->service['total_customer'])?> คน</div>
 					</div>
 				</div>
 				

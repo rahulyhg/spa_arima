@@ -20,13 +20,21 @@
 	    		</thead>
 
 	    		<tbody>
+	    			<tr>
+	    				<td class="name">ห้อง VIP</td>
+	    				<td class="unit">-</td>
+	    				<td class="qty">-</td>
+	    				<td class="qty"><?=number_format($this->room['total_room_price'])?></td>
+	    				<td class="price">-</td>
+	    				<td class="total"><?=number_format($this->room['total_room_price'])?></td>
+	    			</tr>
 	    		<?php 
 
 	    		$total_price = 0;
 	    		$total_customer = 0;
 	    		$total_qty = 0;
 	    		$total_discount = 0;
-	    		$total_all = 0;
+	    		$total_all = $this->room['total_room_price'];
 
 	    		foreach ($this->package['lists'] as $key => $value) { ?>
 	    			<tr>
@@ -54,6 +62,15 @@
 	    				</td>
 	    			</tr>
 	    		<?php } ?>
+	    			<tr>
+	    				<td class="name">ค่า Drink</td>
+	    				<td class="unit">-</td>
+	    				<td class="qty">-</td>
+	    				<td class="qty"><?=number_format($this->revenue['sum_drink'])?></td>
+	    				<td class="price">-</td>
+	    				<td class="total"><?=number_format($this->revenue['sum_drink'])?></td>
+	    				<?php $total_all = $total_all + $this->revenue['sum_drink'] ?>
+	    			</tr>
 	    		</tbody>
 	    		<tfoot>
 	    			<tr>

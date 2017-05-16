@@ -65,16 +65,23 @@ class Dashboard extends Controller {
 		);
 		$this->view->setData('service', $this->model->query('orders')->summary( $service_options ));
 
+		/* Customer RUN & EXPIRED */
+		$this->view->setData('customers', $this->model->query('customers')->summary());
+
+		/* สรุปยอดรายรับ */
+		$room_options = array(
+			'period_start'=>$start,
+			'period_end'=>$end,
+			'type'=>'room',
+		);
+		$this->view->setData('room', $this->model->query('orders')->summary( $room_options ));
+
 		/* Package List */
 		$package_options = array(
 			'period_start'=>$start,
 			'period_end'=>$end,
 			'dashboard'=>true
 		);
-
-		/* Customer RUN & EXPIRED */
-		$this->view->setData('customers', $this->model->query('customers')->summary());
-
 		// print_r($this->model->query('package')->lists( $package_options ));die;
 		$this->view->setData('package', $this->model->query('package')->lists( $package_options ));
 

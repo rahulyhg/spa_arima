@@ -270,7 +270,7 @@ class Orders_Model extends Model {
 	/**/
 	public function summary( $options=array() ){
 
-		$select = "SUM(order_total) AS sum_price, SUM(order_discount) AS sum_discount, SUM(order_balance) AS sum_balance";
+		$select = "SUM(order_total) AS sum_price, SUM(order_discount) AS sum_discount, SUM(order_balance) AS sum_balance, SUM(order_drink) AS sum_drink";
 		$form = "orders";
 
 		$where_str = '(order_start_date BETWEEN :startDate AND :endDate)';
@@ -289,6 +289,14 @@ class Orders_Model extends Model {
 			$select = "COUNT(order_cus_id) AS total_customer";
 			$where_str .= ' AND order_status!=:status';
 			$where_arr[':status'] = 'booking';
+
+			$data = $this->db->select("SELECT {$select} FROM {$form} WHERE {$where_str}", $where_arr);
+		}
+		elseif( $options['type'] == 'room' ){
+
+			$select = "SUM(item_room_price) AS total_room_price";
+			$form = "orders_items";
+			$where_str = '(item_start_date BETWEEN :startDate AND :endDate)';
 
 			$data = $this->db->select("SELECT {$select} FROM {$form} WHERE {$where_str}", $where_arr);
 		}
