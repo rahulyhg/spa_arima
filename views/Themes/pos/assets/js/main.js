@@ -518,7 +518,6 @@ if ( typeof Object.create !== 'function' ) {
 					qty += data.qty;
 				}
 			}
-
 			
 			for (var obj in self.currOrder.items) {
 
