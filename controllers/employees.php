@@ -11,13 +11,25 @@ class Employees extends Controller {
         if( !empty($id) ){
 
             $item = $this->model->get($id);
-            if( empty($item) ) $this->errro();
+            if( empty($item) ) $this->error();
             
             $this->view->setData('item', $item);
             $this->view->render("employees/profile/display");
         }
         else{
-           $this->error();
+
+            if( $this->format=='json' ) {
+                $this->view->setData('results', $this->model->query('employees')->lists( array('not_dep_id'=>5) ) );
+                $render = "employees/lists/json";
+            }
+            else{
+
+                // $this->view->elem('body')->addClass();
+                // $this->view->setData('position', $this->model->query('employees')->position() );
+                $render = "employees/lists/display";
+            }
+
+            $this->view->render($render);
         }
 
     }

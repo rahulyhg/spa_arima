@@ -108,6 +108,17 @@ class Employees_Model extends Model{
             $where_arr[':display'] = $options['display'];
         }
 
+        if( !empty($_REQUEST['not_dep_id']) ){
+            $options['not_dep_id'] = $_REQUEST['not_dep_id'];
+        }
+
+        if( !empty($options['not_dep_id']) ){
+
+            $where_str .= !empty( $where_str ) ? " AND ":'';
+            $where_str .= "emp_dep_id!=:not_dep_id";
+            $where_arr[':not_dep_id'] = $options['not_dep_id'];
+        }
+
         if( !empty($options['q']) ){
 
             $arrQ = explode(' ', $options['q']);
