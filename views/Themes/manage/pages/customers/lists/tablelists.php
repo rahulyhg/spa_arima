@@ -102,7 +102,7 @@ if( !empty($this->results['lists']) ){
             // '<td class="check-box"><label class="checkbox"><input id="toggle_checkbox" type="checkbox" value="'.$item['id'].'"></label></td>'.
 
             
-            // '<td class="date">'. $createdStr. '</td>'.
+            '<td class="ID">'.$item['code']. '</td>'.
 
             '<td class="name">'.
                 '<div class="anchor clearfix">'.

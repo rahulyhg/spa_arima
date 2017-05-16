@@ -3,8 +3,8 @@
 
 $title = array(
 	0 =>   
-
-	  array('key'=>'name', 'text'=>$this->lang->translate('Full Name'),'sort'=>'first_name')
+	  array('key'=>'ID', 'text'=>$this->lang->translate('Code'), 'sort'=>'code')
+	, array('key'=>'name', 'text'=>$this->lang->translate('Full Name'),'sort'=>'first_name')
 	, array('key'=>'phone', 'text'=>$this->lang->translate('Nick Name') )
 	, array('key'=>'express', 'text'=>$this->lang->translate('Contact') )
 

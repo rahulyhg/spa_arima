@@ -128,6 +128,16 @@ class Customers extends Controller {
         $this->view->setData('item', $item);
         $this->view->render('customers/forms/edit_contact');
     }
+    public function edit_cus_level($id=null){
+        if( empty($this->me) || empty($id) ) $this->error();
+
+        $item = $this->model->get($id, array('options'=>true));
+        if( empty($item) ) $this->error();
+
+        $this->view->setData('level', $this->model->level());
+        $this->view->setData('item', $item);
+        $this->view->render('customers/forms/edit_cus_level');
+    }
 
     public function save() {
     	if( empty($this->me) ||empty($_POST) ) $this->error();
@@ -142,6 +152,7 @@ class Customers extends Controller {
         try {
             $form = new Form();
             $form   ->post('cus_prefix_name')
+                    ->post('cus_code')
                     ->post('cus_level_id')->val('is_empty')
                     ->post('cus_first_name')->val('is_empty')
                     ->post('cus_last_name')
@@ -317,10 +328,10 @@ class Customers extends Controller {
         try {
             $form = new Form();
             $form   ->post('cus_prefix_name')
-            ->post('cus_first_name')->val('is_empty')
-            ->post('cus_last_name')->val('is_empty')
-            ->post('cus_nickname')
-            ->post('cus_card_id');
+                    ->post('cus_first_name')->val('is_empty')
+                    ->post('cus_last_name')->val('is_empty')
+                    ->post('cus_nickname')
+                    ->post('cus_card_id');
 
 
             $form->submit();
@@ -500,6 +511,33 @@ class Customers extends Controller {
                 $arr['message'] = 'บันทึกเรียบร้อย';
                 $arr['url'] = 'refresh';
                 
+            }
+
+        } catch (Exception $e) {
+            $arr['error'] = $this->_getError($e->getMessage());
+        }
+
+        echo json_encode($arr);
+    }
+
+    public function update_cus_level(){
+
+        $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : '';
+        if( empty($this->me) || empty($id) || empty($_POST) || $this->format!='json' ) $this->error();
+
+        try{
+            $form = new Form();
+            $form   ->post('cus_code')
+                    ->post('cus_level_id');
+
+            $form->submit();
+            $postData = $form->fetch();
+
+            if( empty($arr['error']) ){
+
+                $this->model->update($id, $postData);
+                $arr['message'] = 'บันทึกเรียบร้อย';
+                $arr['url'] = 'refresh';
             }
 
         } catch (Exception $e) {

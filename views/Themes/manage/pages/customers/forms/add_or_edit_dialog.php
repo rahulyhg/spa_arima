@@ -69,6 +69,13 @@ $form   ->field("cus_level_id")
         ->select( $this->level, 'id', 'name', 0 )
         ->value( !empty($this->item['level_id'])? $this->item['level_id']:'' );
 
+$form   ->field("cus_code")
+        ->label( $this->lang->translate("code") )
+        ->addClass('inputtext')
+        ->autocomplete('off')
+        ->placeholder('')
+        ->value( !empty($this->item['code']) ? $this->item['code']:'' );
+
 
 // $form   ->field("image")
 //         ->text( $picture_box );

@@ -97,6 +97,7 @@ else{
         <div class="profile-resume mtm"><?php 
             include 'sections/basic.php';
             include 'sections/contact.php';
+            include 'sections/level.php';
 
         ?></div>
 

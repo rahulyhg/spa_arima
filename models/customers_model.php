@@ -9,7 +9,7 @@ class customers_model extends Model
 
     private $_objName = "customers";
     private $_table = "customers LEFT JOIN city ON customers.cus_city_id = city.city_id";
-    private $_field = "cus_id, cus_prefix_name, cus_first_name, cus_last_name, cus_nickname,  cus_created, cus_updated, cus_birthday, cus_card_id, cus_phone, cus_email, cus_lineID, cus_bookmark, cus_address, cus_zip, cus_city_id, city_name, cus_emp_id, cus_status";
+    private $_field = "cus_level_id, cus_code, cus_id, cus_prefix_name, cus_first_name, cus_last_name, cus_nickname,  cus_created, cus_updated, cus_birthday, cus_card_id, cus_phone, cus_email, cus_lineID, cus_bookmark, cus_address, cus_zip, cus_city_id, city_name, cus_emp_id, cus_status";
     private $_cutNamefield = "cus_";
 
     private function _setDate($data) {
@@ -260,6 +260,10 @@ class customers_model extends Model
         $data['fullname'] = "{$data['prefix_name_th']}{$data['first_name']} {$data['last_name']}";
 
         $data['initials'] = $this->fn->q('text')->initials( $data['first_name'] );
+
+        if( !empty($data['level_id']) ){
+            $data['level'] = $this->get_level( $data['level_id'] );
+        }
 
         if( !empty($options['options']) ){
             $data['options'] = $this->getOptions($data['id']);
