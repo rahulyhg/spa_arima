@@ -190,6 +190,17 @@ class customers_model extends Model
             $where_arr[':endDate'] = $period_end;
         }
 
+        if( !empty($_REQUEST['status']) ){
+            $options['status'] = $_REQUEST['status'];
+        }
+
+        if( !empty($options['status']) ){
+
+            $where_str .= !empty( $where_str ) ? " AND ":'';
+            $where_str .="cus_status=:status";
+            $where_arr[':status'] = $options['status'];
+        }
+
         $arr['total'] = $this->db->count($this->_table, $where_str, $where_arr);
 
         $where_str = !empty($where_str) ? "WHERE {$where_str}":'';

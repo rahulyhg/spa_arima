@@ -25,10 +25,10 @@
 				<option value="custom"><?=$this->lang->translate('Custom')?></option>
 			</select></li> -->
 
-			<li><label for="position" class="label">Expired Date</label>
-			<select ref="selector" name="display" class="inputtext"><?php
-				echo '<option value="enabled">Enabled</option>';
-				echo '<option value="disabled">Disabled</option>';
+			<li><label for="position" class="label">Status</label>
+			<select ref="selector" name="status" class="inputtext"><?php
+				echo '<option value="run">RUN</option>';
+				echo '<option value="expired">EXPIRED</option>';
 			?></select></li>
 			
 
