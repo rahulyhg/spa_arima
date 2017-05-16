@@ -49,14 +49,6 @@ class Dashboard extends Controller {
 		);
 		$this->view->setData('revenue', $this->model->query('orders')->summary( $revenue_options ));
 
-		/* สรุปยอดขาย */
-		$sell_options = array(
-			'period_start'=>$start,
-			'period_end'=>$end,
-			'type'=>'sell',
-		);
-		$this->view->setData('sell', $this->model->query('orders')->summary( $sell_options ));
-
 		/* สรุปยอดจอง */
 		$booking_options = array(
 			'period_start'=>$start,
@@ -79,6 +71,10 @@ class Dashboard extends Controller {
 			'period_end'=>$end,
 			'dashboard'=>true
 		);
+
+		/* Customer RUN & EXPIRED */
+		$this->view->setData('customers', $this->model->query('customers')->summary());
+
 		// print_r($this->model->query('package')->lists( $package_options ));die;
 		$this->view->setData('package', $this->model->query('package')->lists( $package_options ));
 

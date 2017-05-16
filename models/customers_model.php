@@ -401,4 +401,24 @@ class customers_model extends Model
         $this->db->delete( 'customers_level', "`level_id`={$id}" );
     }
 
+    public function summary( $options=array() ){
+
+        $select = "COUNT(cus_id) AS total";
+        $form = "customers";
+        $where_str = 'cus_status=:status';
+
+        // expired //
+        $where_arr[':status'] = 'expired';
+        $data_expired = $this->db->select("SELECT {$select} FROM {$form} WHERE {$where_str}", $where_arr);
+
+        // RUN //
+        $where_arr[':status'] = 'run';
+        $data_run = $this->db->select("SELECT {$select} FROM {$form} WHERE {$where_str}", $where_arr);
+
+        $data['total_expired'] = $data_expired[0]['total'];
+        $data['total_run'] = $data_run[0]['total'];
+
+        return $data;
+    }
+
 }
