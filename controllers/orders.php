@@ -59,7 +59,71 @@ class Orders extends Controller {
 
     public function save() {
         // order_number
-        echo json_encode( $_POST );
+
+        // save order
+        $order = array(
+            'order_date' => date('Y-m-d', strtotime($_POST['date'])),
+            'order_number' => $_POST['number'],
+            'order_status' => isset( $_POST['status'] ) ? $_POST['status']: 'order',
+            'order_total' => $_POST['summary']['total'],
+            'order_drink' => $_POST['summary']['drink'],
+            'order_discount' => $_POST['summary']['discount'],
+            'order_balance' => $_POST['summary']['balance'],
+        );
+
+        if( !empty($_POST['id']) ){
+            $item = $this->model->get( $_POST['id'] );
+        }
+
+        $detail = array();
+        if( !empty($_POST['items']) ){
+            foreach ($_POST['items'] as $value) {
+
+                $dd = array(
+                    'item_pack_id' => $value['pack_id'],
+                    'item_price' => $value['price'],
+                    'item_discount' => $value['discount'],
+                    'item_status' => $value['status'],
+                    'item_balance' => $value['price']-$value['discount']
+                );
+
+
+                if( isset($value['masseuse_id']) ){
+                    $dd['item_masseuse_id'] = $value['masseuse_id'];
+                }
+
+                if( isset($value['room_id']) ){
+                    $dd['item_room_id'] = $value['room_id'];
+                }
+                if( isset($value['room_price']) ){
+                    $dd['item_room_price'] = $value['room_price'];
+                }
+                if( isset($value['bed_id']) ){
+                    $dd['item_bed_id'] = $value['bed_id'];
+                }
+
+                $detail[] = $dd;
+            }
+        }
+
+        /*if( !empty($item) ){
+            $this->model->updateOrder( $id, $order );
+        }
+        else{
+            $this->model->insertOrder( $order );
+        }
+
+        // update Item 
+        if( !empty($detail) ){
+            foreach ($detail as $value) {
+                $value['item_order_id'] = $order['id'];
+                $this->model->insertDetail( $value );
+            }
+        }*/
+
+        // 'order_created' => $_POST['created'],
+
+        echo json_encode( $detail );
     }
 
     public function set_bill() {

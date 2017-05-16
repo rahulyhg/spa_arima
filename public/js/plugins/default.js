@@ -1188,8 +1188,13 @@ if ( typeof Object.create !== 'function' ) {
 			var self = this;
 
 			self.is_focus = false;
-			if( self.$elem.val() ){
-				self.options.selectedDate = new Date( self.$elem.val() );
+			if( self.original.val()!='' ){
+				var val = self.original.val();
+				var rs = val.split("-");
+				if( rs.length==3 ){
+					self.options.selectedDate = new Date( parseInt(rs[0]), parseInt(rs[1])-1, parseInt(rs[2]) );
+					self.options.selectedDate.setHours(0, 0, 0, 0);
+				}
 			}
 			self.options.selectedDate.setHours(0, 0, 0, 0);
 

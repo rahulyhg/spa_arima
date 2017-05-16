@@ -17,9 +17,9 @@
 							<span> 30:45:11</span>
 						</div> -->
 
-						<!-- <div class="subtext">
-							<span><label>Member:</label> <i class="icon-address-card-o"></i><span>ภุชงค์ 08436359502</span></span>
-						</div> -->
+						<div class="subtext hidden_elem" data-bill="member">
+							<span><label>Member:</label> <i class="icon-address-card-o mrs"></i><span class="text" data-bill-set="member"></span> <a data-bill-action="remove_member" class="btn-icon"><i class="icon-remove"></i></a></span>
+						</div>
 						<!-- <div class="subtext">
 							<span><label>Room No.</label> 101</span>
 						</div>
@@ -78,8 +78,8 @@
 							<table><tbody>
 								
 								<tr>
-									<td class="label"><?=$this->lang->translate('Sub total')?>:</td>
-									<td class="data"><span summary="subtotal">0</span> ฿</td>
+									<td class="label"><?=$this->lang->translate('Total')?>:</td>
+									<td class="data"><span summary="total">0</span> ฿</td>
 								</tr>
 								<tr>
 									<td class="label"><?=$this->lang->translate('Discount')?>:</td>
@@ -105,8 +105,8 @@
 									<td class="data"><span summary="drink">0</span> ฿</td>
 								</tr>
 								<tr>
-									<td class="label TOTAL"><?=$this->lang->translate('Total')?>:</td>
-									<td class="data TOTAL"><span summary="total">0</span> ฿</td>
+									<td class="label TOTAL"><?=$this->lang->translate('Balance')?>:</td>
+									<td class="data TOTAL"><span summary="balance">0</span> ฿</td>
 								</tr>
 							</tbody></table>
 						</td>
@@ -116,17 +116,19 @@
 				<div class="slipPaper-bodyFooter-actions mvm clearfix">
 					<div class="lfloat">
 						
-						<span class="gbtn"><a class="btn"><i class="icon-clone" data-bill-action="clone"></i><span class="text-btn mls">Clone</span></a></span>
+						<span class="gbtn"><a class="btn btn-red" data-bill-action="cancel"><i class="icon-remove"></i><span class="text-btn mls"><?=$this->lang->translate('Cancel')?></span></a></span>
+
+						<!-- <span class="gbtn"><a class="btn"><i class="icon-clone" data-bill-action="clone"></i><span class="text-btn mls">Clone</span></a></span> -->
 						
 						<!-- <span class="gbtn"><a class="btn"><i class="icon-envelope"></i></a></span> -->
 					</div>
 					<div class="rfloat">
 
-						<span class="gbtn"><a class="btn btn-red" data-bill-action="cancel"><i class="icon-remove"></i><span class="text-btn mls">Cancel</span></a></span>
+						
 
-						<span class="gbtn"><a class="btn" data-bill-action="hold"><i class="icon-arrow-up mrs"></i>Hold</a></span>
+						<span class="gbtn"><a class="btn" data-bill-action="hold"><i class="icon-arrow-up mrs"></i><?=$this->lang->translate('Hold')?></a></span>
 
-						<span class="gbtn"><a class="btn btn-blue" data-bill-action="send"><i class="icon-paper-plane-o mrs"></i>Send</a></span>
+						<span class="gbtn"><a class="btn btn-blue" data-bill-action="send"><i class="icon-paper-plane-o mrs"></i><?=$this->lang->translate('Order')?></a></span>
 					</div>
 				</div>
 			</div>

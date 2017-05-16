@@ -71,11 +71,14 @@ $optionsInvite = array(
 	'url' => URL.'customers/invite',
 );
 
-if( !empty( $this->item['invite'] ) ){
-	$optionsInvite['invite'] = $this->item['invite'];
+if( isset( $_GET['id'] ) ){
+	// $optionsInvite['invite'] = $this->item['invite'];
+
+	$invite['customers'][] = array('type'=>'customers', 'id'=> $_GET['id']); //['customers'][] = 7;
+	$optionsInvite['invite'] = $invite;
 }
 
-$arr['hiddenInput'][] = array('name'=>'has_invite','value'=>1);
+
 
 
 $formDetail = '';

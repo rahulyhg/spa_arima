@@ -38,6 +38,9 @@ class th extends Langs {
 		$data['unit'] = 'หน่วย';
 		$data['reports'] = 'รายงาน';
 
+		$data['hold'] = 'ปิด';
+		$data['cancel'] = 'ยกเลิก';
+
 		$str = strtolower($text);
 		return !empty($data[$str]) ? $data[$str]: $text;
 	}

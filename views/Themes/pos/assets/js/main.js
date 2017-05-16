@@ -28,7 +28,7 @@ if ( typeof Object.create !== 'function' ) {
 			self.Events();
 
 			self.active( 'bill' );
-			self.active( 'menu' );
+			// self.active( 'detail' );
 		},
 		setElem: function () {
 			var self = this;
@@ -63,7 +63,6 @@ if ( typeof Object.create !== 'function' ) {
 
 			self.$elem.find('[data-global=menu]').delegate('.memu-table [data-id]', 'click', function () {
 
-
 				self.chooseMenu( $(this).data('type'), $(this).data('id') );
 			});
 
@@ -84,10 +83,16 @@ if ( typeof Object.create !== 'function' ) {
 				var action = $(this).attr('data-bill-action');
 
 				if( action == 'hold' ){
-					self.active( 'lists' );
-					self.active( 'summary' );
+
+					self.saveBill( function () {
+						
+						self.active( 'lists' );
+						self.active( 'summary' );
+					} );
+					
 				}
 				else if( action=='pay' ){
+
 					self.active( 'pay' );
 				}
 				else if( action=='menu' ){
@@ -99,6 +104,24 @@ if ( typeof Object.create !== 'function' ) {
 
 					// console.log('save', self.currOrder );
 					// self.active( 'lists' );
+				}else if( action=='remove_member' ){
+					self.$elem.find('[data-bill=member]').addClass('hidden_elem');
+    				if( self.currOrder.member ){
+    					delete self.currOrder.member;
+    				}
+
+    				self.bill.resize();
+				}
+				else if( action=='cancel' ){
+
+					if( self.currOrder.id ){
+						console.log( 'delete', self.order );
+					}
+					else{
+						self.active( 'lists' );
+						self.active( 'summary' );
+					}
+
 				}
 			});
 
@@ -118,7 +141,7 @@ if ( typeof Object.create !== 'function' ) {
 			});*/
 			self.$elem.find('[data-global=detail]').delegate('[data-control]', 'click', function () {
 
-				var box = $(this).closest('tr');
+				var box = $(this).closest('[data-item]');
 				var index = box.index();
 				var fdata = box.data();
 
@@ -126,7 +149,7 @@ if ( typeof Object.create !== 'function' ) {
 
 				var data = {
 		    		type: type,
-		    		date: PHP.dateJStoPHP( self.currOrder.theDate ) 
+		    		date: PHP.dateJStoPHP( self.currOrder.date ) 
 		    	}
 
 		    	if( type=='remove_item' ){
@@ -199,14 +222,22 @@ if ( typeof Object.create !== 'function' ) {
 
 		    	var data = {
 		    		type: type,
-		    		date: PHP.dateJStoPHP( self.currOrder.theDate ) 
+		    		date: PHP.dateJStoPHP( self.currOrder.date ) 
 		    	}
 
 		    	if(  type=='drink' ){
 		    		data.drink = self.currOrder.summary.drink;
 		    	}
 
+		    	if( type=='member' && self.currOrder.member ){
+		    		data.id = self.currOrder.member.id;
+		    	}
+
+		    	var is_submit = false;
 		    	Dialog.load( Event.URL + 'orders/set_bill', data, {
+		    		onClose: function () {
+		    			
+		    		},
 		    		onSubmit: function ( $el ) {
 		    			var err = false;
 
@@ -214,37 +245,91 @@ if ( typeof Object.create !== 'function' ) {
 		    				self.currOrder.summary.drink = parseInt( $.trim($el.$pop.find('#drink').val()) );
 			    			self.summaryPrice();
 			    			self.summaryDisplay();
+
+			    			Dialog.close();
 		    			}
 		    			
 		    			if( type=='member' ){
 
+		    				is_submit = true;
 		    				var id = $el.$pop.find('form').find('[ref=tokenbox]>[data-id]').data('id');
 
-		    				// $.get( 'get/' );
+		    				if( id ){
+		    					$.get( Event.URL + 'customers/_get/' + id, function (res) {
+		    						self.currOrder.member = res;
+
+		    						self.$elem.find('[data-bill=member]').removeClass('hidden_elem').find( '.text' ).text( res.fullname );
+
+		    						Dialog.close();
+
+		    						self.bill.resize();
+		    					}, 'json');
+
+		    					
+		    				}
+		    				else if( self.currOrder.member ){
+		    					self.$elem.find('[data-bill=member]').addClass('hidden_elem');
+		    					delete self.currOrder.member;
+		    				}
+		    				
 		    			}
 
 		    			if( err ){
-
 		    				return false;
 		    			}
-		    			console.log( 'Submit' );
-
-		    			Dialog.close();
+		 
 		    		}
 		    	} );
 			} );
 		},
 
-		saveBill: function () {
+		saveBill: function ( a ) {
 			var self = this;
+			var dataPost = {}; 
 
-			var dataPost = {
+			$.each(self.currOrder, function(key, val) {
+				if( key=='items' ){
+
+					var items = [];
+					for (var i in val) {
+						var data = val[i];
+
+						$.each( data.detail, function (j, detail) {
+
+							var d = {
+								pack_id: data.id,
+								status: detail.status,
+								total: detail.total,
+								discount: detail.discount,
+								balance: detail.balance,
+							};
+
+							if(detail.masseuse){
+								d.masseuse_id = detail.masseuse.id;
+							}
+
+							if( detail.room ){
+								d.room_id = detail.room.id;
+								d.room_price = detail.room.price;
+								d.bed_id = detail.bed.id;
+							}
+							
+							items.push(d);
+						} );
+					}
+					dataPost.items = items;
+				}
+				else{
+					dataPost[key] = val;
+				}
+			});
+
+			dataPost.date = PHP.dateJStoPHP( dataPost.date );
+			$.post( Event.URL + 'orders/save', dataPost, function (res) {
 				
-			};
-			console.log( self.currOrder );
-			$.post( Event.URL + 'orders/save', self.currOrder, function (res) {
-				
-				// console.log( res );
+				/*self.currOrder.id = res.id;
+				self.currOrder.status = res.status;*/
+				console.log( res );
 			}, 'json');	
 		},
 
@@ -275,8 +360,6 @@ if ( typeof Object.create !== 'function' ) {
 				if( type=='promotion' ){
 
 					$.each( res, function (i, obj) {
-
-
 						obj.active = false;
 						self._queueMenu.push( obj );
 						// 
@@ -364,8 +447,9 @@ if ( typeof Object.create !== 'function' ) {
 				
 				unit: data.unit,
 
-				price: parseInt( data.price ),
+				total: parseInt( data.price ),
 				discount: 0,
+				balance: 0,
 
 				status: 'order',
 
@@ -433,14 +517,17 @@ if ( typeof Object.create !== 'function' ) {
 				var deduct = 0;
 
 				// 1. ราคาสินราคา 350 ลด 50 หากซื้อมากว่า 1 รายการ 
-				if( data.price==350 && qty>1 ){
+				if( data.total==350 && qty>1 ){
 					deduct = 50;
 				}
 
-				self.currOrder.items[obj].discount = data.qty*deduct;
+				var discount = data.qty*deduct;
+				self.currOrder.items[obj].discount = discount;
+				self.currOrder.items[obj].balance = (data.total*qty) - discount;
 
 				$.each( self.currOrder.items[obj].detail, function (i) {
 					self.currOrder.items[obj].detail[i].discount = deduct;
+					self.currOrder.items[obj].detail[i].balance = data.total-deduct;
 				} );
 
 				self.updateItemBill( data );
@@ -458,7 +545,9 @@ if ( typeof Object.create !== 'function' ) {
 		setItemBill: function (data) {
 			var self = this;
 
-			var cost = data.qty * data.price;
+			// console.log( data );
+
+			var cost = data.qty * data.total;
 			var total = cost - data.discount;
 
 			var $price = $('<td>', {class: 'price'}).append(
@@ -583,77 +672,135 @@ if ( typeof Object.create !== 'function' ) {
 		itemDetail: function (data ) {
 			var self = this;
 
-			var $masseuse = $('<td>', {class: 'masseuse'});
+			var $date = $('<div>', {class: 'date'}).append(
+				  $('<div>', {class: 'number'}).text( data.no )
+				, $('<div>', {class: 'text-date'}).append(
+					  ''
+					, $('<span>', {class: ''}).text( '1 '+ data.unit)
+					, $('<span>', {class: 'ui-status'}).text( data.status )
+					, $('<span>', {class: 'gbtn'}).append(
+						$('<a>', {
+							class: 'btn',
+							'data-control': "click",
+							'data-type': "remove_item"
+						}).append( 
+							$('<i>', {class: 'icon-remove'})
+						)
+						// 'Remove'
+					)
+				)
+			);
 
-			// 
-			$masseuse.append( $('<div>', {class: 'clearfix ui-controls'}).append(
+			var $wrap = $('<div>', {class: 'wrap'});
+			var $table = $('<table>', {class: ''});
 
-				  $('<span>', {class: 'gbtn control before'}).html( $('<a>', {class: 'btn btn-small add', 'data-control': 'add', 'data-type': 'masseuse'}).append( $('<i>', {class: 'icon-plus mrs'}), 'Masseuse' ) )
-				, $('<span>', {class: 'gbtn control after'}).html( $('<a>', {class: 'btn btn-small btn-no-padding', 'data-control': 'change', 'data-type': 'masseuse'}).html( $('<i>', {class: 'icon-refresh'}) ) )
-			) );
+			// Masseuse
+			var $masseuse = $('<tr>', {class: 'masseuse'});
+			var masseuse_data = '-';
+			$masseuse.append( $('<td>', {class: 'label'}).text('Masseuse') );
 
 			if( data.has_masseuse==0 ){
-				$masseuse.html('-');
 			}else if( data.masseuse ){
-				$masseuse.find('.ui-controls').addClass('has-data');
 
-				$masseuse.append( $('<div>', {class: 'inner'}).html( self.setAnchorMasseuse( data.masseuse ) ) );
+				var img = '';
+				if( data.masseuse.image_url ){
+					img = $('<div>', {class: 'avatar lfloat mrs'}).html( $('<img>', {  src: data.masseuse.image_url }) );
+				}
+
+				console.log( data );
+
+				masseuse_data = $('<a>', {
+					class: 'control', 
+					'data-control':'change', 
+					'data-type':'masseuse'
+				}).append( 
+					
+					$('<span>', { class: 'ui-status lfloat mrm', text: data.masseuse.icon_text }), 
+					img , 
+					$('<span>', { class: '', text: data.masseuse.text }) 
+				);
+			}
+			else{
+				masseuse_data = $('<a>', {
+					class: 'control', 
+					'data-control':'change', 
+					'data-type':'masseuse'
+				}).html( '+ Choose Masseuse' );
 			}
 
+			$masseuse.append( $('<td>', {class: 'data'}).html( masseuse_data ) );
+
+			// Room 
+			var $room = $('<tr>', {class: 'room'});
+			var room_data = '';
+			$room.append( $('<td>', {class: 'label'}).text('Room') );
+
+			if( data.has_masseuse==0 ){
+			}else if( data.room ){
+
+				room_data = $('<a>', {
+					class: 'control', 
+					'data-control':'change', 
+					'data-type':'masseuse'
+				}).append( 
+					  $('<span>', {class: ''}).text( 'Fl:'+ data.floor.name )
+					, $('<span>', {class: ''}).text( ' / R:'+ data.room.name )
+					, $('<span>', {class: ''}).text( ' / B:'+ data.bed.name )
+					, $('<i>', {class: 'icon-pencil'})
+				);
+			}
+			else{
+				room_data = $('<a>', {
+					class: 'control', 
+					'data-control':'change', 
+					'data-type':'room'
+				}).html( '+ Choose Room' );
+			}
+			$room.append( $('<td>', {class: 'data'}).append( room_data ) );
+
+			// Price
 			var cost = data.price;
 			var total = cost - data.discount;
 
-			var $price = $('<td>', {class: 'price'}).append(
-				  $('<div>', {class: 'cost'}).text( PHP.number_format( cost ) )
-				, $('<div>', {class: 'discount'}).append( '-', PHP.number_format(data.discount) )
-				, $('<div>', {class: 'total'}).text( PHP.number_format( total ) )
+			var $price = $('<tr>', {class: 'price'})
+			$price.append( $('<td>', {class: 'label'}).text('Price') );
+
+			$price.append( $('<td>', {class: 'data price'})
+				.toggleClass('has-discount',  data.discount > 0)
+				.html( $('<a>', {class: 'control'}).append(
+
+					  $('<span>', {class: 'cost'}).text( PHP.number_format( cost ) )
+					, $('<span>', {class: 'discount'}).append( '-', PHP.number_format(data.discount) )
+					, $('<span>', {class: 'total'}).text( PHP.number_format( total ) )
+
+					, $('<i>', {class: 'icon-pencil'})
+
+				) )
 			);
 
-			$price.toggleClass('has-discount',  data.discount > 0);
+			// Time
+			var $time ='';
 
-			var $time = $('<td>', {class: 'time'});
+			/*var $time = $('<tr>', {class: 'time'})
+			$time.append( $('<td>', {class: 'label'}).text('Time') );
+			$time.append( $('<td>', {class: 'data'})
+				.append( 1, $('<span>', {class: 'mls'}).text(data.unit) )
+			);*/
 
-			var $room = $('<td>', {class: 'room'});
+			// Status
+			/*var $status = $('<tr>', {class: 'status'})
+			$status.append( $('<td>', {class: 'label'}).text('Status') );
+			$status.append( $('<td>', {class: 'data'})
+				.append( $('<span>', {class: 'ui-status'}).text( data.status ) )
+			);*/
 
-			$room.append( $('<div>', {class: 'clearfix ui-controls'}).append(
-
-				  $('<span>', {class: 'gbtn control before'}).html( $('<a>', {class: 'btn btn-small add', 'data-control': 'add', 'data-type': 'room'}).append( $('<i>', {class: 'icon-plus mrs'}), 'Room' ) )
-				, $('<span>', {class: 'gbtn control after'}).html( $('<a>', {class: 'btn btn-small btn-no-padding', 'data-control': 'change', 'data-type': 'room'}).html( $('<i>', {class: 'icon-refresh'}) ) )
-			) );
-
-
-
-			if( data.room ){
-				$room.find('.ui-controls').addClass('has-data');
-
-
-				$room.append( $('<div>', {class: 'fsm inner'}).append(
-					  $('<div>', {class: ''}).text( 'Floor:'+ data.floor.name )
-					, $('<div>', {class: ''}).text( 'Room:'+ data.room.name )
-					, $('<div>', {class: ''}).text( 'Bed:'+ data.bed.name )
-				) );
-			}
-
-			$time.append( 1, $('<span>', {class: 'mls'}).text(data.unit) );
-
-
-			var $tr = $('<tr>').append(
-
-				$('<td>', {class: 'no'}).html( data.no + '.' ),
-
-				$masseuse,
-				$room,
-
-				$time, //'<td class="time"><div>1 TIME</div><div>8:10 PM - 10:10 PM</div></td>',
-
-				$price, 
-
-				$('<td>', {class: 'actions'}).html( '<span class="gbtn"><a class="btn btn-no-padding js-remove-time" data-control="click" data-type="remove_item"><i class="icon-remove"></i></a></span>' )
+			var $box = $('<li>', {'data-id': data.id, 'data-item': 1 }).append(
+				$date, $wrap.html( $table.append( $masseuse, $room, $time, $price ) )
+				// $('<td>', {class: 'actions'}).html( '<span class="gbtn"><a class="btn btn-no-padding js-remove-time" data-control="click" data-type="remove_item"><i class="icon-remove"></i></a></span>' )
 			);
 
-			$tr.data( data );
-
-			return $tr;
+			$box.data( data );
+			return $box;
 		},
 		refreshItemDetail: function (index, data) {
 			var self = this;
@@ -661,16 +808,15 @@ if ( typeof Object.create !== 'function' ) {
 			var $box = self.$elem.find('[data-global=detail]');
 			var $listsbox = $box.find('[role=listsbox]');
 
-			$listsbox.find('tr').eq( index ).replaceWith( self.itemDetail( data ) );
+			$listsbox.find('[data-item]').eq( index ).replaceWith( self.itemDetail( data ) );
 		},
-
 		removeItemDetail: function (index, data) {
 			var self = this;
 
 			var $box = self.$elem.find('[data-global=detail]');
 			var $listsbox = $box.find('[role=listsbox]');
 
-			$listsbox.find('tr').eq( index ).remove();
+			$listsbox.find('[data-item]').eq( index ).remove();
 
 			var detail = [];
 			$.each( self.currOrder.items[data.parent_KEY].detail, function (i, obj) {
@@ -739,22 +885,21 @@ if ( typeof Object.create !== 'function' ) {
 		summaryPrice: function () {
 			var self = this;
 
-			var a = [0,0,0]; // subtotal, discount, 
-
+			var a = [0,0,0];
 			for (var obj in self.currOrder.items) {
 				var data = self.currOrder.items[obj];
 
 				data.cost = data.qty*data.price;
-				data.total = data.cost - data.discount;
+				data.balance = data.cost - data.discount;
 
 				a[0] += data.cost;
 				a[1] += data.discount;
 			}
 
-			self.currOrder.summary.subtotal = a[0];
+			self.currOrder.summary.total = a[0];
 			self.currOrder.summary.discount = a[1];
 
-			self.currOrder.summary.total = (a[0] + self.currOrder.summary.drink) - a[1];
+			self.currOrder.summary.balance = (a[0] + self.currOrder.summary.drink) - a[1];
 		},
 		summaryDisplay: function () {
 			var self = this;
@@ -764,8 +909,6 @@ if ( typeof Object.create !== 'function' ) {
 				self.$elem.find('[summary='+ key +']').text( PHP.number_format(val) );
 			} );			
 		},
-
-
 		setMasseuse: function ( on ) {
 			var self = this;
 
@@ -773,7 +916,7 @@ if ( typeof Object.create !== 'function' ) {
 
 	    	Dialog.load( Event.URL + 'orders/set_bill', {
 	    		type: 'masseuse',
-	    		date: PHP.dateJStoPHP( self.currOrder.theDate ) 
+	    		date: PHP.dateJStoPHP( self.currOrder.date ) 
 	    	}, {
 	    		onClose: on.fail,
 	    		onSubmit: function ( $el ) {
@@ -958,11 +1101,11 @@ if ( typeof Object.create !== 'function' ) {
 			self.$elem.find('[data-global=menu]').find('[role=menu] .active').removeClass('active');
 			
 			return {
-				theDate: date ? new Date(date): new Date(),
+				date: date ? new Date(date): new Date(),
 				summary: {
 					tip: 0,
-					subtotal: 0,
 					total: 0,
+					balance: 0,
 					change: 0,
 					drink: 0,
 					discount: 0,
@@ -986,7 +1129,7 @@ if ( typeof Object.create !== 'function' ) {
 				self.$elem = $elem;
 
 				// get Data
-				var $date = $('<input>', {type: 'date'}).val( PHP.dateJStoPHP(self.then.currOrder.theDate) );
+				var $date = $('<input>', {type: 'date'}).val( PHP.dateJStoPHP(self.then.currOrder.date) );
 
 				// Datelang.fulldate( self.then.currOrder.theDate, 'normal', self.options.lang )
 				self.$elem.find('[data-bill=date]').html( $date );
@@ -995,7 +1138,7 @@ if ( typeof Object.create !== 'function' ) {
 					lang: self.options.lang,
 					onSelected: function ( date ) {
 						
-						self.then.currOrder.theDate = new Date( date );
+						self.then.currOrder.date = new Date( date );
 						self.getNumber();
 					}
 				});
@@ -1021,7 +1164,7 @@ if ( typeof Object.create !== 'function' ) {
 
 				self.$elem.addClass('has-loading');
 
-				$.get( Event.URL + 'orders/lastNumber', {date: PHP.dateJStoPHP( self.then.currOrder.theDate ) }, function (number) {
+				$.get( Event.URL + 'orders/lastNumber', {date: PHP.dateJStoPHP( self.then.currOrder.date ) }, function (number) {
 					self.then.currOrder.number = number;
 
 					self.$elem.removeClass('has-loading');

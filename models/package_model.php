@@ -161,7 +161,6 @@ class Package_Model extends Model {
 		$data['permit']['del'] = true;
 
 
-
 		// 
 		$view_stype = !empty($options['view_stype']) ? $options['view_stype']:'convert';
         if( !in_array($view_stype, array('bucketed', 'convert')) ) $view_stype = 'convert';

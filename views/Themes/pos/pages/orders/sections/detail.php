@@ -7,11 +7,15 @@
 
 			<div class="lfloat">
 				<div style="padding-top: 7px; display: inline-block;">
-				<h2><i class="icon-cube mrs"></i><span data-text="title">SHOWER ROOM</span></h2>
+				<h2>
+
+					<span style="background-color: #fff;border:1px solid #000; width: 30px;height: 30px;text-align: center;line-height: 28px;display: inline-block;border-radius: 50%;color: #333;box-shadow: 0 0 0 1px rgba(255,255,255,.8)">
+					<i class="icon-cube mrs"></i>
+					</span>
+
+				<span data-text="title">dfddf</span></h2>
 				</div>
 			</div>
-
-
 
 			<!-- <div class="rfloat"> -->
 				<!-- <span class="gbtn"><a class="btn" data-global-action="menu"><i class="icon-arrow-left mrs"></i>Hide</a></span> -->
@@ -25,45 +29,66 @@
 		Hide <span class="gbtn"><a class="js-link-back btn" data-global-action="menu"><i class="icon-arrow-right"></i></a></span>
 	</div>
 
-	<div style="position: absolute;top: 0;left: 30px;right: 0;bottom: 0;overflow-y: auto;"><div style="padding-top: 65px;padding-bottom: 30px; max-width: 600px;">
+	<div style="position: absolute;top: 0;left: 30px;right: 0;bottom: 0;overflow-y: auto;"><div style="padding-top: 65px; max-width: 600px;">
 
-		<div class="profile-menu">
+		<div class="">
 
 			<div>
-			<table class="profile-menu-table">
-				<thead>
-					<tr>
-						<!-- <th>Room/Bed</th> -->
-						<th class="no">#</th>
-						<th class="masseuse"><?=$this->lang->translate('Masseuse')?></th>
-						<th class="room"><?=$this->lang->translate('Room')?>/<?=$this->lang->translate('Bed')?></th>
-						<th class="time"><?=$this->lang->translate('Time')?></th>
-						<th class="price"><?=$this->lang->translate('Price')?></th>
-						<th class="actions"></th>
-					</tr>
-				</thead>
-				<tbody role="listsbox">
-					<?php for ($i=0; $i < 0; $i++) { ?>
-					<tr>
-						<td>101</td>
-						<td><div class="anchor clearfix"><div class="avatar lfloat mrm"><img class="img" src="http://localhost/spa_arima/public/uploads/1/87d2c0e7_a783003a6375b106ac9fa59fe388dfc9_a.jpg" alt="นายภุชงค์ สวนแจ้ง"></div><div class="content"><div class="spacer"></div><div class="massages"><div class="fullname">นายภุชงค์ สวนแจ้ง</div><span class="subname">0843635952</span></div></div></div></td>
-						<td class="time">
-							<div>1 TIME</div>
-							<div>8:10 PM - 10:10 PM</div>
-						</td>
-						<td class="price">350฿</td>
-						<td class="actions">
-							<span class="gbtn"><a class="btn btn-no-padding"><i class="icon-remove"></i></a></span>
-						</td> 
-					</tr>
+				<ul class="ui-list-detail" role="listsbox">
+					<li>
+						
+					</li>
+					<?php for ($i=0; $i < 3; $i++) { ?>
+					<li>
+
+						<div class="date">
+							<div class="number"><?=$i?></div>
+							<div class="control">10.00 - 12.00 PM</div>
+						</div>
+
+						<div class="wrap">
+						<table class="">
+							<tr>
+								<td class="label">Masseuse</td>
+								<td class="data"><div class="control">
+									<div class="avatar lfloat mrs"><img class="img" src="http://localhost/spa_arima/public/uploads/1/87d2c0e7_a783003a6375b106ac9fa59fe388dfc9_a.jpg" alt="Mr.ภุชงค์ สวนแจ้ง"></div> Mr.ภุชงค์ สวนแจ้ง</div>
+								</td>
+							</tr>
+							<tr>
+								<td class="label">Room</td>
+								<td class="data"><div class="control">F: นวด / Room 101 / Bed 3</div></td>
+							</tr>
+							<tr>
+								<td class="label">Time: </td>
+								<td class="data"><div class="control">
+									<span class="mrs">1 h</span><i class="icon-pencil"></i></div></td>
+							</tr>
+							<tr>
+								<td class="label">Price</td>
+								<td class="data price"><div class="control"><span class="cost">350</span><span class="discount">-50</span><span class="total">300</span><i class="icon-pencil"></i></div></td>
+							</tr>
+							
+							<tr>
+								<td class="label">Status</td>
+								<td class="data"><span class="ui-status">ORDER</span></td>
+							</tr>
+							
+
+						</table>
+						</div>						
+
+						<!-- <div class="" style="position: absolute; right:  0;bottom: 0">
+							<span class="gbtn"><a class="btn btn-red"><i class="icon-remove"></i>Cancel</a></span>
+						</div> -->
+					</li>
 					<?php } ?>
-				</tbody>
+				</ul>
 
-			</table>
+				<div class="pbl">
+					<a class="btn btn-large btn-blue js-add-time"><i class="icon-plus mrs"></i><span>Add Time</span></a>
+				</div>
 
-			<div class="tac mts">
-				<span class="gbtn"><a class="btn btn-large btn-blue js-add-time"><i class="icon-plus mrs"></i><span>Add Time</span></a></span>
-			</div>
+
 			</div>
 
 			<div class="hidden_elem">
@@ -88,8 +113,12 @@
 							<div class="data">฿350</div>
 						</td>
 						<td>
+							<label class="label">Time: </label>
+							<div class="data"> 1 h</div>
+						</td>
+						<td>
 							<label class="label">Total: </label>
-							<div class="data" price-total->฿350</div>
+							<div class="data">฿350</div>
 						</td>
 						<td class="w100">
 							

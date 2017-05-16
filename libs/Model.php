@@ -5,7 +5,8 @@ class Model {
     function __construct() {
         $this->db = new Database(DB_TYPE, DB_HOST, DB_NAME, DB_USER, DB_PASS);
         $this->fn = new _function();
-        $this->lang = new Langs();;
+
+        $this->lang = new Langs();
     }
 
     // private query protected
@@ -14,13 +15,16 @@ class Model {
     // Public query
     public function query( $table=null ){
 
+        // echo $this->lang->getCode(); die;
+
         $path = "models/{$table}_model.php";
         
         if(!array_key_exists($table, $this->_query) && file_exists($path)){
 
             require_once $path;
             $modelName = $table . '_Model';
-            $this->_query[$table] = new $modelName;
+            $this->_query[$table] = new $modelName();
+           
         }
 
         return $this->_query[$table];

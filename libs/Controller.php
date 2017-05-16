@@ -165,8 +165,8 @@ class Controller {
 
             if( !empty($this->me['lang']) ){
                 $this->lang->set( $this->me['lang'] );
+                $this->model->lang->set( $this->me['lang'] );
             }
-           
 
             $this->model->me = $this->me;
             $this->view->me = $this->me;

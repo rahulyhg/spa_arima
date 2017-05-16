@@ -49,7 +49,6 @@ class Customers extends Controller {
         }
     }
 
-
     public function search(){
         if( empty($this->me) || $this->format!='json' ) $this->error();
 
@@ -709,8 +708,8 @@ class Customers extends Controller {
 
         $results = array();
         $results[] = array(
-            'object_type'=>'employees', 
-            'object_name'=>'Employee',
+            'object_type'=>'customers', 
+            'object_name'=>'Customers',
             'data' => $data
         );
 

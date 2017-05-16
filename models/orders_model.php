@@ -111,13 +111,35 @@ class Orders_Model extends Model {
 	}
 
 	/**/
-	public function insert(&$data) {
+	public function insertOrder(&$data) {
 
-		$this->db->insert($this->_objType, $data);
+		if( empty($data['order_created']) ){
+			$data['order_created'] = date('c');
+		}
+		$data['order_updated'] = date('c');
+
+
+		if( empty($data['order_date']) ){
+			$data['order_date'] = date('Y-m-d');
+		}
+
+		$this->db->insert('orders', $data);
 		$data['id'] = $this->db->lastInsertId();
 
 		$data = $this->cut($this->_cutNamefield, $data);
 	}
+
+	public function insertDetail(&$data) {
+		
+		if( empty($data['item_created']) ){
+			$data['item_created'] = date('c');
+		}
+		$data['item_updated'] = date('c');
+
+		$this->db->insert('orders_items', $data);
+		$data['id'] = $this->db->lastInsertId();
+	}
+
 	public function update($id, $data) {
 		$this->db->update($this->_objType, $data, "{$this->_cutNamefield}id={$id}");
 	}
