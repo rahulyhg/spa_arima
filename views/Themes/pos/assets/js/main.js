@@ -208,14 +208,12 @@ if ( typeof Object.create !== 'function' ) {
 		    	});
 			});
 
-
 			$(window).keydown(function (e) {
 
 				if( !isNaN(e.key) ){
 					// console.log( 'pay:', parseInt( e.key ) );
 				}
 		    });
-
 
 		    self.$elem.find('[data-bill-set]').click( function () {
 		    	var type = $(this).attr('data-bill-set');
@@ -302,6 +300,7 @@ if ( typeof Object.create !== 'function' ) {
 								total: detail.total,
 								discount: detail.discount,
 								balance: detail.balance,
+								price: detail.price,
 							};
 
 							if(detail.masseuse){
@@ -324,14 +323,17 @@ if ( typeof Object.create !== 'function' ) {
 				}
 			});
 
-			// console.log( 'saveBill', dataPost );
+			
 
 			dataPost.date = PHP.dateJStoPHP( dataPost.date );
+
 			$.post( Event.URL + 'orders/save', dataPost, function (res) {
 				
-				/*self.currOrder.id = res.id;
-				self.currOrder.status = res.status;*/
-				console.log( res );
+
+
+				self.currOrder.id = res.id;
+				self.currOrder.status = res.status;
+				console.log( 'Save:', self.currOrder );
 			}, 'json');	
 		},
 
@@ -401,6 +403,7 @@ if ( typeof Object.create !== 'function' ) {
 
 				var fdata = {
 					KEY: KEY,
+					has_masseuse: data.has_masseuse,
 					id: data.id,
 					name: data.name,
 					qty: 0,
@@ -451,7 +454,7 @@ if ( typeof Object.create !== 'function' ) {
 				
 				unit: data.unit,
 
-				total: parseInt( data.price ),
+				price: parseInt( data.price ),
 				discount: 0,
 
 				status: 'order',
@@ -459,6 +462,7 @@ if ( typeof Object.create !== 'function' ) {
 				start_date: new Date(),
 			};
 
+			Detail.total = Detail.price;
 			Detail.balance = Detail.total - Detail.discount;
 
 			if( data.has_masseuse==1 && data.masseuse ){
@@ -510,9 +514,9 @@ if ( typeof Object.create !== 'function' ) {
 
 				var data = self.currOrder.items[obj];
 
-				// if( data.price==350 ){
-				qty += data.qty;
-				// }
+				if( data.has_masseuse==1 ){
+					qty += data.qty;
+				}
 			}
 
 			
@@ -532,15 +536,15 @@ if ( typeof Object.create !== 'function' ) {
 
 				$.each( self.currOrder.items[obj].detail, function (i) {
 
-					
+
 					self.currOrder.items[obj].detail[i].discount = deduct;
 					self.currOrder.items[obj].detail[i].balance = data.price-deduct;
 				} );
 
 				self.updateItemBill( data );
 			}
-
 		},
+
 		newItemBill: function(data) {
 			var self = this;
 

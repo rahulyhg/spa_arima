@@ -286,6 +286,8 @@ class Masseuse_Model extends Model{
             'dir' => isset($_REQUEST['dir'])? $_REQUEST['dir']: 'ASC',
             'more' => true,
 
+            'status' => isset($_REQUEST['status'])? $_REQUEST['status']: 'on',
+
             'date'=> isset($_REQUEST['date'])? $_REQUEST['date']:date('c')
 
         ), $options);
@@ -293,6 +295,11 @@ class Masseuse_Model extends Model{
         if( isset($_REQUEST['view_stype']) ){
             $options['view_stype'] = $_REQUEST['view_stype'];
         }
+
+        if( isset($_REQUEST['q']) ){
+            $options['q'] = $_REQUEST['q'];
+        }
+
 
         $where_str = "";
         $where_arr = array();
@@ -310,6 +317,31 @@ class Masseuse_Model extends Model{
 
             $where_str .= !empty($where_str) ? " AND ": '';
             $where_str .= "(`job_date` BETWEEN :start AND :end)";
+        }
+
+        if( isset($options['status']) ){
+            
+            $where_str .= !empty($where_str) ? " AND ": '';
+            $where_str .= "`job_status`=:status";
+            $where_arr[':status'] = $options['status'];
+        }
+
+        if( isset($options['q']) ){
+            
+            $arrQ = explode(' ', $options['q']);
+            $wq = '';
+            foreach ($arrQ as $key => $value) {
+                $wq .= !empty( $wq ) ? " OR ":'';
+                $wq .= "emp_first_name LIKE :q{$key} OR emp_last_name LIKE :q{$key} OR emp_phone_number LIKE :s{$key} OR emp_phone_number=:f{$key} OR emp_code=:f{$key}";
+                $where_arr[":q{$key}"] = "%{$value}%";
+                $where_arr[":s{$key}"] = "{$value}%";
+                $where_arr[":f{$key}"] = $value;
+            }
+
+            if( !empty($wq) ){
+                $where_str .= !empty( $where_str ) ? " AND ":'';
+                $where_str .= "($wq)";
+            }
         }
 
         $_table = "emp_job_queue j INNER JOIN ({$this->_table}) ON j.job_emp_id=e.emp_id";

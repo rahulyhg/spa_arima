@@ -118,7 +118,10 @@ class Orders_Model extends Model {
 		}
 		$data['order_updated'] = date('c');
 
-
+		if( empty($data['order_start_date']) ){
+			$data['order_start_date'] = date('c');
+		}
+		
 		if( empty($data['order_date']) ){
 			$data['order_date'] = date('Y-m-d');
 		}
@@ -136,6 +139,10 @@ class Orders_Model extends Model {
 		}
 		$data['item_updated'] = date('c');
 
+		if( empty($data['item_start_date']) ){
+			$data['item_start_date'] = date('c');
+		}
+
 		$this->db->insert('orders_items', $data);
 		$data['id'] = $this->db->lastInsertId();
 	}
@@ -150,14 +157,11 @@ class Orders_Model extends Model {
 	public function lastNumber() {
 
 
-		$date = isset($_REQUEST['date']) ? $_REQUEST['date']: date('c');
-		$date = $this->query('system')->working_time( $date );
+		$date = isset($_REQUEST['date']) ? date('Y-m-d', strtotime($_REQUEST['date'])): date('Y-m-d');
+		// $date = $this->query('system')->working_time( $date );
 
-		$sth = $this->db->prepare("SELECT order_number FROM {$this->_table} WHERE (`order_date` BETWEEN :s AND :e) ORDER BY order_number DESC LIMIT 1");
-		$sth->execute( array(
-			':s' => $date[0],
-			':e' => $date[1]
-		) );
+		$sth = $this->db->prepare("SELECT order_number FROM {$this->_table} WHERE (`order_date`=:d) ORDER BY order_number DESC LIMIT 1");
+		$sth->execute( array( ':d' => $date ) );
 
 		if( $sth->rowCount()==1 ){
 			$fdata = $sth->fetch( PDO::FETCH_ASSOC );

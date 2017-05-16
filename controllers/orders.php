@@ -69,6 +69,8 @@ class Orders extends Controller {
             'order_drink' => $_POST['summary']['drink'],
             'order_discount' => $_POST['summary']['discount'],
             'order_balance' => $_POST['summary']['balance'],
+            'order_emp_id' => $this->me['id'],
+            // ''
         );
 
         if( !empty($_POST['id']) ){
@@ -82,11 +84,11 @@ class Orders extends Controller {
                 $dd = array(
                     'item_pack_id' => $value['pack_id'],
                     'item_price' => $value['price'],
+                    'item_total' => $value['total'],
                     'item_discount' => $value['discount'],
+                    'item_balance' => $value['total']-$value['discount'],
                     'item_status' => $value['status'],
-                    'item_balance' => $value['price']-$value['discount']
                 );
-
 
                 if( isset($value['masseuse_id']) ){
                     $dd['item_masseuse_id'] = $value['masseuse_id'];
@@ -106,7 +108,7 @@ class Orders extends Controller {
             }
         }
 
-        /*if( !empty($item) ){
+        if( !empty($item) ){
             $this->model->updateOrder( $id, $order );
         }
         else{
@@ -117,13 +119,19 @@ class Orders extends Controller {
         if( !empty($detail) ){
             foreach ($detail as $value) {
                 $value['item_order_id'] = $order['id'];
+                $value['item_emp_id'] = $this->me['id'];
                 $this->model->insertDetail( $value );
+
+                // uodate Q job
+                if( !empty($value['masseuse_id']) ){
+
+                }
             }
-        }*/
+        }
 
-        // 'order_created' => $_POST['created'],
+        $order['items'] = $detail;
 
-        echo json_encode( $detail );
+        echo json_encode( $order );
     }
 
     public function set_bill() {
@@ -151,11 +159,9 @@ class Orders extends Controller {
             $this->view->setData('package', $this->model->query('package')->get( $_GET['package'] ) );
         }
 
-
         $this->view->setData('date', $date);
         $this->view->setPage('path','Forms/orders');
         $this->view->render("set_bill_{$type}");
-
     }
 
 }
