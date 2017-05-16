@@ -3,12 +3,18 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: May 14, 2017 at 11:41 AM
+-- Generation Time: May 16, 2017 at 08:01 PM
 -- Server version: 10.1.19-MariaDB
 -- PHP Version: 5.6.28
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
 
 --
 -- Database: `spa_arima`
@@ -119,6 +125,7 @@ INSERT INTO `city` (`city_id`, `city_code`, `city_name`, `city_geo_id`) VALUES
 CREATE TABLE `customers` (
   `cus_level_id` int(2) NOT NULL,
   `cus_id` int(11) NOT NULL,
+  `cus_code` varchar(10) NOT NULL,
   `cus_created` datetime NOT NULL,
   `cus_prefix_name` varchar(5) NOT NULL,
   `cus_first_name` varchar(20) NOT NULL,
@@ -143,14 +150,20 @@ CREATE TABLE `customers` (
 -- Dumping data for table `customers`
 --
 
-INSERT INTO `customers` (`cus_level_id`, `cus_id`, `cus_created`, `cus_prefix_name`, `cus_first_name`, `cus_last_name`, `cus_nickname`, `cus_birthday`, `cus_card_id`, `cus_address`, `cus_zip`, `cus_city_id`, `cus_email`, `cus_phone`, `cus_lineID`, `cus_updated`, `cus_emp_id`, `cus_image_id`, `cus_bookmark`, `cus_status`) VALUES
-(0, 1, '2017-05-08 10:15:57', '', 'อาราอิ', '', '', '0000-00-00', '', '{"number":"","mu":"","village":"","alley":"","street":"","district":"","amphur":"","city":"","zip":""}', 0, 0, '', '', '', '2017-05-08 10:15:57', 6, 0, 0, 'expired'),
-(0, 2, '2017-05-08 10:46:25', '', 'อเดียงโน่', '', '', '0000-00-00', '', '{"number":"","mu":"","village":"","alley":"","street":"","district":"","amphur":"","city":"","zip":""}', 0, 0, '', '', '', '2017-05-08 10:46:25', 6, 0, 0, 'expired'),
-(0, 3, '2017-05-08 10:49:05', '', 'มัตซึชิม่า', '', '', '0000-00-00', '', '{"number":"","mu":"","village":"","alley":"","street":"","district":"","amphur":"","city":"","zip":""}', 0, 0, '', '', '', '2017-05-08 10:49:05', 6, 0, 0, 'run'),
-(0, 4, '2017-05-08 11:09:34', '', 'โยชิ', '', '', '0000-00-00', '', '{"number":"","mu":"","village":"","alley":"","street":"","district":"","amphur":"","city":"","zip":""}', 0, 0, '', '', '', '2017-05-08 11:09:34', 6, 0, 0, 'run'),
-(0, 5, '2017-05-08 11:10:26', '', 'นากายาม่า', '', '', '0000-00-00', '', '{"number":"","mu":"","village":"","alley":"","street":"","district":"","amphur":"","city":"","zip":""}', 0, 0, '', '', '', '2017-05-08 11:10:26', 6, 0, 0, 'expired'),
-(0, 6, '2017-05-08 11:11:15', '', 'ทาโร่', '', '', '0000-00-00', '', '{"number":"","mu":"","village":"","alley":"","street":"","district":"","amphur":"","city":"","zip":""}', 0, 0, '', '', '', '2017-05-08 11:11:15', 6, 0, 0, 'expired'),
-(0, 7, '2017-05-08 14:23:52', '', 'ชง', '', '', '0000-00-00', '', '{"number":"","mu":"","village":"","alley":"","street":"","district":"","amphur":"","city":"","zip":""}', 0, 0, '', '', '', '2017-05-08 14:23:52', 6, 0, 0, 'run');
+INSERT INTO `customers` (`cus_level_id`, `cus_id`, `cus_code`, `cus_created`, `cus_prefix_name`, `cus_first_name`, `cus_last_name`, `cus_nickname`, `cus_birthday`, `cus_card_id`, `cus_address`, `cus_zip`, `cus_city_id`, `cus_email`, `cus_phone`, `cus_lineID`, `cus_updated`, `cus_emp_id`, `cus_image_id`, `cus_bookmark`, `cus_status`) VALUES
+(1, 1, '0476', '2017-05-08 10:15:57', '', 'อาราอิ', '', '', '0000-00-00', '', '{"number":"","mu":"","village":"","alley":"","street":"","district":"","amphur":"","city":"","zip":""}', 0, 0, '', '', '', '2017-05-16 12:33:04', 6, 0, 0, 'expired'),
+(1, 2, '0477', '2017-05-08 10:46:25', '', 'อเดียงโน่', '', '', '0000-00-00', '', '{"number":"","mu":"","village":"","alley":"","street":"","district":"","amphur":"","city":"","zip":""}', 0, 0, '', '', '', '2017-05-16 12:33:12', 6, 0, 0, 'expired'),
+(1, 3, '0480', '2017-05-08 10:49:05', '', 'มัตซึชิม่า', '', '', '0000-00-00', '', '{"number":"","mu":"","village":"","alley":"","street":"","district":"","amphur":"","city":"","zip":""}', 0, 0, '', '', '', '2017-05-16 12:33:27', 6, 0, 0, 'run'),
+(1, 4, '0469', '2017-05-08 11:09:34', '', 'โยชิ', '', '', '0000-00-00', '', '{"number":"","mu":"","village":"","alley":"","street":"","district":"","amphur":"","city":"","zip":""}', 0, 0, '', '', '', '2017-05-16 12:33:37', 6, 0, 0, 'run'),
+(1, 5, '0478', '2017-05-08 11:10:26', '', 'นากายาม่า', '', '', '0000-00-00', '', '{"number":"","mu":"","village":"","alley":"","street":"","district":"","amphur":"","city":"","zip":""}', 0, 0, '', '', '', '2017-05-16 12:33:46', 6, 0, 0, 'expired'),
+(1, 6, '0479', '2017-05-08 11:11:15', '', 'ทาโร่', '', '', '0000-00-00', '', '{"number":"","mu":"","village":"","alley":"","street":"","district":"","amphur":"","city":"","zip":""}', 0, 0, '', '', '', '2017-05-16 12:34:01', 6, 0, 0, 'expired'),
+(2, 7, '', '2017-05-08 14:23:52', '', 'ชง', '', '', '0000-00-00', '', '{"number":"","mu":"","village":"","alley":"","street":"","district":"","amphur":"","city":"","zip":""}', 0, 0, '', '', '', '2017-05-16 12:31:36', 6, 0, 0, 'run'),
+(1, 8, '0412', '2017-05-16 12:37:57', '', 'พยัคฆ์ร้าย', '', '', '0000-00-00', '', '{"number":"","mu":"","village":"","alley":"","street":"","district":"","amphur":"","city":"","zip":""}', 0, 0, '', '', '', '2017-05-16 12:37:57', 6, 0, 0, 'expired'),
+(1, 9, '0432', '2017-05-16 12:38:44', '', 'แดน', '', '', '0000-00-00', '', '{"number":"","mu":"","village":"","alley":"","street":"","district":"","amphur":"","city":"","zip":""}', 0, 0, '', '', '', '2017-05-16 12:38:44', 6, 0, 0, 'expired'),
+(1, 10, '0436', '2017-05-16 12:40:13', '', 'วัฒน์', '', '', '0000-00-00', '', '{"number":"","mu":"","village":"","alley":"","street":"","district":"","amphur":"","city":"","zip":""}', 0, 0, '', '', '', '2017-05-16 12:40:13', 6, 0, 0, 'run'),
+(1, 11, '0453', '2017-05-16 12:41:09', '', 'ทากาฮาชิ', '', '', '0000-00-00', '', '{"number":"","mu":"","village":"","alley":"","street":"","district":"","amphur":"","city":"","zip":""}', 0, 0, '', '', '', '2017-05-16 12:41:09', 6, 0, 0, 'run'),
+(1, 12, '0463', '2017-05-16 12:41:43', '', 'ยูกิ', '', '', '0000-00-00', '', '{"number":"","mu":"","village":"","alley":"","street":"","district":"","amphur":"","city":"","zip":""}', 0, 0, '', '', '', '2017-05-16 12:41:43', 6, 0, 0, 'expired'),
+(1, 13, '0473', '2017-05-16 12:42:14', '', 'อามาโนะ', '', '', '0000-00-00', '', '{"number":"","mu":"","village":"","alley":"","street":"","district":"","amphur":"","city":"","zip":""}', 0, 0, '', '', '', '2017-05-16 12:42:14', 6, 0, 0, 'run');
 
 -- --------------------------------------------------------
 
@@ -179,7 +192,13 @@ INSERT INTO `customers_expired` (`ex_id`, `ex_cus_id`, `ex_start_date`, `ex_end_
 (4, 4, '2016-08-08', '2017-08-08', '2017-05-08 11:09:34', 6, 'run'),
 (5, 5, '2014-06-09', '2015-06-09', '2017-05-08 11:10:26', 6, 'expired'),
 (6, 6, '2014-07-05', '2015-07-05', '2017-05-08 11:11:15', 6, 'expired'),
-(7, 7, '2017-05-08', '2017-05-28', '2017-05-08 14:23:52', 6, 'run');
+(7, 7, '2017-05-08', '2017-05-28', '2017-05-08 14:23:52', 6, 'run'),
+(8, 8, '2015-12-25', '2016-12-25', '2017-05-16 12:37:57', 6, 'expired'),
+(9, 9, '2015-08-04', '2016-08-04', '2017-05-16 12:38:45', 6, 'expired'),
+(10, 10, '2016-11-06', '2017-11-06', '2017-05-16 12:40:13', 6, 'run'),
+(11, 11, '2016-12-19', '2017-12-19', '2017-05-16 12:41:09', 6, 'run'),
+(12, 12, '2016-01-29', '2017-01-29', '2017-05-16 12:41:43', 6, 'expired'),
+(13, 13, '2016-07-31', '2017-07-31', '2017-05-16 12:42:14', 6, 'run');
 
 -- --------------------------------------------------------
 
@@ -606,7 +625,7 @@ CREATE TABLE `employees` (
 --
 
 INSERT INTO `employees` (`emp_dealer_id`, `emp_dep_id`, `emp_pos_id`, `emp_id`, `emp_code`, `emp_code_order`, `emp_created`, `emp_prefix_name`, `emp_first_name`, `emp_last_name`, `emp_image_id`, `emp_nickname`, `emp_username`, `emp_password`, `emp_phone_number`, `emp_email`, `emp_line_id`, `emp_address`, `emp_city_id`, `emp_zip`, `emp_birthday`, `emp_updated`, `emp_display`, `emp_notes`, `emp_mode`, `emp_lang`, `emp_permission`, `emp_online`) VALUES
-(1, 1, 0, 6, '', '', '2016-12-11 14:42:30', 'Mr.', 'ภุชงค์', 'สวนแจ้ง', 79, 'ชง', 'admin', '96f6056b20bfa4ee2bdfbe3d885026b70b0aee8bb1ef70436571dd22cd127e74', '0843635952', 'monkey.d.chong@gmail.com', 'shiichong', '{"number":"","mu":"","village":"","alley":"","street":"","district":"","amphur":"","city":"64","zip":""}', 64, '', '0000-00-00', '2017-05-13 10:56:28', 'enabled', '', 'light', 'th', '', 0),
+(1, 1, 0, 6, '', '', '2016-12-11 14:42:30', 'Mr.', 'ภุชงค์', 'สวนแจ้ง', 79, 'ชง', 'admin', '96f6056b20bfa4ee2bdfbe3d885026b70b0aee8bb1ef70436571dd22cd127e74', '0843635952', 'monkey.d.chong@gmail.com', 'shiichong', '{"number":"","mu":"","village":"","alley":"","street":"","district":"","amphur":"","city":"64","zip":""}', 64, '', '0000-00-00', '2017-05-16 11:57:43', 'enabled', '', 'light', 'th', '', 0),
 (1, 1, 2, 32, '', '', '2017-03-24 15:32:26', 'Mr.', 'พชร', 'นันทอาภา', 66, '', 'blacklistmodz', 'fe4cf836c6a7950448013c3effd82b63ea269c55f67ef790bb30342026f4e05b', '', '', '', '{"number":"","mu":"","village":"","alley":"","street":"","district":"","amphur":"","city":"","zip":""}', 0, '', '1970-01-01', '2017-03-29 17:24:35', 'enabled', '', '', '', '', 0),
 (1, 1, 3, 33, '', '', '2017-04-24 12:11:19', 'Mr.', 'Dom', '', 0, '', 'test', '96f6056b20bfa4ee2bdfbe3d885026b70b0aee8bb1ef70436571dd22cd127e74', '', '', '', '{"number":"","mu":"","village":"","alley":"","street":"","district":"","amphur":"","city":"","zip":""}', 0, '', '0000-00-00', '2017-04-24 12:11:19', 'enabled', '', '', '', '', 0),
 (1, 7, 3, 34, '', '', '2017-04-28 09:53:09', 'Ms.', 'สุรภี', 'วิสาสะ', 0, '', 'arima2', 'ed1b89a98411630b14207c104d22c8efe388eab9087ebc231f2123ee8782b24a', '', '', '', '{"number":"","mu":"","village":"","alley":"","street":"","district":"","amphur":"","city":"","zip":""}', 0, '', '0000-00-00', '2017-04-28 09:53:21', 'enabled', '', '', '', '', 0),
@@ -806,14 +825,14 @@ CREATE TABLE `emp_department` (
 --
 
 INSERT INTO `emp_department` (`dep_id`, `dep_name`, `dep_notes`, `dep_access`, `dep_permission`, `dep_lock`) VALUES
-(1, 'Admin', '', '["1","2","3","4","5"]', '', 1),
-(2, 'Manager', '', '["2","3","4","5"]', '', 1),
-(5, 'Masseuse', 'หมอ', '["5"]', '', 1),
-(6, 'บัญชี', 'ฝ่ายบัญชี', '["3"]', '', 0),
+(1, 'Admin', '', '["1","2","3","4","5","6"]', '', 1),
+(2, 'Manager', '', '["2","3","4","5","6"]', '', 1),
+(5, 'Masseuse', 'หมอ', '["6"]', '', 1),
+(6, 'บัญชี', 'ฝ่ายบัญชี', '["3","4"]', '', 0),
 (7, 'ธุรการ', '', '', '', 0),
-(8, 'บุคคล', '', '', '', 0),
-(11, 'ต้อนรับ / แคชเชียร์', '', '["4"]', '', 0),
-(12, 'การเงิน', '', '["3"]', '', 0);
+(8, 'บุคคล', '', '["3"]', '', 0),
+(11, 'ต้อนรับ / แคชเชียร์', '', '["5"]', '', 0),
+(12, 'การเงิน', '', '', '', 0);
 
 -- --------------------------------------------------------
 
@@ -826,7 +845,7 @@ CREATE TABLE `emp_job_queue` (
   `job_sequence` int(4) NOT NULL,
   `job_emp_id` int(4) NOT NULL,
   `job_date` datetime NOT NULL,
-  `job_status` enum('off','on') NOT NULL
+  `job_status` enum('off','on','run','done') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -834,7 +853,7 @@ CREATE TABLE `emp_job_queue` (
 --
 
 INSERT INTO `emp_job_queue` (`job_id`, `job_sequence`, `job_emp_id`, `job_date`, `job_status`) VALUES
-(9, 1, 112, '2017-05-07 14:30:30', 'on'),
+(9, 1, 112, '2017-05-07 14:30:30', 'run'),
 (10, 2, 140, '2017-05-07 14:31:08', 'on'),
 (11, 3, 147, '2017-05-07 14:31:14', 'on'),
 (12, 4, 175, '2017-05-07 14:31:58', 'on'),
@@ -1470,29 +1489,32 @@ INSERT INTO `media_albums` (`album_id`, `album_name`, `album_description`, `albu
 
 CREATE TABLE `orders` (
   `order_id` int(11) NOT NULL,
-  `order_date` datetime NOT NULL,
+  `order_date` date NOT NULL,
   `order_number` int(3) NOT NULL,
   `order_emp_id` int(3) NOT NULL,
   `order_cus_id` int(11) NOT NULL,
   `order_deposit` float(6,2) NOT NULL,
   `order_deposit_type` text NOT NULL,
-  `order_total_price` float(9,2) NOT NULL,
-  `order_total_discount` float(7,2) NOT NULL,
+  `order_total` float(9,2) NOT NULL,
+  `order_discount` float(7,2) NOT NULL,
+  `order_drink` float(7,2) NOT NULL,
+  `order_balance` float(9,2) NOT NULL,
   `order_is_free` tinyint(1) NOT NULL,
   `order_created` datetime NOT NULL,
   `order_updated` datetime NOT NULL,
   `order_tip` float(6,2) NOT NULL,
   `order_start_date` datetime NOT NULL,
   `order_end_date` datetime NOT NULL,
-  `order_status` enum('run','finish','cancel','booking') NOT NULL
+  `order_status` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `orders`
 --
 
-INSERT INTO `orders` (`order_id`, `order_date`, `order_number`, `order_emp_id`, `order_cus_id`, `order_deposit`, `order_deposit_type`, `order_total_price`, `order_total_discount`, `order_is_free`, `order_created`, `order_updated`, `order_tip`, `order_start_date`, `order_end_date`, `order_status`) VALUES
-(1, '2017-05-07 08:15:00', 1, 6, 0, 0.00, '', 350.00, 0.00, 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00', 0.00, '0000-00-00 00:00:00', '0000-00-00 00:00:00', '');
+INSERT INTO `orders` (`order_id`, `order_date`, `order_number`, `order_emp_id`, `order_cus_id`, `order_deposit`, `order_deposit_type`, `order_total`, `order_discount`, `order_drink`, `order_balance`, `order_is_free`, `order_created`, `order_updated`, `order_tip`, `order_start_date`, `order_end_date`, `order_status`) VALUES
+(3, '2017-05-07', 1, 6, 0, 0.00, '', 350.00, 0.00, 0.00, 350.00, 0, '2017-05-17 00:25:44', '2017-05-17 00:25:44', 0.00, '2017-05-17 00:25:44', '0000-00-00 00:00:00', 'order'),
+(5, '2017-05-07', 2, 6, 0, 0.00, '', 850.00, 0.00, 0.00, 850.00, 0, '2017-05-17 00:47:25', '2017-05-17 00:47:25', 0.00, '2017-05-17 00:47:25', '0000-00-00 00:00:00', 'order');
 
 -- --------------------------------------------------------
 
@@ -1510,9 +1532,11 @@ CREATE TABLE `orders_items` (
   `item_qty` int(2) NOT NULL,
   `item_updated` datetime NOT NULL,
   `item_note` text NOT NULL,
+  `item_total` float(9,2) NOT NULL,
   `item_discount` float(6,2) NOT NULL,
+  `item_balance` float(9,2) NOT NULL,
   `item_emp_id` int(3) NOT NULL,
-  `item_masseuse` int(4) NOT NULL,
+  `item_masseuse_id` int(4) NOT NULL,
   `item_start_date` datetime NOT NULL,
   `item_end_date` datetime NOT NULL,
   `item_room_id` int(4) NOT NULL,
@@ -1524,8 +1548,9 @@ CREATE TABLE `orders_items` (
 -- Dumping data for table `orders_items`
 --
 
-INSERT INTO `orders_items` (`item_order_id`, `item_id`, `item_pack_id`, `item_status`, `item_created`, `item_price`, `item_qty`, `item_updated`, `item_note`, `item_discount`, `item_emp_id`, `item_masseuse`, `item_start_date`, `item_end_date`, `item_room_id`, `item_bed_id`, `item_room_price`) VALUES
-(1, 1, 4, '', '2017-05-07 09:15:00', 350.00, 1, '2017-05-07 09:15:00', '', 0.00, 6, 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00', 0, 0, 0.00);
+INSERT INTO `orders_items` (`item_order_id`, `item_id`, `item_pack_id`, `item_status`, `item_created`, `item_price`, `item_qty`, `item_updated`, `item_note`, `item_total`, `item_discount`, `item_balance`, `item_emp_id`, `item_masseuse_id`, `item_start_date`, `item_end_date`, `item_room_id`, `item_bed_id`, `item_room_price`) VALUES
+(3, 3, 4, 'order', '2017-05-17 00:25:44', 350.00, 0, '2017-05-17 00:25:44', '', 350.00, 0.00, 350.00, 0, 112, '2017-05-17 00:25:44', '0000-00-00 00:00:00', 0, 0, 0.00),
+(5, 5, 2, 'order', '2017-05-17 00:47:26', 350.00, 0, '2017-05-17 00:47:26', '', 350.00, 0.00, 350.00, 6, 112, '2017-05-17 00:47:26', '0000-00-00 00:00:00', 0, 0, 0.00);
 
 -- --------------------------------------------------------
 
@@ -2331,7 +2356,7 @@ ALTER TABLE `orders_items`
   ADD KEY `item_room_id` (`item_room_id`),
   ADD KEY `item_bed_id` (`item_bed_id`),
   ADD KEY `item_emp_id` (`item_emp_id`),
-  ADD KEY `item_masseuse` (`item_masseuse`);
+  ADD KEY `item_masseuse` (`item_masseuse_id`);
 
 --
 -- Indexes for table `orders_items_emp_permit`
@@ -2479,12 +2504,12 @@ ALTER TABLE `city`
 -- AUTO_INCREMENT for table `customers`
 --
 ALTER TABLE `customers`
-  MODIFY `cus_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `cus_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 --
 -- AUTO_INCREMENT for table `customers_expired`
 --
 ALTER TABLE `customers_expired`
-  MODIFY `ex_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `ex_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 --
 -- AUTO_INCREMENT for table `customers_level`
 --
@@ -2549,12 +2574,12 @@ ALTER TABLE `media_albums`
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 --
 -- AUTO_INCREMENT for table `orders_items`
 --
 ALTER TABLE `orders_items`
-  MODIFY `item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 --
 -- AUTO_INCREMENT for table `package`
 --
@@ -2620,3 +2645,6 @@ ALTER TABLE `system_notes`
 --
 ALTER TABLE `system_paytype`
   MODIFY `pay_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
