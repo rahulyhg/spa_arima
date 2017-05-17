@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: May 16, 2017 at 08:01 PM
+-- Generation Time: May 17, 2017 at 05:02 AM
 -- Server version: 10.1.19-MariaDB
 -- PHP Version: 5.6.28
 
@@ -844,20 +844,10 @@ CREATE TABLE `emp_job_queue` (
   `job_id` int(11) NOT NULL,
   `job_sequence` int(4) NOT NULL,
   `job_emp_id` int(4) NOT NULL,
-  `job_date` datetime NOT NULL,
+  `job_date` date NOT NULL,
+  `job_time` time NOT NULL,
   `job_status` enum('off','on','run','done') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `emp_job_queue`
---
-
-INSERT INTO `emp_job_queue` (`job_id`, `job_sequence`, `job_emp_id`, `job_date`, `job_status`) VALUES
-(9, 1, 112, '2017-05-07 14:30:30', 'run'),
-(10, 2, 140, '2017-05-07 14:31:08', 'on'),
-(11, 3, 147, '2017-05-07 14:31:14', 'on'),
-(12, 4, 175, '2017-05-07 14:31:58', 'on'),
-(14, 5, 149, '2017-05-07 14:33:01', 'on');
 
 -- --------------------------------------------------------
 
@@ -1508,14 +1498,6 @@ CREATE TABLE `orders` (
   `order_status` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---
--- Dumping data for table `orders`
---
-
-INSERT INTO `orders` (`order_id`, `order_date`, `order_number`, `order_emp_id`, `order_cus_id`, `order_deposit`, `order_deposit_type`, `order_total`, `order_discount`, `order_drink`, `order_balance`, `order_is_free`, `order_created`, `order_updated`, `order_tip`, `order_start_date`, `order_end_date`, `order_status`) VALUES
-(3, '2017-05-07', 1, 6, 0, 0.00, '', 350.00, 0.00, 0.00, 350.00, 0, '2017-05-17 00:25:44', '2017-05-17 00:25:44', 0.00, '2017-05-17 00:25:44', '0000-00-00 00:00:00', 'order'),
-(5, '2017-05-07', 2, 6, 0, 0.00, '', 850.00, 0.00, 0.00, 850.00, 0, '2017-05-17 00:47:25', '2017-05-17 00:47:25', 0.00, '2017-05-17 00:47:25', '0000-00-00 00:00:00', 'order');
-
 -- --------------------------------------------------------
 
 --
@@ -1543,14 +1525,6 @@ CREATE TABLE `orders_items` (
   `item_bed_id` int(4) NOT NULL,
   `item_room_price` float(7,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `orders_items`
---
-
-INSERT INTO `orders_items` (`item_order_id`, `item_id`, `item_pack_id`, `item_status`, `item_created`, `item_price`, `item_qty`, `item_updated`, `item_note`, `item_total`, `item_discount`, `item_balance`, `item_emp_id`, `item_masseuse_id`, `item_start_date`, `item_end_date`, `item_room_id`, `item_bed_id`, `item_room_price`) VALUES
-(3, 3, 4, 'order', '2017-05-17 00:25:44', 350.00, 0, '2017-05-17 00:25:44', '', 350.00, 0.00, 350.00, 0, 112, '2017-05-17 00:25:44', '0000-00-00 00:00:00', 0, 0, 0.00),
-(5, 5, 2, 'order', '2017-05-17 00:47:26', 350.00, 0, '2017-05-17 00:47:26', '', 350.00, 0.00, 350.00, 6, 112, '2017-05-17 00:47:26', '0000-00-00 00:00:00', 0, 0, 0.00);
 
 -- --------------------------------------------------------
 
@@ -2544,7 +2518,7 @@ ALTER TABLE `emp_department`
 -- AUTO_INCREMENT for table `emp_job_queue`
 --
 ALTER TABLE `emp_job_queue`
-  MODIFY `job_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `job_id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `emp_position`
 --
@@ -2574,12 +2548,12 @@ ALTER TABLE `media_albums`
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `orders_items`
 --
 ALTER TABLE `orders_items`
-  MODIFY `item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `item_id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `package`
 --
