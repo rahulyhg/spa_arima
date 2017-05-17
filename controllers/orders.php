@@ -41,8 +41,8 @@ class Orders extends Controller {
                 // print_r($item); die;
                 foreach ($item['items'] as $value) {
                     
-
                     $this->model->delDetail($value['id']);
+                    $this->model->query('masseuse')->updateJob( $value['job_id'], array('job_status'=>'on') );
                 }
                 $this->model->delOrder($id);
                 
@@ -158,6 +158,7 @@ class Orders extends Controller {
             'order_drink' => $_POST['summary']['drink'],
             'order_discount' => $_POST['summary']['discount'],
             'order_balance' => $_POST['summary']['balance'],
+            'order_room_price' => $_POST['summary']['room_price'],
             'order_emp_id' => $this->me['id'],
             // ''
         );
@@ -177,7 +178,7 @@ class Orders extends Controller {
                     'item_discount' => $value['discount'],
                     'item_balance' => $value['total']-$value['discount'],
                     'item_status' => $value['status'],
-                    'item_job_id' => $value['job_id'],
+                    'item_job_id' => isset( $value['job_id'] ) ? $value['job_id'] :0,
                 );
 
                 if( isset($value['masseuse_id']) ){

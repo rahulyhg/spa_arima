@@ -82,6 +82,10 @@
 									<td class="data"><span summary="drink">0</span> ฿</td>
 								</tr>
 								<tr>
+									<td class="label"><?=$this->lang->translate('VIP ROOM')?>:</td>
+									<td class="data"><span summary="room_price">0</span> ฿</td>
+								</tr>
+								<tr>
 									<td class="label TOTAL"><?=$this->lang->translate('Balance')?>:</td>
 									<td class="data TOTAL"><span summary="balance">0</span> ฿</td>
 								</tr>
@@ -123,6 +127,11 @@
 				<li class="button">
 					<span class="gbtn radius"><a class="btn" data-bill-set="drink"><i class="icon-glass"></i></a></span>
 					<span class="t"><?=$this->lang->translate('DRINK')?></span>
+				</li>
+
+				<li class="button">
+					<span class="gbtn radius"><a class="btn" data-bill-set="vip"><i class="icon-building-o"></i></a></span>
+					<span class="t"><?=$this->lang->translate('VIP')?></span>
 				</li>
 				
 

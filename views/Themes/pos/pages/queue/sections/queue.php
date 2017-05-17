@@ -47,7 +47,7 @@ left: 0;right: 16px;background-color: rgba(245,248,250,.98);z-index: 100;"><div 
 			$avatar = '<div class="avatar"><img class="img" src="'.$value['image_url'].'"></div>';
 		}
 
-	?><li><div class="inner"><a href="<?=URL?>masseuse/skill/<?=$value['id']?>" data-plugins="dialog">
+	?><li data-id="<?=$value['job_id']?>"><div class="inner"><a href="<?=URL?>masseuse/skill/<?=$value['id']?>" data-plugins="dialog">
 		<div class="number"><?= $code ?></div>
 		<div class="box"><div class="box-inner">
 			

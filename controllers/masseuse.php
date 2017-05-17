@@ -274,4 +274,13 @@ class Masseuse extends Controller {
             $this->view->render('masseuse/forms/job_cancel');
         }
     }
+
+    public function sort_job() {
+        
+        $sequence = $this->model->lastSequence();
+        foreach ($_POST['items'] as $id) {
+            $this->model->updateJob( $id, array('job_sequence'=>$sequence) );
+            $sequence++;
+        }
+    }
 }

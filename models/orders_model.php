@@ -138,6 +138,7 @@ class Orders_Model extends Model {
 			, item_total
 			, item_discount
 			, item_balance
+			, item_job_id
 
 			, pack_id
 			, pack_qty as pack_time
@@ -232,7 +233,7 @@ class Orders_Model extends Model {
 		$this->db->insert('orders_items', $data);
 		$data['id'] = $this->db->lastInsertId();
 	}
-	public function delDetail() {
+	public function delDetail($id) {
 		$this->db->delete('orders_items', "`item_id`={$id}");
 	}
 	

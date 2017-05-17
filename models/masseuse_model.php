@@ -460,4 +460,31 @@ class Masseuse_Model extends Model{
         $this->db->update("emp_job_queue", $data, "`job_id`={$id}");
     }
     
+    public function lastSequence($options=array())
+    {
+        
+        $options = array_merge(array(
+            'date'=> isset($_REQUEST['date'])? date('Y-m-d',strtotime($_REQUEST['date'])):date('Y-m-d'),
+        ), $options);
+
+        // $sequence = $this->model->lastSequence();
+
+        $sth = $this->db->prepare("SELECT job_sequence as q FROM emp_job_queue WHERE (job_status=:status1 OR job_status=:status2) AND job_date=:d LIMIT 1 ORDER BY DESC");
+        $sth->execute( array(
+            ':status1' => 'run',
+            ':status2' => 'done',
+            // ':status3' => 'cancel',
+            ':d' => $options['date']
+        ) );
+
+        if( $sth->rowCount()==1 ){
+            $fdata = $sth->fetch( PDO::FETCH_ASSOC );
+            $sequence = $fdata['q'] + 1;
+        }
+        else{
+            $sequence = 1;
+        }
+
+        return $sequence;
+    }
 }

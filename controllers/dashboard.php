@@ -14,6 +14,7 @@ class Dashboard extends Controller {
 
 				if( $this->me['access'][0]==5 ){
 					header('location:'.URL.'pos');
+					die;
 				}
 				
 				// header('location:'.URL.'customers');

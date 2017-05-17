@@ -246,6 +246,14 @@ if ( typeof Object.create !== 'function' ) {
 
 			    			Dialog.close();
 		    			}
+
+		    			if(  type=='vip' ){
+		    				self.currOrder.summary.room_price = parseInt( $.trim($el.$pop.find('#room_price').val()) );
+			    			self.summaryPrice();
+			    			self.summaryDisplay();
+
+			    			Dialog.close();
+		    			}
 		    			
 		    			if( type=='member' ){
 
@@ -984,7 +992,7 @@ if ( typeof Object.create !== 'function' ) {
 			self.currOrder.summary.total = a[0];
 			self.currOrder.summary.discount = a[1];
 
-			self.currOrder.summary.balance = (a[0] + self.currOrder.summary.drink) - a[1];
+			self.currOrder.summary.balance = (a[0] + self.currOrder.summary.drink + self.currOrder.summary.room_price) - a[1];
 		},
 		summaryDisplay: function () {
 			var self = this;
@@ -1026,7 +1034,6 @@ if ( typeof Object.create !== 'function' ) {
 			init: function (options, elem, then, callback ) {
 				var self = this;
 
-				console.log( 'this lists' );
 				self.$elem = $elem;
 				self.then = then;
 
@@ -1046,7 +1053,7 @@ if ( typeof Object.create !== 'function' ) {
 				self.Events();
 				// self.then.active( 'invoice' );
 
-				self.refresh();
+				self.reload();
 
 				callback( self );
 			},
@@ -1083,18 +1090,13 @@ if ( typeof Object.create !== 'function' ) {
 				});
 			},
 
-			/*loadTap: function  {
-				var self = this;
-
-				self.active( 'summary' );
-			},*/
-
 			reload: function () {
 				var self = this;
 
+				console.log('this lists');
 				self.data.pager = 1;
 				self.$listsbox.empty();
-				self.refresh(800);
+				self.refresh();
 			},
 			refresh: function (length) {
 				var self = this;
@@ -1469,9 +1471,13 @@ if ( typeof Object.create !== 'function' ) {
 							result.url = '';
 
 							self.then.active( 'summary' );
-
+							// self.then
+							
 							Event.processForm($form, result);
 							Dialog.close();
+
+							self.then.$elem.find('[data-global=lists]').find('[data-id='+ self.data.id +']').remove();
+							// self.then.active( 'lists' );
 						});
 
 						
@@ -1496,6 +1502,7 @@ if ( typeof Object.create !== 'function' ) {
 					drink: 0,
 					discount: 0,
 					pay: 0,
+					room_price: 0,
 				},
 
 				items: [],
@@ -1823,13 +1830,17 @@ if ( typeof Object.create !== 'function' ) {
 		set_sequence: function () {
 			var self = this;
 
-			var n = 0
+			var n = 0;
+			var items = [];
 			$.each(self.$listsbox.find('li'), function (i, obj) {
 				n++;
 
+				items.push( $( this ).data('id') );
 				// $( obj ).find('.number').text( n )
 			});
 			
+
+			$.post( Event.URL + 'masseuse/sort_job', { items:items });
 		}
 	}
 	$.fn.jopQueue = function( options ) {
