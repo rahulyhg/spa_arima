@@ -17,6 +17,17 @@ if ( typeof Object.create !== 'function' ) {
 
 			self.options = $.extend( {}, $.fn.order.options, options );
 
+			// console.log( self.options.date );
+			
+			if( self.options.date ){
+				var d = self.options.date.split("-");
+			 	self.options.date = new Date( parseInt(d[0]), parseInt(d[1])-1, parseInt(d[2]) );
+		 	}
+		 	else{
+		 		self.options.date = new Date();
+		 	}
+			
+
 			// set Elem
 			self.$elem = $(elem);
 			self.setElem();
@@ -24,10 +35,11 @@ if ( typeof Object.create !== 'function' ) {
 			// set data 
 			self._queueMenu = [];
 			self.currOrder = self.setOrderDefault();
+			self.global = {};
 
 			self.Events();
 
-			self.active( 'bill' );
+			self.active( 'lists' );
 			// self.active( 'detail' );
 		},
 		setElem: function () {
@@ -51,15 +63,6 @@ if ( typeof Object.create !== 'function' ) {
 			self.$elem.delegate('[data-global-action]', 'click', function () {
 				self.active( $(this).attr('data-global-action') );
 			});
-
-			// lists
-			self.$elem.find('[data-global=lists]').find('.js-datepicker').datepicker({
-					onChange: function () {
-
-						console.log( this );
-						self.data.date = new Date( this.selectedDate );
-					}
-				});
 
 			self.$elem.find('[data-global=menu]').delegate('.memu-table [data-id]', 'click', function () {
 
@@ -281,7 +284,7 @@ if ( typeof Object.create !== 'function' ) {
 			} );
 		},
 
-		saveBill: function ( a ) {
+		saveBill: function ( call ) {
 			var self = this;
 			var dataPost = {}; 
 
@@ -323,16 +326,28 @@ if ( typeof Object.create !== 'function' ) {
 				}
 			});
 
-			
-
 			dataPost.date = PHP.dateJStoPHP( dataPost.date );
 
 			$.post( Event.URL + 'orders/save', dataPost, function (res) {
 				
 
-
 				self.currOrder.id = res.id;
 				self.currOrder.status = res.status;
+				self.currOrder.items = [];
+				self.currOrder._items = res.items;
+
+				self.$elem.find('[data-global=bill]').find('[role=orderlists]').empty();
+				self.$elem.find('[data-global=menu]').find('[role=menu] .active').removeClass('active');
+
+
+				if( typeof call === 'function' ){
+					call();
+				}
+				else{
+					self.active('menu');
+				}
+
+				
 				console.log( 'Save:', self.currOrder );
 			}, 'json');	
 		},
@@ -344,9 +359,17 @@ if ( typeof Object.create !== 'function' ) {
 			if( el.hasClass('active') ) return false;
 
 			el.addClass('active').siblings().removeClass('active');
-			self[ val ].init( self.options, el, self, function () {
+
+			console.log( self.global );
+			if( !self.global[val] ){
+
+				self.global[val] = true;
+				self[ val ].init( self.options, el, self, function () {
 				
-			} );
+				} );
+			}
+
+			
 		},
 
 		chooseMenu: function ( type, id, callback) {
@@ -944,6 +967,7 @@ if ( typeof Object.create !== 'function' ) {
 	    	} );
 		},
 
+		// 
 		lists: {
 			init: function (options, elem, then, callback ) {
 				var self = this;
@@ -953,13 +977,15 @@ if ( typeof Object.create !== 'function' ) {
 
 				self.options = options;
 
-				// set Data
 				self.data = {
-					date: self.options.date
-				};
+					date: PHP.dateJStoPHP( self.options.date )
+				}
 
+				// set Data
+				console.log( self.data );
 
 				self.setElem();
+				self.Events();
 				// self.then.active( 'invoice' );
 
 				self.refresh();
@@ -970,8 +996,30 @@ if ( typeof Object.create !== 'function' ) {
 				self.$listsbox = self.$elem.find('.ui-list-orders');
 				self.$listsbox.empty();	
 			},
+			Events: function () {
+				var self = this;
 
-			refresh: function () {
+				// lists
+				self.$elem.find('.js-datepicker').datepicker({
+					selectedDate: new Date( self.then.options.date ),
+					onSelected: function ( date ) {
+						
+						self.then.options.date = new Date( date );
+						self.data.date = PHP.dateJStoPHP( self.then.options.date );
+						self.data.pager = 1;
+
+						self.refresh(800);
+					}
+				});
+
+				self.$listsbox.delegate('[data-id]', 'click', function () {
+					
+					$(this).addClass('active').siblings().removeClass('active');
+					self.then.active('invoice');
+				});
+			},
+
+			refresh: function (length) {
 				var self = this;
 
 				if( self.$listsbox.parent().hasClass('has-empty') ){
@@ -984,7 +1032,10 @@ if ( typeof Object.create !== 'function' ) {
 
 						self.data = $.extend( {}, self.data, results.options );
 
+						console.log( 'list: ', results );
+
 						if( results.total==0 ){
+
 							self.$listsbox.parent().addClass('has-empty');
 							return false;
 						}
@@ -993,15 +1044,11 @@ if ( typeof Object.create !== 'function' ) {
 					});
 				}, length || 1);
 
-				/*$.get( Event.URL + 'orders/lists', {}, function (res) {
-					
-					$.each( res.lists, function (i, obj) {
-						self.$listsbox.append( self.setItem( obj ) );
-					} );
-				}, 'json');*/
 			},
 			fetch: function(){
 				var self = this;
+
+				// console.log( 'dataLists', self.data );
 
 				return $.ajax({
 					url: Event.URL + 'orders/lists',
@@ -1019,48 +1066,77 @@ if ( typeof Object.create !== 'function' ) {
 				var currTime = '';
 				$.each(results, function (i, obj) {
 
-					var time = new Date(  );
+					var time = new Date( obj.start_date );
+					time_str = time.getHours();
+
+					if( currTime != time_str ){
+						currTime = time_str;
+						self.$listsbox.append( $('<li>', {class:'ui-item head', text: currTime + ':00'  }) );
+					}
 
 					self.display( obj );
 				});
-
-
-				/*if( self.$listsbox.find('li.active').length==0 && self.$listsbox.find('li').not('.head').first().length==1 ){
-					self.active( self.$listsbox.find('li').not('.head').first() );
-				}*/
 			},
 			display: function ( data ) {
 				var self = this;
 
 				var item = self.setItem( data );
-
 				self.$listsbox.append( item );
 			},
 
 			setItem: function (data) {
 				var self = this;
 
-				$li = $('<li>');
+				var date = new Date( data.start_date );
+				var date_str = date.getHours() + ":" + date.getMinutes();
 
-				$('<li>', {class: "ui-item"}).append( ''+ 
-				'<div class="ui-item-inner clearfix">'+
-					'<div class="rfloat"><abbr class="timestamp fsm">9:25</abbr></div>'+
-					
+				var $inner = $('<li>', {class: "ui-item-inner clearfix"});
+				var $li = $('<li>', {'data-id': data.id, class: "ui-item"}).append( $inner );
+
+				var $avatar = $('<div>', {class: 'avatar lfloat mrm'});
+
+				if( data.image_url ){
+					$avatar.html( $('<img>', {src: data.image_url}) );
+				}else if( data.icon ){
+					$avatar.addClass('no-avatar').html( $('<div>', {class: 'initials'}).html( $('<i>').addClass('icon-'+data.icon  ) ) );
+				}else if( data.icon_text ){
+					$avatar.addClass('no-avatar').html( $('<div>', {class: 'initials', text: data.icon_text}) );
+				}
+				else{
+					$avatar.addClass('no-avatar').html( $('<div>', {class: 'initials'}).html( $('<i>').addClass('icon-user'  ) ) );
+				}
+
+				$inner.append(
+
 					'<div class="text">' +
-						'<span><label>No.</label> <strong>1</strong></span>' +
-						'<span><i class="icon-address-card-o"></i>ภุชงค์</span>' +
-					'</div>' +
+						'<span><label>No.</label> <strong>' + data.number + '</strong></span>' +
+
+					'</div>'
+					, $avatar
+					, ''
 					
-					'<div class="subtext clearfix">' +
-						'<span><label>Package:</label> AKASURI, SAUNA</span>' +
-						'<div class="rfloat"><span class="ui-status">RUN</span></div>' +
-					'</div>' +
 
-					'<div class="subtext clearfix">' +
-						'<span><label>Total Time:</label> 10.00 - 11.00 PM</span>' +
+					// '<div class="rfloat">
 
-					'</div>' +
-				'</div>' );
+					// <abbr class="timestamp fsm">'+date_str+'</abbr></div>'+
+					
+					// '<div class="text">' +
+					// 	'<span><label>No.</label> <strong>' + data.number + '</strong></span>' +
+					// 	// '<span><i class="icon-address-card-o"></i>ภุชงค์</span>' +
+					// '</div>' +
+					
+					// '<div class="subtext clearfix">' +
+					// 	// '<span><label>Package:</label> AKASURI, SAUNA</span>' +
+						
+					// '</div>' +
+
+					// '<div class="subtext clearfix">' +
+					// 	'<span><label>Time:</label> 10.00 - 11.00 PM</span>' +
+
+					// 	'<div class="rfloat"><span class="ui-status">'+ data.status +'</span></div>' +
+					// '</div>'
+
+				);
 
 				$li.data( data );
 				return $li;
@@ -1342,7 +1418,7 @@ if ( typeof Object.create !== 'function' ) {
 	};
 	$.fn.order.options = {
 		lang: 'en',
-		date: new Date(),
+		// date: new Date(),
 		promotions: []
 	};
 

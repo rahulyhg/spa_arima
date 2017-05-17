@@ -20,33 +20,42 @@ class Orders_Model extends Model {
             'dir' => isset($_REQUEST['dir'])? $_REQUEST['dir']: 'DESC',
 			
 			'time'=> isset($_REQUEST['time'])? $_REQUEST['time']:time(),
+
 			'more' => true
 			), $options);
 
 		$date = date('Y-m-d H:i:s', $options['time']);
 
+
+		if( isset($_REQUEST['date']) ){
+			$options['date'] = date('Y-m-d',strtotime($_REQUEST['date']));
+		}
+
+		if( isset($_REQUEST['period_start']) && isset($_REQUEST['period_end']) ){
+			$options['period_start'] = $_REQUEST['period_start'];
+			$options['period_end'] = $_REQUEST['period_end'];
+		}
+
 		$where_str = "";
 		$where_arr = array();
 
 		if( !empty($options['status']) ){
-
 			$where_str .= !empty( $where_str ) ? " AND ":'';
 			$where_str .= "order_status=:status";
 			$where_arr[':status'] = $options['status'];
 		}
 
-		if( isset($_REQUEST['period_start']) && isset($_REQUEST['period_end']) ){
-
-			$options['period_start'] = $_REQUEST['period_start'];
-			$options['period_end'] = $_REQUEST['period_end'];
-		}
-
 		if( !empty($options['period_start']) && !empty($options['period_end']) ){
-
 			$where_str .= !empty( $where_str ) ? " AND ":'';
 			$where_str .= "(order_start_date BETWEEN :startDate AND :endDate)";
             $where_arr[':startDate'] = $options['period_start'];
             $where_arr[':endDate'] = $options['period_end'];
+		}
+
+		if( !empty($options['date']) ){
+			$where_str .= !empty( $where_str ) ? " AND ":'';
+			$where_str .= "`order_date`=:d";
+            $where_arr[':d'] = $options['date'];
 		}
 
 		$arr['total'] = $this->db->count($this->_table, $where_str, $where_arr);
@@ -121,7 +130,7 @@ class Orders_Model extends Model {
 		if( empty($data['order_start_date']) ){
 			$data['order_start_date'] = date('c');
 		}
-		
+
 		if( empty($data['order_date']) ){
 			$data['order_date'] = date('Y-m-d');
 		}
@@ -130,6 +139,12 @@ class Orders_Model extends Model {
 		$data['id'] = $this->db->lastInsertId();
 
 		$data = $this->cut($this->_cutNamefield, $data);
+	}
+	public function updateOrder($id, $data) {
+		
+		$data['order_updated'] = date('c');
+
+		$this->db->update('orders', $data, "order_id={$id}");
 	}
 
 	public function insertDetail(&$data) {
@@ -147,9 +162,9 @@ class Orders_Model extends Model {
 		$data['id'] = $this->db->lastInsertId();
 	}
 
-	public function update($id, $data) {
+	/*public function update($id, $data) {
 		$this->db->update($this->_objType, $data, "{$this->_cutNamefield}id={$id}");
-	}
+	}*/
 	public function delete($id) {
 		$this->db->delete($this->_objType, "{$this->_cutNamefield}id={$id}");
 	}

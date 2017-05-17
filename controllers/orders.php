@@ -113,6 +113,9 @@ class Orders extends Controller {
         }
         else{
             $this->model->insertOrder( $order );
+
+            $order['status'] = 'run';
+            $this->model->updateOrder( $order['id'], array('order_status'=>'run') );
         }
 
         // update Item 
@@ -120,11 +123,20 @@ class Orders extends Controller {
             foreach ($detail as $value) {
                 $value['item_order_id'] = $order['id'];
                 $value['item_emp_id'] = $this->me['id'];
+                $value['item_status'] = $order['status'];
+
                 $this->model->insertDetail( $value );
 
                 // uodate Q job
                 if( !empty($value['masseuse_id']) ){
 
+                    $masseuse = $this->model->query('masseuse')->getJob($value['masseuse_id'], array( 'status'=>'on', 'date'=> $order['date'] ) );
+
+                    // print_r($masseuse)
+                    if( !empty($masseuse) ){
+                        $this->model->query('masseuse')->getJob( $masseuse['job_id'], array('job_status'=>'run') );
+
+                    }
                 }
             }
         }

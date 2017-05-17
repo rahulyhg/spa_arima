@@ -45,7 +45,7 @@
 					<tbody><tr>
 						<td class="colleft">
 							<table><tbody>
-
+								
 								<tr>
 									<td class="label">รวม:</td>
 									<td class="data">฿<span summary="subtotal-text">227</span></td>

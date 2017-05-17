@@ -6,27 +6,30 @@
 		
 		<table>
 			<tr>
-				<td class="prs"><i class="icon-calendar"></i></td>
+				<td class="prs">
+					<label>&nbsp;</label>
+					<div><i class="icon-calendar"></i></div>
+				</td>
 				<td class="prs theDate">
-					<!-- <label>Date:</label> -->
+					<label>Date:</label>
 					<div><input type="date" name="date" class="inputtext js-datepicker"></div>
 				</td>
 				<td style="width: 100%"></td>
 				<td>
-					<!-- <label>&nbsp;</label> -->
-					<div><span class="gbtn"><a class="btn btn-blue" data-global-action="bill"><i class="icon-plus mrs"></i>New Order</a></span></div>
+					<label>&nbsp;</label>
+					<div><a class="btn btn-blue" data-global-action="bill"><i class="icon-plus mrs"></i>New Order</a></div>
 				</td>
 			</tr>
 		</table>
 
-		<div>
+		<!-- <div>
 			<table>
 				<td class="prs">
 					<input type="text" class="inputtext input-search" maxlength="100" placeholder="">
 				</td>
 			</table>
 			
-		</div>
+		</div> -->
 		
 	</header>
 	<div class="section-package-content">

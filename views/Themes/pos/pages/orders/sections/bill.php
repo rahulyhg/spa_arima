@@ -126,9 +126,11 @@
 
 						
 
-						<span class="gbtn"><a class="btn" data-bill-action="hold"><i class="icon-arrow-up mrs"></i><?=$this->lang->translate('Hold')?></a></span>
+						<!-- <span class="gbtn"><a class="btn" data-bill-action="hold"><i class="icon-arrow-up mrs"></i><?=$this->lang->translate('Hold')?></a></span> -->
 
-						<span class="gbtn"><a class="btn btn-blue" data-bill-action="send"><i class="icon-paper-plane-o mrs"></i><?=$this->lang->translate('Order')?></a></span>
+						<span class="gbtn"><a class="btn" data-bill-action="booking"><i class="icon-address-book-o mrs"></i><?=$this->lang->translate('Booking')?></a></span>
+
+						<span class="gbtn"><a class="btn btn-blue" data-bill-action="hold"><i class="icon-paper-plane-o mrs"></i><?=$this->lang->translate('Order')?></a></span>
 					</div>
 				</div>
 			</div>
