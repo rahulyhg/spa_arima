@@ -39,7 +39,6 @@ if ( typeof Object.create !== 'function' ) {
 			self.Events();
 
 			self.active( 'lists' );
-			self.active( 'summary' );
 			// self.active( 'detail' );
 		},
 		setElem: function () {
@@ -361,7 +360,7 @@ if ( typeof Object.create !== 'function' ) {
 			var self = this;
 
 			var el = self.$elem.find('[data-global='+ val +']');
-			if( el.hasClass('active') ) return false;
+			if( el.hasClass('active') && val!='invoice' ) return false;
 
 			el.addClass('active').siblings().removeClass('active');
 
@@ -376,7 +375,7 @@ if ( typeof Object.create !== 'function' ) {
 			}
 			else{
 
-				if( val=='lists' || val=='bill' ){
+				if( val=='lists' || val=='bill' || val=='invoice' ){
 
 					self.global[val].reload();
 				}
@@ -647,7 +646,6 @@ if ( typeof Object.create !== 'function' ) {
 				$meta.append( $masseuse );
 			}
 			
-
 			/*if( data.masseuse_name ){
 				$meta.append( $('<label>', {text: 'Masseuse:'}), data.masseuse_name );
 			}
@@ -1038,8 +1036,12 @@ if ( typeof Object.create !== 'function' ) {
 					date: PHP.dateJStoPHP( self.options.date )
 				}
 
-				// set Data
 
+				if( !self.then.currOrder.id ){
+					self.then.active( 'summary' );
+				}
+
+				// set Data
 				self.setElem();
 				self.Events();
 				// self.then.active( 'invoice' );
@@ -1074,9 +1076,18 @@ if ( typeof Object.create !== 'function' ) {
 				self.$listsbox.delegate('[data-id]', 'click', function () {
 					
 					$(this).addClass('active').siblings().removeClass('active');
+
+					var data = $(this).data();
+					self.then.currInvoice = data;
 					self.then.active('invoice');
 				});
 			},
+
+			/*loadTap: function  {
+				var self = this;
+
+				self.active( 'summary' );
+			},*/
 
 			reload: function () {
 				var self = this;
@@ -1085,7 +1096,6 @@ if ( typeof Object.create !== 'function' ) {
 				self.$listsbox.empty();
 				self.refresh(800);
 			},
-
 			refresh: function (length) {
 				var self = this;
 
@@ -1108,7 +1118,6 @@ if ( typeof Object.create !== 'function' ) {
 						self.buildFrag( results.lists );
 					});
 				}, length || 1);
-
 			},
 			fetch: function(){
 				var self = this;
@@ -1211,14 +1220,19 @@ if ( typeof Object.create !== 'function' ) {
 		invoice: {
 			init: function (options, $elem, then, callback ) {
 				var self = this;
-
 				self.$elem = $elem;
 				self.then = then;
+
+				self.$listsbox = self.$elem.find('[role=orderlists]');
 
 				self.resize();
 				$(window).resize(function () {
 					self.resize();
 				});
+
+				self.reload();
+
+				callback( self );
 			},
 			resize: function () {
 				var self = this;
@@ -1241,7 +1255,178 @@ if ( typeof Object.create !== 'function' ) {
 				self.$elem.find('.slipPaper-bodyContent-body').css({
 					top: self.$elem.find('.slipPaper-bodyContent-header').outerHeight()
 				});
-			}
+			},
+			reload: function () {
+				var self = this;
+
+				self.refresh();
+			},
+
+			refresh: function () {
+				var self = this;
+
+				if( self.$elem.hasClass('has-empty') ){
+					self.$elem.removeClass('has-empty');
+				}
+				self.$elem.addClass('has-loading');
+
+				setTimeout(function () {
+					self.fetch().done(function( results ) {
+						self.display( results );
+					});
+				}, length || 1);	
+			},
+			fetch: function(){
+				var self = this;
+
+				return $.ajax({
+					url: Event.URL + 'orders/get/' + self.then.currInvoice.id,
+					data: {},
+					dataType: 'json'
+				}).always(function() {
+					self.$elem.removeClass('has-loading');
+				}).fail(function() {
+					self.$elem.addClass('has-empty');
+				});
+			},
+
+			display: function ( data ) {
+				var self = this;
+
+				
+				self.$elem.find( '[summary=total]' ).text( PHP.number_format( data.total ) );
+				self.$elem.find( '[summary=discount]' ).text( PHP.number_format( data.discount ) );
+				self.$elem.find( '[summary=drink]' ).text( PHP.number_format( data.drink ) );
+				self.$elem.find( '[summary=balance]' ).text( PHP.number_format( data.balance ) );
+
+				self.$elem.find( '[data-invoice=number]' ).text( data.number );
+				self.$elem.find( '[data-invoice=status]' ).text( data.status );
+
+				self.$listsbox.empty();
+				self.items = {};
+				self.sumItem( data.items );
+
+				for (var i in self.items) {
+					var obj = self.items[i];
+
+					// console.log( obj );
+					self.$listsbox.append( self.setItem( obj ) ); 
+				}
+
+			},
+
+			sumItem: function ( fdata ) {
+				var self = this;
+
+				var no = 0;
+				$.each( fdata, function (i, data) {
+					no++;
+
+					var KEY = data.id;
+
+					if( !self.items[ KEY ] ){
+						self.items[ KEY ] = {
+							qty: 0,
+							no: no,
+							name: data.pack.name,
+							time: data.pack.time,
+							unit: data.pack.unit,
+							status: data.status,
+							has_masseuse: parseInt(data.pack.has_masseuse),
+
+							masseuse: [],
+
+							price: parseInt( data.price ),
+
+							discount: 0,
+							balance: 0,
+							total: 0,
+
+							detail: [],
+						}
+					}
+
+					self.items[ KEY ].total += parseInt( data.total );
+					self.items[ KEY ].discount += parseInt( data.discount );
+					self.items[ KEY ].balance += parseInt( data.balance );
+					self.items[ KEY ].qty ++;
+
+					self.items[ KEY ].detail.push({
+						unit: data.pack.unit,
+						status: data.status,
+
+						masseuse: data.masseuse,
+
+						price: parseInt( data.price ),
+
+						discount: parseInt( data.discount ),
+						balance: parseInt( data.balance ),
+						total: parseInt( data.total ),
+					});
+
+					if( data.masseuse ){
+						self.items[ KEY ].masseuse.push( data.masseuse );
+					}
+
+				} );
+			},
+			setItem: function ( data ) {
+				var self = this;
+
+				var cost = data.qty * data.price;
+				var total = cost - data.discount;
+
+				var $price = $('<td>', {class: 'price'}).append(
+					  $('<div>', {class: 'cost'}).text( PHP.number_format( cost ) )
+					, $('<div>', {class: 'discount'}).append( '-', PHP.number_format(data.discount) )
+					, $('<div>', {class: 'total'}).text( PHP.number_format( total ) )
+				);
+
+				$price.toggleClass('has-discount', data.discount>0);
+				
+				var $meta = $('<div>', {class: 'order-title fsm'});
+
+				if( data.masseuse.length>0 &&data.has_masseuse==1 ){
+
+					var $masseuse = $('<ul>');
+					$.each( data.masseuse, function (i, obj) {
+						$masseuse.append( $( '<li>' ).append(
+							$('<span>', {class: 'ui-status mrs'}).text( obj.code ), obj.nickname 
+						) );
+					} );
+					$meta.append( $masseuse );
+				}
+
+				$status = $('<div>', {class: 'ui-status', 'data-status': data.status, text: data.status});
+
+				var qty = data.time*data.qty, unit = data.unit;
+				if( unit=='minute' && qty >=60 ){
+					unit = 'hour';
+
+					var hour = parseInt( qty / 60);
+					var minute = qty - (hour*60);
+					qty = minute>0
+						? hour + '.' + minute
+						: hour;
+				}
+
+				var $tr = $('<tr>', {'data-id': data.id}).append( 
+
+					  $('<td>', {class: 'no'}).text( data.no+'.' )
+					, $('<td>', {class: 'name'}).append( 
+						  $('<div>', {class: 'title fwb'}).text( data.name )
+						, $meta
+					)
+					, $('<td>', {class: 'status'}).html( $status )
+					, $('<td>', {class: 'qty'}).text( qty )
+					, $('<td>', {class: 'unit'}).text( unit )
+					, $price
+
+				);
+
+				$tr.data( data );
+				return $tr;
+			},
 		},
 
 		setOrderDefault: function ( date ) {
@@ -1505,6 +1690,49 @@ if ( typeof Object.create !== 'function' ) {
 			init: function (options, $elem, then, callback ) {
 				var self = this;
 				self.$elem = $elem;
+				self.then = then;
+				self.options = options;
+
+				callback( self );
+
+				self.setElem();
+				// self.Events();
+
+				self.reload();
+			},
+
+			reload: function () {
+				var self = this;
+
+				
+				var $date = $('<input>', {type: 'date'});
+
+				self.$elem.find('[data-summary=date]').html( $date );
+				$date.datepicker({
+					selectedDate: new Date( self.then.options.date ),
+					lang: self.options.lang,
+					onSelected: function ( date ) {
+
+						self.then.options.date = new Date( date );
+						self.reload();
+					}
+				});
+
+				self.refresh();
+			},
+
+			setElem: function () {
+				var self = this;
+
+			},
+
+			refresh: function () {
+				var self = this;
+				
+				$.get( Event.URL + 'orders/summary', {data: PHP.dateJStoPHP(self.then.options.date)}, function (res) {
+					
+					self.$elem.find('[data-content=summary]').html( res );
+				} );
 			}
 		}
 	}

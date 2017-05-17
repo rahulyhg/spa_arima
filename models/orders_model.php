@@ -71,7 +71,6 @@ class Orders_Model extends Model {
 
 		return $arr;
 	}
-
 	public function buildFrag($results, $options=array()) {
 		$data = array();
 		foreach ($results as $key => $value) {
@@ -109,6 +108,75 @@ class Orders_Model extends Model {
 	public function convert($data, $options=array()){
 
 		$data = $this->cut($this->_cutNamefield, $data);
+
+		if( !empty($options['has_item']) ){
+			$data['items'] = $this->getItems( $data['id'] );
+		}
+
+		return $data;
+	}
+
+	public function getItems($id) {
+		
+		$data = $this->db->select("SELECT 
+			  item_id
+			, item_created
+			, item_updated
+			, item_emp_id
+	
+			, item_room_id
+			, item_bed_id
+			, item_room_price
+
+			, item_start_date
+			, item_end_date
+
+			, item_status
+
+			, item_price
+			, item_qty
+			, item_total
+			, item_discount
+			, item_balance
+
+			, pack_id
+			, pack_qty as pack_time
+			, pack_code
+			, pack_unit
+			, pack_name
+			, pack_has_masseuse
+
+			, mae.emp_id as masseuse_id
+			, mae.emp_code as masseuse_code
+            , mae.emp_prefix_name as masseuse_prefix_name
+            , mae.emp_first_name as masseuse_first_name
+            , mae.emp_last_name as masseuse_last_name
+            , mae.emp_nickname as masseuse_nickname
+            , mae.emp_image_id as masseuse_image_id
+
+		  FROM orders_items item 
+		  	INNER JOIN package pack ON pack.pack_id=item.item_pack_id 
+		  	LEFT JOIN employees mae ON item.item_masseuse_id=mae.emp_id
+		  	WHERE item.item_order_id=:id", array(':id'=>$id));
+
+
+		foreach ($data as $i => $value) {
+			
+			$data[$i] = $this->cut('item_', $value);
+
+	
+			foreach ($value as $key => $val) {
+
+				$ex = explode('_', $key, 2);
+
+				if( in_array($ex[0], array('masseuse', 'pack') ) && count($ex)==2 ){
+					unset( $data[$i][$key] );
+
+					$data[$i][$ex[0]][$ex[1]] = $val;
+				}
+			}
+
+		}
 
 		return $data;
 	}
@@ -170,7 +238,6 @@ class Orders_Model extends Model {
 	}
 
 	public function lastNumber() {
-
 
 		$date = isset($_REQUEST['date']) ? date('Y-m-d', strtotime($_REQUEST['date'])): date('Y-m-d');
 		// $date = $this->query('system')->working_time( $date );

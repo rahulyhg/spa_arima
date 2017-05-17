@@ -1793,13 +1793,16 @@ a.ui-status{text-decoration:none}
 
 .icon-thailand-baht {
     background-image: url('../images/icons/thailand-bahtx32.png');
-    width: 70px;
-    height: 70px;
+    width: 50px;
+    height: 50px;
     display: inline-block !important;
     background-repeat: no-repeat;
     background-position: center;
 }
-
+.gbtn.radius.large .icon-thailand-baht{
+    width: 70px;
+    height: 70px;
+}
 
 /**/
 /* ui-menu-item */

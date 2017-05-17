@@ -12,7 +12,11 @@ class Orders extends Controller {
 
     public function lists() {
     	echo json_encode( $this->model->lists() );
-    } 
+    }
+    public function get($id=null){
+
+        echo json_encode( $this->model->get($id, array('has_item'=>1)) );
+    }
 
     public function lastNumber() {
     	echo json_encode( $this->model->lastNumber() );
@@ -218,6 +222,41 @@ class Orders extends Controller {
         $this->view->setData('date', $date);
         $this->view->setPage('path','Forms/orders');
         $this->view->render("set_bill_{$type}");
+    }
+
+    public function summary() {
+        
+        // Summary //
+        $start = date('Y-m-d 00:00:00');
+        $end = date('Y-m-d 23:59:59');
+
+        /* สรุปยอดรายรับ */
+        $revenue_options = array(
+            'period_start'=>$start,
+            'period_end'=>$end,
+            'type'=>'revenue',
+        );
+        $this->view->setData('revenue', $this->model->query('orders')->summary( $revenue_options ));
+
+        /* ยอดห้อง VIP */
+        $room_options = array(
+            'period_start'=>$start,
+            'period_end'=>$end,
+            'type'=>'room',
+        );
+        $this->view->setData('room', $this->model->query('orders')->summary( $room_options ));
+
+        /* Package List */
+        $package_options = array(
+            'period_start'=>$start,
+            'period_end'=>$end,
+            'dashboard'=>true
+        );
+        // print_r($this->model->query('package')->lists( $package_options ));die;
+        $this->view->setData('lists', $this->model->query('package')->lists( $package_options ));
+        
+        $this->view->setPage('path','Themes/pos/pages/orders/sections');
+        $this->view->render("_summary");
     }
 
 }

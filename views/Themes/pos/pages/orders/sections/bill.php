@@ -46,30 +46,7 @@
 						</tr>
 					</tbody></table>
 				</div>
-				<div class="slipPaper-bodyContent-body"><table><tbody role="orderlists">
-					<?php for ($i=0; $i < -1; $i++) { ?>
-					<tr>
-						<td class="no">1.</td>
-						<td class="name">
-							<div class="title">
-								<strong>SHOWER ROOM</strong>
-								<span class="ui-status">50%</span>
-							</div>
-							<div class="order-title fsm">
-								<span><label>Room: </label> 101</span>
-								<span><label>By:</label> <i class="icon-user-circle-o"></i>ภุชงค์</span>
-							</div>
-						</td>
-						<td class="time">1</td>
-						<td class="unittime">TIME</td>
-						<td class="price has-discount">
-							<div class="full">0</div>
-							<div class="discount">0</div>
-						</td>
-					</tr>
-					<?php } ?>
-
-				</tbody></table></div>
+				<div class="slipPaper-bodyContent-body"><table><tbody role="orderlists"></tbody></table></div>
 			</div>
 			<div class="slipPaper-bodyFooter">
 				<table class="slipPaper-bodyFooter-summary mbm">
@@ -172,10 +149,10 @@
 			</ul>
 		</nav>
 
-		<div class="pay button">
+		<!-- <div class="pay button">
 			<span class="gbtn radius large"><a class="btn btn-blue" data-bill-action="pay"><i class="icon-thailand-baht"></i></a></span>
 			<span class="t">Pay</span>
-		</div>
+		</div> -->
 	</footer>
 	<!-- end: footer -->
 </div>

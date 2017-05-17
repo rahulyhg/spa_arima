@@ -12,35 +12,6 @@ class Pos extends Controller{
 	}
 
     public function orders(){
-
-        // Summary //
-        $start = date('Y-m-d 00:00:00');
-        $end = date('Y-m-d 23:59:59');
-
-        /* สรุปยอดรายรับ */
-        $revenue_options = array(
-            'period_start'=>$start,
-            'period_end'=>$end,
-            'type'=>'revenue',
-        );
-        $this->view->setData('revenue', $this->model->query('orders')->summary( $revenue_options ));
-
-        /* ยอดห้อง VIP */
-        $room_options = array(
-            'period_start'=>$start,
-            'period_end'=>$end,
-            'type'=>'room',
-        );
-        $this->view->setData('room', $this->model->query('orders')->summary( $room_options ));
-
-        /* Package List */
-        $package_options = array(
-            'period_start'=>$start,
-            'period_end'=>$end,
-            'dashboard'=>true
-        );
-        // print_r($this->model->query('package')->lists( $package_options ));die;
-        $this->view->setData('lists', $this->model->query('package')->lists( $package_options ));
         
         $this->view->setData('package', $this->model->query('package')->lists());
         $this->view->setData('promotions', $this->model->query('promotions')->lists());
