@@ -32,7 +32,7 @@ $discount = array();
 		</tr>
 	<?php 
 	$n = 1;
-	$total = 0;
+	$total = $this->room['total_room_price'];
 	$subtotal = 0;
 	foreach ($this->lists['lists'] as $key => $value) { 
 
@@ -56,7 +56,9 @@ $discount = array();
 	<?php } ?>
 		<tr>
 			<td class="name"><div class="hdr-text"><?=$n++?> <strong>ค่า DRINK</strong></div></td>
-			<td class="price"><div class="hdr-text"><?= number_format( $this->revenue['sum_drink'], 0)?></div></td>
+			<td class="price"><div class="hdr-text"><?= number_format( $this->revenue['sum_drink'], 0)?></div>
+			<?php $total = $total+$this->revenue['sum_drink']; ?>
+			</td>
 		</tr>
 	</tbody>
 
