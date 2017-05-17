@@ -40,6 +40,7 @@ if ( typeof Object.create !== 'function' ) {
 			self.Events();
 
 			self.active( 'lists' );
+			self.active( 'summary' );
 			// self.active( 'detail' );
 		},
 		setElem: function () {
@@ -363,10 +364,20 @@ if ( typeof Object.create !== 'function' ) {
 			console.log( self.global );
 			if( !self.global[val] ){
 
-				self.global[val] = true;
-				self[ val ].init( self.options, el, self, function () {
-				
+				self[ val ].init( self.options, el, self, function ( res ) {
+
+					if( val=='lists' ){
+						self.global[val] = res;
+					}
 				} );
+			}
+			else{
+
+				if( val=='lists' ){
+
+					self.global[val].reload();
+				}
+				// self.global[val].
 			}
 
 			
@@ -972,6 +983,7 @@ if ( typeof Object.create !== 'function' ) {
 			init: function (options, elem, then, callback ) {
 				var self = this;
 
+				console.log( 'this lists' );
 				self.$elem = $elem;
 				self.then = then;
 
@@ -982,13 +994,14 @@ if ( typeof Object.create !== 'function' ) {
 				}
 
 				// set Data
-				console.log( self.data );
 
 				self.setElem();
 				self.Events();
 				// self.then.active( 'invoice' );
 
 				self.refresh();
+
+				callback( self );
 			},
 			setElem: function () {
 				var self = this;
@@ -1007,6 +1020,7 @@ if ( typeof Object.create !== 'function' ) {
 						self.then.options.date = new Date( date );
 						self.data.date = PHP.dateJStoPHP( self.then.options.date );
 						self.data.pager = 1;
+						self.$listsbox.empty();
 
 						self.refresh(800);
 					}
@@ -1017,6 +1031,14 @@ if ( typeof Object.create !== 'function' ) {
 					$(this).addClass('active').siblings().removeClass('active');
 					self.then.active('invoice');
 				});
+			},
+
+			reload: function () {
+				var self = this;
+
+				self.data.pager = 1;
+				self.$listsbox.empty();
+				self.refresh(800);
 			},
 
 			refresh: function (length) {
@@ -1108,12 +1130,12 @@ if ( typeof Object.create !== 'function' ) {
 
 				$inner.append(
 
-					'<div class="text">' +
+					''
+					, $avatar
+					, '<div class="text">' +
 						'<span><label>No.</label> <strong>' + data.number + '</strong></span>' +
 
 					'</div>'
-					, $avatar
-					, ''
 					
 
 					// '<div class="rfloat">
@@ -1198,7 +1220,8 @@ if ( typeof Object.create !== 'function' ) {
 					pay: 0,
 				},
 
-				items: []
+				items: [],
+				_items: []
 			};
 		},
 
@@ -1207,6 +1230,7 @@ if ( typeof Object.create !== 'function' ) {
 				var self = this;
 				self.then = then;
 
+				console.log( 'this bill' );
 				// set Data
 				self.then.currOrder = self.then.setOrderDefault();
 				self.options = options;
@@ -1230,7 +1254,6 @@ if ( typeof Object.create !== 'function' ) {
 				});
 
 				self.getNumber( function () {
-					
 					self.then.active( 'menu' );
 
 					if( typeof callback === 'function' ){
@@ -1243,6 +1266,8 @@ if ( typeof Object.create !== 'function' ) {
 				$(window).resize(function () {
 					self.resize();
 				});
+
+				callback( self );
 			},
 
 			getNumber: function ( callback ) {
