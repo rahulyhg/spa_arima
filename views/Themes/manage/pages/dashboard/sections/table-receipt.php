@@ -12,10 +12,11 @@
 	    			<tr>
 	    				<th class="name">รายการ</th>
 	    				<th class="qty">จำนวนลูกค้า</th>
-	    				<th class="qty">QUANTITY</th>
-	    				<th class="unit">UNIT COST</th>
-	    				<th class="price">Discount</th>
-	    				<th class="total">TOTAL</th>
+	    				<th class="qty">จำนวนครั้ง</th>
+	    				<th class="unit">ราคาต่อหน่วย</th>
+	    				<th class="price">เป็นเงิน</th>
+	    				<th class="price">ส่วนลด</th>
+	    				<th class="total">เงินนำส่ง</th>
 	    			</tr>
 	    		</thead>
 
@@ -24,7 +25,8 @@
 	    				<td class="name">ห้อง VIP</td>
 	    				<td class="unit">-</td>
 	    				<td class="qty">-</td>
-	    				<td class="qty"><?=number_format($this->room['total_room_price'])?></td>
+	    				<td class="qty">-</td>
+	    				<td class="price"><?=number_format($this->room['total_room_price'])?></td>
 	    				<td class="price">-</td>
 	    				<td class="total"><?=number_format($this->room['total_room_price'])?></td>
 	    			</tr>
@@ -41,7 +43,8 @@
 	    				<td class="name"><?=$value['name']?></td>
 	    				<td class="unit"><?=$customer = !empty($value['total_customer']) ? $value['total_customer'] : 0?></td>
 	    				<td class="qty"><?=$qty = !empty($value['total_qty']) ? $value['total_qty'] : 0?></td>
-	    				<td class="qty"><?=$price = round($value['price'])?></td>
+	    				<td class="qty"><?=round($value['price'])?></td>
+	    				<td class="price"><?=$price = !empty($value['total']) ? round($value['total']) : 0?></td>
 	    				<td class="price"><?=$discount = !empty($value['total_discount']) ? round($value['total_discount']) : 0?></td>
 	    				<td class="total">
 	    					<?php
@@ -62,7 +65,8 @@
 	    				<td class="name">ค่า Drink</td>
 	    				<td class="unit">-</td>
 	    				<td class="qty">-</td>
-	    				<td class="qty"><?=number_format($this->revenue['sum_drink'])?></td>
+	    				<td class="qty">-</td>
+	    				<td class="price"><?=number_format($this->revenue['sum_drink'])?></td>
 	    				<td class="price">-</td>
 	    				<td class="total"><?=number_format($this->revenue['sum_drink'])?></td>
 	    				<?php $total_all = $total_all + $this->revenue['sum_drink'] ?>
@@ -73,7 +77,8 @@
 	    				<th class="name"></th>
 	    				<th class="unit"><?=number_format($total_customer)?></th>
 	    				<th class="qty"><?=number_format($total_qty)?></th>
-	    				<th class="qty"><?=number_format($total_price)?></th>
+	    				<th class="qty">-</th>
+	    				<th class="price"><?=number_format($total_price)?></th>
 	    				<th class="price"><?=number_format($total_discount)?></th>
 	    				<th class="total"><?=number_format($total_all)?></th>
 	    			</tr>
