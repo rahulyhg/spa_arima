@@ -61,6 +61,7 @@ body, input, textarea, select, button{font-size: 20px}
     .fsm{font-size: 12px}
 }
 
+#alert-messages{top:35%}
 /**/
 /* btn */
 /**/
@@ -838,7 +839,7 @@ body.has_menu .m-menu-toggle{display:block}
 .slipPaper-bodyContent table .no {
     width: 20px;
     text-align: center;
-    /*vertical-align: top;*/
+    vertical-align: top;
     padding-right: 0
 }
 .slipPaper-bodyContent table .name {

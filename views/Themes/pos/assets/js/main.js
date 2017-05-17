@@ -26,7 +26,6 @@ if ( typeof Object.create !== 'function' ) {
 		 	else{
 		 		self.options.date = new Date();
 		 	}
-			
 
 			// set Elem
 			self.$elem = $(elem);
@@ -140,9 +139,6 @@ if ( typeof Object.create !== 'function' ) {
 					self.$elem.find('[data-global=bill]').find('[role=orderlists] > tr[data-id='+ self.currMenu.id +']').addClass('active');
 				} );
 			});
-			/*self.$elem.find('[data-global=detail]').delegate('.js-remove-time', 'click', function () {
-				console.log( 1 );
-			});*/
 			self.$elem.find('[data-global=detail]').delegate('[data-control]', 'click', function () {
 
 				var box = $(this).closest('[data-item]');
@@ -175,6 +171,8 @@ if ( typeof Object.create !== 'function' ) {
 		    				if(id){
 		    					$.get( Event.URL + 'masseuse/get/'+id, function( res ) {
 	    							
+									self.currMasseuse = res;
+
 		    						fdata.masseuse = res;
 	    							self.currOrder.items[fdata.parent_KEY].detail[index]=fdata;
 
@@ -206,7 +204,6 @@ if ( typeof Object.create !== 'function' ) {
 
 		    				self.refreshItemDetail( index, fdata );
 			    			Dialog.close();
-
 		    			}
 		    		}
 		    	});
@@ -331,6 +328,13 @@ if ( typeof Object.create !== 'function' ) {
 
 			$.post( Event.URL + 'orders/save', dataPost, function (res) {
 				
+				if( res.message ){
+					Event.showMsg({text: res.message, load: 1, auto: 1});
+				}
+
+				if( res.error ){
+					return false;
+				}
 
 				self.currOrder.id = res.id;
 				self.currOrder.status = res.status;
@@ -361,32 +365,35 @@ if ( typeof Object.create !== 'function' ) {
 
 			el.addClass('active').siblings().removeClass('active');
 
-			console.log( self.global );
 			if( !self.global[val] ){
 
 				self[ val ].init( self.options, el, self, function ( res ) {
 
-					if( val=='lists' ){
+					if( res ){
 						self.global[val] = res;
 					}
 				} );
 			}
 			else{
 
-				if( val=='lists' ){
+				if( val=='lists' || val=='bill' ){
 
 					self.global[val].reload();
 				}
 				// self.global[val].
 			}
-
-			
 		},
 
 		chooseMenu: function ( type, id, callback) {
 			var self = this;
 
-			$.get(Event.URL + 'orders/menu/', { type: type, id: id }, function (res) {
+			var data = { type: type, id: id, date: PHP.dateJStoPHP( self.currOrder.date ) };
+
+			if( self.currMasseuse ){
+				data.masseuse = self.currMasseuse;
+			}
+
+			$.get(Event.URL + 'orders/menu/', data, function (res) {
 
 				if( type=='package' ){
 					self.loadMenu( res );
@@ -432,6 +439,18 @@ if ( typeof Object.create !== 'function' ) {
 
 			var KEY = data.id;
 			data.has_masseuse = parseInt(data.has_masseuse);
+
+			if( data.has_masseuse==1 && data.skill && self.currMasseuse ){
+
+				$.each( self.currMasseuse.skill, function (i, obj) {
+					
+					$.each( data.skill, function (index, skill) {
+						if( skill.id==obj.id ){
+							data.masseuse = self.currMasseuse
+						}
+					} );
+				} );
+			}
 
 			if( !self.currOrder.items[ KEY ] ){
 
@@ -498,6 +517,7 @@ if ( typeof Object.create !== 'function' ) {
 
 			Detail.total = Detail.price;
 			Detail.balance = Detail.total - Detail.discount;
+
 
 			if( data.has_masseuse==1 && data.masseuse ){
 				Detail.masseuse = data.masseuse;
@@ -604,7 +624,31 @@ if ( typeof Object.create !== 'function' ) {
 			
 			var $meta = $('<div>', {class: 'order-title fsm'});
 
-			if( data.masseuse_name ){
+
+			var masseuse = {};
+			for (var i in data.detail) {
+				var detail = data.detail[i];
+
+				if( detail.masseuse ){
+					masseuse[detail.masseuse.id] = detail.masseuse;
+				}
+			}
+
+			if( Object.keys(masseuse).length ){
+
+				var $masseuse = $('<ul>');
+				$.each(masseuse, function (i, obj) {
+
+					$masseuse.append( $( '<li>' ).append(
+						$('<span>', {class: 'ui-status mrs'}).text( obj.icon_text ), obj.text 
+					) );
+				});
+
+				$meta.append( $masseuse );
+			}
+			
+
+			/*if( data.masseuse_name ){
 				$meta.append( $('<label>', {text: 'Masseuse:'}), data.masseuse_name );
 			}
 
@@ -614,7 +658,7 @@ if ( typeof Object.create !== 'function' ) {
 
 			if( data.bed_name ){
 				$meta.append( $('<label>', {text: 'Bed:'}), data.bed_name );
-			}
+			}*/
 
 			$status = $('<div>', {class: 'ui-status', 'data-status': data.status, text: data.status});
 
@@ -925,7 +969,6 @@ if ( typeof Object.create !== 'function' ) {
 
 			// <div class="initials">1</div></div><div class="content"><div class="spacer"></div><div class="massages"><div class="fullname"></div><span class="subname fsm"></span></div></div></div>'
 		},
-
 		summaryPrice: function () {
 			var self = this;
 
@@ -970,6 +1013,8 @@ if ( typeof Object.create !== 'function' ) {
 					if( id ){ 			
 	    				$.get( Event.URL + 'masseuse/get/'+id, function( res ) {
 	    					
+							self.currMasseuse = res;
+
 	    					on.done( res );
 	    					Dialog.close();
 	    				}, 'json');
@@ -1053,8 +1098,6 @@ if ( typeof Object.create !== 'function' ) {
 					self.fetch().done(function( results ) {
 
 						self.data = $.extend( {}, self.data, results.options );
-
-						console.log( 'list: ', results );
 
 						if( results.total==0 ){
 
@@ -1162,7 +1205,7 @@ if ( typeof Object.create !== 'function' ) {
 
 				$li.data( data );
 				return $li;
-			}
+			},
 		},
 
 		invoice: {
@@ -1204,7 +1247,6 @@ if ( typeof Object.create !== 'function' ) {
 		setOrderDefault: function ( date ) {
 			var self = this;
 
-
 			self.$elem.find('[data-global=bill]').find('[role=orderlists]').empty();
 			self.$elem.find('[data-global=menu]').find('[role=menu] .active').removeClass('active');
 			
@@ -1230,21 +1272,34 @@ if ( typeof Object.create !== 'function' ) {
 				var self = this;
 				self.then = then;
 
-				console.log( 'this bill' );
+				console.log( 'this bill', options );
 				// set Data
-				self.then.currOrder = self.then.setOrderDefault();
+				
 				self.options = options;
 
 				// set Elem 
 				self.$elem = $elem;
 
 				// get Data
+				self.reload();
+
+				// 
+				self.resize();
+				$(window).resize(function () {
+					self.resize();
+				});
+
+				callback( self );
+			},
+
+			reload: function () {
+				var self = this;
+
+				self.then.currOrder = self.then.setOrderDefault( self.then.options.date  );
 				var $date = $('<input>', {type: 'date'}).val( PHP.dateJStoPHP(self.then.currOrder.date) );
-
-				// Datelang.fulldate( self.then.currOrder.theDate, 'normal', self.options.lang )
 				self.$elem.find('[data-bill=date]').html( $date );
-
 				$date.datepicker({
+					selectedDate: new Date( self.then.options.date ),
 					lang: self.options.lang,
 					onSelected: function ( date ) {
 						
@@ -1255,19 +1310,11 @@ if ( typeof Object.create !== 'function' ) {
 
 				self.getNumber( function () {
 					self.then.active( 'menu' );
-
-					if( typeof callback === 'function' ){
-						callback();
-					}
 				} );
 
-				// 
-				self.resize();
-				$(window).resize(function () {
-					self.resize();
-				});
 
-				callback( self );
+				self.summaryPrice();
+				self.summaryDisplay();
 			},
 
 			getNumber: function ( callback ) {
@@ -1287,7 +1334,6 @@ if ( typeof Object.create !== 'function' ) {
 
 				}, 'json');
 			},
-
 			resize: function () {
 				var self = this;
 
@@ -1309,7 +1355,36 @@ if ( typeof Object.create !== 'function' ) {
 				self.$elem.find('.slipPaper-bodyContent-body').css({
 					top: self.$elem.find('.slipPaper-bodyContent-header').outerHeight()
 				});
-			}
+			},
+
+			summaryPrice: function () {
+				var self = this;
+
+				var a = [0,0,0];
+				for (var obj in self.then.currOrder.items) {
+					var data = self.then.currOrder.items[obj];
+
+					data.cost = data.qty*data.price;
+					data.balance = data.cost - data.discount;
+
+					a[0] += data.cost;
+					a[1] += data.discount;
+				}
+
+				self.then.currOrder.summary.total = a[0];
+				self.then.currOrder.summary.discount = a[1];
+
+				self.then.currOrder.summary.balance = (a[0] + self.then.currOrder.summary.drink) - a[1];
+			},
+			summaryDisplay: function () {
+				var self = this;
+				
+				// 
+				$.each( self.then.currOrder.summary, function (key, val) {
+					self.$elem.find('[summary='+ key +']').text( PHP.number_format(val) );
+				} );			
+			},
+
 		},
 
 		menu: {

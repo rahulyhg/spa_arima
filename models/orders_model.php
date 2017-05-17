@@ -138,7 +138,7 @@ class Orders_Model extends Model {
 		$this->db->insert('orders', $data);
 		$data['id'] = $this->db->lastInsertId();
 
-		$data = $this->cut($this->_cutNamefield, $data);
+		$data = $this->cut('order_', $data);
 	}
 	public function updateOrder($id, $data) {
 		

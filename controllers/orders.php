@@ -26,6 +26,42 @@ class Orders extends Controller {
     		if( !empty($_GET['id']) ){
     			$data = $this->model->query('package')->get( $_GET['id'] );
 
+                if( isset($_GET['masseuse']) ){
+                    $masseuse = $this->model->query('masseuse')->getJob( $_GET['masseuse'], array('date'=>$_GET['date'], 'status'=>'on', 'view_stype'=>'bucketed'));
+
+                    if( !empty($masseuse['skill']) ){
+                        foreach ($masseuse['skill'] as $val) {
+                            foreach ($data['skill'] as $skill) {
+                                if( $skill['id']==$val['id'] ){
+                                    $data['masseuse'] = $masseuse;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if( empty($data['masseuse']) ) {
+
+                    $masseuse = $this->model->query('masseuse')->listJob( array('date'=>$_GET['date'], 'unlimit'=>1, 'status'=>'on', 'view_stype'=>'bucketed'));
+
+                    foreach ($masseuse['lists'] as $value) {
+                        
+                        foreach ($value['skill'] as $val) {
+                            
+                            foreach ($data['skill'] as $skill) {
+                                if( $skill['id']==$val['id'] ){
+                                    $data['masseuse'] = $value;
+                                    break;
+                                }
+                            }
+
+                            if( isset($data['masseuse']) ) break;
+                        }
+
+                        if( isset($data['masseuse']) ) break;
+                    }
+                }
                 // $masseuse = $this->model->query('masseuse')->firstMasseuse();
     		}
     		else{
@@ -108,18 +144,21 @@ class Orders extends Controller {
             }
         }
 
-        if( !empty($item) ){
-            $this->model->updateOrder( $id, $order );
-        }
-        else{
-            $this->model->insertOrder( $order );
 
-            $order['status'] = 'run';
-            $this->model->updateOrder( $order['id'], array('order_status'=>'run') );
-        }
+        if( !empty($detail) ){
+
+            if( !empty($item) ){
+                $this->model->updateOrder( $id, $order );
+            }
+            else{
+                $this->model->insertOrder( $order );
+
+                $order['status'] = 'run';
+                $this->model->updateOrder( $order['id'], array('order_status'=>'run') );
+            }
 
         // update Item 
-        if( !empty($detail) ){
+        
             foreach ($detail as $value) {
                 $value['item_order_id'] = $order['id'];
                 $value['item_emp_id'] = $this->me['id'];
@@ -128,20 +167,25 @@ class Orders extends Controller {
                 $this->model->insertDetail( $value );
 
                 // uodate Q job
-                if( !empty($value['masseuse_id']) ){
+                if( !empty($value['item_masseuse_id']) ){
 
-                    $masseuse = $this->model->query('masseuse')->getJob($value['masseuse_id'], array( 'status'=>'on', 'date'=> $order['date'] ) );
+                    $masseuse = $this->model->query('masseuse')->getJob($value['item_masseuse_id'], array( 'status'=>'on', 'date'=> $order['date'] ) );
 
-                    // print_r($masseuse)
                     if( !empty($masseuse) ){
-                        $this->model->query('masseuse')->getJob( $masseuse['job_id'], array('job_status'=>'run') );
+                        $this->model->query('masseuse')->updateJob( $masseuse['job_id'], array('job_status'=>'run') );
 
                     }
                 }
             }
-        }
 
-        $order['items'] = $detail;
+            $order['items'] = $detail;
+            // $order['message'] = 'Order';
+        }
+        else{
+
+            $order['error'] = 1;
+            $order['message'] = 'กรุณาเลือก PACKAGE';
+        }
 
         echo json_encode( $order );
     }

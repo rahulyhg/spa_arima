@@ -48,7 +48,7 @@
 								
 								<tr>
 									<td class="label">รวม:</td>
-									<td class="data">฿<span summary="subtotal-text">227</span></td>
+									<td class="data">฿<span summary="subtotal-text">0</span></td>
 								</tr>
 								<tr>
 									<td class="label">ส่วนลด:</td>

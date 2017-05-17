@@ -247,6 +247,7 @@ class Masseuse_Model extends Model{
 
             "image_url"=>!empty($data['image_url']) ? $data['image_url']:"",
             'icon_text' => $data['code'],
+            'skill' => $data['skill']
             // 'status' => isset($status)?$status:"",
             // 'data' => $data,
         );
@@ -387,7 +388,13 @@ class Masseuse_Model extends Model{
 
         $where_str = !empty($where_str) ? "WHERE {$where_str}":'';
 
-        $sth = $this->db->prepare("SELECT j.*, {$this->_field} FROM emp_job_queue j INNER JOIN ($this->_table) ON j.job_emp_id=e.emp_id {$where_str} LIMIT 1");
+        $sth = $this->db->prepare("SELECT 
+              j.job_id
+            , j.job_sequence
+            , j.job_date
+            , j.job_time
+            , j.job_status
+            , {$this->_field} FROM emp_job_queue j INNER JOIN ($this->_table) ON j.job_emp_id=e.emp_id {$where_str} LIMIT 1");
         $sth->execute( $where_arr );
 
         return $sth->rowCount()==1
@@ -435,7 +442,6 @@ class Masseuse_Model extends Model{
     }
 
     public function updateJob($id, $data) {
-        
         $this->db->update("emp_job_queue", $data, "`job_id`={$id}");
     }
 
