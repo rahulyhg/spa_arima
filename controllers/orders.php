@@ -30,20 +30,20 @@ class Orders extends Controller {
     		if( !empty($_GET['id']) ){
     			$data = $this->model->query('package')->get( $_GET['id'] );
 
-                if( isset($_GET['masseuse']) ){
-                    $masseuse = $this->model->query('masseuse')->getJob( $_GET['masseuse'], array('date'=>$_GET['date'], 'status'=>'on', 'view_stype'=>'bucketed'));
+                // if( isset($_GET['masseuse']) ){
+                //     $masseuse = $this->model->query('masseuse')->getJob( $_GET['masseuse'], array('date'=>$_GET['date'], 'status'=>'on', 'view_stype'=>'bucketed'));
 
-                    if( !empty($masseuse['skill']) ){
-                        foreach ($masseuse['skill'] as $val) {
-                            foreach ($data['skill'] as $skill) {
-                                if( $skill['id']==$val['id'] ){
-                                    $data['masseuse'] = $masseuse;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
+                //     if( !empty($masseuse['skill']) ){
+                //         foreach ($masseuse['skill'] as $val) {
+                //             foreach ($data['skill'] as $skill) {
+                //                 if( $skill['id']==$val['id'] ){
+                //                     $data['masseuse'] = $masseuse;
+                //                     break;
+                //                 }
+                //             }
+                //         }
+                //     }
+                // }
 
                 if( empty($data['masseuse']) ) {
 
@@ -60,10 +60,10 @@ class Orders extends Controller {
                                 }
                             }
 
-                            if( isset($data['masseuse']) ) break;
+                            if( !empty($data['masseuse']) ) break;
                         }
 
-                        if( isset($data['masseuse']) ) break;
+                        if( !empty($data['masseuse']) ) break;
                     }
                 }
                 // $masseuse = $this->model->query('masseuse')->firstMasseuse();
@@ -225,10 +225,17 @@ class Orders extends Controller {
     }
 
     public function summary() {
+
+        $date = isset($_REQUEST['date']) ? $_REQUEST['date'] : '';
         
         // Summary //
         $start = date('Y-m-d 00:00:00');
         $end = date('Y-m-d 23:59:59');
+
+        if( !empty($date) ){
+            $start = date("Y-m-d 00:00:00", strtotime($date));
+            $end = date("Y-m-d 23:59:59", strtotime($date));
+        }
 
         /* สรุปยอดรายรับ */
         $revenue_options = array(

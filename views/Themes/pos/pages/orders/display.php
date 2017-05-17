@@ -4,8 +4,6 @@ require 'init.php';
 
 ?><div id="mainContainer" class="clearfix hasLeft" data-plugins="main"><div id="order" data-plugins="order" data-options="<?=$this->fn->stringify( array( 
 	'lang'=>$this->lang->getCode(),
-
-	'date' => '2017-05-07'
 ) )?>">
 
 	<div role="left" data-w-percent="50">
