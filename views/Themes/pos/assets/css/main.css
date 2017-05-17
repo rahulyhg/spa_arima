@@ -2414,3 +2414,25 @@ table.table-plan td{vertical-align:top}
 .ui-list-detail .wrap table .price .has-discount>.discount{
     display: inline-block;
 }
+
+.table-permit{
+    background-color: #fff;
+    width: 100%;
+}
+
+.table-permit th, .table-permit td{
+    padding: 3px 5px;
+    border:1px solid #ccc;
+}
+.table-permit th{
+    background-color: #eee
+}
+.table-permit .status{
+    min-width: 80px;
+    width: 80px;
+    text-align: center;
+}
+.table-permit .ID{
+    width: 10px;
+    text-align: center;
+}

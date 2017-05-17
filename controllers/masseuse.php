@@ -232,4 +232,46 @@ class Masseuse extends Controller {
         }
 
     }
+
+    public function skill( $id=null ){
+
+        $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : $id;
+        if( empty($id) ) $this->error();
+
+        $item = $this->model->get( $id );
+        if( empty($item) ) $this->error();
+
+        $this->view->setData('skill', $this->model->query('employees')->skill());
+        $this->view->setData('item', $item);
+        $this->view->render('masseuse/forms/skill');
+    }
+
+    public function cancel( $id=null ){
+
+        $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : $id;
+        if( empty($id) ) $this->error();
+
+        $item = $this->model->get( $id );
+        if( empty($item) ) $this->error();
+
+        $job = $this->model->getJob( $id );
+        if( empty($job) ) $this->error();
+
+        if( !empty($_POST) ){
+
+            $postData['job_status'] = 'cancel';
+            $this->model->updateJob( $job['job_id'], $postData );
+
+            $arr['message'] = 'ยกเลิกคิวบริการเรียบร้อย';
+            $arr['url'] = 'refresh';
+
+            echo json_encode($arr);
+        }
+        else{
+
+            $this->view->setData('item', $item);
+            $this->view->setData('job', $job);
+            $this->view->render('masseuse/forms/job_cancel');
+        }
+    }
 }
