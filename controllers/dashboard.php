@@ -68,7 +68,7 @@ class Dashboard extends Controller {
 		/* Customer RUN & EXPIRED */
 		$this->view->setData('customers', $this->model->query('customers')->summary());
 
-		/* สรุปยอดรายรับ */
+		/* ยอด VIP */
 		$room_options = array(
 			'period_start'=>$start,
 			'period_end'=>$end,

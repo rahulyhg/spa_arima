@@ -45,11 +45,7 @@
 	    				<td class="price"><?=$discount = !empty($value['total_discount']) ? round($value['total_discount']) : 0?></td>
 	    				<td class="total">
 	    					<?php
-	    					$total = 0; 
-	    					if( !empty($value['total_qty']) ) {
-	    						$discount = !empty($value['total_discount']) ? $value['total_discount'] : 0;
-	    						$total = ($value['total_qty'] * $value['price']) - $discount;
-	    					}
+	    					$total = $value['total_balance']; 
 
 	    					echo number_format($total);
 

@@ -142,12 +142,16 @@ class Package_Model extends Model {
 			}
 
 			$select = "SUM(item_qty) AS total_qty, 
-					   SUM(item_discount) AS total_discount";
+					   SUM(item_discount) AS total_discount,
+					   SUM(item_total) AS total,
+					   SUM(item_balance) AS total_balance";
 
 			$results = $this->db->select("SELECT {$select} FROM orders_items WHERE {$where_total}", $where_total_arr);
 
 			$data['total_qty'] = $results[0]['total_qty'];
 			$data['total_discount'] = $results[0]['total_discount'];
+			$data['total'] = $results[0]['total'];
+			$data['total_balance'] = $results[0]['total_balance'];
 			/**/
 
 			/* COUNT CUSTOMER */

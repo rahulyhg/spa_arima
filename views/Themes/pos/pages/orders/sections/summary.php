@@ -1,25 +1,5 @@
 <?php
 
-$summary = array();
-$summary[] = array('label'=>'ค่าห้อง VIP','value'=>2920, 'note'=>'');
-$summary[] = array('label'=>'นวดตัว','value'=>90950, 'note'=>'');
-$summary[] = array('label'=>'นวดเท้า','value'=>30550, 'note'=>'');
-$summary[] = array('label'=>'นวดหัว','value'=>6150, 'note'=>'');
-$summary[] = array('label'=>'นวด OIL','value'=>4200, 'note'=>'');
-$summary[] = array('label'=>'นวดหน้า','value'=>6900, 'note'=>'');
-$summary[] = array('label'=>'แคะหู','value'=>14350, 'note'=>'');
-$summary[] = array('label'=>'เล็บมือ','value'=>2700, 'note'=>'');
-$summary[] = array('label'=>'เล็บเท้า','value'=>2700, 'note'=>'');
-$summary[] = array('label'=>'SAUNA','value'=>8500, 'note'=>'');
-$summary[] = array('label'=>'AKASURI','value'=>1800, 'note'=>'');
-$summary[] = array('label'=>'อาบน้ำ','value'=>300, 'note'=>'');
-$summary[] = array('label'=>'DRINK','value'=>3761, 'sub'=> array(
-		0=> 
-		  array('label'=>'ในร้าน', 'value'=> 274)
-		, array('label'=>'ในร้าน', 'value'=> 274)
-
-	), 'note'=>'');
-
 $discount = array();
 // $discount[] = array('label'=>'ลบคูปอง','value'=>600, 'note'=>'');
 // $discount[] = array('label'=>'เฮีย','value'=>1860, 'note'=>'');
@@ -45,20 +25,24 @@ $discount = array();
 	<table class="pos-summary-table">
 		
 
-	<tbody><?php 
-
-	$n = 0;
+	<tbody>
+		<tr>
+			<td class="name"><div class="hdr-text">1. <strong>ค่าห้อง VIP</strong></div></td>
+			<td class="price"><div class="hdr-text"><?= number_format( $this->room['total_room_price'], 0)?></div></td>
+		</tr>
+	<?php 
+	$n = 1;
 	$total = 0;
 	$subtotal = 0;
-	foreach ($summary as $key => $value) { 
+	foreach ($this->lists['lists'] as $key => $value) { 
 
-		$total += $value['value'];
+		$total += $value['total_balance'];
 	$n++;
 	?>
 		
 		<tr>
 			<!-- <td class="ID"><?=$n?>.</td> -->
-			<td class="name"><div class="hdr-text"><?=$n?>. <strong><?=$value['label']?></strong><?php
+			<td class="name"><div class="hdr-text"><?=$n?>. <strong><?=$value['name']?></strong><?php
 
 				if( !empty($value['note']) ){
 
@@ -67,9 +51,13 @@ $discount = array();
 				}
 
 			?></div></td>
-			<td class="price"><div class="hdr-text"><?= number_format( $value['value'], 0)?></div></td>
+			<td class="price"><div class="hdr-text"><?= number_format( $value['total_balance'], 0)?></div></td>
 		</tr>
 	<?php } ?>
+		<tr>
+			<td class="name"><div class="hdr-text"><?=$n++?> <strong>ค่า DRINK</strong></div></td>
+			<td class="price"><div class="hdr-text"><?= number_format( $this->revenue['sum_drink'], 0)?></div></td>
+		</tr>
 	</tbody>
 
 	<tbody class="total">
