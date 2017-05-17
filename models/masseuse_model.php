@@ -434,7 +434,7 @@ class Masseuse_Model extends Model{
             'job_emp_id' => $id,
             'job_sequence' => $sequence,
             'job_date' => $options['date'],
-            'job_time' => date('H:s:i', strtotime($options['date'])),
+            'job_time' => isset($options['time']) ? date('H:s:i', strtotime($options['time']) ): date('H:s:i', time() ),
             'job_status' =>'on'
         );
 
@@ -444,10 +444,5 @@ class Masseuse_Model extends Model{
     public function updateJob($id, $data) {
         $this->db->update("emp_job_queue", $data, "`job_id`={$id}");
     }
-
-
-    // public function getJobSequence( $start, $end ){
-        // return $this->db->count("job_queue", "date BETWEEN :start AND :end", array(":start"=>$start , ":end"=>$end));
-    // }
     
 }
