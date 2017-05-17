@@ -214,6 +214,9 @@ class Orders_Model extends Model {
 
 		$this->db->update('orders', $data, "order_id={$id}");
 	}
+	public function delOrder($id) {
+		$this->db->delete('orders', "`order_id`={$id}");
+	}
 
 	public function insertDetail(&$data) {
 		
@@ -229,13 +232,10 @@ class Orders_Model extends Model {
 		$this->db->insert('orders_items', $data);
 		$data['id'] = $this->db->lastInsertId();
 	}
-
-	/*public function update($id, $data) {
-		$this->db->update($this->_objType, $data, "{$this->_cutNamefield}id={$id}");
-	}*/
-	public function delete($id) {
-		$this->db->delete($this->_objType, "{$this->_cutNamefield}id={$id}");
+	public function delDetail() {
+		$this->db->delete('orders_items', "`item_id`={$id}");
 	}
+	
 
 	public function lastNumber() {
 

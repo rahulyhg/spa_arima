@@ -18,6 +18,55 @@ class Orders extends Controller {
         echo json_encode( $this->model->get($id, array('has_item'=>1)) );
     }
 
+    public function del($id=null)  {
+        
+        $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : $id;
+        if( empty($this->me) || empty($id) || $this->format!='json' ) $this->error();
+        
+        $options = array();
+
+        if( isset($_REQUEST['has_item']) ){
+            $options['has_item'] = 1;
+        }
+
+        $item = $this->model->get($id, $options);
+        if( empty($item) ) $this->error();
+
+       $item['permit']['del'] = true;
+
+        if (!empty($_POST)) {
+
+            if ($item['permit']['del']) {
+
+                // print_r($item); die;
+                foreach ($item['items'] as $value) {
+                    
+
+                    $this->model->delDetail($value['id']);
+                }
+                $this->model->delOrder($id);
+                
+                $arr['message'] = 'ลบข้อมูลเรียบร้อย';
+            } else {
+                $arr['message'] = 'ไม่สามารถลบข้อมูลได้';
+            }
+
+            if( isset($_REQUEST['callback']) ){
+                $arr['callback'] = $_REQUEST['callback'];
+            }
+            
+            // $arr['url'] = isset($_REQUEST['next'])? $_REQUEST['next'] : URL.'customers/';
+            
+            echo json_encode($arr);
+        }
+        else{
+
+            $this->view->setData('item', $item);
+            $this->view->setPage('path','Forms/orders');
+            $this->view->render("del");
+        }
+    }
+
     public function lastNumber() {
     	echo json_encode( $this->model->lastNumber() );
     }

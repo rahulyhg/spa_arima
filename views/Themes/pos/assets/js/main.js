@@ -392,6 +392,8 @@ if ( typeof Object.create !== 'function' ) {
 				data.masseuse = self.currMasseuse;
 			}
 
+			console.log( data.masseuse );
+
 			$.get(Event.URL + 'orders/menu/', data, function (res) {
 
 				if( type=='package' ){
@@ -1294,30 +1296,31 @@ if ( typeof Object.create !== 'function' ) {
 
 
 				self.data = {
+					id: data.id,
 					summary: {
-						total: 0,
-						discount: 0,
-						drink: 0,
-						balance: 0,
+						total: parseInt( data.total ),
+						discount: parseInt( data.discount ),
+						drink: parseInt( data.drink ),
+						balance: parseInt( data.balance ),
 					},
 
-					number: 
-					status: 
+					number: data.number,
+					status: data.status
 				};
-				self.$elem.find( '[summary=total]' ).text( PHP.number_format( data.total ) );
-				self.$elem.find( '[summary=discount]' ).text( PHP.number_format( data.discount ) );
-				self.$elem.find( '[summary=drink]' ).text( PHP.number_format( data.drink ) );
-				self.$elem.find( '[summary=balance]' ).text( PHP.number_format( data.balance ) );
+
+				$.each( self.data.summary, function (key, val) {
+					self.$elem.find( '[summary='+ key +']' ).text( PHP.number_format( val ) );
+				} );
 
 				self.$elem.find( '[data-invoice=number]' ).text( data.number );
 				self.$elem.find( '[data-invoice=status]' ).text( data.status );
 
 				self.$listsbox.empty();
-				self.items = {};
+				self.data.items = {};
 				self.sumItem( data.items );
 
-				for (var i in self.items) {
-					var obj = self.items[i];
+				for (var i in self.data.items) {
+					var obj = self.data.items[i];
 
 					// console.log( obj );
 					self.$listsbox.append( self.setItem( obj ) ); 
@@ -1333,8 +1336,8 @@ if ( typeof Object.create !== 'function' ) {
 
 					var KEY = data.id;
 
-					if( !self.items[ KEY ] ){
-						self.items[ KEY ] = {
+					if( !self.data.items[ KEY ] ){
+						self.data.items[ KEY ] = {
 							qty: 0,
 							no: no,
 							name: data.pack.name,
@@ -1355,12 +1358,12 @@ if ( typeof Object.create !== 'function' ) {
 						}
 					}
 
-					self.items[ KEY ].total += parseInt( data.total );
-					self.items[ KEY ].discount += parseInt( data.discount );
-					self.items[ KEY ].balance += parseInt( data.balance );
-					self.items[ KEY ].qty ++;
+					self.data.items[ KEY ].total += parseInt( data.total );
+					self.data.items[ KEY ].discount += parseInt( data.discount );
+					self.data.items[ KEY ].balance += parseInt( data.balance );
+					self.data.items[ KEY ].qty ++;
 
-					self.items[ KEY ].detail.push({
+					self.data.items[ KEY ].detail.push({
 						unit: data.pack.unit,
 						status: data.status,
 
@@ -1374,7 +1377,7 @@ if ( typeof Object.create !== 'function' ) {
 					});
 
 					if( data.masseuse ){
-						self.items[ KEY ].masseuse.push( data.masseuse );
+						self.data.items[ KEY ].masseuse.push( data.masseuse );
 					}
 
 				} );
@@ -1430,7 +1433,6 @@ if ( typeof Object.create !== 'function' ) {
 					, $('<td>', {class: 'qty'}).text( qty )
 					, $('<td>', {class: 'unit'}).text( unit )
 					, $price
-
 				);
 
 				$tr.data( data );
@@ -1447,8 +1449,36 @@ if ( typeof Object.create !== 'function' ) {
 
 						self.then.active( 'bill' );
 					}
+					else if( type == 'remove' ){
+						self.remove();
+					}
 				} );
 				
+			},
+
+			remove: function () {
+				var self = this;
+
+				Dialog.load( Event.URL+'orders/del/'+ self.data.id, {}, {
+
+					onSubmit: function ( $d ) {
+
+						var $form = $d.$pop.find('form');
+						// e.preventDefault();
+
+						Event.inlineSubmit( $form ).done(function( result ) {
+
+							result.url = '';
+
+							self.then.active( 'summary' );
+
+							Event.processForm($form, result);
+							Dialog.close();
+						});
+
+						
+					}
+				} );
 			}
 		},
 

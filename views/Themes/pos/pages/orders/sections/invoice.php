@@ -91,23 +91,23 @@
 			<div class="mts des-text">Print</div>
 		</li> -->
 
-		<li class="mbm tac">
+		<!-- <li class="mbm tac">
 			<div class="gbtn radius">
 				<a class="btn" data-invoice-action="edit"><i class="icon-pencil"></i></a>
 			</div>
 			<div class="mts des-text">Edit</div>
-		</li>
+		</li> -->
 		
 	</ul>
 
 	<ul class="bottom" style="position: absolute;bottom: 0;left: 0;right: 0">
 		
-		<!-- <li class="mbm tac">
+		<li class="mbm tac">
 			<div class="gbtn radius">
-				<a class="btn btn-red" data-type="print"><i class="icon-remove"></i></a>
+				<a class="btn btn-red" data-invoice-action="remove"><i class="icon-remove"></i></a>
 			</div>
 			<div class="mts des-text">Cancel</div>
-		</li> -->
+		</li>
 		<!-- <li class="mbm tac">
 			<div class="gbtn radius">
 				<a class="btn btn-blue" data-type="print"><i class="icon-thailand-baht"></i></a>
