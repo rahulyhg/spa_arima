@@ -177,6 +177,7 @@ class Orders extends Controller {
                     'item_discount' => $value['discount'],
                     'item_balance' => $value['total']-$value['discount'],
                     'item_status' => $value['status'],
+                    'item_job_id' => $value['job_id'],
                 );
 
                 if( isset($value['masseuse_id']) ){

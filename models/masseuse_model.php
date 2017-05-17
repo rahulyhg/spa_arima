@@ -236,7 +236,7 @@ class Masseuse_Model extends Model{
             $data['fullname'] .= " ({$data['nickname']})";
         }
 
-        return array(
+        $fdata = array(
             'id'=> $data['id'],
             // 'created' => $data['created'],
             'text'=> $data['fullname'],
@@ -251,6 +251,15 @@ class Masseuse_Model extends Model{
             // 'status' => isset($status)?$status:"",
             // 'data' => $data,
         );
+
+        if( !empty( $data['job_id'] ) ){
+
+            $fdata['job_id'] = $data['job_id'];
+            // j.job_id
+            // , j.job_sequence
+        }
+
+        return $fdata;
     }
 
     public function getCode($code, $options=array()){
@@ -352,7 +361,13 @@ class Masseuse_Model extends Model{
         $orderby = $this->orderby( 'job_'.$options['sort'], $options['dir'] );
         $limit = !empty($options['unlimit']) ?'': $this->limited( $options['limit'], $options['pager'] );
 
-        $arr['lists'] = $this->buildFrag( $this->db->select("SELECT {$this->_field} FROM {$_table} {$where_str} {$orderby} {$limit}", $where_arr ), $options  );
+        $arr['lists'] = $this->buildFrag( $this->db->select("SELECT 
+              j.job_id
+            , j.job_sequence
+            , j.job_date
+            , j.job_time
+            , j.job_status
+            , {$this->_field} FROM {$_table} {$where_str} {$orderby} {$limit}", $where_arr ), $options  );
 
         if( ($options['pager']*$options['limit']) >= $arr['total'] ) $options['more'] = false;
         $arr['options'] = $options;

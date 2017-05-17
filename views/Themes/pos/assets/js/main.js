@@ -305,6 +305,7 @@ if ( typeof Object.create !== 'function' ) {
 
 							if(detail.masseuse){
 								d.masseuse_id = detail.masseuse.id;
+								d.job_id = detail.masseuse.job_id;
 							}
 
 							if( detail.room ){
@@ -324,7 +325,6 @@ if ( typeof Object.create !== 'function' ) {
 			});
 
 			dataPost.date = PHP.dateJStoPHP( dataPost.date );
-
 			$.post( Event.URL + 'orders/save', dataPost, function (res) {
 				
 				if( res.message ){
@@ -391,8 +391,6 @@ if ( typeof Object.create !== 'function' ) {
 			if( self.currMasseuse ){
 				data.masseuse = self.currMasseuse;
 			}
-
-			console.log( data.masseuse );
 
 			$.get(Event.URL + 'orders/menu/', data, function (res) {
 
