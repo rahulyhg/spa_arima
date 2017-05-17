@@ -25,7 +25,7 @@
 					</div>
 					<div class="rfloat tar">
 						<div data-invoice="itmelive" class="tableTime-text fsm fwn"></div>
-						<span class="ui-status" data-invoice="status">RUN</span>
+						<!-- <span class="ui-status" data-invoice="status">RUN</span> -->
 					</div>
 				</div>	
 			</div>
@@ -93,7 +93,7 @@
 
 		<li class="mbm tac">
 			<div class="gbtn radius">
-				<a class="btn js-set-option" data-type="tipAmounts"><i class="icon-pencil"></i></a>
+				<a class="btn" data-invoice-action="edit"><i class="icon-pencil"></i></a>
 			</div>
 			<div class="mts des-text">Edit</div>
 		</li>

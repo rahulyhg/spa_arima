@@ -375,10 +375,10 @@ if ( typeof Object.create !== 'function' ) {
 			}
 			else{
 
-				if( val=='lists' || val=='bill' || val=='invoice' ){
-
+				if( val=='lists' || val=='bill' || val=='invoice' || val=='summary' ){
 					self.global[val].reload();
 				}
+
 				// self.global[val].
 			}
 		},
@@ -1231,6 +1231,7 @@ if ( typeof Object.create !== 'function' ) {
 				});
 
 				self.reload();
+				self.Events();
 
 				callback( self );
 			},
@@ -1261,7 +1262,6 @@ if ( typeof Object.create !== 'function' ) {
 
 				self.refresh();
 			},
-
 			refresh: function () {
 				var self = this;
 
@@ -1289,11 +1289,21 @@ if ( typeof Object.create !== 'function' ) {
 					self.$elem.addClass('has-empty');
 				});
 			},
-
 			display: function ( data ) {
 				var self = this;
 
-				
+
+				self.data = {
+					summary: {
+						total: 0,
+						discount: 0,
+						drink: 0,
+						balance: 0,
+					},
+
+					number: 
+					status: 
+				};
 				self.$elem.find( '[summary=total]' ).text( PHP.number_format( data.total ) );
 				self.$elem.find( '[summary=discount]' ).text( PHP.number_format( data.discount ) );
 				self.$elem.find( '[summary=drink]' ).text( PHP.number_format( data.drink ) );
@@ -1312,7 +1322,6 @@ if ( typeof Object.create !== 'function' ) {
 					// console.log( obj );
 					self.$listsbox.append( self.setItem( obj ) ); 
 				}
-
 			},
 
 			sumItem: function ( fdata ) {
@@ -1427,6 +1436,20 @@ if ( typeof Object.create !== 'function' ) {
 				$tr.data( data );
 				return $tr;
 			},
+
+			Events: function () {
+				var self = this;
+
+				self.$elem.find('[data-invoice-action]').click( function () {
+					var type = $(this).attr('data-invoice-action');
+
+					if(type == 'edit'){
+
+						self.then.active( 'bill' );
+					}
+				} );
+				
+			}
 		},
 
 		setOrderDefault: function ( date ) {
