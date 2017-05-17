@@ -29,8 +29,6 @@ class Pos extends Controller{
 
         if( !empty($_POST) ){
 
-
-
             $item = $this->model->query('masseuse')->getCode( $_POST['code'] );
             if( !empty($item) ){
                 
