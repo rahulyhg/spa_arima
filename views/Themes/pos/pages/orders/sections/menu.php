@@ -51,6 +51,7 @@
 				<td class="time"><?=$value['unit'];?></td>
 
 				<td class="price"><?= number_format($value['price'], 0)?> ฿</td>
+				
 			</tr>
 			<?php } ?>
 

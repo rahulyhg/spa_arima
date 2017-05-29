@@ -17,22 +17,21 @@ if ( typeof Object.create !== 'function' ) {
 			
 			self.options = $.extend({}, $.fn.setdate.options, options);
 
-			self.setElem();
 			self.config();
+			self.setElem();
 
 			// 
 			self.setCalendarStart();
 			self.setCalendarEnd();
 
-
-			if( self.options.allday !== 'disabled' ){
+			if( self.options.allday != 'disabled' ){
 				self.$checkAllday.change(function (e) {
 					self.changeAllday();
 				});
 				self.changeAllday();
 			}
 
-			if( self.options.time !== 'disabled' ){
+			if( self.options.time != 'disabled' ){
 				self.$checkEndTime.change(function (e) {
 					self.changeEndTime();
 				});
@@ -46,42 +45,16 @@ if ( typeof Object.create !== 'function' ) {
 			var today = new Date();
 			self.startDate = new Date( self.options.startDate || today );
 			self.endDate = new Date( self.options.endDate|| today );
-			
-			self.options.startDate  = new Date( self.options.startDate );
-			self.options.endDate  = new Date( self.options.endDate );
-
-			if( !self.options.allday ){
-				self.$checkAllday.attr('checked', false);
-
-				// start
-				hours = self.options.startDate.getHours();
-				hours = hours < 10 ? "0"+hours:hours;
-
-				minute = self.options.startDate.getMinutes();
-				minute = minute < 30 ? "00":"30";
-
-				self.$table.find('.start.time select').val( hours+":"+minute );
-
-				// end
-				hours = self.options.endDate.getHours();
-				hours = hours < 10 ? "0"+hours:hours;
-
-				minute = self.options.endDate.getMinutes();
-				minute = minute < 30 ? "00":'30';
-
-				self.$table.find('.end.time select').val( hours+":"+minute );
-				
-			}
 		},
 
 		setElem: function () {
 			var self = this;
 
 			self.$startDate = $('<div>', {name: 'start-date-wrap'});
-			self.$startTime = self.settime( self.options.name[2] || 'start_time');
+			self.$startTime = self.setElemTime( self.options.name[2] || 'start_time', self.startDate );
 
 			self.$endDate = $('<div>', {name: 'end-date-wrap'});
-			self.$endTime = self.settime( self.options.name[3] || 'end_time');
+			self.$endTime = self.setElemTime( self.options.name[3] || 'end_time', self.endDate );
 
 
 			self.$checkAllday = $('<input>', {type: 'checkbox', name: self.options.name[4] || 'allday'}).prop('checked', self.options.allday );
@@ -119,14 +92,14 @@ if ( typeof Object.create !== 'function' ) {
 				  	, $('<td>', {class: 'td-divider'}) 
 				  	, $('<td>', {class: 'start action'}).append( 
 
-				  		( self.options.time !== 'disabled' 
+				  		( self.options.allday !== 'disabled' 
 				  			? $( '<label>', {class: 'checkbox mlm'} ).append( 
 					  			self.$checkAllday,
 					  			$('<span>', {class: '', text: self.options.str[2]}) 
 					  		) : ''
 				  		)
 				  		,
-				  		( self.options.time !== 'disabled' 
+				  		( self.options.check_endtime 
 				  			? $( '<label>', {class: 'checkbox mlm'} ).append( 
 					  			self.$checkEndTime,
 					  			$('<span>', {class: '', text: self.options.str[3]}) 
@@ -161,33 +134,64 @@ if ( typeof Object.create !== 'function' ) {
 			);
 
 			self.$elem.html( self.$table );	
+
+			if( self.options.allday != 'disabled' ){
+				self.$checkAllday.attr('checked', false);
+
+				// start
+				hours = self.options.startDate.getHours();
+				hours = hours < 10 ? "0"+hours:hours;
+
+				minute = self.options.startDate.getMinutes();
+				minute = minute < 30 ? "00":"30";
+
+				self.$table.find('.start.time select').val( hours+":"+minute );
+
+				// end
+				hours = self.options.endDate.getHours();
+				hours = hours < 10 ? "0"+hours:hours;
+
+				minute = self.options.endDate.getMinutes();
+				minute = minute < 30 ? "00":'30';
+
+				self.$table.find('.end.time select').val( hours+":"+minute );
+			}
 		},
 
-		settime: function ( name, hour, minute ) {
+		setElemTime: function ( name, date ) {
 
-			$select =  $('<select>', {name: name});
+			$hours =  $('<select>', {name: name + '_hour'});
 			for (var h = 0; h < 24; h++) {
 
-				for (var i = 0; i < 2; i++) {
-
-					hours = h;
-					hours = hours < 10 ? "0"+hours:hours;
-
-					_minute = i==1 ? "30" : "00";
-
-					$select.append( $('<option>', {value: hours + ":" + _minute, text: hours + ":" + _minute}) );
-				};
+				hours = h;
+				hours = hours < 10 ? "0"+hours:hours;
+				$hours.append( $('<option>', {value: hours, text: hours}) );
 				
 			};
 
-			var $today = new Date();
-			hour = !hour ? $today.getHours() : hour;
-			hour = hour < 10 ? "0"+hour:hour;
-			
-			minute = !hour ? $today.getMinutes() : minute;
-			minute =  minute < 30 ? "00":"30";
+			$minute = $('<select>', {name: name + '_minute'});
+			for (var i = 0; i < 60; i++) {
+				
+				if( i%5==0 ){
+					minute = i < 10 ? "0"+i:i;
+					$minute.append( $('<option>', {value: minute, text: minute}) );
+				}	
+			}
 
-			$select.val( hour + ":" + minute );
+			if( !date ){
+				date  = new Date();
+			}
+
+			hour = date.getHours();
+			hour = hour < 10 ? "0"+hour:hour;
+			$hours.val( hour );
+
+			minute = date.getMinutes();
+			minute = parseInt( minute / 5 ) * 5;
+			minute = minute < 10 ? "0"+minute:minute;
+			$minute.val( minute );
+
+			$select = $('<div>').append( $hours, $minute );
 
 			return $select;
 		},
@@ -205,9 +209,9 @@ if ( typeof Object.create !== 'function' ) {
 				start: self.startDate,
 				end: self.endDate,
 				lang: self.options.lang,
-				onChange: function( e ){
+				onChange: function( date ){
 
-					var startDate = new Date( e.date.selected );
+					var startDate = new Date( date );
 
 					var distance = self.endDate.getTime() - self.startDate.getTime();
 					var start_distance = startDate.getTime() - self.startDate.getTime();
@@ -241,9 +245,9 @@ if ( typeof Object.create !== 'function' ) {
 				start: self.startDate,
 				end: self.endDate,
 				lang: self.options.lang,
-				onChange: function( e ){
+				onChange: function( date ){
 
-					var theDate = new Date( e.date.selected );
+					var theDate = new Date( date );
 					var distance = theDate.getTime() - self.endDate.getTime();
 
 					self.endDate = theDate;

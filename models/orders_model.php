@@ -109,6 +109,8 @@ class Orders_Model extends Model {
 
 		$data = $this->cut($this->_cutNamefield, $data);
 
+		$data['number_str'] = sprintf("%03d",$data['number']);
+
 		if( !empty($options['has_item']) ){
 			$data['items'] = $this->getItems( $data['id'] );
 		}
@@ -147,22 +149,27 @@ class Orders_Model extends Model {
 			, pack_name
 			, pack_has_masseuse
 
-			, mae.emp_id as masseuse_id
-			, mae.emp_code as masseuse_code
-            , mae.emp_prefix_name as masseuse_prefix_name
-            , mae.emp_first_name as masseuse_first_name
-            , mae.emp_last_name as masseuse_last_name
-            , mae.emp_nickname as masseuse_nickname
-            , mae.emp_image_id as masseuse_image_id
+			
 
 		  FROM orders_items item 
-		  	INNER JOIN package pack ON pack.pack_id=item.item_pack_id 
-		  	LEFT JOIN employees mae ON item.item_masseuse_id=mae.emp_id
+		  	INNER JOIN package pack ON pack.pack_id=item.item_pack_id
 		  	WHERE item.item_order_id=:id", array(':id'=>$id));
 
 
 		foreach ($data as $i => $value) {
 			
+			$value['masseuse'] = $this->db->select("SELECT 
+				  item.job_id
+				, mae.emp_id as id
+				, mae.emp_code as code
+	            , mae.emp_prefix_name as prefix_name
+	            , mae.emp_first_name as first_name
+	            , mae.emp_last_name as last_name
+	            , mae.emp_nickname as nickname
+	            , mae.emp_image_id as image_id
+
+			 FROM orders_items_masseuse item LEFT JOIN employees mae ON item.masseuse_id=mae.emp_id WHERE item_id=:id", array(':id'=>$value['item_id']));
+
 			$data[$i] = $this->cut('item_', $value);
 
 	
@@ -235,6 +242,16 @@ class Orders_Model extends Model {
 	}
 	public function delDetail($id) {
 		$this->db->delete('orders_items', "`item_id`={$id}");
+	}
+
+
+
+	public function itemJobMasseuse($data){
+		$this->db->insert('orders_items_masseuse', $data);
+	}
+	public function delItemJobMasseuse($id) {
+		
+		$this->db->delete('orders_items_masseuse', "`item_id`={$id}", $this->db->count('orders_items_masseuse', "`item_id`=:id", array(':id'=>$id)));
 	}
 	
 
@@ -353,19 +370,33 @@ class Orders_Model extends Model {
 	/**/
 	public function summary( $options=array() ){
 
-		$select = "SUM(order_total) AS sum_price, SUM(order_discount) AS sum_discount, SUM(order_balance) AS sum_balance, SUM(order_drink) AS sum_drink";
+		$select = "SUM(order_total) AS sum_price, SUM(order_discount) AS sum_discount, SUM(order_balance) AS sum_balance, SUM(order_drink) AS sum_drink, SUM(order_room_price) AS room_price";
 		$form = "orders";
 
-		$where_str = '(order_start_date BETWEEN :startDate AND :endDate)';
-		$where_arr[':startDate'] = $options['period_start'];
-		$where_arr[':endDate'] = $options['period_end'];
+		$where_str = '';
+		$where_arr = array();
+
+		if( !empty($options['period_start']) && !empty($options['period_end']) ){
+			$where_str = '(order_start_date BETWEEN :startDate AND :endDate)';
+			$where_arr[':startDate'] = $options['period_start'];
+			$where_arr[':endDate'] = $options['period_end'];
+		}
+		else if( !empty($options['date']) ){
+			$where_str = 'order_date=:d';
+			$where_arr[':d'] = $options['date'];
+		}
+
 
 		if( $options['type'] == 'revenue' ){
 
-			$where_str .= ' AND order_status=:status';
-			$where_arr[':status'] = 'finish';
+			/*$where_str .= ' AND order_status=:status';
+			$where_arr[':status'] = 'finish';*/
 
-			$data = $this->db->select("SELECT {$select} FROM {$form} WHERE {$where_str}", $where_arr);
+			$where_str = !empty($where_str)? "WHERE {$where_str}":'';
+
+			$sth = $this->db->prepare("SELECT {$select} FROM {$form} {$where_str}");
+			$sth->execute( $where_arr );
+			$data = $sth->fetch( PDO::FETCH_ASSOC );
 		}
 		elseif( $options['type'] == 'service' ){
 
@@ -387,6 +418,51 @@ class Orders_Model extends Model {
 			$data = array();
 		}
 
-		return $data[0];
+		return $data;
+	}
+
+	public function sumOrder( $options=array() ){
+		
+		$where_str = '';
+		$where_arr = array();
+
+		if( !empty($options['date']) ){
+			$where_str = 'order_date=:d';
+			$where_arr[':d'] = $options['date'];
+		}
+
+		$where_str = !empty($where_str)? "WHERE {$where_str}":'';
+
+		$sth = $this->db->prepare("SELECT 
+			  SUM(order_total) AS total
+			, SUM(order_discount) AS discount
+			, SUM(order_balance) AS balance
+			, SUM(order_drink) AS drink
+			, SUM(order_room_price) AS room_price 
+			, SUM(order_tip) AS tip 
+		FROM orders {$where_str}");
+		$sth->execute( $where_arr );
+		return $sth->fetch( PDO::FETCH_ASSOC );
+	}
+
+	public function listsDetail( $options=array() ) {
+		
+		$where_str = '';
+		$where_arr = array();
+
+		if( !empty($options['date']) ){
+			$where_str = 'o.order_date=:d';
+			$where_arr[':d'] = $options['date'];
+		}
+
+		$where_str = !empty($where_str)? "WHERE {$where_str}":'';
+		$data = $this->db->select("SELECT item_pack_id,item_status,item_total,item_balance,item_discount,pack_name FROM orders_items i LEFT JOIN orders o ON item_order_id=order_id LEFT JOIN package p ON item_pack_id=pack_id {$where_str} ORDER BY p.pack_sequence ASC", $where_arr);
+		
+		return $data;
+	}
+
+
+	public function package() {
+		return $this->db->select("SELECT pack_id as id, pack_name as name FROM package ORDER BY pack_sequence ASC");
 	}
 }

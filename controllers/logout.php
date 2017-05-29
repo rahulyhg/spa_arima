@@ -25,7 +25,7 @@ class Logout extends Controller {
         }
 
         Session::init();
-        Session::destroy();
+        // Session::destroy();
 
         $url = !empty($_REQUEST['next'])
             ? $_REQUEST['next']

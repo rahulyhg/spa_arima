@@ -2,7 +2,7 @@
 
 require 'init.php';
 
-?><div id="mainContainer" class="clearfix hasLeft" data-plugins="main"><div id="order" data-plugins="order" data-options="<?=$this->fn->stringify( array( 
+?><div id="mainContainer" class="clearfix hasLeft"><div id="order" data-plugins="order" data-options="<?=$this->fn->stringify( array( 
 	'lang'=>$this->lang->getCode(),
 ) )?>">
 

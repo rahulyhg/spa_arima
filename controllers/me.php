@@ -35,7 +35,7 @@ class Me extends Controller {
         if( $avtive=='account' ){
             try {
                 $form = new Form();
-                $form   ->post('emp_username')->val('username')
+                $form   ->post('emp_username')->val('is_empty')
                         ->post('emp_lang');
 
                 $form->submit();

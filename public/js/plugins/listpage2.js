@@ -19,9 +19,7 @@ if ( typeof Object.create !== 'function' ) {
 
 			self.data = {
 				total: 0,
-				options: {
-					pager: 1,
-				},
+				options: self.settings.options || {},
 				url: self.settings.url
 			};
 
@@ -57,12 +55,18 @@ if ( typeof Object.create !== 'function' ) {
 			var fullw = outer.width()- (offset.left+right);
 			var fullh = outer.height(); // + outer.scrollTop();
 
+			var top = 0;
+
+			if( $('body').hasClass('hasTopbar') ){
+				top = $('#header-primary').height();
+			}
+
 			var headerH = 0;
 			if( self.$header ){
 				headerH = self.$header.outerHeight();
 
 				self.$header.css({
-					top: 0,
+					top: top,
 					left: offset.left,
 					width: fullw - 16,
 					// right: right,
@@ -204,6 +208,7 @@ if ( typeof Object.create !== 'function' ) {
 			}
 
 			var $closedate = self.$elem.find('[ref=closedate]');
+			var $date = self.$elem.find(':input[ref=date]');
 			if( $closedate.length==1 ){
 
 				var closedateOptions = [], activeIndex = 0;
@@ -253,7 +258,21 @@ if ( typeof Object.create !== 'function' ) {
 					});
 				}
 				else self.refresh( 1 );
+			}
+			else if( $date.length==1 ){
+				$date.datepicker({
+					onSelected: function ( d ) {
+						self.data.options.date = PHP.dateJStoPHP( d );
+						self.data.options.pager = 1;
+						self.refresh( 1 );
+					},
 
+					onComplete: function ( d ) {
+
+						self.data.options.date = PHP.dateJStoPHP( d );
+						self.refresh( 1 );
+					}
+				});
 			}
 			else{
 				self.refresh( 1 );

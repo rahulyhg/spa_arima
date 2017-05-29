@@ -27,19 +27,23 @@ class th extends Langs {
 
 		$data['masseuse'] = 'พนง.ผู้บริการ';
 		$data['time'] = 'เวลา';
+		
 		$data['price'] = 'ราคา';
+		$data['discount'] = 'ส่วนลด';
+		$data['quantity'] = 'จำนวน';
+		
 		$data['member'] = 'สมาชิก';
 		$data['members'] = 'สมาชิก';
 		$data['promotions'] = 'โปรโมชั่น';
 		$data['add new'] = 'เพิ่ม';
 		$data['settings'] = 'ตั้งค่า';
 		$data['name'] = 'ชื่อ';
-		$data['quantity'] = 'จำนวน';
 		$data['unit'] = 'หน่วย';
 		$data['reports'] = 'รายงาน';
 
 		$data['hold'] = 'ปิด';
 		$data['cancel'] = 'ยกเลิก';
+		$data['save'] = 'บันทึก';
 
 		$str = strtolower($text);
 		return !empty($data[$str]) ? $data[$str]: $text;

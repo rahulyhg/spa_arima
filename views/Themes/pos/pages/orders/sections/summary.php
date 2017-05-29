@@ -1,6 +1,7 @@
 <div style="position: absolute;top: 0;left: 0;right: 0;bottom: 0;">
 
 <div style="position: absolute;top: 0;left: 0; right: 100px;background-color: rgba(245,248,250,.98);z-index: 1">
+
 <header class="clearfix" style="padding-top: 60px;padding-left: 30px;padding-right: 30px">
 	<div class="lfloat"><h1 style="display: inline-block;"><i class="icon-line-chart mrs"></i><span>สรุปยอดรายรับ</span></h1>
 	</div>
@@ -54,4 +55,8 @@
 	
 </div>
 
+</div>
+
+<div style="position: absolute;top:10px;right:20px;z-index:100;">
+	<div class="group-btn"><a class="btn" href="<?=URL?>pos/orders?style=2"><i class="icon-list"></i></a><a class="btn active"><i class="icon-television"></i></a></div>
 </div>

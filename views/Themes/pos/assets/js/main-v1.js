@@ -9,283 +9,6 @@ if ( typeof Object.create !== 'function' ) {
 
 (function( $, window, document, undefined ) {
 
-	var CreateOrder2 = {
-		init: function ( options, elem ) {
-			var self = this;
-			self.$elem = $(elem);
-
-
-			self.$elem.find('.table-order2-form').height( $(window).height() - 180 );
-			self.order = {
-				date: new Date(),
-				items: []
-			};
-
-			self.date = new Date(); //self.$elem.find('[name=date]').val() || 
-
-			self.$ordermanu = self.$elem.find('[ref=ordermanu]');
-
-			self.$elem.find('.ul-package-manu [data-type=package]').click( function () {
-				self.chooseMenu( $(this).data('id') )
-			} );
-
-			self.$ordermanu.delegate('[data-action=remove]', 'click', function () {
-				
-				var data = $(this).closest('[data-key]').data();
-
-				self.order.items[ data.KEY ].$elem.remove();
-				delete self.order.items[ data.KEY ];
-
-				console.log( data, self.order );
-			});
-
-			self.$ordermanu.delegate('[data-action=qty]', 'click', function () {
-				
-				var parent = $(this).closest('[data-key]');
-				var KEY = parent.data('key');
-				var qty = parseInt( parent.find(':input[data-name=qty]').val() );
-				
-				qty += $(this).data('type')=='plus' ? 1:-1;
-				parent.find(':input[data-name=qty]').val( qty );
-				self.order.items[ KEY ].qty = qty;
-
-				self.updateItemOrder( self.order.items[ KEY ] );
-			});
-
-			self.$ordermanu.delegate(':input[data-name=qty]', 'change', function () {
-				var parent = $(this).closest('[data-key]');
-				var KEY = parent.data('key');
-				var qty = parseInt( parent.find(':input[data-name=qty]').val() );
-
-				self.order.items[ KEY ].qty = parseInt( parent.find(':input[data-name=qty]').val() );
-				self.updateItemOrder( self.order.items[ KEY ] );
-			});
-		},
-
-		chooseMenu: function ( id ) {
-			var self = this;
-
-			var data = { type: 'package', id: id, date: PHP.dateJStoPHP( self.date ) };
-
-			$.get(Event.URL + 'orders/menu/', data, function (res) {
-				self.loadMenu( res );
-			}, 'json');
-		},
-		loadMenu: function ( data ) {
-			var self = this;
-
-			var KEY = data.id;
-			data.has_masseuse = parseInt(data.has_masseuse);
-
-			if( !self.order.items[ KEY ] ){
-
-				var fdata = {
-					KEY: KEY,
-					has_masseuse: data.has_masseuse,
-					id: data.id,
-					name: data.name,
-					qty: 0,
-					unit: data.unit,
-					time: data.qty,
-					
-					price: parseInt( data.price ),
-					discount: 0,
-
-					detail: [],
-
-					status: 'order',
-
-					start_date: new Date(),
-				};
-
-				fdata.total = fdata.price;
-
-				self.order.items[ KEY ] = fdata;
-
-				self.newItemOrder(fdata);
-
-				var length = 0;
-			}
-			else{
-				var length = self.order.items[ KEY ].detail.length - 1;
-			}
-
-			self.order.items[ KEY ].qty++;
-
-			var Detail = {
-				parent_KEY: KEY,
-				has_masseuse: data.has_masseuse,
-				
-				time: data.qty,
-				unit: data.unit,
-
-				price: parseInt( data.price ),
-				discount: 0,
-
-				status: 'order',
-
-				start_date: new Date(),
-				masseuse: {},
-			};
-
-			Detail.total = Detail.price;
-			Detail.balance = Detail.total - Detail.discount;
-
-			if( data.has_masseuse==1 && data.masseuse ){
-				Detail.masseuse[data.masseuse.id] = data.masseuse;
-			}
-
-			// 
-			self.order.items[ KEY ].detail.push( Detail );
-
-			// check masseuse for load
-			if( data.has_masseuse==1 && !data.masseuse ){
-
-				self.loadMasseuse( {
-					fail: function () {},
-					done: function ( data ) {
-						self.order.items[ KEY ].detail[length].masseuse[data.id] = data;
-						self.updateItemOrder( self.order.items[ KEY ] );
-					}
-				} );
-			}
-
-			self.updateItemOrder( self.order.items[ KEY ] );
-
-
-			console.log( data );
-		},
-
-		newItemOrder: function (data) {
-			var self = this;
-
-			self.order.items[ data.KEY ].$elem = self.setItemOrder( data );
-			self.$ordermanu.append( data.$elem );
-		},
-		updateItemOrder: function (data) {
-			var self = this;
-
-			var $elem = self.order.items[ data.KEY ].$elem;
-
-			$elem.find(':input.inputqty').val( data.qty );
-
-			var masseuse = {};
-			$.each( data.detail, function (i, obj) {
-				for (var i in obj.masseuse) {
-					var mas = obj.masseuse[i];
-
-					masseuse[mas.id] = mas;
-				}
-			} );
-
-			var $masseuse = $('<ul>', {class:'ui-list-masseuse'});
-			for (var i in masseuse) {
-				$masseuse.append( self.setElemMasseuse( data.KEY, masseuse[i] ) );
-			}
-
-			$elem.find('[role=masseuse]').html( $masseuse );
-
-			// console.log( 'updateItemOrder', data );
-		},
-
-		setElemMasseuse: function (key, data) {
-			var self = this;
-
-			console.log( 'setElemMasseuse', data );
-			var $li = $('<li>', {class: 'clearfix'});
-
-			$li.append( $('<div>', {class: ''}).html( '<span class="code mrs">'+ data.icon_text +'</span><span>'+ data.text +'</span>' ) );
-			$li.append( $('<div>', {class: 'actions'}).html( '<span class="gbtn"><a class="btn btn-no-padding" data-control="change" data-type="masseuse" data-id="129"><i class="icon-retweet"></i></a></span><span class="gbtn"><a class="btn btn-no-padding" data-control="change" data-type="plus_masseuse"><i class="icon-plus"></i></a></span><span class="gbtn"><a class="btn btn-no-padding" data-control="change" data-type="remove_masseuse" data-id="129"><i class="icon-remove"></i></a></span>' ) );
-			
-			$li.append( $('<input>', { type: 'hidden', name: 'items['+key+'][masseuse][]', value: data.id }) );
-
-			return $li;
-		},
-		setItemOrder: function ( data ) {
-			var self = this;
-
-			var $inputqty = $('<input>', {
-				type: 'text',
-				name: 'items['+data.KEY+'][qty][]',
-				value: data.qty,
-				class: 'inputtext inputqty',
-				'data-name':'qty'
-			});
-
-			$tr = $('<tr>', {class: '', 'data-key': data.KEY});
-
-			// qty
-			$tr.append( $('<td>', {class: 'qty'}).append(
-				$('<div>', {class: 'minusplus-btn'}).append(
-					  $('<button>', {class: 'btn-icon', type: 'button', 'data-action':'qty', 'data-type': 'minus'}).html( $('<i>', {class:'icon-minus'}) )
-					, $inputqty
-					, $('<button>', {class: 'btn-icon', type: 'button', 'data-action':'qty', 'data-type': 'plus'}).html( $('<i>', {class:'icon-plus'}) )
-					, $('<input>', {
-						type: 'hidden',
-						name: 'items['+data.KEY+'][id][]',
-						value: data.id
-					})
-				),
-
-				$('<a>', {'data-action':'remove'}).text( 'ลบ' )
-			) );
-
-			// name
-			$tr.append( $('<td>', {class: 'name'}).append(
-				  $('<div>', {class: 'fwb'}).text( data.name )
-				, $('<div>', {class: '', 'role': 'masseuse'})
-			) );
-
-
-			// time
-			// $tr.append( $('<td>', {class: 'time'}).text( data.time ) );
-
-
-			// unit
-			// $tr.append( $('<td>', {class: 'unit'}).text( data.unit ) );
-
-			$tr.data( data );
-
-			return $tr;
-		},
-
-		loadMasseuse: function ( on ) {
-			var self = this;
-
-	    	Dialog.load( Event.URL + 'orders/set_bill', {
-	    		type: 'masseuse',
-	    		date: PHP.dateJStoPHP( self.order.date ) 
-	    	}, {
-	    		onClose: on.fail,
-	    		onSubmit: function ( $el ) {
-
-	    			var id = $el.$pop.find('form').find('[ref=tokenbox]>[data-id]').data('id');
-
-					if( id ){ 			
-	    				$.get( Event.URL + 'masseuse/get/'+id, function( res ) {
-	    					
-							self.currMasseuse = res;
-
-	    					on.done( res );
-	    					Dialog.close();
-	    				}, 'json');
-	    			}
-	    		}
-	    	} );
-		},
-	}
-	$.fn.createOrder2 = function( options ) {
-		return this.each(function() {
-			var $this = Object.create( CreateOrder2 );
-			$this.init( options, this );
-			$.data( this, 'createOrder2', $this );
-		});
-	};
-	$.fn.createOrder2.options = {
-		lang: 'en',
-	};
-
-
 	var InputDiscount = {
 		init: function ( options, elem ) {
 			var self = this;
@@ -544,6 +267,7 @@ if ( typeof Object.create !== 'function' ) {
 
 		    	if( type=='price' ){
 
+
 		    		data.price = fdata.price;
 		    		data.discount = fdata.discount;
 		    		data.total = fdata.balance;
@@ -581,8 +305,8 @@ if ( typeof Object.create !== 'function' ) {
 		    				var id = $form.find('[ref=tokenbox]>[data-id]').data('id');
 
 		    				if(id){
-		    					$.get( Event.URL + 'masseuse/get/'+id, {has_job: 1, date: PHP.dateJStoPHP(self.currOrder.date)}, function( res ) {
-
+		    					$.get( Event.URL + 'masseuse/get/'+id, function( res ) {
+	    						
 	    							self.currOrder.items[fdata.parent_KEY].detail[index].masseuse[ res.id ] = res;
 
 	    							self.refreshItemDetail( index, self.currOrder.items[fdata.parent_KEY].detail[index] );
@@ -787,8 +511,8 @@ if ( typeof Object.create !== 'function' ) {
 
 			dataPost.date = PHP.dateJStoPHP( dataPost.date );
 
-			// console.log( 'saveBill', dataPost );
-			// return false;
+			console.log( 'saveBill', dataPost );
+			return false;
 
 			$.post( Event.URL + 'orders/save', dataPost, function (res) {
 				
@@ -803,8 +527,8 @@ if ( typeof Object.create !== 'function' ) {
 
 				self.currOrder.id = res.id;
 				self.currOrder.status = res.status;
-				/*self.currOrder.items = [];
-				self.currOrder._items = res.items;*/
+				self.currOrder.items = [];
+				self.currOrder._items = res.items;
 
 				self.$elem.find('[data-global=bill]').find('[role=orderlists]').empty();
 				self.$elem.find('[data-global=menu]').find('[role=menu] .active').removeClass('active');
@@ -1580,6 +1304,7 @@ if ( typeof Object.create !== 'function' ) {
 					date: PHP.dateJStoPHP( self.options.date )
 				}
 
+
 				if( !self.then.currOrder.id ){
 					self.then.active( 'summary' );
 				}
@@ -1702,7 +1427,7 @@ if ( typeof Object.create !== 'function' ) {
 				var date = new Date( data.start_date );
 				var date_str = date.getHours() + ":" + date.getMinutes();
 
-				var $inner = $('<div>', {class: "ui-item-inner clearfix"});
+				var $inner = $('<li>', {class: "ui-item-inner clearfix"});
 				var $li = $('<li>', {'data-id': data.id, class: "ui-item"}).append( $inner );
 
 				var $avatar = $('<div>', {class: 'avatar lfloat mrm'});
@@ -1718,54 +1443,15 @@ if ( typeof Object.create !== 'function' ) {
 					$avatar.addClass('no-avatar').html( $('<div>', {class: 'initials'}).html( $('<i>').addClass('icon-user'  ) ) );
 				}
 
-
-				var pack = {};
-				$.each( data.items, function (i, item) {
-
-					if( !pack[ item.pack.id ] ){
-						pack[ item.pack.id ] = {
-							name: item.pack.name,
-							masseuse: item.masseuse,
-							qty: 0,
-							unit: item.unit,
-							time: item.time
-						};	
-					}
-					
-					pack[ item.pack.id ].qty++;
-				} );
-
-				var $desc = $('<div>');
-				var n = 0;
-				for (var i in pack) {
-					n++;
-					var item = pack[i];
-
-					var $masseuse = '';
-
-					if( item.masseuse.length>0 ){
-						$masseuse = $('<span>');
-						$.each( item.masseuse, function (j, val) {
-							$masseuse.append( $('<span>', {class: 'ui-status', text: val.code}) );
-						} );
-					}
-
-					if( n > 1 ){
-						$desc.append( ', ' );
-					}
-
-					$desc.append( $('<span>').append($masseuse, $('<span>').text( item.name ) ) )
-				}
-
 				$inner.append(
 
 					''
-					// , $avatar
+					, $avatar
 					, '<div class="text">' +
-						'<span>ลำดับ <strong>' + data.number_str + '</strong></span>' +
+						'<span><label>No.</label> <strong>' + data.number + '</strong></span>' +
 
 					'</div>'
-					, $desc
+					
 
 					// '<div class="rfloat">
 
@@ -1829,6 +1515,7 @@ if ( typeof Object.create !== 'function' ) {
 					bottom: self.$elem.find('.slipPaper-bodyFooter').outerHeight(),
 				});
 
+
 				self.$elem.find('.slipPaper-bodyContent-body').css({
 					top: self.$elem.find('.slipPaper-bodyContent-header').outerHeight()
 				});
@@ -1865,32 +1552,33 @@ if ( typeof Object.create !== 'function' ) {
 					self.$elem.addClass('has-empty');
 				});
 			},
-			display: function ( orderData ) {
+			display: function ( data ) {
 				var self = this;
 
+
 				self.data = {
-					id: orderData.id,
+					id: data.id,
 					summary: {
-						total: parseInt( orderData.total ),
-						discount: parseInt( orderData.discount ),
-						drink: parseInt( orderData.drink ),
-						balance: parseInt( orderData.balance ),
+						total: parseInt( data.total ),
+						discount: parseInt( data.discount ),
+						drink: parseInt( data.drink ),
+						balance: parseInt( data.balance ),
 					},
 
-					number: orderData.number,
-					status: orderData.status
+					number: data.number,
+					status: data.status
 				};
 
 				$.each( self.data.summary, function (key, val) {
 					self.$elem.find( '[summary='+ key +']' ).text( PHP.number_format( val ) );
 				} );
 
-				self.$elem.find( '[data-invoice=number]' ).text( orderData.number );
-				self.$elem.find( '[data-invoice=status]' ).text( orderData.status );
+				self.$elem.find( '[data-invoice=number]' ).text( data.number );
+				self.$elem.find( '[data-invoice=status]' ).text( data.status );
 
 				self.$listsbox.empty();
 				self.data.items = {};
-				self.sumItem( orderData.items );
+				self.sumItem( data.items );
 
 				for (var i in self.data.items) {
 					var obj = self.data.items[i];
@@ -1919,7 +1607,7 @@ if ( typeof Object.create !== 'function' ) {
 							status: data.status,
 							has_masseuse: parseInt(data.pack.has_masseuse),
 
-							masseuse: {},
+							masseuse: [],
 
 							price: parseInt( data.price ),
 
@@ -1950,11 +1638,7 @@ if ( typeof Object.create !== 'function' ) {
 					});
 
 					if( data.masseuse ){
-
-						$.each(data.masseuse, function (i, obj) {
-							self.data.items[ KEY ].masseuse[obj.id] = obj;
-						});
-						
+						self.data.items[ KEY ].masseuse.push( data.masseuse );
 					}
 
 				} );
@@ -1975,16 +1659,14 @@ if ( typeof Object.create !== 'function' ) {
 				
 				var $meta = $('<div>', {class: 'order-title fsm'});
 
-				if( Object.keys(data.masseuse).length>0 && data.has_masseuse==1 ){
+				if( data.masseuse.length>0 &&data.has_masseuse==1 ){
 
 					var $masseuse = $('<ul>');
-					for (var i in data.masseuse) {
-						var obj = data.masseuse[i];
-
+					$.each( data.masseuse, function (i, obj) {
 						$masseuse.append( $( '<li>' ).append(
 							$('<span>', {class: 'ui-status mrs'}).text( obj.code ), obj.nickname 
 						) );
-					};
+					} );
 					$meta.append( $masseuse );
 				}
 

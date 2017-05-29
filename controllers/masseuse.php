@@ -72,7 +72,12 @@ class Masseuse extends Controller {
 
     public function get($id=null) {
 
-        $item = $this->model->get( $id, array('view_stype'=>'bucketed') );
+        $options = array('view_stype'=>'bucketed');
+        if( isset($_REQUEST['has_job']) && isset($_REQUEST['date']) ){
+            $options['has_job'] = $_REQUEST['has_job'];
+            $options['date'] = $_REQUEST['date'];
+        }
+        $item = $this->model->get( $id, $options );
         if( empty($item) ) $this->error();
         // print_r($item); die;
 
@@ -113,19 +118,17 @@ class Masseuse extends Controller {
 
     public function invite() {
         
-        $options = array('view_stype'=>'bucketed', 'limit' => 20);
+        $options = array('view_stype'=>'vInvite', 'limit' => 20);
         if( isset($_REQUEST['position']) ){
             if( $_REQUEST['position']=='queue' ){
 
                 $data = $this->model->listJob( $options );
-
             }
             else{
 
                 $data = $this->model->lists( $options );
             }
         }
-
         
         $results = array();
         $results[] = array(
@@ -254,7 +257,7 @@ class Masseuse extends Controller {
         $item = $this->model->get( $id );
         if( empty($item) ) $this->error();
 
-        $job = $this->model->getJob( $id , array('status'=>'on'));
+        $job = $this->model->getJob( $id ,array('status'=>'on'));
         if( empty($job) ) $this->error();
 
         if( !empty($_POST) ){

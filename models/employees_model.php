@@ -255,7 +255,7 @@ class Employees_Model extends Model{
     }
 
     /**/
-    /* check User */
+    /* Login User */
     /**/
     public function login($user, $pass){
 
@@ -264,6 +264,17 @@ class Employees_Model extends Model{
         $sth->execute( array(
             ':login' => $user,
             ':pass' => Hash::create('sha256', $pass, HASH_PASSWORD_KEY)
+        ) );
+
+        $fdata = $sth->fetch( PDO::FETCH_ASSOC );
+        return $sth->rowCount()==1 ? $fdata['id']: false;
+    }
+    public function loginPIN($ip, $pin) {
+        $sth = $this->db->prepare("SELECT emp_id as id FROM employees WHERE emp_ip=:ip AND emp_pin=:pin AND emp_display='enabled'");
+
+        $sth->execute( array(
+            ':ip' => $ip,
+            ':pin' => $pin
         ) );
 
         $fdata = $sth->fetch( PDO::FETCH_ASSOC );

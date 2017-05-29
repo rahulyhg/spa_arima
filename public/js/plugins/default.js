@@ -1158,6 +1158,10 @@ if ( typeof Object.create !== 'function' ) {
 			self.Events();
 
 			self.display();
+
+			if( typeof self.options.onComplete === 'function' ){
+				self.options.onComplete( self.calendar.selectedDate );
+			}
 		},
 		setElem: function () {
 			var self = this;
@@ -1514,7 +1518,11 @@ if ( typeof Object.create !== 'function' ) {
 
 			if( typeof self.options.onSelected === 'function'){
 				self.options.onSelected( self.calendar.selectedDate );
-			} 
+			}
+
+			if(typeof self.options.onChange === 'function'){
+				self.options.onChange( self.calendar.selectedDate );
+			}
 		},
 
 		display: function () {

@@ -8,7 +8,7 @@
 
 						<div><span data-bill="date"></span></div>
 						<div class="text">
-							<span><label>No.</label> <strong data-bill="number"></strong></span>
+							<span><label></label> <strong data-bill="number"></strong></span>
 						</div>
 
 						<!-- <div class="subtext">
@@ -82,7 +82,7 @@
 									<td class="data"><span summary="drink">0</span> ฿</td>
 								</tr>
 								<tr>
-									<td class="label"><?=$this->lang->translate('VIP ROOM')?>:</td>
+									<td class="label"><?=$this->lang->translate('V.I.P. Room')?>:</td>
 									<td class="data"><span summary="room_price">0</span> ฿</td>
 								</tr>
 								<tr>
@@ -131,7 +131,7 @@
 
 				<li class="button">
 					<span class="gbtn radius"><a class="btn" data-bill-set="vip"><i class="icon-building-o"></i></a></span>
-					<span class="t"><?=$this->lang->translate('VIP')?></span>
+					<span class="t"><?=$this->lang->translate('V.I.P.')?></span>
 				</li>
 				
 

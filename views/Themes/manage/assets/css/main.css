@@ -1,14 +1,14 @@
-/*          
-		  .o88
+/* =========================================================        
+          .o88
           "888
  .oooo.    888  .oo.    ..o88.     ooo. .oo.    .oooo`88
 d88' `8b   88bP"Y88b   888P"Y88b  "888P"Y88b   888' `88b 
 888        88b   888   888   888   888   888   888   888
 888. .88   888   888   888   888   888   888   888. .880
  8`bo8P'  o888o o888o   8`bod8P'  o888o o888o   .oooo88o
- 												     088`
- 											        .o88
-*/
+                                                     088`
+                                                    .o88
+============================================================ */
 body{overflow:hidden}
 body, input, textarea, select, button{font-family:'WOL_Reg', 'Leelawadee UI', Leelawadee, 'Segoe UI', Tahoma, Helvetica, sans-serif;font-size:16px}
 input[type="checkbox"]:disabled+label{color:#c6c6c6}
@@ -813,6 +813,7 @@ to{transform:translateY(0)}}
 
 .group-btn>.uiToggle{display:inline-block}
 .group-btn>.btn+.btn, .group-btn>.btn+.uiToggle{margin-left:1px}
+
 .form-insert-product #category_description_fieldset{min-height:359px}
 .form-cropimage .model-body{padding:0}
 .settingsList{max-width:575px}
@@ -924,20 +925,14 @@ to{transform:translateY(0)}}
 .listpage2-actions .range-selector .date-to-text{color:#aaa;padding-left:4px;padding-right:4px}
 .listpage2-actions_status .item{display:inline-block;position:relative;text-align:right;padding-left:20px;padding-right:20px;min-height:48px;margin:0}
 .listpage2-actions_status .item:before{width:1px;background-color:#ccc;content:"";position:absolute;right:0;top:3px;bottom:3px;z-index:1}
-/*.listpage2-actions_status .item:last-child{
-		padding-right:10px
-	}*/
 .listpage2-actions_status .item .data{font-weight:bold}
 .listpage2-actions_status .item:last-child:before{display:none}
-/*.listpage2-table{background-color:#fff}*/
 .listpage2-table table{width:100%}
 .listpage2-table table th, .listpage2-table table td{vertical-align:middle;padding-left:12px;padding-right:12px;text-align:left}
 .listpage2-table table th{height:40px;line-height:40px;white-space:nowrap}
 .listpage2-table [ref=tabletitle] {}
 .listpage2-table table .hdr-text{font-weight:500;color:#888;display:block}
 .listpage2-table table td{padding-top:8px;padding-bottom:8px}
-/*.listpage2-table table tr:hover td{background-color:#f7faff}*/
-	/*.listpage2-table table th:first-child,.listpage2-table table td:first-child{padding-left:30px}*/
 .listpage2-table table .odd td{background-color:#e4e4e4}
 .listpage2-table table .ID{text-align:center}
 .listpage2-table table .ID, .listpage2-table table .check-box, .listpage2-table table .star, .listpage2-table table .bookmark{width:30px}

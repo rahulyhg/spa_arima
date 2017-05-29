@@ -136,7 +136,11 @@ class Controller {
             $this->view->setPage('description',  $description );
         }  
 
-        if( $this->view->getPage('theme') == 'default' && !empty($this->system['theme']) ){
+        if( empty($this->system['image']) ){
+            $this->view->setPage('image', IMAGES.'logo/logo1.png' );
+        }
+
+        if( !empty($this->system['theme']) ){
             $this->view->setPage('theme',  $this->system['theme'] );
         }
     }
@@ -206,51 +210,84 @@ class Controller {
             Session::set('login_attempt', $attempt);
         }
 
-        if( empty($_REQUEST['g-recaptcha-response']) && $attempt>2 ){
+        $login_mode = isset($_REQUEST['login_mode']) ? $_REQUEST['login_mode']: 'default';
+
+        if( empty($_REQUEST['g-recaptcha-response']) && $attempt>2 && $login_mode=='default' ){
             $error['captcha'] = 'คุณป้อนรหัสไม่ถูกต้อง?';
         }
+
         if( !empty($_POST) && empty($error) ){
 
-            try {
-                $form = new Form();
+            if( $login_mode=='pin' && $this->format=='json' ){
 
-                $form   ->post('email')->val('is_empty')
-                        ->post('pass')->val('is_empty');
 
-                $form->submit();
-                $post = $form->fetch();
+                $ip = $this->fn->q('util')->get_client_ip();
+                $pin = isset($_POST['pin']) ? $_POST['pin']:'';
 
-                $id = $this->model->query('employees')->login($post['email'], $post['pass']);
-
+                $id = $this->model->query('employees')->loginPIN($ip, $pin);
                 if( !empty($id) ){
 
                     Cookie::set( COOKIE_KEY_EMP, $id, time() + (3600*24));
-                    Session::set('isPushedLeft', 1);
+                    sleep(2);
 
                     if( isset($attempt) ){
                        Session::clear('login_attempt');
                     }
 
-                    $url = !empty($_REQUEST['next'])
+                    $arr['url'] = !empty($_REQUEST['next'])
                         ? $_REQUEST['next']
                         : $_SERVER['REQUEST_URI'];
-
-                    header('Location: '.$url);
                 }
                 else{
-
-                    if(!$this->model->query('employees')->is_user($post['email'])){
-                        $error['email'] = 'ชื่อผู้ใช้ไม่ถูกต้อง'; 
-                    }
-                    else{
-                        $error['pass'] = 'รหัสผ่านไม่ถูกต้อง';
-                    }
+                    $arr['error'] = 1;
                 }
 
-                $post['pass'] = "";
-                $this->view->setData('post', $post);
-            } catch (Exception $e) {
-                $error = $this->_getError( $e->getMessage() );
+                echo json_encode($arr);
+                exit;
+            }
+            else{
+                try {
+                    $form = new Form();
+
+                    $form   ->post('email')->val('is_empty')
+                            ->post('pass')->val('is_empty');
+
+                    $form->submit();
+                    $post = $form->fetch();
+
+                    $id = $this->model->query('employees')->login($post['email'], $post['pass']);
+
+                    if( !empty($id) ){
+
+                        Cookie::set( COOKIE_KEY_EMP, $id, time() + (3600*24));
+                        Session::set('isPushedLeft', 1);
+
+                        if( isset($attempt) ){
+                           Session::clear('login_attempt');
+                        }
+
+                        $url = !empty($_REQUEST['next'])
+                            ? $_REQUEST['next']
+                            : $_SERVER['REQUEST_URI'];
+
+                        header('Location: '.$url);
+                    }
+                    else{
+
+                        if(!$this->model->query('employees')->is_user($post['email'])){
+                            $error['email'] = 'ชื่อผู้ใช้ไม่ถูกต้อง'; 
+                        }
+                        else{
+                            $error['pass'] = 'รหัสผ่านไม่ถูกต้อง';
+                        }
+                    }
+
+                    $post['pass'] = "";
+                    $this->view->setData('post', $post);
+                } catch (Exception $e) {
+                    $error = $this->_getError( $e->getMessage() );
+                }
+
             }
         }
 
@@ -284,7 +321,14 @@ class Controller {
             'has_topbar' => false,
             'has_footer' => false,
         ));
-        $this->view->render('login');
+
+        if( isset($_REQUEST['login_mode']) ){
+            Session::set('login_mode', $_REQUEST['login_mode']);
+        }
+
+        $mode = Session::get('login_mode');
+        if( empty($mode) ) $mode = 'default';
+        $this->view->render( $mode );
         exit;
     }
 

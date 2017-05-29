@@ -29,7 +29,7 @@
 		Hide <span class="gbtn"><a class="js-link-back btn" data-global-action="menu"><i class="icon-arrow-right"></i></a></span>
 	</div>
 
-	<div style="position: absolute;top: 0;left: 30px;right: 0;bottom: 0;overflow-y: auto;"><div style="padding-top: 65px; max-width: 600px;">
+	<div style="position: absolute;top: 0;left: 30px;right: 0;bottom: 0;overflow-y: auto;"><div style="padding-top: 65px;">
 
 		<div class="">
 

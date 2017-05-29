@@ -8,16 +8,42 @@ class Pos extends Controller{
 
 	public function index() {
         header('Location: '. URL.'pos/orders' );
-        
 	}
+
+    public function orders2() {
+
+        // print_r($this->model->query('orders')->lists(array('has_item'=>1))); die;
+
+        if( $this->format=='json' ) {
+            $this->view->setData('results', $this->model->query('orders')->lists(array('has_item'=>1)) );
+            $this->view->render("orders2/json");
+        }
+        else{
+            $this->view->setPage('on', 'orders');
+            $this->view->render("orders2/display");
+        }
+    }
 
     public function orders(){
         
-        $this->view->setData('package', $this->model->query('package')->lists());
-        $this->view->setData('promotions', $this->model->query('promotions')->lists());
-        
-        $this->view->setPage('on', 'orders');
-        $this->view->render("orders/display");
+        Session::init();
+        if( isset($_REQUEST['style']) ){
+            Session::set('pos_style', $_REQUEST['style']);
+        }
+
+        $style = Session::get('pos_style');
+
+        if( $style==2 ){
+            $this->orders2();
+        }
+        else{
+            $this->view->setData('package', $this->model->query('package')->lists());
+            $this->view->setData('promotions', $this->model->query('promotions')->lists());
+            
+            $this->view->setPage('on', 'orders');
+            $this->view->render("orders/display"); 
+        }
+
     }
 
     public function queue() {
@@ -30,8 +56,9 @@ class Pos extends Controller{
         if( !empty($_POST) ){
 
             $item = $this->model->query('masseuse')->getCode( $_POST['code'] );
+
             if( !empty($item) ){
-                
+
                 $job = $this->model->query('masseuse')->getJob( $item['id'], array('status'=>'on', 'date'=>$date) );
                 
                 if( !empty($job) ){

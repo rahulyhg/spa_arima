@@ -155,23 +155,16 @@ class Masseuse_Model extends Model{
         foreach ($this->query('system')->_prefixName() as $key => $value) {
             if( $value['id']==$data['prefix_name'] ){
                 
-                $data['prefix_name_th'] = $value['name'];
+                $data['prefix_name_str'] = $value['name'];
                 break;
             }
         }
 
-        if( empty($data['prefix_name_th']) ){
-            $data['prefix_name_th'] = '';
-        }
-        else if( @ereg("[ก-๙]+$", $data['first_name']) ){
-            switch ($data['prefix_name_th']) {
-                case 'Mr.': $data['prefix_name_th'] = 'นาย'; break;
-                case 'Mrs.': $data['prefix_name_th'] = 'นาง'; break;
-                case 'Ms.': $data['prefix_name_th'] = 'น.ส.'; break;
-            }
+        if( empty($data['prefix_name_str']) ){
+            $data['prefix_name_str'] = '';
         }
 
-        $data['fullname'] = "{$data['prefix_name_th']}{$data['first_name']} {$data['last_name']}";
+        $data['fullname'] = "{$data['prefix_name_str']}{$data['first_name']} {$data['last_name']}";
 
         $data['initials'] = $this->fn->q('text')->initials( $data['first_name'] );
 
@@ -208,17 +201,25 @@ class Masseuse_Model extends Model{
             $data['permission'] = json_decode($data['dep_permission'], true);
         }
 
+        if( isset($options['has_job']) && isset($options['date']) ){
+            $job = $this->getJob($data['id'], array( 'status'=>'on', 'date'=>$_REQUEST['date'] ) );
+            if( !empty($job) ){
+                // print_r($job);
+                $data['job_id'] = $job['job_id'];
+            }
+        }
+
         //Skill
         $data['skill'] = $this->query('employees')->listSkill( $data['id'] );
 
         $data['permit']['del'] = true;
 
         $view_stype = !empty($options['view_stype']) ? $options['view_stype']:'convert';
-        if( !in_array($view_stype, array('bucketed', 'convert')) ) $view_stype = 'convert';
+        if( !in_array($view_stype, array('bucketed', 'convert', 'vInvite')) ) $view_stype = 'convert';
 
-        return $view_stype=='bucketed'
-            ? $this->bucketed( $data )
-            : $data;
+        return $view_stype=='convert'
+            ? $data
+            : $this->{$view_stype}( $data );
     }
     public function bucketed($data , $options=array()) {
 
@@ -257,6 +258,41 @@ class Masseuse_Model extends Model{
             $fdata['job_id'] = $data['job_id'];
             // j.job_id
             // , j.job_sequence
+        }
+
+        return $fdata;
+    }
+    public function vInvite($data , $options=array()) {
+        $category = '';
+
+        
+
+        // $category .= $data['fullname'];
+
+        if( !empty($data['phone_number']) ){
+            $category .= !empty($category) ? ", ":'';
+            $category .= $data['phone_number'];
+        }
+
+        $fullname = "No.{$data['code']}";
+        
+        if( !empty($data['nickname']) ){
+            $fullname .= " ({$data['nickname']})";
+        }
+
+        $fdata = array(
+            'id'=> $data['id'],
+            'text'=> $fullname,
+            "category"=> $category,
+            "image_url"=>!empty($data['image_url']) ? $data['image_url']:"",
+            "type"=>"employees",
+
+            'icon_text' => $data['code'],
+            'skill' => $data['skill']
+        );
+
+        if( !empty( $data['job_id'] ) ){
+            $fdata['job_id'] = $data['job_id'];
         }
 
         return $fdata;
@@ -486,5 +522,31 @@ class Masseuse_Model extends Model{
         }
 
         return $sequence;
+    }
+
+    public function requireMasseuse($skill=array()){
+        
+        $masseuse = $this->listJob( array('date'=>$_GET['date'], 'unlimit'=>1, 'status'=>'on', 'view_stype'=>'bucketed'));
+
+        $fdata = array();
+
+        foreach ($masseuse['lists'] as $emp) { 
+            foreach ($emp['skill'] as $val) {
+                
+                foreach ($skill as $data) {
+                    if( $data['id']==$val['id'] ){
+                        $fdata  = $emp;
+                        break;
+                    }
+                }
+
+                if( !empty( $fdata ) ) break;
+            }
+
+            if( !empty( $fdata ) ) break;
+        }
+
+        return $fdata;
+        
     }
 }
