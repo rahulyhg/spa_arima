@@ -422,6 +422,7 @@ class Orders extends Controller {
                     $message = 'บันทึกเรียบร้อย';
                 }
 
+                $arr['data'] = $this->model->get($id, $options);
                 $arr['message'] = $message;
                 $arr['id'] = $item['id'];
 

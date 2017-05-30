@@ -1707,6 +1707,20 @@ if ( typeof Object.create !== 'function' ) {
 				self.$listsbox.append( item );
 			},
 
+			updateItem: function (data, active) {
+				var self = this;
+
+				var box = self.then.$elem.find('[data-global=lists]');
+				
+
+				box.find('[data-id='+ data.id +']').replaceWith( self.setItem(data) );
+
+				if( active ){
+					box.find('[data-id='+ data.id +']').addClass('active').siblings().removeClass('active');
+				}
+
+			},
+
 			setItem: function (data) {
 				var self = this;
 
@@ -2006,7 +2020,7 @@ if ( typeof Object.create !== 'function' ) {
 					$meta.append( $masseuse );
 				}
 
-				$status = $('<div>', {class: 'ui-status', 'data-status': data.status, text: data.status});
+				$status = self.then.setStatus( data.status ); // $('<div>', {class: 'ui-status', 'data-status': data.status, text: data.status});
 
 				var qty = data.time*data.qty, unit = data.unit;
 				if( unit=='minute' && qty >=60 ){
@@ -2096,17 +2110,18 @@ if ( typeof Object.create !== 'function' ) {
 					Event.processForm($form, result);
 						
 					if( result.error ){
-
 						return false;
 					}
 
 					Dialog.close();
 
-
-					// self.then.$elem.find('[data-global=lists]').find('[data-id='+ self.data.id +']').remove();
-					// self.then.active( 'lists' );
+					if( result.data ){
+						self.then.global['lists'].updateItem( result.data, true );
+					}
+					
 				});
 			},
+			
 			remove: function () {
 				var self = this;
 
@@ -2163,7 +2178,7 @@ if ( typeof Object.create !== 'function' ) {
 		setStatus: function ( status ) {
 			
 			var color = '';
-			if( status=='run' ){
+			if( status=='run' || status=='order' ){
 				status = 'กำลังบริการ';
 				color = '#1a8aca';
 			}
@@ -2213,6 +2228,7 @@ if ( typeof Object.create !== 'function' ) {
 				if( self.then.currInvoice ){
 					self.then.currOrder.id = self.then.currInvoice.id;
 					self.then.currOrder.number = parseInt(self.then.currInvoice.number);
+					self.then.currOrder.status = self.then.currInvoice.status;
 					self.setNumber( parseInt(self.then.currInvoice.number) );
 
 					var res = self.then.currInvoice.date.split('-');
@@ -2247,7 +2263,7 @@ if ( typeof Object.create !== 'function' ) {
 
 							status: data.status
 							// room_id
-						} );
+						}, true );
 					} );
 				}
 
