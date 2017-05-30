@@ -52,7 +52,7 @@
 						<div class="ui-card_headerDesc"><?=$this->date_str?></div>
 					</div>
 					<div class="ui-card_content">
-				    	<div class="ui-card_number"><?=number_format($this->service['total_customer'])?> คน</div>
+				    	<div class="ui-card_number"><?=number_format($this->service[0]['total_customer'])?> คน</div>
 					</div>
 				</div>
 				

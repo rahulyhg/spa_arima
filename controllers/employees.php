@@ -8,6 +8,8 @@ class Employees extends Controller {
 
     public function index($id=null){
 
+        $this->view->setPage('on', 'employees');
+
         if( !empty($id) ){
 
             $item = $this->model->get($id);
