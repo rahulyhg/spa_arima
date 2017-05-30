@@ -158,7 +158,7 @@ class Orders_Model extends Model {
 
 		foreach ($data as $i => $value) {
 			
-			$value['masseuse'] = $this->db->select("SELECT 
+			$value['masseuse'] = $this->query('masseuse')->buildFrag( $this->db->select("SELECT 
 				  item.job_id
 				, mae.emp_id as id
 				, mae.emp_code as code
@@ -168,7 +168,7 @@ class Orders_Model extends Model {
 	            , mae.emp_nickname as nickname
 	            , mae.emp_image_id as image_id
 
-			 FROM orders_items_masseuse item LEFT JOIN employees mae ON item.masseuse_id=mae.emp_id WHERE item_id=:id", array(':id'=>$value['item_id']));
+			 FROM orders_items_masseuse item LEFT JOIN employees mae ON item.masseuse_id=mae.emp_id WHERE item_id=:id", array(':id'=>$value['item_id'])), array('view_stype'=>'bucketed'));
 
 			$data[$i] = $this->cut('item_', $value);
 
@@ -219,8 +219,7 @@ class Orders_Model extends Model {
 	public function updateOrder($id, $data) {
 		
 		$data['order_updated'] = date('c');
-
-		$this->db->update('orders', $data, "order_id={$id}");
+		$this->db->update('orders', $data, "`order_id`={$id}");
 	}
 	public function delOrder($id) {
 		$this->db->delete('orders', "`order_id`={$id}");
@@ -240,10 +239,23 @@ class Orders_Model extends Model {
 		$this->db->insert('orders_items', $data);
 		$data['id'] = $this->db->lastInsertId();
 	}
+
+	public function updateDetail($id, $data)
+	{
+		$this->db->update('orders_items', $data, "`item_id`={$id}");
+	}
 	public function delDetail($id) {
 		$this->db->delete('orders_items', "`item_id`={$id}");
 	}
+	public function removeDetail($id) {
+		
+		$items = $this->db->select("SELECT item_id as id FROM orders_items WHERE `item_order_id`={$id}");
+		foreach ($items as $key => $value) {
+			$this->db->delete('orders_items_masseuse', "`item_id`={$id}", $this->db->count('orders_items_masseuse', "`item_id`=:id", array(':id'=>$value['id'])));
+		}
 
+		$this->db->delete('orders_items', "`item_order_id`={$id}", count($items));
+	}
 
 
 	public function itemJobMasseuse($data){
@@ -385,7 +397,6 @@ class Orders_Model extends Model {
 			$where_str = 'order_date=:d';
 			$where_arr[':d'] = $options['date'];
 		}
-
 
 		if( $options['type'] == 'revenue' ){
 

@@ -57,6 +57,8 @@
 
 </div>
 
+<?php if( !$this->fn->check_user_agent('mobile') ){ ?>
 <div style="position: absolute;top:10px;right:20px;z-index:100;">
 	<div class="group-btn"><a class="btn" href="<?=URL?>pos/orders?style=2"><i class="icon-list"></i></a><a class="btn active"><i class="icon-television"></i></a></div>
 </div>
+<?php } ?>

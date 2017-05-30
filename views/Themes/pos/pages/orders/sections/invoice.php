@@ -68,14 +68,40 @@
 									<td class="data"><span summary="drink">0</span> ฿</td>
 								</tr>
 								<tr>
-									<td class="label TOTAL"><?=$this->lang->translate('Balance')?>:</td>
+									<td class="label"><?=$this->lang->translate('V.I.P. Room')?>:</td>
+									<td class="data"><span summary="room_price">0</span> ฿</td>
+								</tr>
+								<tr>
+									<td class="label TOTAL"><?=$this->lang->translate('Total')?>:</td>
 									<td class="data TOTAL"><span summary="balance">0</span> ฿</td>
 								</tr>
+								<!-- <tr>
+									<td class="label balance"><?=$this->lang->translate('Balance')?>:</td>
+									<td class="data balance"><span summary="pay">0</span> ฿</td>
+								</tr> -->
 							</tbody></table>
 						</td>
 					</tr>
-				</tbody></table>	
+				</tbody></table>
+				<div class="slipPaper-bodyFooter-actions mvm clearfix">
+					<div class="lfloat">
+						
+						<span class="gbtn"><a class="btn btn-red" data-invoice-action="remove"><i class="icon-remove"></i><span class="text-btn mls">ลบรายการ</span></a></span>
+
+						<!-- <span class="gbtn"><a class="btn"><i class="icon-clone" data-bill-action="clone"></i><span class="text-btn mls">Clone</span></a></span> -->
+						
+						<!-- <span class="gbtn"><a class="btn"><i class="icon-envelope"></i></a></span> -->
+					</div>
+					<div class="rfloat">
+						<!-- <span class="gbtn"><a class="btn" data-bill-action="hold"><i class="icon-arrow-up mrs"></i>ปิด</a></span> -->
+
+						<!-- <span class="gbtn"><a class="btn" data-bill-action="booking"><i class="icon-address-book-o mrs"></i>Booking</a></span> -->
+
+						<!-- <span class="gbtn"><a class="btn btn-blue" data-bill-action="hold"><i class="icon-paper-plane-o mrs"></i>Order</a></span> -->
+					</div>
+				</div>
 			</div>
+
 		</div>
 	</div>
 </div>
@@ -91,29 +117,29 @@
 			<div class="mts des-text">Print</div>
 		</li> -->
 
-		<!-- <li class="mbm tac">
+		<li class="mbm tac">
 			<div class="gbtn radius">
 				<a class="btn" data-invoice-action="edit"><i class="icon-pencil"></i></a>
 			</div>
-			<div class="mts des-text">Edit</div>
-		</li> -->
+			<div class="mts des-text">แก้ไข</div>
+		</li>
 		
 	</ul>
 
 	<ul class="bottom" style="position: absolute;bottom: 0;left: 0;right: 0">
 		
-		<li class="mbm tac">
+		<!-- <li class="mbm tac">
 			<div class="gbtn radius">
 				<a class="btn btn-red" data-invoice-action="remove"><i class="icon-remove"></i></a>
 			</div>
 			<div class="mts des-text">Cancel</div>
-		</li>
-		<!-- <li class="mbm tac">
+		</li> -->
+		<li class="mbm tac">
 			<div class="gbtn radius">
-				<a class="btn btn-blue" data-type="print"><i class="icon-thailand-baht"></i></a>
+				<a class="btn btn-blue" data-invoice-action="pay"><i class="icon-thailand-baht"></i></a>
 			</div>
 			<div class="mts des-text">Pay</div>
-		</li> -->
+		</li>
 	</ul>
 	
 </div>

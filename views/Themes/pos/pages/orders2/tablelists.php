@@ -26,6 +26,13 @@ if( !empty($this->results['lists']) ){
             if( $val['id']=='hr' ){
 
             }
+            else if( $val['id']=='vip' ){
+                $txt = $item['room_price'];
+
+                $this->skill[$index]['total'] += $txt;
+                $total += $txt;
+                $txt = $txt==0 ? '-':number_format($txt, 0);
+            }
             else if( $val['id']=='drink' ){
                 $txt = $item['drink'];
 

@@ -132,6 +132,7 @@ if ( typeof Object.create !== 'function' ) {
 			Detail.balance = Detail.total - Detail.discount;
 
 			if( data.has_masseuse==1 && data.masseuse ){
+
 				Detail.masseuse[data.masseuse.id] = data.masseuse;
 			}
 
@@ -151,7 +152,6 @@ if ( typeof Object.create !== 'function' ) {
 			}
 
 			self.updateItemOrder( self.order.items[ KEY ] );
-
 
 			console.log( data );
 		},
@@ -338,8 +338,6 @@ if ( typeof Object.create !== 'function' ) {
 
 			self.options = $.extend( {}, $.fn.order.options, options );
 
-			// console.log( self.options.date );
-			
 			if( self.options.date ){
 				var d = self.options.date.split("-");
 			 	self.options.date = new Date( parseInt(d[0]), parseInt(d[1])-1, parseInt(d[2]) );
@@ -409,13 +407,15 @@ if ( typeof Object.create !== 'function' ) {
 				height: fullh,
 				overflowY: 'auto'
 			});
-
 		},
 
 		Events: function() {
 			var self = this;
 
 			self.$elem.delegate('[data-global-action]', 'click', function () {
+				if( self.currInvoice ){
+					self.currInvoice = null;
+				}
 				self.active( $(this).attr('data-global-action') );
 			});
 
@@ -472,13 +472,14 @@ if ( typeof Object.create !== 'function' ) {
 				}
 				else if( action=='cancel' ){
 
-					if( self.currOrder.id ){
-						console.log( 'delete', self.order );
-					}
-					else{
-						self.active( 'lists' );
-						self.active( 'summary' );
-					}
+					// if( self.currOrder.id ){
+					// 	console.log( 'delete', self.order );
+					// }
+					// else{
+						
+					// }
+					self.active( 'lists' );
+					self.active( 'summary' );
 				}
 			});
 
@@ -734,7 +735,7 @@ if ( typeof Object.create !== 'function' ) {
 
 		saveBill: function ( call ) {
 			var self = this;
-			var dataPost = {}; 
+			var dataPost = {};
 
 			$.each(self.currOrder, function(key, val) {
 				if( key=='items' ){
@@ -907,6 +908,8 @@ if ( typeof Object.create !== 'function' ) {
 		loadMenu: function ( data, callback ) {
 			var self = this;
 
+			console.log( 'loadMenu', data );
+
 			var KEY = data.id;
 			data.has_masseuse = parseInt(data.has_masseuse);
 
@@ -994,7 +997,17 @@ if ( typeof Object.create !== 'function' ) {
 			Detail.balance = Detail.total - Detail.discount;
 
 			if( data.has_masseuse==1 && data.masseuse ){
-				Detail.masseuse[data.masseuse.id] = data.masseuse;
+
+				if( data.masseuse.id ){
+					Detail.masseuse[data.masseuse.id] = data.masseuse;
+				}
+				else{
+					$.each(data.masseuse, function (i, mas) {
+						console.log(i, mas);
+						Detail.masseuse[mas.id] = mas;
+					});
+				}
+				
 			}
 
 			// 
@@ -1081,7 +1094,7 @@ if ( typeof Object.create !== 'function' ) {
 		setItemBill: function (data) {
 			var self = this;
 
-			console.log('this setItemBill', data);
+			// console.log('this setItemBill', data);
 
 			var cost = data.qty * data.price;
 			var total = cost - data.discount;
@@ -1097,7 +1110,7 @@ if ( typeof Object.create !== 'function' ) {
 			var $meta = $('<div>', {class: 'order-title fsm'});
 
 			var masseuse = {};
-			console.log( 'set bill', data.detail.length );
+			// console.log( 'set bill', data.detail.length );
 			for (var i in data.detail) {
 				var detail = data.detail[i];
 
@@ -1117,14 +1130,13 @@ if ( typeof Object.create !== 'function' ) {
 						$masseuse.append( $( '<li>' ).append(
 							$('<span>', {class: 'ui-status mrs'}).text( obj.icon_text ), obj.text 
 						) );
-
-					
 				};
 
 				$meta.append( $masseuse );
 			}
 
-			$status = $('<div>', {class: 'ui-status', 'data-status': data.status, text: data.status});
+			$status = $('<div>', {class: 'ui-status', 'data-status': data.status, text: data.status}); //self.then.setStatus( data.status ); // 
+
 
 			var qty = data.time*data.qty, unit = data.unit;
 			if( unit=='minute' && qty >=60 ){
@@ -1534,7 +1546,6 @@ if ( typeof Object.create !== 'function' ) {
 		summaryDisplay: function () {
 			var self = this;
 			
-			// 
 			$.each( self.currOrder.summary, function (key, val) {
 				self.$elem.find('[summary='+ key +']').text( PHP.number_format(val) );
 			} );			
@@ -1683,7 +1694,7 @@ if ( typeof Object.create !== 'function' ) {
 
 					if( currTime != time_str ){
 						currTime = time_str;
-						self.$listsbox.append( $('<li>', {class:'ui-item head', text: currTime + ':00'  }) );
+						// self.$listsbox.append( $('<li>', {class:'ui-item head', text: currTime + ':00'  }) );
 					}
 
 					self.display( obj );
@@ -1746,7 +1757,7 @@ if ( typeof Object.create !== 'function' ) {
 					if( item.masseuse.length>0 ){
 						$masseuse = $('<span>');
 						$.each( item.masseuse, function (j, val) {
-							$masseuse.append( $('<span>', {class: 'ui-status', text: val.code}) );
+							$masseuse.append( $('<span>', {class: 'ui-status', text: val.icon_text}) );
 						} );
 					}
 
@@ -1757,14 +1768,18 @@ if ( typeof Object.create !== 'function' ) {
 					$desc.append( $('<span>').append($masseuse, $('<span>').text( item.name ) ) )
 				}
 
+				var $text = $('<div>', {class: 'text mbs fwb'});
+				$text.append( $('<span>', {class: 'text'}).append(
+					'ลำดับ', ' ', data.number_str
+				) );
+
+				$text.append( self.then.setStatus( data.status ) );
+
 				$inner.append(
 
 					''
 					// , $avatar
-					, '<div class="text">' +
-						'<span>ลำดับ <strong>' + data.number_str + '</strong></span>' +
-
-					'</div>'
+					, $text
 					, $desc
 
 					// '<div class="rfloat">
@@ -1875,6 +1890,7 @@ if ( typeof Object.create !== 'function' ) {
 						discount: parseInt( orderData.discount ),
 						drink: parseInt( orderData.drink ),
 						balance: parseInt( orderData.balance ),
+						room_price: parseInt( orderData.room_price ),
 					},
 
 					number: orderData.number,
@@ -1981,8 +1997,10 @@ if ( typeof Object.create !== 'function' ) {
 					for (var i in data.masseuse) {
 						var obj = data.masseuse[i];
 
+						// console.log( obj );
+
 						$masseuse.append( $( '<li>' ).append(
-							$('<span>', {class: 'ui-status mrs'}).text( obj.code ), obj.nickname 
+							$('<span>', {class: 'ui-status mrs'}).text( obj.icon_text ), obj.text 
 						) );
 					};
 					$meta.append( $masseuse );
@@ -2026,15 +2044,69 @@ if ( typeof Object.create !== 'function' ) {
 
 					if(type == 'edit'){
 
+						// self.thencurrOrder = self.then.currInvoice
 						self.then.active( 'bill' );
 					}
 					else if( type == 'remove' ){
 						self.remove();
 					}
+					else if( type == 'pay' ){
+						self.pay();
+					}
+
 				} );
 				
 			},
 
+			pay: function () {
+				var self = this;
+
+				Dialog.load( Event.URL+'orders/pay/'+ self.data.id, {}, {
+					onOpen: function ($d) {
+
+						var $form = $d.$pop.find('form');
+
+						$form.submit( function (e) {
+							
+							e.preventDefault();
+
+							self._submit( $form );
+						} );
+					},
+					onSubmit: function ( $d ) {
+						var $form = $d.$pop.find('form');
+
+						self._submit( $form );				
+					}
+
+				} );
+			},
+			_submit: function ($form) {
+				var self = this;
+
+				Event.inlineSubmit( $form ).done(function( result ) {
+
+					result.url = '';
+					console.log( result );
+
+					self.then.active('invoice');
+					// self.then.active( 'summary' );
+					// self.then
+					
+					Event.processForm($form, result);
+						
+					if( result.error ){
+
+						return false;
+					}
+
+					Dialog.close();
+
+
+					// self.then.$elem.find('[data-global=lists]').find('[data-id='+ self.data.id +']').remove();
+					// self.then.active( 'lists' );
+				});
+			},
 			remove: function () {
 				var self = this;
 
@@ -2085,8 +2157,22 @@ if ( typeof Object.create !== 'function' ) {
 				},
 
 				items: [],
-				_items: []
 			};
+		},
+
+		setStatus: function ( status ) {
+			
+			var color = '';
+			if( status=='run' ){
+				status = 'กำลังบริการ';
+				color = '#1a8aca';
+			}
+
+			if( status=='paid' ){
+				status = 'ชำระแล้ว';
+				color = '#7b2';
+			}
+			return $('<span>', {class: 'ui-status'}).css('background', color).text( status );		 	
 		},
 
 		bill: {
@@ -2094,8 +2180,10 @@ if ( typeof Object.create !== 'function' ) {
 				var self = this;
 				self.then = then;
 
-				console.log( 'this bill', options );
+				console.log( 'this bill' );
 				// set Data
+
+				// console.log( self.then.currOrder );
 				
 				self.then.currMasseuse = null;
 				self.options = options;
@@ -2118,8 +2206,53 @@ if ( typeof Object.create !== 'function' ) {
 			reload: function () {
 				var self = this;
 
+				// console.log( 'currInvoice', self.then.currInvoice, self.then.currOrder );
+
 				self.then.currOrder = self.then.setOrderDefault( self.then.options.date  );
+				
+				if( self.then.currInvoice ){
+					self.then.currOrder.id = self.then.currInvoice.id;
+					self.then.currOrder.number = parseInt(self.then.currInvoice.number);
+					self.setNumber( parseInt(self.then.currInvoice.number) );
+
+					var res = self.then.currInvoice.date.split('-');
+					self.then.currOrder.date = new Date( res[0], res[1]-1, res[2] );
+
+					self.then.currOrder.summary.drink = parseInt(self.then.currInvoice.drink);
+					self.then.currOrder.summary.pay = parseInt(self.then.currInvoice.pay );
+					self.then.currOrder.summary.room_price = parseInt(self.then.currInvoice.room_price);
+					self.then.currOrder.summary.tip =  parseInt(self.then.currInvoice.tip);
+
+					$.each(self.then.currInvoice.items,function (i, data) {
+						
+						// console.log( '__loadMenu', data );
+						self.then.loadMenu( {
+							item_id: data.id,
+							has_masseuse: data.pack.has_masseuse,						
+							id: data.pack.id,
+							time: data.pack.time,
+							name: data.pack.name,
+							unit: data.pack.unit,
+
+							masseuse: data.masseuse,
+
+							// qty: 1
+							qty: parseInt( data.pack.time ),
+							price:  parseInt( data.price),
+							discount:  parseInt( data.discount),
+							balance:  parseInt( data.discount),
+
+							start_date: data.start_date,
+							end_date: data.end_date,
+
+							status: data.status
+							// room_id
+						} );
+					} );
+				}
+
 				var $date = $('<input>', {type: 'date'}).val( PHP.dateJStoPHP(self.then.currOrder.date) );
+
 				self.$elem.find('[data-bill=date]').html( $date );
 				$date.datepicker({
 					selectedDate: new Date( self.then.options.date ),
@@ -2131,13 +2264,18 @@ if ( typeof Object.create !== 'function' ) {
 					}
 				});
 
-				self.getNumber( function () {
+				if( self.then.currOrder.number ){
 					self.then.active( 'menu' );
-				} );
+				}
+				else{
+					self.getNumber( function () {
+						self.then.active( 'menu' );
 
+						self.summaryPrice();
+						self.summaryDisplay();
+					} );
+				}
 
-				self.summaryPrice();
-				self.summaryDisplay();
 			},
 
 			getNumber: function ( callback ) {
@@ -2147,24 +2285,27 @@ if ( typeof Object.create !== 'function' ) {
 
 				$.get( Event.URL + 'orders/lastNumber', {date: PHP.dateJStoPHP( self.then.currOrder.date ) }, function (number) {
 
-					number = parseInt( number );
-
-					if( number < 10 ){
-						number = '00'+number;
-					}else if( number < 100 ){
-						number = '0'+number;
-					}
-					
-					self.then.currOrder.number = number;
-
-					self.$elem.removeClass('has-loading');
-					self.$elem.find('[data-bill=number]').text( number );
-
-					if( typeof callback === 'function' ){
-						callback();
-					}
+					self.setNumber(parseInt( number ), callback);
 
 				}, 'json');
+			},
+			setNumber: function (number, callback) {
+				var self = this;
+
+				if( number < 10 ){
+					number = '00'+number;
+				}else if( number < 100 ){
+					number = '0'+number;
+				}
+				
+				self.then.currOrder.number = number;
+
+				self.$elem.removeClass('has-loading');
+				self.$elem.find('[data-bill=number]').text( number );
+
+				if( typeof callback === 'function' ){
+					callback();
+				}
 			},
 			resize: function () {
 				var self = this;
@@ -2216,7 +2357,6 @@ if ( typeof Object.create !== 'function' ) {
 					self.$elem.find('[summary='+ key +']').text( PHP.number_format(val) );
 				} );			
 			},
-
 		},
 
 		menu: {

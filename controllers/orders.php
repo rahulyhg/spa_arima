@@ -51,12 +51,9 @@ class Orders extends Controller {
                 foreach ($item['items'] as $value) {
                     
                     $this->model->delDetail($value['id']);
-
                     foreach ($value['masseuse'] as $val) {
-
                         $this->model->query('masseuse')->updateJob( $val['job_id'], array('job_status'=>'on') );
                     }
-                    
                     $this->model->delItemJobMasseuse($value['id']);
                 }
                 $this->model->delOrder($id);
@@ -147,16 +144,18 @@ class Orders extends Controller {
             'order_discount' => $_POST['summary']['discount'],
             'order_balance' => $_POST['summary']['balance'],
             'order_room_price' => $_POST['summary']['room_price'],
-            'order_emp_id' => $this->me['id'],
+            
         );
 
         // echo json_encode( $_POST ); die;
         // print_r($_POST); die;
 
         if( !empty($_POST['id']) ){
-            $item = $this->model->get( $_POST['id'] );
+            $id = $_POST['id'];
+            $item = $this->model->get( $id );
         }
 
+        // print_r($_POST['items']); die;
         $detail = array();
         if( !empty($_POST['items']) ){
             foreach ($_POST['items'] as $value) {
@@ -168,6 +167,7 @@ class Orders extends Controller {
                     'item_discount' => $value['discount'],
                     'item_balance' => $value['total']-$value['discount'],
                     'item_status' => $value['status'],
+                    'item_qty' =>  isset($value['qty'])? $value['qty']:1,
                     // 'item_job_id' => isset( $value['job_id'] ) ? $value['job_id'] :0,
                 );
 
@@ -193,17 +193,23 @@ class Orders extends Controller {
         if( !empty($detail) ){
 
             if( !empty($item) ){
+                // print_r($order); die;
                 $this->model->updateOrder( $id, $order );
+                $this->model->removeDetail( $id );
+    
+                $order['id'] = $id;
+                $order = $this->model->convert($order); 
             }
             else{
+
+                $order['order_emp_id'] = $this->me['id'];
                 $this->model->insertOrder( $order );
 
                 $order['status'] = 'run';
                 $this->model->updateOrder( $order['id'], array('order_status'=>'run') );
             }
 
-        // update Item 
-        
+             // update Item 
             foreach ($detail as $value) {
 
                 $data = $value;
@@ -358,4 +364,80 @@ class Orders extends Controller {
         $this->view->render("_summary");
     }
 
+    public function pay($id=null) {
+        
+        $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : $id;
+        if( empty($this->me) || empty($id) || $this->format!='json' ) $this->error();
+        
+        $options = array();
+
+        $options['has_item'] = 1;
+
+        $item = $this->model->get($id, $options);
+        if( empty($item) ) $this->error();
+ 
+        if (!empty($_POST)) {
+
+            // print_r($item); die;
+
+            if( $_POST['pay'] < $item['balance'] ){
+                $arr['error']['pay'] = 'จำนวนเงินไม่ถูกต้อง';
+            }
+
+            if( empty($arr['error']) ){
+
+                $data = array(
+                    'order_pay' => $_POST['pay'],
+                    'order_change' => $_POST['pay'] - $item['balance'],
+                    'order_status' => 'paid'
+                );
+
+                $this->model->updateOrder( $item['id'], $data );
+
+                foreach ($item['items'] as $key => $val) {
+                    
+                    $detail = array('item_status'=>'paid');
+                    if( $val['end_date'] == '0000-00-00 00:00:00' ){
+                        $detail['item_end_date'] = date('c');
+                    }
+                    $this->model->updateDetail( $val['id'], $detail );
+
+                    foreach ($val['masseuse'] as $mas) {
+                        if( !empty($mas['job_id']) && $val['status'] == 'run' ){
+
+                            $job = $this->model->query('masseuse')->getJob( $mas['id'], array('status'=>'on', 'date'=>$item['date']) );
+                
+                            if( empty($job) ){
+                                
+                                $this->model->query('masseuse')->setJob( $mas['id'], array( 'date'=>$item['date'] ) );
+                            }
+                        }
+                    }
+                }
+
+                if( $_POST['pay'] > $item['balance'] ){
+                    $message = 'ทอนเงิน '.$data['order_change'];
+                }
+                else{
+                    $message = 'บันทึกเรียบร้อย';
+                }
+
+                $arr['message'] = $message;
+                $arr['id'] = $item['id'];
+
+            }
+
+            if( isset($_REQUEST['callback']) ){
+                $arr['callback'] = $_REQUEST['callback'];
+            }
+            
+            echo json_encode($arr);
+        }
+        else{
+
+            $this->view->setData('item', $item);
+            $this->view->setPage('path','Forms/orders');
+            $this->view->render("pay");
+        }
+    }
 }

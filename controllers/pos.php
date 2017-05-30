@@ -26,6 +26,7 @@ class Pos extends Controller{
 
     public function orders(){
         
+        
         Session::init();
         if( isset($_REQUEST['style']) ){
             Session::set('pos_style', $_REQUEST['style']);
@@ -71,6 +72,8 @@ class Pos extends Controller{
                 $arr['message'] = 'ไม่พบข้อมูล';
             }
         }
+
+        // print_r($this->model->query('masseuse')->listJob( array('date'=>$date, 'unlimit'=>1, 'status'=>'on' ) )); die;
 
         $this->view->setData('date', $date );
         $this->view->setData('lists', $this->model->query('masseuse')->listJob( array('date'=>$date, 'unlimit'=>1, 'status'=>'on' ) ) );

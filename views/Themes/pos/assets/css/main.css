@@ -2729,6 +2729,8 @@ a.btn-box-control{text-decoration: none;}
     position: relative;
     min-height: 450px;
     overflow: hidden;
+
+    max-height: 600px
 }
 
 .table-order2-wrap>.table-order2-form>div {

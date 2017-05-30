@@ -236,7 +236,9 @@ if ( typeof Object.create !== 'function' ) {
 				if( closedateOptions.length > 0 ){
 					$closedate.closedate({
 						onComplete: function ( that ) {
-							// console.log( 'Complete', that, this );	
+
+							// self.refresh( 1 );
+							console.log( 'Complete', that, this );	
 						},
 						onChange: function ( that ) {
 
@@ -267,8 +269,9 @@ if ( typeof Object.create !== 'function' ) {
 						self.refresh( 1 );
 					},
 
-					onComplete: function ( d ) {
+					onComplete: function ( d ) { 
 
+						console.log( 'onComplete', d );
 						self.data.options.date = PHP.dateJStoPHP( d );
 						self.refresh( 1 );
 					}

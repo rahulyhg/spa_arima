@@ -38,11 +38,11 @@
 					<table>
 						<tbody><tr>
 							<th class="no">#</th>
-							<th class="name">Items</th>
+							<th class="name">รายการ</th>
 							<th class="status"></th>
-							<th class="qty">Time</th>
+							<th class="qty">เวลา</th>
 							<th class="unit"></th>
-							<th class="price">Price</th>
+							<th class="price">ราคา</th>
 						</tr>
 					</tbody></table>
 				</div>
@@ -97,7 +97,7 @@
 				<div class="slipPaper-bodyFooter-actions mvm clearfix">
 					<div class="lfloat">
 						
-						<span class="gbtn"><a class="btn btn-red" data-bill-action="cancel"><i class="icon-remove"></i><span class="text-btn mls"><?=$this->lang->translate('Cancel')?></span></a></span>
+						<span class="gbtn"><a class="btn btn-red" data-bill-action="cancel"><i class="icon-remove"></i><span class="text-btn mls"><?=$this->lang->translate('Hide')?></span></a></span>
 
 						<!-- <span class="gbtn"><a class="btn"><i class="icon-clone" data-bill-action="clone"></i><span class="text-btn mls">Clone</span></a></span> -->
 						
@@ -105,13 +105,11 @@
 					</div>
 					<div class="rfloat">
 
-						
-
 						<!-- <span class="gbtn"><a class="btn" data-bill-action="hold"><i class="icon-arrow-up mrs"></i><?=$this->lang->translate('Hold')?></a></span> -->
 
 						<!-- <span class="gbtn"><a class="btn" data-bill-action="booking"><i class="icon-address-book-o mrs"></i><?=$this->lang->translate('Booking')?></a></span> -->
 
-						<span class="gbtn"><a class="btn btn-blue" data-bill-action="hold"><i class="icon-paper-plane-o mrs"></i><?=$this->lang->translate('Order')?></a></span>
+						<span class="gbtn"><a class="btn btn-blue" data-bill-action="hold"><i class="icon-paper-plane-o mrs"></i><?=$this->lang->translate('Save')?></a></span>
 					</div>
 				</div>
 			</div>

@@ -279,7 +279,8 @@ class System_Model extends Model{
         $a[] = array('id'=>'payed', 'name'=> 'Payed', 'color'=>'#8CCB8E'); // จ่ายแล้ว
         $a[] = array('id'=>'completed', 'name'=> 'Completed', 'color'=>'#8CCB8E'); // เสร็จแล้ว
         $a[] = array('id'=>'no-show', 'name'=>'no-show', 'color'=>'#F00000'); // 
-        
+    
+        // pending        
         return $a;
     }
 
