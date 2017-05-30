@@ -32,6 +32,8 @@ class Settings extends Controller {
 
         if( !empty($_POST) && $this->format=='json' ){
 
+            $_POST['updated'] = $this->system['updated'];
+
             foreach ($_POST as $key => $value) {
                 $this->model->query('system')->set( $key, $value);
             }

@@ -27,7 +27,7 @@ $a[] = array('label'=>'สถานะ', 'key' => 'status');
 			$val = '<div class="status-wrap"><a class="ui-status" style="background-color: rgb(11, 195, 57);">RUN</a></div>';
 		}
 		elseif( $val != 'run' && $value['key'] != 'code' ){
-			$val = '<div class="status-wrap"><a class="ui-status" style="background-color: rgb(219, 21, 6);">EXPIRED</a></div>';
+			$val = '<div class="status-wrap"><a class="ui-status" style="background-color: rgb(219, 21, 6);">EXPIRED</a>';
 		}
 
 		if( $value['key'] == 'level' ){
@@ -37,6 +37,13 @@ $a[] = array('label'=>'สถานะ', 'key' => 'status');
 		echo '<tr>'.
 			'<td class="label">'.$value['label'].'</td>'.
 			'<td class="data">'.$val.'</td>'.
+		'</tr>';
+	}
+
+	if( $this->item['status'] == 'expired' ){
+		echo '<tr>'.
+		'<td class="label"></td>'.
+		'<td class="data"><a data-plugins="dialog" href="'.URL.'customers/set_extend/'.$this->item['id'].'" class="btn btn-green"><i class="icon-plus"></i> ต่ออายุ</a></div></td>'.
 		'</tr>';
 	}
 	?></tbody></table>

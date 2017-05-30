@@ -3,9 +3,8 @@
 $this->nav = array();
 $this->nav[] = array('id'=>'orders','name'=> $this->lang->translate('menu','Orders'), 'icon'=>'file-text-o','url'=>URL.'pos/orders');
 // $this->nav[] = array('id'=>'booking','name'=> $this->lang->translate('menu','Booking'), 'icon'=>'address-book-o','url'=>URL.'pos/booking');
-// $this->nav[] = array('id'=>'members','name'=> $this->lang->translate('menu','Members'), 'icon'=>'address-card-o','url'=>URL.'pos/members');
 $this->nav[] = array('id'=>'queue','name'=> $this->lang->translate('menu','masseuse'), 'icon'=>'user-circle-o','url'=>URL.'pos/queue');
-
+$this->nav[] = array('id'=>'members','name'=> $this->lang->translate('menu','Members'), 'icon'=>'address-card-o','url'=>URL.'pos/members');
 // $this->nav[] = array('id'=>'orders','name'=> $this->lang->translate('menu','Service Changes'), 'icon'=>'file-text-o','url'=>URL.'pos');
 // $this->nav[] = array('id'=>'orders','name'=> $this->lang->translate('menu','Promotions'), 'icon'=>'file-text-o','url'=>URL.'pos');
 

@@ -40,7 +40,7 @@ if( !empty($this->results['lists']) ){
             $status = '<span class="ui-status" style="background-color: rgb(11, 195, 57);">RUN</span>';
         }
         else{
-            $status = '<a href="'.URL.'customers/set_extend/'.$item['id'].'" data-plugins="dialog"><span class="ui-status" style="background-color: rgb(219, 21, 6);">EXPIRED</span></a>';
+            $status = '<span class="ui-status" style="background-color: rgb(219, 21, 6);">EXPIRED</span>';
         }
         /**/
 
@@ -108,7 +108,7 @@ if( !empty($this->results['lists']) ){
                 '<div class="anchor clearfix">'.
                     $image.
                     '<div class="content"><div class="spacer"></div><div class="massages">'.
-                        '<div class="fullname"><a class="fwb" href="'.URL .'customers/'.$item['id'].'">'. $item['fullname'].'</a></div>'.
+                        '<div class="fullname"><a class="fwb" href="'.URL .'pos/members/'.$item['id'].'">'. $item['fullname'].'</a></div>'.
                         '<div class="subname fsm meta fcg">Last Date: '.$this->fn->q('time')->live( $item['updated'] ).'</div>'.
                     '</div>'.
                 '</div></div>'.

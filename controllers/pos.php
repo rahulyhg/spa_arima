@@ -79,5 +79,49 @@ class Pos extends Controller{
         $this->view->setData('lists', $this->model->query('masseuse')->listJob( array('date'=>$date, 'unlimit'=>1, 'status'=>'on' ) ) );
         $this->view->setPage('on', 'queue');
         $this->view->render("queue/display");
-    }   
+    }
+
+    public function members( $id=null ){
+
+        $this->view->setPage('on', 'members');
+
+        if( !empty($id) ){
+
+            $this->error();
+
+            // $options = array();
+
+            // $options['options'] = 1;
+
+            // $item = $this->model->query('customers')->get( $id, $options );
+            // if( empty($item) ) $this->error();
+
+            // // ประวัติการรับบริการ
+            // $services = $this->model->query('orders')->get_customer_item( $id );
+            // $this->view->setData('services', $services);
+
+            // // ประวัติการจอง
+            // $booking = $this->model->query('orders')->get_customer_item( $id, array('status'=>'booking') );
+            // $this->view->setData('booking', $booking);
+
+            // $this->view->setData('id', $id );
+            // $this->view->setData('item', $item );
+            // $this->view->setData('tab', $section); 
+            // $this->view->render("members/profile/display");
+        }
+        else{
+
+            if( $this->format=='json' )
+            {
+                $this->view->SetData('results', $this->model->query('customers')->lists() );
+                $render = "members/lists/json";
+            }
+            else{
+                $this->view->setData('status', $this->model->query('customers')->lists_status() );
+                $render = "members/lists/display";
+            }
+        }
+
+        $this->view->render( $render );
+    }    
 }

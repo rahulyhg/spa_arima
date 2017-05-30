@@ -318,17 +318,21 @@ class Customers extends Controller {
 
         if( empty($item) ) $this->error();
 
-        $futureDate = date('Y-m-d',strtotime(date("Y-m-d", mktime()) . " -6 year")); // 2554 // 2011
-        $birthday = date("{$_POST['birthday']['year']}-{$_POST['birthday']['month']}-{$_POST['birthday']['date']}");
-        if( strtotime($birthday) > strtotime($futureDate) ){
-            $arr['error']['birthday'] = 'วันเกิดไม่ถูกต้อง';
+        $birthday = '';
+
+        if( !empty($_POST['birthday']) ){
+            $futureDate = date('Y-m-d',strtotime(date("Y-m-d", mktime()) . " -6 year")); // 2554 // 2011
+            $birthday = date("{$_POST['birthday']['year']}-{$_POST['birthday']['month']}-{$_POST['birthday']['date']}");
+            if( strtotime($birthday) > strtotime($futureDate) ){
+                $arr['error']['birthday'] = 'วันเกิดไม่ถูกต้อง';
+            }
         }
 
         try {
             $form = new Form();
             $form   ->post('cus_prefix_name')
                     ->post('cus_first_name')->val('is_empty')
-                    ->post('cus_last_name')->val('is_empty')
+                    ->post('cus_last_name')
                     ->post('cus_nickname')
                     ->post('cus_card_id');
 
@@ -714,5 +718,55 @@ class Customers extends Controller {
         );
 
         echo json_encode($results); die;
+    }
+
+    public function set_extend( $id=null ){
+
+        $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : $id;
+
+        $item = $this->model->get( $id );
+        if( empty($item) ) $this->error();
+
+        if( !empty($_POST) ){
+
+            try {
+
+                $arrDate1 = explode("-",$_POST['start_date']);
+                $arrDate2 = explode("-",$_POST['end_date']);
+                $timStmp1 = mktime(0,0,0,$arrDate1[1],$arrDate1[2],$arrDate1[0]);
+                $timStmp2 = mktime(0,0,0,$arrDate2[1],$arrDate2[2],$arrDate2[0]);
+
+                if( $timStmp1 >= $timStmp2 ){
+                    $arr['error']['ex_time'] = 'กรุณาเลือกวันที่ให้ถูกต้อง';
+                }
+
+                if( empty($arr['error']) ){
+
+                    $ex = array(
+                        'ex_cus_id'=>$id,
+                        'ex_start_date'=>$_POST['start_date'],
+                        'ex_end_date'=>$_POST['end_date'],
+                        'ex_emp_id'=>$this->me['id'],
+                        'ex_status'=>'run',
+                    );
+                    $this->model->setExpired( $ex );
+
+                    $this->model->update( $id, array('cus_status'=>'run') );
+
+                    $arr['message'] = 'ต่ออายุเรียบร้อย';
+                    $arr['url'] = URL.'customers/'.$id;
+                }
+
+            } catch (Exception $e) {
+                $arr['error'] = $this->_getError($e->getMessage());
+            }
+
+            echo json_encode($arr);
+        }
+        else{
+            $this->view->setData('item', $item);
+            $this->view->setPage('path', 'Themes/manage/forms/customers');
+            $this->view->render('set_extend');
+        }
     }
 }
