@@ -31,6 +31,8 @@ class th extends Langs {
 		$data['price'] = 'ราคา';
 		$data['discount'] = 'ส่วนลด';
 		$data['quantity'] = 'จำนวน';
+
+		$data['coupon'] = 'คูปอง';
 		
 		$data['member'] = 'สมาชิก';
 		$data['members'] = 'สมาชิก';

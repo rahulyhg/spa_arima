@@ -42,7 +42,7 @@ if( $this->has_edit ){
     $this->dropdown[] = array( 'type' => 'separator');
 
     $this->dropdown[] = array(
-        'text' => 'เปลี่ยนแก้ไข',
+        'text' => 'แก้ไขรหัสผ่าน',
         'href' => URL."{$this->obj_type}/password/{$this->obj_id}",
         'attr' => array('data-plugins'=>'dialog'),
     );

@@ -25,6 +25,7 @@ class System_Model extends Model{
 
             'package' => array('view'=>1),
             'promotions' => array('view'=>1),
+            'coupon'=>array('view'=>1),
 
             'tasks' => array('view'=>1, 'add'=>1), 
         );
@@ -52,6 +53,7 @@ class System_Model extends Model{
 
             $arr['package'] = array('view'=>1,'edit'=>1,'del'=>1, 'add'=>1);
             $arr['promotions'] = array('view'=>1,'edit'=>1,'del'=>1, 'add'=>1);
+            $arr['coupon'] = array('view'=>1,'edit'=>1,'del'=>1, 'add'=>1);
 
             $arr['tasks'] = array('view'=>1,'edit'=>1, 'del'=>1, 'add'=>1);    
             $arr['reports'] = array('view'=>1);

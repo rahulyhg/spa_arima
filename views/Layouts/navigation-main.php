@@ -28,6 +28,7 @@ if( !empty($cus)){
 $sv[] = array('key'=>'package','text'=>$this->lang->translate('menu','Package'),'icon'=>'cubes','link'=>$url.'package');
 //$this->lang->translate('menu','Discount') . ' & '. 
 $sv[] = array('key'=>'promotions','text'=> $this->lang->translate('menu','Promotions'),'icon'=>'tags','link'=>$url.'promotions');
+$sv[] = array('key'=>'coupon','text'=> $this->lang->translate('menu','coupon'),'icon'=>'credit-card','link'=>$url.'coupon');
 foreach ($sv as $key => $value) {
 	if( empty($this->permit[$value['key']]['view']) ) unset($sv[$key]);
 }
