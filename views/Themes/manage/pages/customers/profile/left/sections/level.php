@@ -2,7 +2,8 @@
 
 $a = array();
 $a[] = array('label'=>'รหัสสมาชิก', 'key'=> 'code');
-$a[] = array('label'=>'ระดับ', 'key' => 'level');
+$a[] = array('label'=>'ระดับ', 'key' => 'level', 'value'=>'name');
+$a[] = array('label'=>'ส่วนลด', 'key'=>'level', 'value'=>'discount');
 $a[] = array('label'=>'สถานะ', 'key' => 'status');
 // $a[] = array('label'=>'สถานภาพการสมรส', 'key' => 'fullname');
 
@@ -23,15 +24,19 @@ $a[] = array('label'=>'สถานะ', 'key' => 'status');
 
 		$val = $this->item[ $value['key'] ];
 
-		if( $val == 'run' && $value['key'] != 'code' ) {
+		if( $val == 'run' ){
 			$val = '<div class="status-wrap"><a class="ui-status" style="background-color: rgb(11, 195, 57);">RUN</a></div>';
 		}
-		elseif( $val != 'run' && $value['key'] != 'code' ){
+		elseif( $val == 'expired' ){
 			$val = '<div class="status-wrap"><a class="ui-status" style="background-color: rgb(219, 21, 6);">EXPIRED</a>';
 		}
 
 		if( $value['key'] == 'level' ){
-			$val = $this->item[ $value['key'] ]['name'];
+			$val = $this->item[ $value['key'] ][ $value['value'] ];
+
+			if( $value['value'] == 'discount' ){
+				$val .= '%';
+			}
 		}
 
 		echo '<tr>'.

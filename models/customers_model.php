@@ -9,7 +9,7 @@ class customers_model extends Model
 
     private $_objName = "customers";
     private $_table = "customers LEFT JOIN city ON customers.cus_city_id = city.city_id";
-    private $_field = "cus_level_id, cus_code, cus_id, cus_prefix_name, cus_first_name, cus_last_name, cus_nickname,  cus_created, cus_updated, cus_birthday, cus_card_id, cus_phone, cus_email, cus_lineID, cus_bookmark, cus_address, cus_zip, cus_city_id, city_name, cus_emp_id, cus_status";
+    private $_field = "cus_level_id, cus_code, cus_id, cus_prefix_name, cus_first_name, cus_last_name, cus_nickname,  cus_created, cus_updated, cus_birthday, cus_card_id, cus_phone, cus_email, cus_lineID, cus_bookmark, cus_address, cus_zip, cus_city_id, city_name, cus_emp_id, cus_status, cus_is_unlimit";
     private $_cutNamefield = "cus_";
 
     private function _setDate($data) {
@@ -289,7 +289,9 @@ class customers_model extends Model
             }
         }
 
-        $data['expired'] = $this->getExpired( $data['id'] );
+        if( empty($data['is_unlimit']) ){
+            $data['expired'] = $this->getExpired( $data['id'] );
+        }
 
         $data['total_booking'] = $this->db->count('booking', "book_cus_id={$data['id']} AND book_status='booking'");
 
@@ -370,6 +372,7 @@ class customers_model extends Model
     private $select_level = "
           level_id as id
         , level_name as name
+        , level_discount as discount
     ";
     public function level() {
         return $this->db->select("SELECT {$this->select_level} FROM customers_level");

@@ -20,6 +20,9 @@ class Index extends Controller {
             $customer = $this->model->query('customers')->lists();
 
             foreach ($customer['lists'] as $key => $value) {
+
+                if( !empty($value['is_unlimit']) ) continue;
+
                 $dateNow = date("Y-m-d");
                 $arrDate1 = explode("-",$value['expired'][0]['end_date']);
                 $arrDate2 = explode("-",$dateNow);
@@ -28,12 +31,16 @@ class Index extends Controller {
 
                 if( $timStmp1 < $timStmp2 ){
 
-                    $this->model->query('customers')->update( $value['id'], array('cus_status'=>'expired') );
+                    if( $value['status'] != 'expired' ){
 
-                    $this->model->query('customers')->setExpired( array(
-                        'ex_id'=>$value['expired'][0]['id'],
-                        'ex_status'=>'expired'
-                    ) );
+                        $this->model->query('customers')->update( $value['id'], array('cus_status'=>'expired') );
+
+                        $this->model->query('customers')->setExpired( array(
+                            'ex_id'=>$value['expired'][0]['id'],
+                            'ex_status'=>'expired'
+                        ) );
+
+                    }
                 }
             }
 

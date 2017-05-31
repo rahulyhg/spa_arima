@@ -8,6 +8,13 @@ $form = $form->create()
     ->elem('div')
     ->addClass('form-insert');
 
+$form   ->field("code")
+        ->label( $this->lang->translate('Code') )
+        ->autocomplete('off')
+        ->addClass('inputtext')
+        ->placeholder('')
+        ->value( $this->item['code'] );
+
 $form   ->field("name")
         ->label('ชื่อ')
         ->text( $this->fn->q('form')->fullname( !empty($this->item)?$this->item:array(), array('field_first_name'=>'emp_', 'prefix_name'=>$this->prefixName) ) );

@@ -1,6 +1,7 @@
 <?php
 
 $a = array();
+$a[] = array('label'=>'Code', 'key'=> 'code');
 $a[] = array('label'=>'ชื่อ', 'key' => 'fullname');
 $a[] = array('label'=>'ชื่อเล่น', 'key' => 'nickname');
 $a[] = array('label'=>'บัตรประชาชน', 'key' => 'card_id');

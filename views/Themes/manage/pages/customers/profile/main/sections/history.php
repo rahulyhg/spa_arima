@@ -1,3 +1,4 @@
+<?php if( !empty($this->item['unlimit']) ) { ?>
 <div class="duration-wrap">
 
     <div class="duration-tubes">
@@ -47,3 +48,7 @@
         </div>
     </div>
 </div>
+<?php }
+else{
+    echo '<table class="mtl table-accessory"><tbody><tr><td colspan="3" class="td-empty"><span class="fwb">ไม่มีวันหมดอายุ</span></td></tr></tbody></table>';
+    } ?>

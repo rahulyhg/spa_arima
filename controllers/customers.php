@@ -156,10 +156,23 @@ class Customers extends Controller {
                     ->post('cus_first_name')->val('is_empty')
                     ->post('cus_last_name')
                     ->post('cus_nickname')
-                    ->post('cus_card_id');
+                    ->post('cus_card_id')
+                    ->post('cus_is_unlimit');
 
             $form->submit();
             $postData = $form->fetch();
+
+            $birthday = '';
+            if( !empty($_POST['birthday']) ){
+                $futureDate = date('Y-m-d',strtotime(date("Y-m-d", mktime()) . " -6 year"));
+                $birthday = date("{$_POST['birthday']['year']}-{$_POST['birthday']['month']}-{$_POST['birthday']['date']}");
+
+                if( $birthday != '0000-00-00' ){
+                    if( strtotime($birthday) > strtotime($futureDate) ){
+                        $arr['error']['birthday'] = 'วันเกิดไม่ถูกต้อง';
+                    }
+                }
+            }
 
             $postData['cus_birthday'] = !empty($birthday) ? $birthday : '0000-00-00';
             $postData['cus_first_name'] = trim($postData['cus_first_name']);
@@ -204,15 +217,17 @@ class Customers extends Controller {
             : '';
 
             // Set Expired 
-            if( strtotime($_POST['start_date']) >= strtotime($_POST['end_date']) ){
-                $arr['error']['ex_time'] = 'กำหนดเวลาไม่ถูกต้อง';
-            }
+            if( empty($postData['cus_is_unlimit']) ){
+                if( strtotime($_POST['start_date']) >= strtotime($_POST['end_date']) ){
+                    $arr['error']['ex_time'] = 'กำหนดเวลาไม่ถูกต้อง';
+                }
 
-            $ex = array(
-                'ex_start_date'=>$_POST['start_date'],
-                'ex_end_date'=>$_POST['end_date'],
-                'ex_emp_id'=>$this->me['id'],
-            );
+                $ex = array(
+                    'ex_start_date'=>$_POST['start_date'],
+                    'ex_end_date'=>$_POST['end_date'],
+                    'ex_emp_id'=>$this->me['id'],
+                );
+            }
 
             // if( strlen($_POST['address']['zip']) != 5 ){
             //     $arr['error']['cus_address'] = 'กรุณากรอกรหัสไปรษณีย์ให้ครบ 5 หลัก';
@@ -240,8 +255,10 @@ class Customers extends Controller {
                     $this->model->insert( $postData );
                     $id = $postData['cus_id'];
 
-                    $ex['ex_cus_id'] = $id;
-                    $this->model->setExpired( $ex );
+                    if( empty($postData['cus_is_unlimit']) ){
+                        $ex['ex_cus_id'] = $id;
+                        $this->model->setExpired( $ex );
+                    }
 
                     $arr['url'] = URL.'customers/'.$postData['cus_id'];
                 }
@@ -319,12 +336,14 @@ class Customers extends Controller {
         if( empty($item) ) $this->error();
 
         $birthday = '';
-
         if( !empty($_POST['birthday']) ){
-            $futureDate = date('Y-m-d',strtotime(date("Y-m-d", mktime()) . " -6 year")); // 2554 // 2011
+            $futureDate = date('Y-m-d',strtotime(date("Y-m-d", mktime()) . " -6 year"));
             $birthday = date("{$_POST['birthday']['year']}-{$_POST['birthday']['month']}-{$_POST['birthday']['date']}");
-            if( strtotime($birthday) > strtotime($futureDate) ){
-                $arr['error']['birthday'] = 'วันเกิดไม่ถูกต้อง';
+
+            if( $birthday != '0000-00-00' ){
+                if( strtotime($birthday) > strtotime($futureDate) ){
+                    $arr['error']['birthday'] = 'วันเกิดไม่ถูกต้อง';
+                }
             }
         }
 
@@ -648,7 +667,8 @@ class Customers extends Controller {
 
         try {
             $form = new Form();
-            $form   ->post('level_name')->val('is_empty');
+            $form   ->post('level_name')->val('is_empty')
+                    ->post('level_discount')->val('is_empty');
 
             $form->submit();
             $postData = $form->fetch();

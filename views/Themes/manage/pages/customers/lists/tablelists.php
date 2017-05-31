@@ -8,29 +8,37 @@ if( !empty($this->results['lists']) ){
     foreach ($this->results['lists'] as $i => $item) { 
 
         /* Expired Date */
-        $startDateStr = '';
-        $endDateStr = '';
+        if( empty($item['is_unlimit']) ){
+            $startDateStr = '';
+            $endDateStr = '';
 
-        if( !empty($item['expired']) ){
-            $startDate = strtotime($item['expired'][0]['start_date']);
-            $endDate = strtotime($item['expired'][0]['end_date']);
+            if( !empty($item['expired']) ){
+                $startDate = strtotime($item['expired'][0]['start_date']);
+                $endDate = strtotime($item['expired'][0]['end_date']);
 
-            $startDateStr = date('j', $startDate) .' ' . $this->fn->q('time')->month( date('n', $startDate) ) .' '. ( date('Y', $startDate)+543 );
-            $endDateStr = date('j', $endDate) .' ' . $this->fn->q('time')->month( date('n', $endDate) ) .' '. ( date('Y', $endDate)+543 );
-        }
+                $startDateStr = date('j', $startDate) .' ' . $this->fn->q('time')->month( date('n', $startDate) ) .' '. ( date('Y', $startDate)+543 );
+                $endDateStr = date('j', $endDate) .' ' . $this->fn->q('time')->month( date('n', $endDate) ) .' '. ( date('Y', $endDate)+543 );
+            }
 
-        $dateNow = date("Y-m-d");
+            $dateNow = date("Y-m-d");
 
-        $arrDate1 = explode("-",$item['expired'][0]['end_date']);
-        $arrDate2 = explode("-",$dateNow);
-        $timStmp1 = mktime(0,0,0,$arrDate1[1],$arrDate1[2],$arrDate1[0]);
-        $timStmp2 = mktime(0,0,0,$arrDate2[1],$arrDate2[2],$arrDate2[0]);
+            $arrDate1 = explode("-",$item['expired'][0]['end_date']);
+            $arrDate2 = explode("-",$dateNow);
+            $timStmp1 = mktime(0,0,0,$arrDate1[1],$arrDate1[2],$arrDate1[0]);
+            $timStmp2 = mktime(0,0,0,$arrDate2[1],$arrDate2[2],$arrDate2[0]);
 
-        if( $timStmp1 < $timStmp2 ){
-            $strDate = 'หมดอายุ';
+            if( $timStmp1 < $timStmp2 ){
+                $strDate = 'หมดอายุ';
+            }
+            else{
+                $strDate = $this->fn->q('time')->DateDiff( $dateNow, $item['expired'][0]['end_date'] ).' วัน';
+            }
+
+            $tr_date = $startDateStr.' - '.$endDateStr.' ('.$strDate.')';
         }
         else{
-            $strDate = $this->fn->q('time')->DateDiff( $dateNow, $item['expired'][0]['end_date'] ).' วัน';
+            $strDate = '';
+            $tr_date = '<span class="fwb">ไม่มีวันหมดอายุ</span>';
         }
         /**/
 
@@ -118,7 +126,7 @@ if( !empty($this->results['lists']) ){
 
             '<td class="express"><ul class="fsm">'.$express.'</ul></td>'.
 
-            '<td class="date">'.$startDateStr.' - '.$endDateStr.' ('.$strDate.')</td>'.
+            '<td class="date">'.$tr_date.'</td>'.
             
             '<td class="status">'.$status.'</td>'.
 

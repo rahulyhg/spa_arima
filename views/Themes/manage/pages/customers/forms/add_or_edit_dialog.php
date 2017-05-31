@@ -128,13 +128,7 @@ $form->hr( $this->fn->q('form')->contacts(
     array( 'field_first_name'=>'options[social]' )
 ) );
 
-if( empty($this->item) ){
-
-$form   ->field("ex_time")
-        ->label($this->lang->translate('Expiry Date'))
-        ->text(
-
-        '<div class="content" data-name="ex_time" data-plugins="setdate" data-options="'.$this->fn->stringify( array(
+$expired = '<div class="content" data-name="ex_time" data-plugins="setdate" data-options="'.$this->fn->stringify( array(
 
             'startDate' => $startDate,
             'endDate' => $endDate,
@@ -152,19 +146,51 @@ $form   ->field("ex_time")
 
             'lang' => $this->lang->getCode()
 
-        ) ).'"></div>'
+        ) ).'"></div>';
 
-        )
-        ->note( 'กำหนดวันหมดอายุสมาชิก' );
-}
+$form   ->field("cus_is_unlimit")
+        ->text('<div class="openset">'.
+            '<label class="checkbox"><input '.(!empty($this->item['is_unlimit']) ? '' : 'checked="1"').' type="checkbox" name="cus_is_unlimit" value="0" class="js-openset"> <span class="fwb">กำหนดวันหมดอายุสมาชิก</span></label>'.
+
+            '<div class="content" data-name="cus_is_unlimit">' .$expired. '</div>'. 
+            '</div>');
+
+// $form   ->field("ex_time")
+//         ->label($this->lang->translate('Expiry Date'))
+//         ->text(
+
+//         '<div class="content" data-name="ex_time" data-plugins="setdate" data-options="'.$this->fn->stringify( array(
+
+//             'startDate' => $startDate,
+//             'endDate' => $endDate,
+
+//             'allday' => 'disabled',
+//             'endtime' => true,
+//             'time' => 'disabled',
+
+//             'str' => array(
+//                 $this->lang->translate('Start'),
+//                 $this->lang->translate('End'),
+//                 $this->lang->translate('All day'),
+//                 $this->lang->translate('End Time'),
+//             ),
+
+//             'lang' => $this->lang->getCode()
+
+//         ) ).'"></div>'
+
+//         )
+//         ->note( 'กำหนดวันหมดอายุสมาชิก' );
 
 # set form
-$arr['form'] = '<form class="js-submit-form" method="post" action="'.URL. 'customers/save"></form>';
+$arr['form'] = '<form class="js-submit-form" data-plugins="activeform" method="post" action="'.URL. 'customers/save"></form>';
 
 # body
 $arr['body'] = $form->html();
 
 $title = $this->lang->translate('Member');
+
+$arr['hiddenInput'][] = array('name'=>'cus_is_unlimit', 'value'=>'1');
 
 if( !empty($this->item) ){
     $arr['title']= $title;
