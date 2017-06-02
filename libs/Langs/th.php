@@ -44,6 +44,7 @@ class th extends Langs {
 		$data['hold'] = 'ปิด';
 		$data['cancel'] = 'ยกเลิก';
 		$data['save'] = 'บันทึก';
+		$data['hide'] = 'ปิด';
 
 		$str = strtolower($text);
 		return !empty($data[$str]) ? $data[$str]: $text;

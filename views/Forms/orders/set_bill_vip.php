@@ -5,12 +5,12 @@ $form = $form->create()
     // set From
     ->addClass('form-insert form-large');
 
-$form   ->hr( '<h2 class="tac mbm">'.$this->lang->translate('ROOM PRICE').'</h2>' );
+$form   ->hr( '<h2 class="tac mbm">ราคาห้อง</h2>' );
 
 $form   ->field("room_price")
         ->autocomplete('off')
         ->type('number')
-        ->attr('autofocus', 1)
+        ->attr('autoselect', 1)
         ->addClass('inputtext tac')
         ->value( isset($_GET['room_price']) ? $_GET['room_price']: 0 );
 

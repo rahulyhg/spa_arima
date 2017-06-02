@@ -258,6 +258,28 @@ class Orders extends Controller {
 
         echo json_encode( $order );
     }
+    public function update($id=null, $name=null, $value=null) {
+
+        $name = isset($_POST) ? $_POST:$name;
+
+        $order = array();
+        if( is_array($name) ){
+
+            foreach ($name as $key => $value) {
+                $order["order_{$key}"] = trim($value);
+            }
+        }
+        else{
+            $order["order_{$name}"] = $value;
+        }
+
+
+        $this->model->updateOrder( $id, $order );
+
+        $arr['message'] = 'บันทึกเรียบร้อย';
+
+        echo json_encode($arr);
+    }
 
     public function set_bill() {
 

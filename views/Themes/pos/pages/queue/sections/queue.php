@@ -1,7 +1,7 @@
 <?php
 
 $oil = array();
-$Masseuse = array();
+$masseuse = array();
 foreach ($this->lists['lists'] as $key => $value) { 
 
 	if( in_array($value['pos_id'], array(5, 6)) ){
@@ -10,7 +10,6 @@ foreach ($this->lists['lists'] as $key => $value) {
 	else{
 		$masseuse[] = $value;
 	}
-	
 }
 
 // print_r($masseuse); die;

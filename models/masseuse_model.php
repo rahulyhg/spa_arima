@@ -240,7 +240,7 @@ class Masseuse_Model extends Model{
         $fdata = array(
             'id'=> $data['id'],
             // 'created' => $data['created'],
-            'text'=> $data['fullname'],
+            'text'=> $data['nickname'],
             "category"=> $category,
             "subtext"=> '', //!empty($data['phone_number']) ? $data['phone_number']:"",
             "image_url"=>!empty($data['image_url']) ? $data['image_url']:"",

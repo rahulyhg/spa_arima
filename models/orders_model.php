@@ -148,12 +148,10 @@ class Orders_Model extends Model {
 			, pack_unit
 			, pack_name
 			, pack_has_masseuse
-
 			
-
 		  FROM orders_items item 
 		  	INNER JOIN package pack ON pack.pack_id=item.item_pack_id
-		  	WHERE item.item_order_id=:id", array(':id'=>$id));
+		  	WHERE item.item_order_id=:id ORDER BY item.item_start_date ASC", array(':id'=>$id));
 
 
 		foreach ($data as $i => $value) {

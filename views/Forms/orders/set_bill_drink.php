@@ -10,7 +10,7 @@ $form   ->hr( '<h2 class="tac mbm">'.$this->lang->translate('DRINK').'</h2>' );
 $form   ->field("drink")
         ->autocomplete('off')
         ->type('number')
-        ->attr('autofocus', 1)
+        ->attr('autoselect', 1)
         ->addClass('inputtext tac')
         ->value( isset($_GET['drink']) ? $_GET['drink']: 0 );
 

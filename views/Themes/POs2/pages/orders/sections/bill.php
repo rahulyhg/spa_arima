@@ -6,26 +6,16 @@
 				<div class="clearfix">
 					<div class="lfloat order-title">
 
-						<div><span data-bill="date"></span></div>
+						<div>
+							<span data-bill="date"><input type="" name="" data-plugins="datepicker"></span>
+							
+						</div>
 						<div class="text">
-							<span><label></label> <strong data-bill="number"></strong></span>
+							<span><label></label> <strong data-bill="number">001, 002, 003</strong> <span class="ui-status vip">V.I.P.</span></span> <span data-bill="member">
+							<i class="icon-address-card-o mrm"></i><span class="text" data-bill-set="member">ภุชงค์ สวนแจ้ง</span> <a data-bill-action="remove_member" class="btn-icon"><i class="icon-remove"></i></a>
+							</span>
 						</div>
 
-						<!-- <div class="subtext">
-							<span><label>Time:</label> 8:10 PM</span>
-							<span><label>-</label> 10:10 PM</span>
-							<span> 30:45:11</span>
-						</div> -->
-
-						<div class="subtext hidden_elem" data-bill="member">
-							<span><label>Member:</label> <i class="icon-address-card-o mrs"></i><span class="text" data-bill-set="member"></span> <a data-bill-action="remove_member" class="btn-icon"><i class="icon-remove"></i></a></span>
-						</div>
-						<!-- <div class="subtext">
-							<span><label>Room No.</label> 101</span>
-						</div>
-						<div class="subtext">
-							<span><label>By:</label> <i class="icon-user-circle-o"></i><a>ภุชงค์</a></span>
-						</div> -->
 					</div>
 					<div class="rfloat order-title-btn">
 						<span class="gbtn radius"><a class="btn btn-blue" data-bill-action="menu"><i class="icon-plus"></i></a></span>
@@ -46,7 +36,40 @@
 						</tr>
 					</tbody></table>
 				</div>
-				<div class="slipPaper-bodyContent-body"><table><tbody role="orderlists"></tbody></table></div>
+				<div class="slipPaper-bodyContent-body" style="top:32px"><table><tbody role="orderlists">
+					<?php for ($i=0; $i < 3; $i++) { ?>
+					<tr>
+						<td class="no"><?=$i?></td>
+						<td class="name">
+							<div class="title fwb">001 นวดเท้า <span class="ui-status vip">V.I.P.</span> <span class="ui-status coupon">C</span></div>
+
+							<table>
+								<?php for ($j=0; $j < 1; $j++) { ?>
+								<tr>
+									<td class="name">
+										<div class="order-title fsm">
+											<ul>
+												<li><span class="ui-status mrs">2</span>เติ้ล 10.00-11.00</li>
+												<!-- <li><span class="ui-status mrs">2</span>เติ้ล 10.00-11.00</li> -->
+											</ul>
+										</div>
+									</td>
+									<td class="status">
+										<span class="ui-status">RUN</span>
+									</td>
+									<td class="qty">
+										<span class="gbtn"><button class="btn btn-no-padding" data-control="change" data-type="plus_masseuse"><i class="icon-minus"></i></button></span><span class="number">1.30</span><span class="gbtn"><button class="btn btn-no-padding" data-control="change" data-type="remove_masseuse" data-id="46"><i class="icon-plus"></i></button></span>
+									</td>
+									<td class="unit">Hour</td>
+									<td class="price has-discount"><div class="cost">700</div><div class="discount">-100</div><div class="total">600</div></td>
+								</tr>
+								<?php } ?>
+							</table>
+						</td>
+						
+					</tr>
+					<?php } ?>
+				</tbody></table></div>
 			</div>
 			<div class="slipPaper-bodyFooter">
 				<table class="slipPaper-bodyFooter-summary mbm">
@@ -120,17 +143,23 @@
 	<footer class="slipPaper-footer">
 		
 		<nav>
-			<ul class="clearfix" style="width:800px">
+			<ul class="clearfix">
 				
+				<li class="button">
+					<span class="gbtn radius"><a class="btn" data-bill-set="discount"><i class="icon-users"></i></a></span>
+					<span class="t">จำนวนลูกค้า</span>
+					<span class="countValue">1</span>
+				</li>
+
 				<li class="button">
 					<span class="gbtn radius"><a class="btn" data-bill-set="drink"><i class="icon-glass"></i></a></span>
 					<span class="t"><?=$this->lang->translate('DRINK')?></span>
 				</li>
 
-				<li class="button">
+				<!-- <li class="button">
 					<span class="gbtn radius"><a class="btn" data-bill-set="vip"><i class="icon-building-o"></i></a></span>
 					<span class="t"><?=$this->lang->translate('V.I.P.')?></span>
-				</li>
+				</li> -->
 				
 
 				<li class="button">
@@ -139,27 +168,18 @@
 				</li>
 										
 				<!-- <li class="button">
-					<span class="gbtn radius"><a class="btn js-set-option" data-type=""><i class="icon-percent"></i></a></span>
+					<span class="gbtn radius"><a class="btn" data-bill-set="discount"><i class="icon-percent"></i></a></span>
 					<span class="t">Discount</span>
 				</li> -->
 
-				<!-- <li class="button">
-					<span class="gbtn radius"><a class="btn" data-bill-set="masseuse"><i class="icon-user-circle-o"></i></a></span>
-					<span class="t"><?=$this->lang->translate('Masseuse')?></span>
-				</li> -->
-
-				<!-- <li class="button">
-					<span class="gbtn radius"><a class="btn" data-bill-set="room"><i class="icon-bed"></i></a></span>
-					<span class="t"><?=$this->lang->translate('Room')?>/<?=$this->lang->translate('Bed')?></span>
-				</li> -->
 
 			</ul>
 		</nav>
 
-		<!-- <div class="pay button">
+		<div class="pay button">
 			<span class="gbtn radius large"><a class="btn btn-blue" data-bill-action="pay"><i class="icon-thailand-baht"></i></a></span>
 			<span class="t">Pay</span>
-		</div> -->
+		</div>
 	</footer>
 	<!-- end: footer -->
 </div>

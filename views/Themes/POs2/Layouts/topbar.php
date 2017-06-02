@@ -2,8 +2,8 @@
 
 $this->nav = array();
 $this->nav[] = array('id'=>'orders','name'=> $this->lang->translate('menu','Orders'), 'icon'=>'file-text-o','url'=>URL.'pos/orders');
-// $this->nav[] = array('id'=>'booking','name'=> $this->lang->translate('menu','Booking'), 'icon'=>'address-book-o','url'=>URL.'pos/booking');
-// $this->nav[] = array('id'=>'members','name'=> $this->lang->translate('menu','Members'), 'icon'=>'address-card-o','url'=>URL.'pos/members');
+$this->nav[] = array('id'=>'booking','name'=> $this->lang->translate('menu','Booking'), 'icon'=>'address-book-o','url'=>URL.'pos/booking');
+$this->nav[] = array('id'=>'members','name'=> $this->lang->translate('menu','Members'), 'icon'=>'address-card-o','url'=>URL.'pos/members');
 $this->nav[] = array('id'=>'queue','name'=> $this->lang->translate('menu','masseuse'), 'icon'=>'user-circle-o','url'=>URL.'pos/queue');
 
 // $this->nav[] = array('id'=>'orders','name'=> $this->lang->translate('menu','Service Changes'), 'icon'=>'file-text-o','url'=>URL.'pos');
@@ -29,7 +29,8 @@ foreach ($this->nav as $key => $value) {
 
 	$cls = !empty($cls) ? ' class="'.$cls.'"':'';
 
-	$pageNav .= '<li id="global-nav-'.$value['id'].'" '.$cls.' data-global-action="'.$value['id'].'"><a href="'.$value['url'].'" data-nav="'.$value['id'].'"><i class="icon-'.$value['icon'].'"></i><strong>'.$value['name'].'</strong>'.'<span class="mls countVal">('.$countVal.')</span>'.'</a></li>';
+	// href="'.$value['url'].'"
+	$pageNav .= '<li id="global-nav-'.$value['id'].'" '.$cls.' data-global-action="'.$value['id'].'"><a data-nav="'.$value['id'].'"><i class="icon-'.$value['icon'].'"></i><strong>'.$value['name'].'</strong>'.'<span class="mls countVal">('.$countVal.')</span>'.'</a></li>';
 }
 
 $pageNavR = '';
@@ -62,7 +63,8 @@ $pageNavR .= '<li class="uiToggle headerAvatarWrap">'.
     '<a data-plugins="toggleLink">'.$imageAvatar.'</a>'.
 
     '<div class="uiToggleFlyout uiToggleFlyoutRight uiToggleFlyoutPointer" id="accountSettingsFlyout"><ul role="menu" class="uiMenu">'.
-            '<li class="menuItem head"><a class="itemAnchor" href="#"><span class="itemLabel"><div class="clearfix"><div class="anchor"><div class="clearfix">'.$imageAvatarBig.'<div class="content"><div class="spacer"></div><div class="massages"><div class="fullname">'.$this->me['fullname'].'</div><div class="fcg">'.$this->me['phone_number'].'</div></div></div></div></div></div></span></a></li>'.
+
+            '<li class="menuItem head"><a class="itemAnchor" href="#"><span class="itemLabel"><div class="clearfix"><div class="anchor"><div class="clearfix">'.$imageAvatarBig.'<div class="content"><div class="spacer"></div><div class="massages"><div class="fullname">'.$this->me['fullname'].'</div></div></div></div></div></div></span></a></li>'.
 
             /*<li class="menuItemDivider" role="separator"></li>
 
@@ -79,12 +81,15 @@ $pageNavR .= '<li class="uiToggle headerAvatarWrap">'.
 
 $image_url = $this->getPage('image_url');
 
-echo '<div id="header-primary" class="topbar"><div class="global-nav clearfix">';
+echo '<div id="header-primary" class="topbar">'.
 
-		echo '<h1 class="topbar-logo">'.
+	'<div class="topbar-dotted"></div>'.
+'<div class="global-nav clearfix">';
+		
+		/*echo '<h1 class="topbar-logo">'.
 			'<img src="'.$image_url.'" />'.
 			'<span class="visuallyhidden"></span>'.
-		'</h1>';
+		'</h1>';*/
 
 		echo '<div class="clearfix">';
 		echo '<ul id="pageNav" class="clearfix lfloat js-global-actions">'.$pageNav.'</ul>';

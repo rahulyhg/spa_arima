@@ -569,7 +569,7 @@ div.uiContextualLayerPositionerFixed{position:fixed}
 .uiContextualPositioner{position:fixed;visibility:hidden;opacity:0;padding:0;pointer-events:none;-webkit-transition:visibility 0s,opacity 0s,margin 0.15s ease-out;-moz-transition:visibility 0s,opacity 0s,margin 0.15s ease-out;-o-transition:visibility 0s,opacity 0s,margin 0.15s ease-out;transition:visibility 0s,opacity 0s,margin 0.15s ease-out;margin-top:-3px}
 .open.uiContextualPositioner,.open.uiToggleFlyout{position:absolute;opacity:1;visibility:visible;pointer-events:auto;margin-top:-1px;z-index:300}
 .hasmodel .open.uiContextualPositioner,.hasmodel .open.uiToggleFlyout,.hasModel .open.uiContextualPositioner,.hasModel .open.uiToggleFlyout{z-index:450}
-.uiContextualPositioner .calendarGridTableSmall{background-color:#fff}
+.uiContextualPositioner .calendarGridTableSmall{background-color:#fff;color:#333}
 .uiContextualPositioner .uiMenu,.uiContextualPositioner .calendarGridTableSmall,.uiPopover .uiToggleFlyout .uiMenu{text-align:left;border:1px solid #61c;border:1px solid rgba(0,0,0,.7);box-shadow:0 3px 8px rgba(0,0,0,.25);-webkit-transform:translateZ(0)}
 .uiContextualPositioner .uiMenu{min-width:80px}
 .uiContextualPositioner .uiMenu>li{white-space:nowrap}

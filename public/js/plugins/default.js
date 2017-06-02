@@ -2004,6 +2004,69 @@ if ( typeof Object.create !== 'function' ) {
 		});
 	};
 
+	var OClock = {
+		init: function ( options, elem ) {
+			var self = this;
+			
+			self.$elem = $(elem);
+			self.theDate = new Date();
+			self.options = $.extend( {}, $.fn.oclock.options, options );
+
+			self.refresh(1);
+		},
+
+		refresh: function ( length ) {
+			var self = this;
+
+			self.t = setTimeout(function () {
+
+				var ampm = 'AM';
+				self.theDate = new Date();
+
+				var hour = self.theDate.getHours();
+
+				if( self.options.lang=='th' ){
+					ampm = '';
+				}else{
+					if( hour > 12 ){
+						hour -= 12;
+						ampm = 'PM';
+					}
+
+					if( hour==0 ){
+						hour = 12;
+					}
+				}
+
+				var minute = self.theDate.getMinutes();
+				minute = minute<10 ? '0'+minute:minute;
+
+				var second = self.theDate.getSeconds();
+				second = second<10 ? '0'+second:second;
+
+				var time = $.trim( hour + ':' + minute + ':' + second + ' ' + ampm );
+				var date = Datelang.day(self.theDate.getDay(),self.options.type,self.options.lang) +', '+ self.theDate.getDate()+' '+ Datelang.month( self.theDate.getMonth(), self.options.type, self.options.lang) + ', '+ self.theDate.getFullYear();
+
+				self.$elem.find('[ref=time]').html( time );
+				self.$elem.find('[ref=date]').html( date );
+
+				self.refresh();
+			}, length || self.options.refresh);
+		}
+	}
+	$.fn.oclock = function( options ) {
+		return this.each(function() {
+			var obj = Object.create( OClock );
+			obj.init( options, this );
+			$.data( this, 'oclock', obj );
+		});
+	};
+	$.fn.oclock.options = {
+        lang: 'th',
+        type: 'normal',
+        refresh: 1000
+    };
+
 	var LiveClock = {
 		init: function( options, elem ) {
 			var self = this;
