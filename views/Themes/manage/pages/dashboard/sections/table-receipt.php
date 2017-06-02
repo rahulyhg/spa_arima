@@ -26,9 +26,9 @@
 	    				<td class="unit">-</td>
 	    				<td class="qty">-</td>
 	    				<td class="qty">-</td>
-	    				<td class="price"><?=number_format($this->room['total_room_price'])?></td>
+	    				<td class="price"><?=number_format($this->room[0]['sum_room_price'])?></td>
 	    				<td class="price">-</td>
-	    				<td class="total"><?=number_format($this->room['total_room_price'])?></td>
+	    				<td class="total"><?=number_format($this->room[0]['sum_room_price'])?></td>
 	    			</tr>
 	    		<?php 
 
@@ -36,7 +36,7 @@
 	    		$total_customer = 0;
 	    		$total_qty = 0;
 	    		$total_discount = 0;
-	    		$total_all = $this->room['total_room_price'];
+	    		$total_all = $this->room[0]['sum_room_price'];
 
 	    		foreach ($this->package['lists'] as $key => $value) { ?>
 	    			<tr>

@@ -1,11 +1,11 @@
 <?php
 
 $types = array();
-$types[] = array('id'=>'income','name'=>'ยอดขายรถยนต์');
-$types[] = array('id'=>'booking','name'=>'ยอดจองรถยนต์');
+$types[] = array('id'=>'service','name'=>'ยอดผู้ใช้บริการ');
+// $types[] = array('id'=>'booking','name'=>'ยอดจองรถยนต์');
 // $types[] = array('id'=>'all','name'=>'สรุปยอด');
-$types[] = array('id'=>'sales','name'=>'ยอดขาย Sales');
-$types[] = array('id'=>'book_sale','name'=>'ยอดจอง Sales');
+// $types[] = array('id'=>'sales','name'=>'ยอดขาย Sales');
+// $types[] = array('id'=>'book_sale','name'=>'ยอดจอง Sales');
 
 
 ?><div class="ReportSummary">

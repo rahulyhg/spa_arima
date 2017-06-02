@@ -11,9 +11,14 @@ $form = $form->create()
 $form   ->field("level_name")
         ->label($this->lang->translate('Name'))
         ->addClass('inputtext')
-        ->required(true)
         ->autocomplete("off")
         ->value( !empty($this->item['name']) ? $this->item['name']:'' );
+
+$form   ->field("level_discount")
+        ->label($this->lang->translate('Discount'))
+        ->addClass('inputtext')
+        ->autocomplete("off")
+        ->value( !empty($this->item['discount']) ? $this->item['discount']:'' );
         
 # set form
 $arr['form'] = '<form class="js-submit-form" method="post" action="'.URL. 'customers/save_level"></form>';

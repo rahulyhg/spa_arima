@@ -18,6 +18,7 @@ $url = URL .'customers/';
 	<table class="settings-table admin"><tbody>
 		<tr>
 			<th class="name"><?=$this->lang->translate('Level')?></th>
+			<th class="status"><?=$this->lang->translate('Discount')?> (%)</th>
 			<th class="actions"><?=$this->lang->translate('Action')?></th>
 
 		</tr>
@@ -25,6 +26,8 @@ $url = URL .'customers/';
 		<?php foreach ($this->data as $key => $item) { ?>
 		<tr>
 			<td class="name"><?=$item['name']?></td>
+
+			<td class="status"><?=$item['discount']?> %</td>
 
 			<td class="actions whitespace">
 				

@@ -7,13 +7,11 @@ class reports extends Controller {
     }
 
     public function index(){
-        $this->error();
-    	// $this->view->render('reports/display');
+        // $this->error();
+    	$this->view->render('reports/display');
     }
 
     public function get() {
-
-    	
     	$type = $_GET['type'];
     	echo json_encode( $this->model->{$type}($_GET['start'], $_GET['end']) );
     }

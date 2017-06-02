@@ -32,6 +32,21 @@ $dropdown = array();
 
 // $dropdown[] = array( 'type' => 'separator');
 if( $this->has_edit ){
+
+    $this->dropdown[] = array(
+        'text' => $this->item['display'] == 'enabled' ? 'ปิดใช้งาน' : 'เปิดใช้งาน',
+        'href' => URL.'employees/display/'.$this->item['id'].'/'.($this->item['display'] == 'enabled' ? 'disabled' : 'enabled'),
+        'attr' => array('data-plugins'=>'dialog'),
+    );
+
+    $this->dropdown[] = array( 'type' => 'separator');
+
+    $this->dropdown[] = array(
+        'text' => 'แก้ไขรหัสผ่าน',
+        'href' => URL."{$this->obj_type}/password/{$this->obj_id}",
+        'attr' => array('data-plugins'=>'dialog'),
+    );
+
     $this->dropdown[] = array(
         'text' => 'ลบ',
         'href' => URL."{$this->obj_type}/del/{$this->obj_id}",
