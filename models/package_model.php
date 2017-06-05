@@ -162,6 +162,15 @@ class Package_Model extends Model {
 
 		$data['skill'] = $this->listSkill( $data['id'] );
 
+		if( !empty($data['image_id']) ){
+            $image = $this->query('media')->get($data['image_id']);
+
+            if( !empty($image) ){
+                $data['image_arr'] = $image;
+                $data['image_url'] = $image['url'];
+            }
+        }
+
 		$data['permit']['del'] = true;
 
 

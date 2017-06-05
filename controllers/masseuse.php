@@ -262,8 +262,10 @@ class Masseuse extends Controller {
 
         if( !empty($_POST) ){
 
-            $postData['job_status'] = 'cancel';
-            $this->model->updateJob( $job['job_id'], $postData );
+            // $postData['job_status'] = 'cancel';
+            // $this->model->updateJob( $job['job_id'], $postData );
+
+            $this->model->deleteJob( $job['job_id'] );
 
             $arr['message'] = 'ยกเลิกคิวบริการเรียบร้อย';
             $arr['url'] = 'refresh';

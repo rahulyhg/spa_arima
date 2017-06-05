@@ -7,9 +7,9 @@
 		<div role="main" style="position: relative;">
 			
 			
-				<?php /*require "sections/menu.php";*/ ?>
+				<?php require "sections/menu.php"; ?>
 				<?php /*require "sections/pay.php";*/ ?>
-				<?php require "sections/detail.php"; ?>
+				<?php /*require "sections/detail.php";*/ ?>
 			
 		</div>
 	</div>

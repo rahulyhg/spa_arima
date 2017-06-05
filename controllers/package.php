@@ -112,6 +112,73 @@ class Package extends Controller {
                     }
                 }
 
+                //----- UPLOAD IMAGE -----//
+                if( !empty($_FILES['pack_image']) ){
+
+                    $userfile = $_FILES['pack_image'];
+
+                    if( !empty($item['image_id']) ){
+                        $this->model->query('media')->del($item['image_id']);
+                        $this->model->update( $id, array('pack_image_id'=>0 ) );
+                    }
+
+                    $album = array('album_id'=>2);
+                    
+                    if( empty($structure) ){
+                        $structure = WWW_UPLOADS . $album['album_id'];
+                        if( !is_dir( $structure ) ){
+                            mkdir($structure, 0777, true);
+                        }
+                    }
+
+                    /**/
+                    /* get Data Album */
+                    /**/
+                    $options = array(
+                        'album_obj_type' => isset( $_REQUEST['obj_type'] ) ? $_REQUEST['obj_type']: 'public',
+                        'album_obj_id' => isset( $_REQUEST['obj_id'] ) ? $_REQUEST['obj_id']: 1,
+                        );
+
+                    if( isset( $_REQUEST['album_name'] ) ){
+                        $options['album_name'] = $_REQUEST['album_name'];
+                    }
+                    $album = $this->model->query('media')->searchAlbum( $options );
+
+                    if( empty($album) ){
+                        $this->model->query('media')->setAlbum( $options );
+                        $album = $options;
+                    }
+
+                    // set Media Data
+                    $media = array(
+                        'media_album_id' => $album['album_id'],
+                        'media_type' => isset($_REQUEST['media_type']) ? $_REQUEST['media_type']: strtolower(substr(strrchr($userfile['name'],"."),1))
+                        );
+
+                    $options = array(
+                        'folder' => $album['album_id'],
+                        );
+
+                    if( !isset($media['media_emp_id']) ){
+                        $media['media_emp_id'] = $this->me['id'];
+                    }
+
+                    $this->model->query('media')->set( $userfile, $media, $options );
+
+                    if( empty($media['error']) ){
+                        $media = $this->model->query('media')->convert($media);
+                    }
+                    $item['image_id'] = $media['id'];
+                    $this->model->update( $id, array('pack_image_id'=>$item['image_id'] ) );
+                    
+                }
+
+                // resize 
+                if( !empty($_POST['cropimage']) && !empty($item['image_id']) ){
+                    $this->model->query('media')->resize($item['image_id'], $_POST['cropimage']);
+                }
+                //----- END UPLOAD -----//
+
                 $arr['message'] = 'บันทึกเรียบร้อย';
                 // $arr['url'] = 'refresh';
             }
@@ -148,6 +215,29 @@ class Package extends Controller {
         else{
             $this->view->item = $item;
             $this->view->render("package/forms/del");
+        }
+    }
+
+    public function del_image_cover($id=null)
+    {
+        $id = isset($_REQUEST['id']) ? $_REQUEST['id']: $id;
+        if( empty($this->me) || $this->format!='json' || empty($id) ) $this->error();
+
+        $item = $this->model->get($id);
+        if( empty($item) ) $this->error();
+
+        if( !empty($_POST) ){
+            $this->model->query('media')->del($item['image_id']);
+            $this->model->update( $id, array('pack_image_id'=>0 ) );
+
+            $arr['message'] = "ลบเรียบร้อย";
+            $arr['status'] = 1;
+            echo json_encode($arr);
+        }
+        else{
+            $this->view->id = $id;
+            $this->view->setPage('path','Themes/manage/forms/package');
+            $this->view->render('del_image_cover');
         }
     }
 

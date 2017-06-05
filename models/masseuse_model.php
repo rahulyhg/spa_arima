@@ -495,6 +495,10 @@ class Masseuse_Model extends Model{
     public function updateJob($id, $data) {
         $this->db->update("emp_job_queue", $data, "`job_id`={$id}");
     }
+
+    public function deleteJob($id){
+        $this->db->delete("emp_job_queue", "`job_id`={$id}");
+    }
     
     public function lastSequence($options=array())
     {
