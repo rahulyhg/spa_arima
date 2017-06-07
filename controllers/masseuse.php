@@ -244,8 +244,21 @@ class Masseuse extends Controller {
         $item = $this->model->get( $id );
         if( empty($item) ) $this->error();
 
+        $options['status'] = 'on';
+        if( isset($_REQUEST['date']) ){
+            $options['date'] = $_REQUEST['date'];
+            $this->view->setData('date', $options['date']);
+        }
+
+        $job = $this->model->getJob( $id, $options);
+        if( empty($job) ) $this->error();
+
+        $time = $this->model->getTime( $id, $options );
+
         $this->view->setData('skill', $this->model->query('employees')->skill());
         $this->view->setData('item', $item);
+        $this->view->setData('job', $job);
+        $this->view->setData('time', $time);
         $this->view->render('masseuse/forms/skill');
     }
 
@@ -273,6 +286,15 @@ class Masseuse extends Controller {
 
             $this->model->deleteJob( $job['job_id'] );
 
+            $count_job = $this->model->countJob( $id, $options );
+            if( empty($count_job) ){
+
+                $time = $this->model->getTime( $id, $options );
+                if( !empty($time) ){
+                    $this->model->deleteTime( $time['clock_id'] );
+                }
+            }
+
             $arr['message'] = 'ยกเลิกคิวบริการเรียบร้อย';
             $arr['url'] = 'refresh';
 
@@ -292,6 +314,59 @@ class Masseuse extends Controller {
         foreach ($_POST['items'] as $id) {
             $this->model->updateJob( $id, array('job_sequence'=>$sequence) );
             $sequence++;
+        }
+    }
+
+    public function edit_time( $id=null ){
+
+        $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : $id;
+        if( empty($id) || empty($this->me) ) $this->error();
+
+        $date = isset($_REQUEST['date']) ? $_REQUEST['date'] : date("Y-m-d");
+
+        $item = $this->model->getTime( $id, array('date'=>$date) );
+        if( empty($item) ) $this->error();
+
+        if( !empty($_POST) ){
+
+        }
+        else{
+            $this->view->setData('item', $item);
+            $this->view->setData('date', $date);
+            $this->view->render('masseuse/forms/edit_job_time');
+        }
+    }
+
+    public function cancelAll(){
+
+        $date = isset($_REQUEST['date']) ? $_REQUEST['date'] : date("Y-m-d");
+
+        if( !empty($_POST) ){
+
+            $listJob = $this->model->query('masseuse')->listJob( array('date'=>$date, 'unlimit'=>1, 'status'=>'on' ) );
+
+            foreach ($listJob['lists'] as $key => $value) {
+
+                $count_job = $this->model->countJob( $value['id'], array('date'=>$date) );
+                
+                if( $count_job == 1 ){
+                    $time = $this->model->getTime( $value['id'], array('date'=>$date) );
+                    if( !empty($time) ){
+                        $this->model->deleteTime( $time['clock_id'] );
+                    }
+                }
+                $this->model->deleteJob( $value['job_id'] );
+            }
+
+            $arr['message'] = 'ยกเลิกคิวทั้งหมด เรียบร้อย!';
+            $arr['url'] = 'refresh';
+
+            echo json_encode($arr);
+        }
+        else{
+
+            $this->view->setData('date', $date);
+            $this->view->render('masseuse/forms/job_all_cancel');
         }
     }
 }
