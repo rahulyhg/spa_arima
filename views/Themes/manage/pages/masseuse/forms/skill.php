@@ -34,10 +34,13 @@ $arr['is_close_bg'] = 1;
 
 $arr['width'] = 650;
 
+if( isset($_REQUEST['date']) ){
+	$date = '?date='.$_REQUEST['date'];
+}
 
 $arr['bottom_msg'] = '<a class="btn" role="dialog-close"><span class="btn-text">ปิด</span></a>';
 
-$arr['button'] = '<a class="btn btn-red" href="'.URL.'masseuse/cancel/'.$this->item['id'].'" data-plugins="dialog"><i class="icon-ban mrs"></i><span class="btn-text">ยกเลิกคิว</span></a>';
+$arr['button'] = '<a class="btn btn-red" href="'.URL.'masseuse/cancel/'.$this->item['id'].$date.'" data-plugins="dialog"><i class="icon-ban mrs"></i><span class="btn-text">ยกเลิกคิว</span></a>';
 
 echo json_encode($arr);
 ?>

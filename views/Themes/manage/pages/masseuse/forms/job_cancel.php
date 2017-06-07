@@ -5,7 +5,12 @@ if( !empty($this->item['permit']['del']) ){
 	
 	$arr['form'] = '<form class="js-submit-form" action="'.URL. 'masseuse/cancel"></form>';
 	$arr['hiddenInput'][] = array('name'=>'id','value'=>$this->item['id']);
-	$arr['body'] = "ยกเลิกคิวงาน <span class=\"fwb\">{$this->item['fullname']}</span> ใน <span class=\"fwb\"> {$this->fn->q('time')->normal($this->job['job_date'])} หรือไม่ ? </span>";
+
+	if( !empty($this->date) ){
+		$arr['hiddenInput'][] = array('name'=>'date', 'value'=>$this->date);
+	}
+
+	$arr['body'] = "ยกเลิกคิวงาน <span class=\"fwb\">({$this->item['code']}) {$this->item['fullname']}</span> ใน <span class=\"fwb\"> {$this->fn->q('time')->normal($this->job['job_date'])} หรือไม่ ? </span>";
 	
 	$arr['button'] = isset($_REQUEST['callback'])
 		? '<button type="submit" role="submit" class="btn btn-danger btn-submit"><span class="btn-text">'.$this->lang->translate('Delete').'</span></button>'

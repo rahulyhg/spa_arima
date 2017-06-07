@@ -257,7 +257,13 @@ class Masseuse extends Controller {
         $item = $this->model->get( $id );
         if( empty($item) ) $this->error();
 
-        $job = $this->model->getJob( $id ,array('status'=>'on'));
+        $options['status'] = 'on';
+        if( isset($_REQUEST['date']) ){
+            $options['date'] = $_REQUEST['date'];
+            $this->view->setData('date', $options['date']);
+        }
+
+        $job = $this->model->getJob( $id, $options);
         if( empty($job) ) $this->error();
 
         if( !empty($_POST) ){
