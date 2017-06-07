@@ -597,11 +597,26 @@ class Masseuse_Model extends Model{
         }
 
         if( !empty($data['id']) ){
-            $this->db->update( 'emp_clocking', $data['id'], $input );
+            $this->db->update( 'emp_clocking', $input, "`clock_id`={$data['id']}");
         }
         else{
             $this->db->insert( 'emp_clocking', $input );
         }
+    }
+
+    public function get_time( $id ){
+
+        $sth = $this->db->prepare("SELECT 
+              j.clock_id
+            , j.clock_start_date
+            , j.clock_end_date
+            , j.clock_date
+            , {$this->_field} FROM emp_clocking j INNER JOIN ($this->_table) ON j.clock_emp_id=e.emp_id WHERE j.clock_id=:id LIMIT 1");
+        $sth->execute( array(':id'=>$id) );
+
+        return $sth->rowCount()==1
+            ? $this->convert( $sth->fetch( PDO::FETCH_ASSOC ) )
+            : array();
     }
 
     public function getTime( $id, $options=array() ){

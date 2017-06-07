@@ -324,11 +324,25 @@ class Masseuse extends Controller {
 
         $date = isset($_REQUEST['date']) ? $_REQUEST['date'] : date("Y-m-d");
 
-        $item = $this->model->getTime( $id, array('date'=>$date) );
+        $item = $this->model->get_time( $id );
         if( empty($item) ) $this->error();
 
         if( !empty($_POST) ){
 
+            $start_date = date("{$_POST['start_date']} {$_POST['start_time_hour']}:{$_POST['start_time_minute']}:s");
+            $end_date = date("{$_POST['end_date']} {$_POST['end_time_hour']}:{$_POST['end_time_minute']}:s");
+
+            $postData = array(
+                'id'=>$id,
+                'start_date'=>$start_date,
+                'end_date'=>$end_date
+            );
+
+            $this->model->setTime( $postData );
+            $arr['message'] = 'บันทึกเรียบร้อย';
+            $arr['url'] = 'refresh';
+
+            echo json_encode($arr);
         }
         else{
             $this->view->setData('item', $item);

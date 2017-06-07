@@ -1,8 +1,8 @@
 <?php
 
-$arr['title'] = 'ความสามารถ';
+$arr['title'] = 'ความสามารถ <a data-plugins="dialog" href="'.URL.'masseuse/edit_time/'.$this->time['clock_id'].'" class="btn btn-blue rfloat"><i class="icon-clock-o"></i> แก้ไขเวลาเข้างาน</a>';
 
-$body = '<div class="">
+$body = '<div>
 		 <div><span class="fwb">ลำดับคิว : </span>'.$this->job['job_sequence'].'</div>
 		 <div><span class="fwb">เวลาเข้างาน : </span>'.$this->fn->q('time')->live($this->time['clock_start_date']).'</div>';
 
