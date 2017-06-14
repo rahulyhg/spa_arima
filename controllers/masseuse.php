@@ -286,4 +286,21 @@ class Masseuse extends Controller {
             $sequence++;
         }
     }
+
+
+    public function monitor() {
+        
+        $this->view->setPage('theme', 'monitor');
+        $this->view->setPage('theme_options', array(
+            'has_footer' => false,
+            'has_topbar' => false,
+            'has_menu' => false,
+            
+        ));  
+        $date = isset($_REQUEST['date']) ? $_REQUEST['date']: date('Y-m-d'); 
+
+        $this->view->setData('date', $date );
+        $this->view->setData('lists', $this->model->query('masseuse')->listJob( array('date'=>$date, 'unlimit'=>1, 'status'=>'on' ) ) );
+        $this->view->render('masseuse/display');   
+    }
 }

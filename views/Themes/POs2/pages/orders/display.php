@@ -6,10 +6,18 @@
 	<div role="content">
 		<div role="main" style="position: relative;">
 			
-			
-				<?php /*require "sections/menu.php";*/ ?>
-				<?php /*require "sections/pay.php";*/ ?>
+			<div class="ui-effect-top" data-global="menu">
+				<?php require "sections/menu.php"; ?>
+			</div>
+
+			<div class="ui-effect-top" data-global="pay">
+				<?php require "sections/pay.php"; ?>
+			</div>
+
+			<div class="ui-effect-top" data-global="detail">
 				<?php require "sections/detail.php"; ?>
+			</div>
+		
 			
 		</div>
 	</div>

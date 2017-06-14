@@ -7,11 +7,12 @@
 					<div class="lfloat order-title">
 
 						<div>
-							<span data-bill="date"><input type="" name="" data-plugins="datepicker"></span>
+							<span data-bill="date">วันพุธที่ 7 มิถุนายน 2560</span>
 							
 						</div>
 						<div class="text">
-							<span><label></label> <strong data-bill="number">001, 002, 003</strong> <span class="ui-status vip">V.I.P.</span></span> <span data-bill="member">
+							<span><label></label> <strong data-bill="number">001, 002, 003</strong>
+							<span data-bill="member">
 							<i class="icon-address-card-o mrm"></i><span class="text" data-bill-set="member">ภุชงค์ สวนแจ้ง</span> <a data-bill-action="remove_member" class="btn-icon"><i class="icon-remove"></i></a>
 							</span>
 						</div>
@@ -37,21 +38,25 @@
 					</tbody></table>
 				</div>
 				<div class="slipPaper-bodyContent-body" style="top:32px"><table><tbody role="orderlists">
-					<?php for ($i=0; $i < 3; $i++) { ?>
+					<?php for ($i=1; $i <= 3; $i++) { ?>
 					<tr>
-						<td class="no"><?=$i?></td>
+						<td class="no"><?=$i?>.</td>
 						<td class="name">
-							<div class="title fwb">001 นวดเท้า <span class="ui-status vip">V.I.P.</span> <span class="ui-status coupon">C</span></div>
+							<div class="title fwb">นวดเท้า <span class="ui-status vip">V.I.P.</span> <span class="ui-status coupon">C</span></div>
 
-							<table>
-								<?php for ($j=0; $j < 1; $j++) { ?>
+							<table class="">
+								<?php for ($j=0; $j < 2; $j++) { ?>
 								<tr>
 									<td class="name">
-										<div class="order-title fsm">
+										<div class="order-title fsm" style="position: relative;">
+											<div style="" class="fss fwb fcg">
+												001
+											</div>
 											<ul>
 												<li><span class="ui-status mrs">2</span>เติ้ล 10.00-11.00</li>
 												<!-- <li><span class="ui-status mrs">2</span>เติ้ล 10.00-11.00</li> -->
 											</ul>
+											
 										</div>
 									</td>
 									<td class="status">
@@ -78,39 +83,41 @@
 							<table><tbody>
 								
 								<tr>
-									<td class="label"><?=$this->lang->translate('Sub Total')?>:</td>
-									<td class="data"><span summary="total">0</span> ฿</td>
+									<td class="label">รวม:</td>
+									<td class="data"><span data-bill-summary="total">0</span> ฿</td>
 								</tr>
 								<tr>
-									<td class="label"><?=$this->lang->translate('Discount')?>:</td>
-									<td class="data discount">-<span summary="discount">0</span> ฿</td>
+									<td class="label">ส่วนลด (สมาชิก):</td>
+									<td class="data discount">-<span data-bill-summary="discount_member">0</span> ฿</td>
+								</tr>
+								<tr>
+									<td class="label">รวมลด:</td>
+									<td class="data discount">-<span data-bill-summary="discount">0</span> ฿</td>
 								</tr>
 								
 								<!-- <tr>
 									<td class="label">ภาษี (7%):</td>
-									<td class="data">฿<span summary="service-text">0</span></td>
+									<td class="data">฿<span data-bill-summary="service-text">0</span></td>
 								</tr>
 								<tr>
 									<td class="label">ค่าบริการ (20%):</td>
-									<td class="data">฿<span summary="service-text">0</span></td>
+									<td class="data">฿<span data-bill-summary="service-text">0</span></td>
 								</tr> -->
 							</tbody></table>
 						</td>
 						<td class="colright">
 							<table><tbody>
-								
-
 								<tr>
 									<td class="label"><?=$this->lang->translate('Drink')?>:</td>
-									<td class="data"><span summary="drink">0</span> ฿</td>
+									<td class="data"><span data-bill-summary="drink">0</span> ฿</td>
 								</tr>
 								<tr>
-									<td class="label"><?=$this->lang->translate('V.I.P. Room')?>:</td>
-									<td class="data"><span summary="room_price">0</span> ฿</td>
+									<td class="label">ค่าห้อง (V.I.P.):</td>
+									<td class="data"><span data-bill-summary="room_price">0</span> ฿</td>
 								</tr>
 								<tr>
-									<td class="label TOTAL"><?=$this->lang->translate('Total')?>:</td>
-									<td class="data TOTAL"><span summary="balance">0</span> ฿</td>
+									<td class="label TOTAL">รวมทั้งหมด:</td>
+									<td class="data TOTAL"><span data-bill-summary="balance">0</span> ฿</td>
 								</tr>
 							</tbody></table>
 						</td>
@@ -120,7 +127,11 @@
 				<div class="slipPaper-bodyFooter-actions mvm clearfix">
 					<div class="lfloat">
 						
-						<span class="gbtn"><a class="btn btn-red" data-bill-action="cancel"><i class="icon-remove"></i><span class="text-btn mls"><?=$this->lang->translate('Cancel')?></span></a></span>
+						<span class="gbtn"><a class="btn disabled" data-bill-action="cancel">ยกเลิก</a></span>
+
+						
+
+						<!-- <span class="gbtn"><a class="btn btn-red" data-bill-action="cancel"><i class="icon-remove"></i><span class="text-btn mls">ปิด</span></a></span> -->
 
 						<!-- <span class="gbtn"><a class="btn"><i class="icon-clone" data-bill-action="clone"></i><span class="text-btn mls">Clone</span></a></span> -->
 						
@@ -128,11 +139,9 @@
 					</div>
 					<div class="rfloat">
 
-						<!-- <span class="gbtn"><a class="btn" data-bill-action="hold"><i class="icon-arrow-up mrs"></i><?=$this->lang->translate('Hold')?></a></span> -->
+						<span class="gbtn"><a class="btn" data-bill-action="hold">พัก</a></span>
 
-						<!-- <span class="gbtn"><a class="btn" data-bill-action="booking"><i class="icon-address-book-o mrs"></i><?=$this->lang->translate('Booking')?></a></span> -->
-
-						<span class="gbtn"><a class="btn btn-blue" data-bill-action="hold"><i class="icon-paper-plane-o mrs"></i><?=$this->lang->translate('Save')?></a></span>
+						<span class="gbtn"><a class="btn btn-blue" data-bill-action="save"><?=$this->lang->translate('Save')?></a></span>
 					</div>
 				</div>
 			</div>
@@ -146,9 +155,9 @@
 			<ul class="clearfix">
 				
 				<li class="button">
-					<span class="gbtn radius"><a class="btn" data-bill-set="discount"><i class="icon-users"></i></a></span>
+					<span class="gbtn radius"><a class="btn" data-bill-set="cus_qty"><i class="icon-users"></i></a></span>
 					<span class="t">จำนวนลูกค้า</span>
-					<span class="countValue">1</span>
+					<span class="countValue" data-bill="cus_qty">1</span>
 				</li>
 
 				<li class="button">
@@ -165,6 +174,12 @@
 				<li class="button">
 					<span class="gbtn radius"><a class="btn" data-bill-set="member"><i class="icon-address-card-o"></i></a></span>
 					<span class="t"><?=$this->lang->translate('Member')?></span>
+				</li>
+
+				<li class="button">
+					<span class="gbtn radius"><a class="btn" data-bill-set="parent"><i class="icon-reply-all"></i></a></span>
+					<span class="t">ต่อบิล</span>
+					<span class="countValue" data-bill="parent_name">001</span>
 				</li>
 										
 				<!-- <li class="button">

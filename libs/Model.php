@@ -57,7 +57,7 @@ class Model {
 
     public function _convert($_data, $options=array()) {
 
-        $options = array_merge( array('color','status','refer','sale', 'cus', 'product', 'model', 'car', 'brand', 'dealer', 'pro', 'emp', 'tec', 'type'), $options );
+        $options = array_merge( array('color','status','refer','sale', 'cus', 'product', 'model', 'car', 'brand', 'dealer', 'pro', 'emp', 'tec', 'type', 'level'), $options );
 
         $data = array();
         foreach ($_data as $key => $value) {

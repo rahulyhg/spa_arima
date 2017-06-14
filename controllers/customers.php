@@ -728,7 +728,7 @@ class Customers extends Controller {
 
     public function invite() {
         
-        $data = $this->model->lists( array('view_stype'=>'bucketed', 'limit' => 20) );
+        $data = $this->model->lists( array('view_stype'=>'bucketed', 'limit' => 20, 'status'=>'run') );
 
         $results = array();
         $results[] = array(

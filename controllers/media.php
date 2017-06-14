@@ -1,6 +1,5 @@
 <?php
 
-
 class Media extends Controller  {
 
     public function __construct() {
@@ -11,6 +10,7 @@ class Media extends Controller  {
         $this->error();
     }
 
+    // รูปเดียว
     public function set() {
 
         $userfile = isset($_FILES['file1'])? $_FILES['file1']: null;
@@ -122,8 +122,7 @@ class Media extends Controller  {
         $arr['message'] = 'บันทึกข้อมูลเรียบร้อย';
         echo json_encode($arr);
     }
-    public function set_sequence()
-    {
+    public function set_sequence() {
         $ids = $_POST['ids'];
         if( empty($this->me) || $this->format!='json' || empty($ids) ) $this->error();
 
@@ -137,8 +136,7 @@ class Media extends Controller  {
         echo json_encode($arr);
     }
 
-   	public function set_data_slideshow()
-   	{
+   	public function set_data_slideshow() 	{
    		$id = isset($_REQUEST['id']) ? $_REQUEST['id']: null;
    		if( empty($this->me) || $this->format!='json' || empty($id) ) $this->error();
 

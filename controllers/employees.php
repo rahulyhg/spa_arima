@@ -347,8 +347,7 @@ class Employees extends Controller {
         }
     }
 
-    public function del_image_profile($id=null)
-    {
+    public function del_image_profile($id=null){
         $id = isset($_REQUEST['id']) ? $_REQUEST['id']: $id;
         if( empty($this->me) || $this->format!='json' || empty($id) ) $this->error();
 
@@ -588,9 +587,7 @@ class Employees extends Controller {
         $this->view->setData('position', $this->model->query('employees')->position());
         $this->view->render('sales/forms/edit_basic_dialog');
     }
-
-    public function edit_contact($id=null)
-    {
+    public function edit_contact($id=null){
         if( empty($this->me) || empty($id) ) $this->error();
 
         $item = $this->model->query('employees')->get($id);
@@ -602,8 +599,7 @@ class Employees extends Controller {
         $this->view->render('sales/forms/edit_contact_dialog');
     }
 
-    public function update()
-    {
+    public function update(){
         if( empty($this->me) || empty($_POST) ) $this->error();
 
         $id = isset($_POST['id']) ? $_POST['id']: null;
@@ -682,8 +678,7 @@ class Employees extends Controller {
         echo json_encode($arr);
     }
 
-    public function setdata($id='', $field=null)
-    {
+    public function setdata($id='', $field=null)  {
         if( empty($id) || empty($field) || empty($this->me) ) $this->error();
 
         $item = $this->model->get( $id );
@@ -708,7 +703,6 @@ class Employees extends Controller {
         if( empty($this->me) || $this->format!='json') $this->error();
         echo json_encode($this->model->query('notes')->notes());
     }
-
     public function save_note(){
         if( empty($this->me) || empty($_POST) || $this->format!='json') $this->error();
 
@@ -737,7 +731,6 @@ class Employees extends Controller {
 
         echo json_encode( $arr );
     }
-
     public function del_note($id=null) {
         $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : $id;
         if( empty($this->me) || empty($id) || $this->format!='json' ) $this->error();
@@ -766,7 +759,6 @@ class Employees extends Controller {
             $this->view->render("del_note");
         }
     }
-
     public function edit_note(){
         $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : $id;
         if( empty($this->me) || empty($id) || $this->format!='json' ) $this->error();
@@ -831,8 +823,7 @@ class Employees extends Controller {
 
         $this->view->setPage('path','Themes/manage/forms/permission');
         $this->view->render("permission");
-    }
-    
+    }   
     public function save_permit(){
         if( empty($this->me) || empty($_POST) || $this->format!='json' ) $this->error();
 
@@ -986,7 +977,6 @@ class Employees extends Controller {
             $this->view->render("del");
         }   
     }
-
     public function set_skill($id=null){
         $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : $id;
         if( empty($this->me )|| empty($id) || $this->format!='json' ) $this->error();

@@ -152,6 +152,9 @@ class Masseuse_Model extends Model{
     public function convert($data , $options=array()){
         $data['role'] = 'emp';
         $data = $this->cut($this->_cutNamefield, $data);
+
+
+        // name
         foreach ($this->query('system')->_prefixName() as $key => $value) {
             if( $value['id']==$data['prefix_name'] ){
                 
@@ -159,14 +162,12 @@ class Masseuse_Model extends Model{
                 break;
             }
         }
-
         if( empty($data['prefix_name_str']) ){
             $data['prefix_name_str'] = '';
         }
-
         $data['fullname'] = "{$data['prefix_name_str']}{$data['first_name']} {$data['last_name']}";
-
         $data['initials'] = $this->fn->q('text')->initials( $data['first_name'] );
+        
 
         if( !empty($data['image_id']) ){
             $image = $this->query('media')->get($data['image_id']);
@@ -224,9 +225,9 @@ class Masseuse_Model extends Model{
     public function bucketed($data , $options=array()) {
 
         $category = '';
-        // if( !empty($data['image_url']) ){
+        if( !empty($data['image_url']) ){
             $category .= 'No.'.$data['code'];
-        // }
+        }
 
         if( !empty($data['phone_number']) ){
             $category .= !empty($category) ? ", ":'';

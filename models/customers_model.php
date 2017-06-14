@@ -8,8 +8,40 @@ class customers_model extends Model
     }
 
     private $_objName = "customers";
-    private $_table = "customers LEFT JOIN city ON customers.cus_city_id = city.city_id";
-    private $_field = "cus_level_id, cus_code, cus_id, cus_prefix_name, cus_first_name, cus_last_name, cus_nickname,  cus_created, cus_updated, cus_birthday, cus_card_id, cus_phone, cus_email, cus_lineID, cus_bookmark, cus_address, cus_zip, cus_city_id, city_name, cus_emp_id, cus_status, cus_is_unlimit";
+    private $_table = "
+        customers 
+            LEFT JOIN city ON customers.cus_city_id=city.city_id
+            LEFT JOIN customers_level l ON customers.cus_level_id=l.level_id
+    ";
+    private $_field = "
+          cus_level_id
+        , cus_code
+        , cus_id
+        , cus_prefix_name
+        , cus_first_name
+        , cus_last_name
+        , cus_nickname
+        , cus_created
+        , cus_updated
+        , cus_birthday
+        , cus_card_id
+        , cus_phone
+        , cus_email
+        , cus_lineID
+        , cus_bookmark
+        , cus_address
+        , cus_zip
+        , cus_city_id
+        , city_name
+        
+        , cus_status
+        , cus_is_unlimit
+
+        , level_id
+        , level_name
+        , level_discount
+
+    ";
     private $_cutNamefield = "cus_";
 
     private function _setDate($data) {
@@ -136,7 +168,6 @@ class customers_model extends Model
             'pager' => isset($_REQUEST['pager'])? $_REQUEST['pager']:1,
             'limit' => isset($_REQUEST['limit'])? $_REQUEST['limit']:50,
 
-
             'sort' => isset($_REQUEST['sort'])? $_REQUEST['sort']: 'created',
             'dir' => isset($_REQUEST['dir'])? $_REQUEST['dir']: 'DESC',
 
@@ -145,6 +176,8 @@ class customers_model extends Model
 
             'more' => true
         ), $options);
+
+        
 
         if( isset($_REQUEST['view_stype']) ){
             $options['view_stype'] = $_REQUEST['view_stype'];
@@ -160,6 +193,7 @@ class customers_model extends Model
             $where_str = "{$this->_cutNamefield}id!=:not";
             $where_arr[':not'] = $options['not'];
         }
+       
 
         if( !empty($options['q']) ){
 
@@ -185,7 +219,7 @@ class customers_model extends Model
             $period_end = !empty($options['period_end']) ? $options['period_end'] : $_REQUEST['period_end'];
 
             $where_str .= !empty( $where_str ) ? " AND ":'';
-            $where_str .= "cus_created BETWEEN :startDate AND :endDate";
+            $where_str .= "(cus_created BETWEEN :startDate AND :endDate)";
             $where_arr[':startDate'] = $period_start;
             $where_arr[':endDate'] = $period_end;
         }
@@ -193,12 +227,19 @@ class customers_model extends Model
         if( !empty($_REQUEST['status']) ){
             $options['status'] = $_REQUEST['status'];
         }
-
         if( !empty($options['status']) ){
-
             $where_str .= !empty( $where_str ) ? " AND ":'';
-            $where_str .="cus_status=:status";
+            $where_str .="`cus_status`=:status";
             $where_arr[':status'] = $options['status'];
+        }
+
+
+        if( isset($_REQUEST['level']) ){
+            $options['level'] = $_REQUEST['level'];
+        }
+        if( !empty($options['level']) ){
+            $where_str .= !empty( $where_str ) ? " AND ":'';
+            $where_str = "`cus_level_id`={$options['level']}";
         }
 
         $arr['total'] = $this->db->count($this->_table, $where_str, $where_arr);
@@ -207,7 +248,6 @@ class customers_model extends Model
         $orderby = $this->orderby( $this->_cutNamefield.$options['sort'], $options['dir'] );
         $limit = $this->limited( $options['limit'], $options['pager'] );
         $arr['lists'] = $this->buildFrag( $this->db->select("SELECT {$this->_field} FROM {$this->_table} {$where_str} {$orderby} {$limit}", $where_arr ), $options );
-
 
         if( ($options['pager']*$options['limit']) >= $arr['total'] ) $options['more'] = false;
         $arr['options'] = $options;
@@ -238,18 +278,11 @@ class customers_model extends Model
 
     public function convert($data, $options=array()){
 
+        // level
         $data = $this->cut($this->_cutNamefield, $data);
-
-        foreach ($this->query('system')->_prefixNameCustomer() as $key => $value) {
-            if( $value['id']==$data['prefix_name'] ){
-                
-                $data['prefix_name_th'] = $value['name'];
-                break;
-            }
-        }
+        $data = $this->_convert($data);
 
         if( !empty($data['address']) ){
-            
             $data['address'] = json_decode($data['address'], true);
         }
 
@@ -257,24 +290,20 @@ class customers_model extends Model
             $data['address']['city_name'] = $this->query('system')->city_name($data['address']['city']);
         }
 
-        if( empty($data['prefix_name_th']) ){
-            $data['prefix_name_th'] = '';
-        }
-        else if( @ereg("[ก-๙]+$", $data['first_name']) ){
-            switch ($data['prefix_name_th']) {
-                case 'Mr.': $data['prefix_name_th'] = 'นาย'; break;
-                case 'Mrs.': $data['prefix_name_th'] = 'นาง'; break;
-                case 'Ms.': $data['prefix_name_th'] = 'น.ส.'; break;
+        // name
+        foreach ($this->query('system')->_prefixName() as $key => $value) {
+            if( $value['id']==$data['prefix_name'] ){
+                
+                $data['prefix_name_str'] = $value['name'];
+                break;
             }
         }
-
-        $data['fullname'] = "{$data['prefix_name_th']}{$data['first_name']} {$data['last_name']}";
-
+        if( empty($data['prefix_name_str']) ){
+            $data['prefix_name_str'] = '';
+        }
+        $data['fullname'] = "{$data['prefix_name_str']}{$data['first_name']} {$data['last_name']}";
         $data['initials'] = $this->fn->q('text')->initials( $data['first_name'] );
 
-        if( !empty($data['level_id']) ){
-            $data['level'] = $this->get_level( $data['level_id'] );
-        }
 
         if( !empty($options['options']) ){
             $data['options'] = $this->getOptions($data['id']);
@@ -292,12 +321,6 @@ class customers_model extends Model
         if( empty($data['is_unlimit']) ){
             $data['expired'] = $this->getExpired( $data['id'] );
         }
-
-        $data['total_booking'] = $this->db->count('booking', "book_cus_id={$data['id']} AND book_status='booking'");
-
-        $data['total_car'] = $this->db->count('cars', "car_cus_id={$data['id']}");
-
-        $data['total_cancel'] = $this->db->count('booking', "book_cus_id={$data['id']} AND book_status='cancel'");
 
         // if( !empty($data['image_id']) ){
         //     $image = $this->query('media')->get($data['image_id']);
@@ -322,21 +345,31 @@ class customers_model extends Model
     public function bucketed($data) {
 
         $text = $data['fullname'];
-        // $subtext = 'ทะเบียน: '.$data['plate'];
-        // $category = $data['cus']['fullname'];
-        //pro
 
-        return array(
+        if( !empty($data['level']['name']) ){
+            $category = $data['level']['name'];
+        }
+
+        $fdata = array(
             'id'=> $data['id'],
             'created' => $data['created'],
             'text'=> isset($text)?$text:"",
             "category"=>isset($category)?$category:"",
             "subtext"=>isset($subtext)?$subtext:"",
             "type"=>"customers",
+
             // "image_url"=>isset($image_url)?$image_url:"",
             // 'status' => isset($status)?$status:"",
             // 'data' => $data,
         );
+
+
+        if( !empty($data['code']) ){
+            $fdata['text'] = "{$data['code']} {$fdata['text']}";
+        }
+
+
+        return $fdata;
     }
 
     public function setAddress($str) {

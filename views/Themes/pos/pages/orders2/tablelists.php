@@ -2,10 +2,14 @@
 
 $tr = "";
 $tr_total = "";
-if( !empty($this->results['lists']) ){ 
+
+
+
 
     $seq = 0;
-    foreach ($this->results['lists'] as $i => $item) { 
+    for ($i=0; $i < 20; $i++) { 
+        # code...
+    }
   
         $cls = $i%2 ? 'even' : "odd";
         // set Name

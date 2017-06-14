@@ -172,41 +172,28 @@ class Employees_Model extends Model{
             : array();
     }
 
-    public function bucketed($data , $options=array()) {
 
-        return array(
-            'id'=> $data['id'],
-            // 'created' => $data['created'],
-            'text'=> $data['fullname'],
-            "category"=>isset($category)?$category:"",
-            "subtext"=>!empty($data['phone_number']) ? $data['phone_number']:"",
-            "image_url"=>!empty($data['image_url']) ? $data['image_url']:"",
-            "type"=>"employees",
-            // 'status' => isset($status)?$status:"",
-            // 'data' => $data,
-        );
-    }
     public function convert($data , $options=array()){
 
 
         $data['role'] = 'emp';
         $data = $this->cut($this->_cutNamefield, $data);
+
+
+        // name
         foreach ($this->query('system')->_prefixName() as $key => $value) {
             if( $value['id']==$data['prefix_name'] ){
                 
-                $data['prefix_name_th'] = $value['name'];
+                $data['prefix_name_str'] = $value['name'];
                 break;
             }
         }
-
-        if( empty($data['prefix_name_th']) ){
-            $data['prefix_name_th'] = '';
+        if( empty($data['prefix_name_str']) ){
+            $data['prefix_name_str'] = '';
         }
-        
-
-        $data['fullname'] = "{$data['prefix_name_th']}{$data['first_name']} {$data['last_name']}";
-
+        $data['fullname'] = "{$data['prefix_name_str']}{$data['first_name']} {$data['last_name']}";
         $data['initials'] = $this->fn->q('text')->initials( $data['first_name'] );
+        
 
         if( !empty($data['image_id']) ){
             $image = $this->query('media')->get($data['image_id']);
@@ -252,6 +239,20 @@ class Employees_Model extends Model{
         return $view_stype=='bucketed'
             ? $this->bucketed( $data )
             : $data;
+    }
+    public function bucketed($data , $options=array()) {
+
+        return array(
+            'id'=> $data['id'],
+            // 'created' => $data['created'],
+            'text'=> $data['fullname'],
+            "category"=>isset($category)?$category:"",
+            "subtext"=>!empty($data['phone_number']) ? $data['phone_number']:"",
+            "image_url"=>!empty($data['image_url']) ? $data['image_url']:"",
+            "type"=>"employees",
+            // 'status' => isset($status)?$status:"",
+            // 'data' => $data,
+        );
     }
 
     /**/

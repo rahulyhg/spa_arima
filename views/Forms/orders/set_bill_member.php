@@ -19,7 +19,7 @@ foreach ($this->level as $key => $value) {
 			'<header class="ui-invite-listsbox-header clearfix">'.
 				'<div class="lfloat ui-invite-actions">'.
 					'<select class="inputtext" act="selector" name="level">'.
-						'<option value="">ทั้งหมด</option>'.
+						// '<option value="">ทั้งหมด</option>'.
 						$level.
 					'</select>'.
 				'</div>'.
