@@ -32,7 +32,11 @@ left: 0;right: 16px;background-color: rgba(245,248,250,.98);z-index: 100;"><div 
 					<td>
 						<button class="btn btn-blue">Check In</button>
 					</td>
-					<td style="width: 100%"></td>
+					<td style="width: 100%">
+					<?php if( !empty($masseuse) ) { ?>
+						<a href="<?=URL?>masseuse/cancelAll<?=(isset($_REQUEST['date']) ? '?date='.$_REQUEST['date'] : '')?>" data-plugins="dialog" class="btn btn-red rfloat">Cancel All</a>
+					<?php } ?>
+					</td>
 				</tr>
 			</table>
 		</form>
@@ -66,7 +70,7 @@ left: 0;right: 16px;background-color: rgba(245,248,250,.98);z-index: 100;"><div 
 			$avatar = '<div class="avatar"><img class="img" src="'.$value['image_url'].'"></div>';
 		}
 
-	?><li data-id="<?=$value['job_id']?>"><div class="inner"><a href="<?=URL?>masseuse/skill/<?=$value['id']?>" data-plugins="dialog">
+	?><li data-id="<?=$value['job_id']?>"><div class="inner"><a href="<?=URL?>masseuse/skill/<?=$value['id']?><?=(isset($_REQUEST['date']) ? '?date='.$_REQUEST['date'] : '')?>" data-plugins="dialog">
 		<div class="number"><?= $code ?></div>
 		<div class="box"><div class="box-inner">
 			

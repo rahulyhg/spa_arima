@@ -1,6 +1,16 @@
-<?php 
+<?php
 
-$arr['title'] = 'ความสามารถ';
+$arr['title'] = 'ความสามารถ <a data-plugins="dialog" href="'.URL.'masseuse/edit_time/'.$this->time['clock_id'].'" class="btn btn-blue rfloat"><i class="icon-clock-o"></i> แก้ไขเวลาเข้างาน</a>';
+
+$body = '<div>
+		 <div><span class="fwb">ลำดับคิว : </span>'.$this->job['job_sequence'].'</div>
+		 <div><span class="fwb">เวลาเข้างาน : </span>'.$this->fn->q('time')->live($this->time['clock_start_date']).'</div>';
+
+		 if( $this->time['clock_end_date'] != '0000-00-00 00:00:00' ){
+		 	$body .= '<div><span class="fwb">เวลาออกงาน : </span>'.$this->fn->q('time')->live($this->time['clock_end_date']).'</div>';
+		 }
+
+$body .= '</div>';
 
 $th = '';
 $tr = '';
@@ -21,7 +31,7 @@ foreach ($this->skill as $key => $value) {
 
 }
 
-$body = '<table width="100%" class="table-permit">'.
+$body .= '<table width="100%" class="table-permit pvm">'.
 
 			'<thead>'.'<tr>'.$th.'</tr>'.'</thead>'.
 
@@ -34,10 +44,14 @@ $arr['is_close_bg'] = 1;
 
 $arr['width'] = 650;
 
+$date = '';
+if( isset($_REQUEST['date']) ){
+	$date = '?date='.$_REQUEST['date'];
+}
 
 $arr['bottom_msg'] = '<a class="btn" role="dialog-close"><span class="btn-text">ปิด</span></a>';
 
-$arr['button'] = '<a class="btn btn-red" href="'.URL.'masseuse/cancel/'.$this->item['id'].'" data-plugins="dialog"><i class="icon-ban mrs"></i><span class="btn-text">ยกเลิกคิว</span></a>';
+$arr['button'] = '<a class="btn btn-red" href="'.URL.'masseuse/cancel/'.$this->item['id'].$date.'" data-plugins="dialog"><i class="icon-ban mrs"></i><span class="btn-text">ยกเลิกคิว</span></a>';
 
 echo json_encode($arr);
 ?>

@@ -123,7 +123,9 @@ $tr_total = "";
         $skill .= '<td'.$colspan.' class="'.$val['key'].'">'.$txt.'</td>';
     }
 
-    $tr_total = '<tfoot><tr class="total">'.
+    $tr_total = '<tbody ref="insert"></tbody>';
+
+    $tr_total .= '<tfoot><tr class="total">'.
 
         '<td class="check-box nobody"></td>'.
         '<td class="ID nobody"></td>'.

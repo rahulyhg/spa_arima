@@ -1,6 +1,6 @@
 <div id="mainContainer" class="clearfix listpage2-order2" data-plugins="main">
 
-	<div role="content">
+	<div role="content" data-plugins="tableOrder">
 		<div role="main">
 
 <?php require_once 'init.php'; ?>

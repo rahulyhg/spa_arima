@@ -8,6 +8,36 @@ $form = $form->create()
 	->elem('div')
 	->addClass('form-insert form-package');
 
+$form   ->field("image")
+        ->text('<div class="profile-cover image-cover" data-plugins="imageCover" data-options="'.(
+        !empty($this->item['image_arr']) 
+            ? $this->fn->stringify( array_merge( 
+                array( 
+                    'scaledX'=> 1180,
+                    'scaledY'=> 640,
+                    'action_url' => URL.'package/del_image_cover/'.$this->item['id'],
+                    // 'top_url' => IMAGES_PRODUCTS
+                ), $this->item['image_arr'] ) )
+            : $this->fn->stringify( array( 
+                    'scaledX'=> 1180,
+                    'scaledY'=> 640
+                ) )
+            ).'"style="width: 329px;height: 201px; margin-left:43px;margin-top:0px">
+        <div class="loader">
+        <div class="progress-bar medium"><span class="bar blue" style="width:0"></span></div>
+        </div>
+        <div class="preview"></div>
+        <div class="dropzone">
+            <div class="dropzone-text">
+                <div class="dropzone-icon"><i class="icon-picture-o img"></i></div>
+                <div class="dropzone-title">เพิ่มรูป</div>
+            </div>
+            <div class="media-upload"><input type="file" accept="image/*" name="pack_image"></div>
+        </div>
+        
+</div>');
+
+
 $form   ->field("pack_code")
         ->label($this->lang->translate('Code'))
         ->addClass('inputtext')

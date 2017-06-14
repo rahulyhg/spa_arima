@@ -496,6 +496,10 @@ class Masseuse_Model extends Model{
     public function updateJob($id, $data) {
         $this->db->update("emp_job_queue", $data, "`job_id`={$id}");
     }
+
+    public function deleteJob($id){
+        $this->db->delete("emp_job_queue", "`job_id`={$id}");
+    }
     
     public function lastSequence($options=array())
     {
@@ -549,5 +553,108 @@ class Masseuse_Model extends Model{
 
         return $fdata;
         
+    }
+
+    public function countJob( $id, $options=array() ){
+
+        $options = array_merge(array(
+
+            'date'=> isset($_REQUEST['date'])? date('Y-m-d',strtotime($_REQUEST['date'])):date('Y-m-d'),
+
+        ), $options);
+
+
+        $where_str = "`job_emp_id`=:id";
+        $where_arr = array(":id" => $id);
+
+        if( !empty($options['date']) ){
+
+            $where_str .= !empty($where_str) ? " AND ": '';
+            $where_str .= "`job_date`=:d";
+            $where_arr[':d'] = $options['date'];
+        }
+
+        if( !empty($options['status']) ){
+
+            $where_str .= !empty($where_str) ? " AND ": '';
+            $where_str .= "`job_status`=:status";
+            $where_arr[':status'] = $options['status'];
+        }
+
+        return $this->db->count("`emp_job_queue`", $where_str, $where_arr);
+    }
+
+    public function setTime( $data ){
+
+        $data['end_date'] = !empty($data['end_date']) ? $data['end_date'] : '0000-00-00 00:00:00';
+
+        $cutNamefield = 'clock_';
+        $input = array();
+
+        foreach ($data as $key => $value) {
+
+            if( $key == 'id' ) continue;
+            $input[$cutNamefield.$key] = $value;
+        }
+
+        if( !empty($data['id']) ){
+            $this->db->update( 'emp_clocking', $input, "`clock_id`={$data['id']}");
+        }
+        else{
+            $this->db->insert( 'emp_clocking', $input );
+        }
+    }
+
+    public function get_time( $id ){
+
+        $sth = $this->db->prepare("SELECT 
+              j.clock_id
+            , j.clock_start_date
+            , j.clock_end_date
+            , j.clock_date
+            , {$this->_field} FROM emp_clocking j INNER JOIN ($this->_table) ON j.clock_emp_id=e.emp_id WHERE j.clock_id=:id LIMIT 1");
+        $sth->execute( array(':id'=>$id) );
+
+        return $sth->rowCount()==1
+            ? $this->convert( $sth->fetch( PDO::FETCH_ASSOC ) )
+            : array();
+    }
+
+    public function getTime( $id, $options=array() ){
+
+        $options = array_merge(array(
+
+            'date'=> isset($_REQUEST['date'])? date('Y-m-d',strtotime($_REQUEST['date'])):date('Y-m-d'),
+
+        ), $options);
+
+
+        $where_str = "e.emp_id=:id";
+        $where_arr = array(":id" => $id);
+
+        if( !empty($options['date']) ){
+
+            $where_str .= !empty($where_str) ? " AND ": '';
+            $where_str .= "`clock_date`=:d";
+            $where_arr[':d'] = $options['date'];
+        }
+
+        $where_str = !empty($where_str) ? "WHERE {$where_str}":'';
+
+        $sth = $this->db->prepare("SELECT 
+              j.clock_id
+            , j.clock_start_date
+            , j.clock_end_date
+            , j.clock_date
+            , {$this->_field} FROM emp_clocking j INNER JOIN ($this->_table) ON j.clock_emp_id=e.emp_id {$where_str} LIMIT 1");
+        $sth->execute( $where_arr );
+
+        return $sth->rowCount()==1
+            ? $this->convert( $sth->fetch( PDO::FETCH_ASSOC ) )
+            : array();
+    }
+
+    public function deleteTime( $id ){
+        $this->db->delete("`emp_clocking`", "`clock_id`={$id}");
     }
 }

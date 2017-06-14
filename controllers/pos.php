@@ -53,6 +53,7 @@ class Pos extends Controller{
         $this->view->js('jquery/jquery.sortable');
 
         $date = isset($_REQUEST['date']) ? $_REQUEST['date']: date('Y-m-d'); 
+        $start_date = isset($_REQUEST['date']) ? date("{$_REQUEST['date']} H:i:s") : date("Y-m-d H:i:s");
 
         if( !empty($_POST) ){
 
@@ -66,6 +67,13 @@ class Pos extends Controller{
                     $arr['message'] = 'ไม่สามารถ CheckIn ซ้ำได้';
                 } else{
                     $this->model->query('masseuse')->setJob( $item['id'], array( 'date'=>$date ) );
+
+                    $set = array(
+                        'date'=>$date,
+                        'start_date'=>$start_date,
+                        'emp_id'=>$item['id'],
+                    );
+                    $this->model->query('masseuse')->setTime( $set );
                 }
             }
             else{
@@ -132,5 +140,4 @@ class Pos extends Controller{
 
         $this->view->render( $render );
     }    
-
 }

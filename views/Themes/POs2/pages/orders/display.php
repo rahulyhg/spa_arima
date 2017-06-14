@@ -17,8 +17,7 @@
 			<div class="ui-effect-top" data-global="detail">
 				<?php require "sections/detail.php"; ?>
 			</div>
-		
-			
+	
 		</div>
 	</div>
 
