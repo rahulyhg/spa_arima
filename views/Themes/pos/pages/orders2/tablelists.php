@@ -3,13 +3,11 @@
 $tr = "";
 $tr_total = "";
 
-
-
+if( !empty($this->results['lists']) ) {
 
     $seq = 0;
-    for ($i=0; $i < 20; $i++) { 
-        # code...
-    }
+    foreach ($this->results['lists'] as $i => $item) {
+        #
   
         $cls = $i%2 ? 'even' : "odd";
         // set Name
@@ -52,7 +50,8 @@ $tr_total = "";
                 else{
                     $txt = 0;
                     foreach ($item['items'] as $pack) {
-                        if( $pack['pack']['id'] == $val['id']) {
+
+                        if( in_array($pack['pack']['id'], $val['ids']) ) {
                             $txt += $pack['balance'];
                         }
                     }

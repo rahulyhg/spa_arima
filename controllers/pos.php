@@ -14,6 +14,8 @@ class Pos extends Controller{
 
         // print_r($this->model->query('orders')->lists(array('has_item'=>1))); die;
 
+        // print_r($this->model->query('orders')->lists(array('has_item'=>1))); die;
+
         if( $this->format=='json' ) {
             $this->view->setData('results', $this->model->query('orders')->lists(array('has_item'=>1)) );
             $this->view->render("orders2/json");

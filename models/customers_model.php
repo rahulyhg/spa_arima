@@ -12,6 +12,7 @@ class customers_model extends Model
         customers 
             LEFT JOIN city ON customers.cus_city_id=city.city_id
             LEFT JOIN customers_level l ON customers.cus_level_id=l.level_id
+            LEFT JOIN employees emp ON customers.cus_emp_id=emp.emp_id
     ";
     private $_field = "
           cus_level_id
@@ -40,6 +41,11 @@ class customers_model extends Model
         , level_id
         , level_name
         , level_discount
+
+        , emp_id
+        , emp_prefix_name
+        , emp_first_name
+        , emp_last_name
 
     ";
     private $_cutNamefield = "cus_";

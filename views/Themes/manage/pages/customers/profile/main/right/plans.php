@@ -13,14 +13,14 @@ $options = array(
 	)
 );
 
-if( !empty($this->permit['customers']['edit']) || $this->me['id'] == $this->item['emp_id'] ){
+if( $this->has_edit ){
 	$options['add_url'] = URL."events/add?obj_type=customers&obj_id={$this->item['id']}";
 	$options['edit_url'] = URL."events/edit&invite=0";
 	$options['remove_url'] = URL."events/del";
 }
 
 ?><div id="posts" data-plugins="listplan" data-options="<?=$this->fn->stringify($options);?>">
-<?php if( !empty($this->permit['customers']['edit']) || $this->me['id'] == $this->item['emp_id'] ){ ?>
+<?php if( $this->has_edit ){ ?>
 	<button class="right-section-btnTopLink btn btn-small btn-green js-add" type="button" role="add">
 		<i class="icon-plus"></i><span class="btn-text mls">เพิ่มใหม่</span>
 		<div class="loader-spin-wrap"><div class="loader-spin"></div></div>
@@ -43,7 +43,7 @@ if( !empty($this->permit['customers']['edit']) || $this->me['id'] == $this->item
 
 			<div class="ui-alert-empty">
 				<div class="ui-alert-empty-text">ไม่มีนัดหมาย 
-				<?php if( !empty($this->permit['customers']['edit']) || $this->me['id'] == $this->item['emp_id'] ){ ?>
+				<?php if( $this->has_edit ){ ?>
 				<a class="js-add">เพิ่มนัดหมาย</a>
 				<?php } ?>
 				</div> 

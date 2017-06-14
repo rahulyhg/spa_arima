@@ -11,7 +11,7 @@ $a[] = array('label'=>'สถานะ', 'key' => 'status');
 <section class="mbl">
 	<header class="clearfix">
 		<h2 class="title"><i class="icon-info-circle mrs"></i>ข้อมูลสมาชิก</h2>
-		<?php if( !empty($this->permit['customers']['edit']) || $this->me['id'] == $this->item['emp_id'] ){ ?>
+		<?php if( $this->has_edit ){ ?>
 		<a data-plugins="dialog" href="<?=URL?>customers/edit_cus_level/<?=$this->item['id']?>" class="btn-icon btn-edit"><i class="icon-pencil"></i></a>
 		<?php } ?>
 	</header>
