@@ -70,6 +70,187 @@ class Masseuse extends Controller {
         }
 	}
 
+    public function add(){
+
+        $this->view->setData('dealer', $this->model->query('dealer')->lists());
+        $this->view->setData('dep_id', 5);
+        $this->view->setData('position', $this->model->query('employees')->position(5));
+        $this->view->setData('prefixName', $this->model->query('system')->_prefixName());
+        $this->view->setData('city', $this->model->query('system')->city());
+        $this->view->setPage('path', 'Forms/masseuse');
+        $this->view->render('add');
+    }
+
+    public function save(){
+        if( empty($_POST) ) $this->error();
+
+        $id = isset($_POST['id']) ? $_POST['id']: null;
+        if( !empty($id) ){
+            $item = $this->model->get($id);
+            if( empty($item) ) $this->error();
+        }
+
+        try {
+            $form = new Form();
+            $form   ->post('emp_dealer_id')->val('is_empty')
+                    ->post('emp_code')
+                    ->post('emp_pos_id')->val('is_empty')
+                    ->post('emp_prefix_name')
+                    ->post('emp_first_name')->val('is_empty')
+                    ->post('emp_last_name')
+                    ->post('emp_nickname')
+                    ->post('emp_phone_number')
+                    ->post('emp_email')
+                    ->post('emp_line_id')
+                    ->post('emp_notes');
+
+            $form->submit();
+            $postData = $form->fetch();
+
+            $has_name = true;
+            $has_code = true;
+            if( !empty($id) ){
+                if( $postData['emp_first_name'] == $item['first_name'] && $postData['emp_last_name'] == $item['last_name'] ){
+                    $has_name = false;
+                }
+
+                if( $postData['emp_code'] == $item['code'] ){
+                    $has_code = false;
+                }
+            }
+
+            if( $this->model->is_name( $postData['emp_first_name'] , $postData['emp_last_name'] ) && $has_name == true ){
+                $arr['error']['emp_name'] = "มีชื่อ-นามสกุลนี้ ในระบบแล้ว";
+            }
+
+            if( !empty($postData['emp_code']) ){
+                if( $this->model->is_code( $postData['emp_code'] ) && $has_name == true ){
+                    $arr['error']['emp_code'] = "มีหมายเลขนี้อยู่ในระบบแล้ว";
+                }
+            }
+
+            /**/
+            /* SET Address */
+            /**/
+            // foreach ($_POST['address'] as $key => $value) {
+
+            //     if( empty($value) && $key != 'village' && $key !='street' && $key != 'alley'){
+            //         $arr['error']['emp_address'] = 'กรอกข้อมูลที่อยู่ให้ครบถ้วน';
+            //     }
+
+            //     if( $key == 'zip' ){
+            //         if( strlen($value) != '5' ){
+            //             $arr['error']['emp_address'] = 'กรอกข้อมูลที่อยู่ให้ครบถ้วน';
+            //         }
+            //     }
+            // }
+
+            $futureDate = date('Y-m-d',strtotime(date("Y-m-d", mktime()) . " -6 year"));
+            $birthday = date("{$_POST['birthday']['year']}-{$_POST['birthday']['month']}-{$_POST['birthday']['date']}");
+            if( strtotime($birthday) > strtotime($futureDate) ){
+                $arr['error']['birthday'] = 'วันเกิดไม่ถูกต้อง';
+            }
+
+            $postData['emp_first_name'] = trim($postData['emp_first_name']);
+            $postData['emp_last_name'] = trim($postData['emp_last_name']);
+            $postData['emp_address'] = json_encode($_POST['address']);
+            $postData['emp_city_id'] = $_POST['address']['city'];
+            $postData['emp_zip'] = $_POST['address']['zip'];
+            $postData['emp_birthday'] = $birthday;
+
+            if( empty($arr['error']) ){
+
+                if( !empty($item) ){
+                    $this->model->query('employees')->update( $id, $postData );
+                }
+                else{
+                    $this->model->query('employees')->insert( $postData );
+                    $id = $postData['id'];
+                }
+
+                if( !empty($_FILES['file1']) ){
+
+                    $userfile = $_FILES['file1'];
+
+                    if( !empty($item['image_id']) ){
+                        $this->model->query('media')->del($item['image_id']);
+                        $this->model->query('employees')->update( $id, array('emp_image_id'=>0 ) );
+                    }
+
+                    $album = array('album_id'=>1);
+                    
+                    if( empty($structure) ){
+                        $structure = WWW_UPLOADS . $album['album_id'];
+                        if( !is_dir( $structure ) ){
+                            mkdir($structure, 0777, true);
+                        }
+                    }
+
+                    /**/
+                    /* get Data Album */
+                    /**/
+                    $options = array(
+                        'album_obj_type' => isset( $_REQUEST['obj_type'] ) ? $_REQUEST['obj_type']: 'public',
+                        'album_obj_id' => isset( $_REQUEST['obj_id'] ) ? $_REQUEST['obj_id']: 1,
+                        );
+
+                    if( isset( $_REQUEST['album_name'] ) ){
+                        $options['album_name'] = $_REQUEST['album_name'];
+                    }
+                    $album = $this->model->query('media')->searchAlbum( $options );
+
+                    if( empty($album) ){
+                        $this->model->query('media')->setAlbum( $options );
+                        $album = $options;
+                    }
+
+                    // set Media Data
+                    $media = array(
+                        'media_album_id' => $album['album_id'],
+                        'media_type' => isset($_REQUEST['media_type']) ? $_REQUEST['media_type']: strtolower(substr(strrchr($userfile['name'],"."),1))
+                        );
+
+                    $options = array(
+                        'folder' => $album['album_id'],
+                        'has_quad' => true,
+                        );
+
+                    if( !isset($media['media_emp_id']) ){
+                        $media['media_emp_id'] = $this->me['id'];
+                    }
+
+                    $this->model->query('media')->set( $userfile, $media, $options );
+
+                    if( empty($media['error']) ){
+                        $media = $this->model->query('media')->convert($media);
+                    }
+                    $item['image_id'] = $media['id'];
+                    $this->model->query('employees')->update( $id, array('emp_image_id'=>$item['image_id'] ) );
+                    
+                }
+
+                // resize 
+                if( !empty($_POST['cropimage']) && !empty($item['image_id']) ){
+                    $this->model->query('media')->resize($item['image_id'], $_POST['cropimage']);
+                }
+
+                $arr['message'] = 'บันทึกเรียบร้อย';
+                $arr['url'] = 'refresh';
+            }
+
+        } catch (Exception $e) {
+            $arr['error'] = $this->_getError($e->getMessage());
+
+            if( !empty($arr['error']['emp_first_name']) ){
+                $arr['error']['name'] = $arr['error']['emp_first_name'];
+            } else if( !empty($arr['error']['emp_last_name']) ){
+                $arr['error']['name'] = $arr['error']['emp_last_name'];
+            }
+        }
+
+        echo json_encode($arr);
+    }
+
     public function get($id=null) {
 
         $options = array('view_stype'=>'bucketed');

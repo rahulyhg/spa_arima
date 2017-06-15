@@ -657,4 +657,15 @@ class Masseuse_Model extends Model{
     public function deleteTime( $id ){
         $this->db->delete("`emp_clocking`", "`clock_id`={$id}");
     }
+
+    /**/
+    /* Check */
+    /**/
+    public function is_name( $first_name=null , $last_name=null ){
+        return $this->db->count( 'employees', "emp_first_name=':first_name' AND emp_last_name=':last_name'", array(':first_name'=>$first_name , ':last_name'=>$last_name) );
+    }
+
+    public function is_code( $code=null ){
+        return $this->db->count( 'employees', "emp_code=:code", array(':code'=>$code) );
+    }
 }

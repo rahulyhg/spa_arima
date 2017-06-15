@@ -414,7 +414,7 @@ class customers_model extends Model
         , level_discount as discount
     ";
     public function level() {
-        return $this->db->select("SELECT {$this->select_level} FROM customers_level");
+        return $this->db->select("SELECT {$this->select_level} FROM customers_level ORDER BY level_sequence ASC");
     }
     public function get_level($id){
         $sth = $this->db->prepare("
