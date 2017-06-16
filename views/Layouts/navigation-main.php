@@ -62,4 +62,9 @@ echo $this->fn->manage_nav($cog, $this->getPage('on'));
 
 
 $pos[] = array('key'=>'pos','text'=>$this->lang->translate('menu','Pos'),'link'=>$url.'pos','icon'=>'television');
-echo $this->fn->manage_nav($pos, $this->getPage('on'));
+foreach ($pos as $key => $value) {
+	if( empty($this->permit[$value['key']]['view']) ) unset($pos[$key]);
+}
+if( !empty($pos) ){
+	echo $this->fn->manage_nav($pos, $this->getPage('on'));
+}

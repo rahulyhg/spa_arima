@@ -174,7 +174,7 @@ class customers_model extends Model
             'pager' => isset($_REQUEST['pager'])? $_REQUEST['pager']:1,
             'limit' => isset($_REQUEST['limit'])? $_REQUEST['limit']:50,
 
-            'sort' => isset($_REQUEST['sort'])? $_REQUEST['sort']: 'created',
+            'sort' => isset($_REQUEST['sort'])? $_REQUEST['sort']: 'updated',
             'dir' => isset($_REQUEST['dir'])? $_REQUEST['dir']: 'DESC',
 
             'time'=> isset($_REQUEST['time'])? $_REQUEST['time']:time(),

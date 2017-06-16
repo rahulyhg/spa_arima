@@ -410,6 +410,7 @@ class Masseuse extends Controller {
         else{
 
             $this->view->setData('city', $this->model->query('system')->city());
+            $this->view->setData('position', $this->model->query('employees')->position(5));
             $this->view->setData('prefixName', $this->model->query('system')->_prefixName());
             $this->view->setData('item', $item);
             $this->view->render('masseuse/forms/edit_'.$section);

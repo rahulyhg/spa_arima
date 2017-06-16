@@ -60,6 +60,22 @@ $form   ->field("code")
 $form   ->field("name")
         ->label('ชื่อ')
         ->text( $this->fn->q('form')->fullname( !empty($this->item)?$this->item:array(), array('field_first_name'=>'emp_', 'prefix_name'=>$this->prefixName) ) );
+
+$position = '<option value="">-</option>';
+foreach ($this->position as $key => $value) {
+    $selected = '';
+    if( !empty($this->item['pos_id']) ){
+        if( $this->item['pos_id']==$value['id'] ){
+            $selected = ' selected="1"';
+        }
+    }
+
+    $position .= '<option'.$selected.' value="'.$value['id'].'">'.$value['name'].'</option>';
+}
+$position = '<select class="inputtext" name="emp_pos_id">'.$position.'</select>';
+$form   ->field("emp_pos_id")
+        ->label($this->lang->translate('Position'))
+        ->text( $position );
         
 $birthday = array();
 if( !empty($this->item['birthday']) ){

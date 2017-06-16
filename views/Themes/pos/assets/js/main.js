@@ -353,6 +353,11 @@ if ( typeof Object.create !== 'function' ) {
 		    		data.id = self.currOrder.member.id;
 		    	}
 
+		    	if( type=='vip' ){
+		    		data.room_price = self.currOrder.summary.room_price;
+		    		data.room_number = self.currOrder.summary.room_number;
+		    	}
+
 		    	var is_submit = false;
 		    	Dialog.load( Event.URL + 'orders/set_bill', data, {
 		    		onClose: function () {
@@ -371,6 +376,7 @@ if ( typeof Object.create !== 'function' ) {
 
 		    			if(  type=='vip' ){
 		    				self.currOrder.summary.room_price = parseInt( $.trim($el.$pop.find('#room_price').val()) );
+		    				self.currOrder.summary.room_number = parseInt( $.trim($el.$pop.find('#room_number').val()) );
 			    			self.summaryPrice();
 			    			self.summaryDisplay();
 
