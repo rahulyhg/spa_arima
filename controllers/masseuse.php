@@ -95,6 +95,7 @@ class Masseuse extends Controller {
             $form   ->post('emp_dealer_id')->val('is_empty')
                     ->post('emp_code')
                     ->post('emp_pos_id')->val('is_empty')
+                    ->post('emp_dep_id')
                     ->post('emp_prefix_name')
                     ->post('emp_first_name')->val('is_empty')
                     ->post('emp_last_name')
