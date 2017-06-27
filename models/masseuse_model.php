@@ -116,6 +116,14 @@ class Masseuse_Model extends Model{
             }
         }
 
+        if( !empty($options['clock_date']) ){
+            $this->_table .= " LEFT JOIN emp_clocking ec ON e.emp_id=ec.clock_emp_id";
+
+            $where_str .= !empty( $where_str ) ? " AND ":'';
+            $where_str .= "ec.clock_date=:date";
+            $where_arr[':date'] = $options['clock_date'];
+        }
+
         $arr['total'] = $this->db->count($this->_table, $where_str, $where_arr);
 
         $where_str = !empty($where_str) ? "WHERE {$where_str}":'';

@@ -513,6 +513,8 @@ class Masseuse extends Controller {
 
         $this->view->setData('date', $date );
         $this->view->setData('lists', $this->model->query('masseuse')->listJob( array('date'=>$date, 'unlimit'=>1, 'status'=>'on' ) ) );
+        $this->view->setData('run', $this->model->query('masseuse')->listJob( array('date'=>$date, 'unlimit'=>1, 'status'=>'run' ) ) );
+        $this->view->setData('clock', $this->model->query('masseuse')->lists( array('clock_date'=>$date, 'unlimit'=>1) ) );
         $this->view->render('masseuse/display');   
     }
 
