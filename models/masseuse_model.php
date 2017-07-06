@@ -13,7 +13,7 @@ class Masseuse_Model extends Model{
         LEFT JOIN emp_position p ON e.emp_pos_id=p.pos_id
         LEFT JOIN city c ON e.emp_city_id=c.city_id";
 
-    private $_field = "   emp_id
+    private $_field = "   e.emp_id
                         , emp_code
                         , emp_prefix_name
                         , emp_first_name
@@ -124,11 +124,20 @@ class Masseuse_Model extends Model{
             $where_arr[':date'] = $options['clock_date'];
         }
 
+        if( !empty($options['skill']) ){
+            $this->_table .= " LEFT JOIN emp_skill_permit esp ON e.emp_id=esp.emp_id";
+
+            $where_str .= !empty( $where_str ) ? " AND ":'';
+            $where_str .= "esp.skill_id=:skill";
+            $where_arr[':skill'] = $options['skill'];
+        }
+
         $arr['total'] = $this->db->count($this->_table, $where_str, $where_arr);
 
         $where_str = !empty($where_str) ? "WHERE {$where_str}":'';
         $orderby = $this->orderby( $this->_cutNamefield.$options['sort'], $options['dir'] );
         $limit = $this->limited( $options['limit'], $options['pager'] );
+        if( !empty($options['unlimit']) ) $limit = "";
 
         $arr['lists'] = $this->buildFrag( $this->db->select("SELECT {$this->_field} FROM {$this->_table} {$where_str} {$orderby} {$limit}", $where_arr ), $options  );
 
@@ -160,7 +169,6 @@ class Masseuse_Model extends Model{
     public function convert($data , $options=array()){
         $data['role'] = 'emp';
         $data = $this->cut($this->_cutNamefield, $data);
-
 
         // name
         foreach ($this->query('system')->_prefixName() as $key => $value) {

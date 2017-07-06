@@ -284,7 +284,7 @@ class Orders_Model extends Model {
 	}
 
 	/* GET ORDER MASSEUSE */
-	public function get_masseuse_item( $id ){
+	public function get_masseuse_item( $id, $options=array(); ){
 
 		$select_item = "item_id as id
 						, item_pack_id as pack_id
@@ -314,6 +314,15 @@ class Orders_Model extends Model {
 				 LEFT JOIN package p on i.item_pack_id=p.pack_id
 				 LEFT JOIN rooms r on i.item_room_id=r.room_id
 				 LEFT JOIN rooms_bed b on i.item_bed_id=b.bed_id";
+
+		$where_str = "item_masseuse=:id";
+		$where_arr[":id"] = $id;
+
+		if( !empty($options["period_start"]) && !empty($options['period_end']) ){
+			$where_str .= " AND (item_start_date BETWEEN :s AND :e)";
+			$where_arr[":s"] = $options["period_start"];
+			$where_arr[":e"] = $options["period_end"];
+		}
 
 		return $this->db->select("SELECT {$select_item} FROM {$form_item} WHERE item_masseuse=:id", array(':id'=>$id));
 	}

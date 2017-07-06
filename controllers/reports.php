@@ -7,13 +7,15 @@ class reports extends Controller {
     }
 
     public function index(){
-        // $this->error();
-    	$this->view->render('reports/display');
+        header("location:".URL.'/reports/lists/masseuse');
     }
 
-    public function get() {
-    	$type = $_GET['type'];
-    	echo json_encode( $this->model->{$type}($_GET['start'], $_GET['end']) );
-    }
+    public function lists($section='masseuse', $id=null){
 
+        if( $section != "masseuse" && !empty($id) ) $this->error();
+
+        $this->view->setPage('title', 'รายงาน');
+        $this->view->setData( 'section', $section );
+        $this->view->render("reports/display");
+    }
 }
