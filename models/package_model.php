@@ -123,7 +123,7 @@ class Package_Model extends Model {
 		$data = $this->cut($this->_cutNamefield, $data);
 
 		$data['name'] = $this->lang->translate('package', $data['name']);
-		if( !empty($options['dashboard']) ){
+		if( !empty($options['dashboard']) OR !empty($options['reports']) ){
 
 			/* SUM PACKAGE */
 			$where_total = '`item_pack_id`=:pack_id';
@@ -131,14 +131,16 @@ class Package_Model extends Model {
 				':pack_id'=>$data['id'],
 			);
 
-			if( (!empty($options['period_start']) && !empty($options['period_end'])) || (!empty($_REQUEST['period_start']) && !empty($_REQUEST['period_end'])) ){
+			if( !empty($_REQUEST['period_start']) && !empty($_REQUEST['period_end']) ){
+				$options["period_start"] = $_REQUEST["period_start"];
+				$options["period_end"] = $_REQUEST["period_end"];
+			}
 
-				$period_start = !empty($options['period_start']) ? $options['period_start'] : $_REQUEST['period_start'];
-				$period_end = !empty($options['period_end']) ? $options['period_end'] : $_REQUEST['period_end'];
+			if( (!empty($options['period_start']) && !empty($options['period_end'])) ){
 
-				$where_total .= ' AND (`item_created` BETWEEN :startDate AND :endDate)';
-				$where_total_arr[':startDate'] = $period_start;
-				$where_total_arr[':endDate'] = $period_end;
+				$where_total .= ' AND (`item_start_date` BETWEEN :startDate AND :endDate)';
+				$where_total_arr[':startDate'] = $options['period_start'];
+				$where_total_arr[':endDate'] = $options['period_end'];
 			}
 
 			$select = "SUM(item_qty) AS total_qty, 
@@ -158,6 +160,22 @@ class Package_Model extends Model {
 			$form = 'orders o LEFT JOIN orders_items oi ON o.order_id = oi.item_order_id';
 			$data['total_customer'] = $this->db->count($form, 'oi.item_pack_id=:pack_id GROUP BY order_cus_id', array(':pack_id'=>$data['id']));
 			/**/
+
+			/* SUM QTY BY SKILL RATE PRICE */
+			$select_skill = "skill_price, ps.skill_id";
+			$form_skill = "package_skill ps LEFT JOIN emp_skill s ON ps.skill_id=s.skill_id";
+			$where_skill = "ps.pack_id=".$data['id'];
+			$skill = $this->db->select("SELECT {$select_skill} FROM {$form_skill} WHERE {$where_skill}");
+
+			$skill[0]['skill_price'] = !empty($skill[0]['skill_price']) ? $skill[0]['skill_price'] : 0;
+
+			$data['total_wage'] = $data['total_qty'] * $skill[0]['skill_price'];
+			/**/
+
+			/*SUMMARY PARTTIME*/
+			$data["parttime"] = $this->summaryParttime( $data['id'], $options );
+			$data['parttime']['total_wage'] = $data['parttime']['total_qty'] * $skill[0]['skill_price'];
+			/**/
 		}
 
 		$data['skill'] = $this->listSkill( $data['id'] );
@@ -172,7 +190,6 @@ class Package_Model extends Model {
         }
 
 		$data['permit']['del'] = true;
-
 
 		// 
 		$view_stype = !empty($options['view_stype']) ? $options['view_stype']:'convert';
@@ -235,7 +252,7 @@ class Package_Model extends Model {
 	/**/
 	public function listSkill( $id ){
 
-        $data = $this->db->select("SELECT s.skill_id AS id , s.skill_name AS name 
+        $data = $this->db->select("SELECT s.skill_id AS id , s.skill_name AS name , s.skill_price AS price
             FROM emp_skill s
                 LEFT JOIN package_skill p ON s.skill_id = p.skill_id
             WHERE p.pack_id = :id
@@ -271,5 +288,59 @@ class Package_Model extends Model {
 		$a[] = array('id'=>'cancel','name'=>'Cancel');
 
 		return $a;
+    }
+
+    // public function summaryOrder($id, $options=array()){
+
+    // 	$table = "orders_items";
+    // 	$field="SUM(item_total) as sum_total,
+    // 			SUM(item_discount) AS sum_discount,
+    // 			SUM(item_balance) AS sum_balance";
+    // 	$where_str = "item_pack_id=:id";
+    // 	$where_arr[":id"] = $id;
+
+    // 	if( !empty($options["period_start"]) && !empty($options["period_end"]) ){
+
+    // 		$where_str = !empty($where_str) ? " AND " : '';
+    // 		$where_str = "(item_start_date BETWEEN :s AND :e)";
+    // 		$where_arr[":s"] = $options["period_start"];
+    // 		$where_arr[":e"] = $options["period_end"];
+    // 	}
+
+    // 	return $this->db->select("SELECT {$field} FROM {$table} WHERE {$where_str}", $where_arr);
+    // }
+
+    public function summaryParttime($id, $options=array()){
+
+    	$where_total = '`item_pack_id`=:pack_id';
+    	$where_total_arr = array(
+    		':pack_id'=>$id,
+    	);
+
+    	if(!empty($options['period_start']) && !empty($options['period_end']) ){
+    		$where_total .= ' AND (`item_start_date` BETWEEN :startDate AND :endDate)';
+    		$where_total_arr[':startDate'] = $options['period_start'];
+    		$where_total_arr[':endDate'] = $options['period_end'];
+    	}
+
+    	$select = "SUM(item_qty) AS total_qty, 
+    	SUM(item_discount) AS total_discount,
+    	SUM(item_total) AS total,
+    	SUM(item_balance) AS total_balance";
+
+    	$where_total .= " AND (emp_pos_id=:p1 OR emp_pos_id=:p2)";
+    	$where_total_arr[":p1"] = 4;
+    	$where_total_arr[":p2"] = 6;
+
+    	$table = "orders_items oi LEFT JOIN (orders_items_masseuse oim LEFT JOIN employees emp ON oim.masseuse_id=emp.emp_id) ON oi.item_id=oim.item_id";
+
+    	$results = $this->db->select("SELECT {$select} FROM {$table} WHERE {$where_total}", $where_total_arr);
+
+    	$data['total_qty'] = !empty($results[0]['total_qty']) ? $results[0]['total_qty'] : 0;
+    	$data['total_discount'] = !empty($results[0]['total_discount']) ? $results[0]['total_discount'] : 0;
+    	$data['total'] = !empty($results[0]['total']) ? $results[0]['total'] : 0;
+    	$data['total_balance'] = !empty($results[0]['total_balance']) ? $results[0]['total_balance'] : 0;
+
+    	return $data;
     }
 }

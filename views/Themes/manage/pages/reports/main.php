@@ -16,11 +16,11 @@
         </div>
         <div class="content">
             <?php 
-                if( $this->section == $value['section'] && empty($this->id) ){
-                    require "sections/{$value['section']}.php";
+                if( $this->section == 'masseuse' && !empty($this->id) ){
+                    require "sections/position.php";
                 }
-                elseif( $this->section == 'masseuse' ){
-                	require "sections/lists.php";
+                else{
+                	require "sections/{$value['section']}.php";
                 }
             ?>
         </div>

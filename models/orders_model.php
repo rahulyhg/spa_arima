@@ -284,7 +284,7 @@ class Orders_Model extends Model {
 	}
 
 	/* GET ORDER MASSEUSE */
-	public function get_masseuse_item( $id, $options=array(); ){
+	public function get_masseuse_item( $id, $options=array() ){
 
 		$select_item = "item_id as id
 						, item_pack_id as pack_id
@@ -319,9 +319,16 @@ class Orders_Model extends Model {
 		$where_arr[":id"] = $id;
 
 		if( !empty($options["period_start"]) && !empty($options['period_end']) ){
-			$where_str .= " AND (item_start_date BETWEEN :s AND :e)";
+			$where_str .= !empty($where_str) ? " AND ": '';
+			$where_str .= "(item_start_date BETWEEN :s AND :e)";
 			$where_arr[":s"] = $options["period_start"];
 			$where_arr[":e"] = $options["period_end"];
+		}
+
+		if( !empty($options['package']) ){
+			$where_str .= !empty($where_str) ? " AND ": '';
+			$where_str .= "item_pack_id=:package";
+			$where_arr[":package"] = $options['package'];
 		}
 
 		return $this->db->select("SELECT {$select_item} FROM {$form_item} WHERE item_masseuse=:id", array(':id'=>$id));
@@ -384,6 +391,30 @@ class Orders_Model extends Model {
 		}
 
 		return $this->db->select("SELECT {$select_item} FROM {$form_item} WHERE {$where_str}", $where_arr);
+	}
+
+	public function get_times_masseuse($id,$options=array()){
+
+		$where_str = "oim.masseuse_id=:id";
+		$where_arr[":id"] = $id;
+
+		$select = "oim.date,item_qty";
+		$table ="orders_items oi LEFT JOIN orders_items_masseuse oim ON oi.item_id=oim.item_id";
+
+		if( !empty($options["package"]) ){
+			$where_str .= !empty($where_str) ? " AND " : '';
+			$where_str .= "oi.item_pack_id=:package";
+			$where_arr[":package"] = $options["package"];
+		}
+
+		if( !empty($options["start_date"]) && !empty($options["end_date"]) ){
+			$where_str .= !empty($where_str) ? " AND " : '';
+			$where_str .= "(oi.item_start_date BETWEEN :s AND :e)";
+			$where_arr[":s"] = $options["start_date"];
+			$where_arr[":e"] = $options["end_date"];
+		}
+
+		return $this->db->select("SELECT {$select} FROM {$table} WHERE {$where_str}", $where_arr);
 	}
 
 	/**/
@@ -478,7 +509,6 @@ class Orders_Model extends Model {
 		
 		return $data;
 	}
-
 
 	public function package() {
 		return $this->db->select("SELECT pack_id as id, pack_name as name FROM package ORDER BY pack_sequence ASC");
