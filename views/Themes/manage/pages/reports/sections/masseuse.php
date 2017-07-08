@@ -13,7 +13,7 @@ $m[] = array('id'=>10, 'name'=>'ตุลาคม');
 $m[] = array('id'=>11, 'name'=>'พฤศจิกายน');
 $m[] = array('id'=>12, 'name'=>'ธันวาคม');
 ?>
-<div role="toolbar" class="pbs pam mbm rfloat uiBoxWhite">
+<div role="toolbar" class="pbs pas mbm rfloat uiBoxWhite">
 	<select class="" name="period">
 		<option value="">--- เลือกช่วงเวลา ---</option>
 		<option value="1">1 - 10</option>
@@ -21,7 +21,7 @@ $m[] = array('id'=>12, 'name'=>'ธันวาคม');
 		<option value="3">21 - สิ้นเดือน</option>
 	</select>
 </div>
-<div role="toolbar" class="pbs pam mbm rfloat uiBoxWhite">
+<div role="toolbar" class="pbs pas mbm rfloat uiBoxWhite">
 	<select class="" name="month">
 		<option value="">--- เลือกเดือน ---</option>
 		<?php foreach ($m as $key => $value) {
