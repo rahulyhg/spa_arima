@@ -12,50 +12,83 @@ class reports extends Controller {
 
     public function lists($section='masseuse'){
 
-        $month = isset($_REQUEST["month"]) ? $_REQUEST["month"] : date('m');
-        $period = isset($_REQUEST["period"]) ? $_REQUEST["period"] : 1;
-
-        if( $period == 1 ){
-            $start_date = date("Y-{$month}-01");
-            $end_date = date("Y-{$month}-10");
-        }
-        elseif( $period == 2 ){
-            $start_date = date("Y-{$month}-11");
-            $end_date = date("Y-{$month}-20");
-        }
-        elseif( $period == 3 ){
-            $start_date = date("Y-{$month}-21");
-            $end_date = date("Y-{$month}-t");
-        }
-
-        // $start_date = date("Y-05-29");
-        // $end_date = date("Y-05-31");
-
         $options = array();
-
         if( $section == "masseuse" ){
+
+            $month = isset($_REQUEST["month"]) ? $_REQUEST["month"] : date('m');
+            $period = isset($_REQUEST["period"]) ? $_REQUEST["period"] : 1;
+
+            if( $period == 1 ){
+                $start_date = date("Y-{$month}-01");
+                $end_date = date("Y-{$month}-10");
+            }
+            elseif( $period == 2 ){
+                $start_date = date("Y-{$month}-11");
+                $end_date = date("Y-{$month}-20");
+            }
+            elseif( $period == 3 ){
+                $start_date = date("Y-{$month}-21");
+                $end_date = date("Y-{$month}-t");
+            }
 
             $options['reports'] = true;
             $options["period_start"] = $start_date;
             $options["period_end"] = $end_date;
-
             $results = $this->model->query('package')->lists( $options );
+
+            $periodStr = $this->fn->q('time')->str_event_date($start_date, $end_date);
+            $this->view->setData('month', $month);
+            $this->view->setData('period', $period);
+            $this->view->setData('start_date', $start_date);
+            $this->view->setData('end_date', $end_date);
         }
 
         if( $section == "daily" ){
-            $results = array();
+
+            $date = isset($_REQUEST["date"]) ? $_REQUEST["date"] : date("Y-m-d");
+
+            $options['date'] = $date;
+            $options['has_item'] = true;
+            $options['sort'] = 'number';
+            $options['dir'] = 'ASC';
+
+            $results = $this->model->query('orders')->lists( $options );
+            $data = array();
+            $total = array();
+
+            foreach ($results['lists'] as $key => $value) {
+
+                $data['masseuse_name'] = $value['items'][0]['masseuse'][0]['text'];
+                $data[$value['id']]['qty'] = 0;
+                $data[$value['id']]['total'] = ($value['balance'] + $value['drink']);
+                
+                foreach ($value['items'] as $val) {
+
+                    $data[$value['id']][$val['pack']['id']]['balance'] = $val['balance'];
+                    $data[$value['id']]['qty'] += $val['qty'];
+                    foreach ($val['masseuse'] as $mas) {
+                        $data[$value['id']][$val['pack']['id']]['masseuse'][] = $mas['icon_text'];
+                        // $data[$value['id']][$val['pack']['id']]['masseuse'][] = $mas['text'];
+                    }
+
+                    if( !empty($val['room_id']) ){
+                        $data[$value['id']]['rooms'] = $val['rooms']['name'];
+                    }
+                }
+            }
+
+            $periodStr = $this->fn->q('time')->normal($date);
+            $package = $this->model->query('package')->lists();
+            $this->view->setData('package', $package);
+            $this->view->setData('data', $data);
+            $this->view->setData('date', $date);
         }
 
         if( $section == "clocking" ){
             $results = array();
         }
 
-        $this->view->setData('month', $month);
-        $this->view->setData('period', $period);
-        $this->view->setData('start_date', $start_date);
-        $this->view->setData('end_date', $end_date);
-        $this->view->setData('periodStr', $this->fn->q('time')->str_event_date($start_date, $end_date));
-
+        $this->view->setData('periodStr', $periodStr);
         $this->view->setData('results', $results);
         $this->view->setPage('title', 'รายงาน');
         $this->view->setData( 'section', $section );

@@ -19,7 +19,7 @@
                 if( $this->section == 'masseuse' && !empty($this->id) ){
                     require "sections/position.php";
                 }
-                else{
+                elseif( $this->section == $value['section'] ) {
                 	require "sections/{$value['section']}.php";
                 }
             ?>

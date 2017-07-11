@@ -385,4 +385,17 @@ class System_Model extends Model{
 
         return $number;
     }
+
+    public function getRooms($id){
+
+        $data = array();
+        foreach ($this->rooms() as $key => $value) {
+            if( $id == $value['id'] ){
+                $data = $value;
+                break;
+            }
+        }
+
+        return $data;
+    }
 }
