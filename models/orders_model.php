@@ -393,12 +393,18 @@ class Orders_Model extends Model {
 		return $this->db->select("SELECT {$select_item} FROM {$form_item} WHERE {$where_str}", $where_arr);
 	}
 
-	public function get_times_masseuse($id,$options=array()){
+	public function get_times_masseuse($id=null,$options=array()){
 
-		$where_str = "oim.masseuse_id=:id";
-		$where_arr[":id"] = $id;
+		if( !empty($id) ){
+			$where_str = "oim.masseuse_id=:id";
+			$where_arr[":id"] = $id;
+			$select = "oim.date,item_qty";
+		}
+		else{
+			$select = "oim.date,SUM(item_qty) AS qty";
+			$where_str = "oim.masseuse_id is Null";
+		}
 
-		$select = "oim.date,item_qty";
 		$table ="orders_items oi LEFT JOIN orders_items_masseuse oim ON oi.item_id=oim.item_id";
 
 		if( !empty($options["package"]) ){
@@ -413,7 +419,7 @@ class Orders_Model extends Model {
 			$where_arr[":s"] = $options["start_date"];
 			$where_arr[":e"] = $options["end_date"];
 		}
-
+		
 		return $this->db->select("SELECT {$select} FROM {$table} WHERE {$where_str}", $where_arr);
 	}
 

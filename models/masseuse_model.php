@@ -140,12 +140,12 @@ class Masseuse_Model extends Model{
                 $this->_table .= " LEFT JOIN orders_items oi ON oim.item_id=oi.item_id";
 
                 $where_str .= !empty( $where_str ) ? " AND " : '';
-                $where_str .= "(oi.item_pack_id=:package)";
+                $where_str .= "oi.item_pack_id=:package";
                 $where_arr[":package"] = $options["package"];
             }
 
             $where_str .= !empty( $where_str ) ? " AND " : '';
-            $where_str .= "(oim.date BETWEEN :sd AND :ed)";
+            $where_str .= "(oi.item_start_date BETWEEN :sd AND :ed)";
             $where_arr[":sd"] = $options["start_date"];
             $where_arr[":ed"] = $options["end_date"];
 
@@ -157,7 +157,7 @@ class Masseuse_Model extends Model{
         $where_str = !empty($where_str) ? "WHERE {$where_str}":'';
         $orderby = $this->orderby( $this->_cutNamefield.$options['sort'], $options['dir'] );
         $limit = $this->limited( $options['limit'], $options['pager'] );
-        if( !empty($options['unlimit']) ) $limit = "";
+        if( !empty($options["unlimit"]) ) $limit = '';
 
         $arr['lists'] = $this->buildFrag( $this->db->select("SELECT {$this->_field} FROM {$this->_table} {$where_str} {$group_by} {$orderby} {$limit}", $where_arr ), $options  );
 

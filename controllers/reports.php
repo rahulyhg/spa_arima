@@ -12,7 +12,7 @@ class reports extends Controller {
 
     public function lists($section='masseuse'){
 
-        $month = isset($_REQUEST["month"]) ? date("m", strtotime($_REQUEST["month"])) : date('m');
+        $month = isset($_REQUEST["month"]) ? $_REQUEST["month"] : date('m');
         $period = isset($_REQUEST["period"]) ? $_REQUEST["period"] : 1;
 
         if( $period == 1 ){
@@ -40,7 +40,6 @@ class reports extends Controller {
             $options["period_end"] = $end_date;
 
             $results = $this->model->query('package')->lists( $options );
-            $this->view->setData('period', $this->fn->q('time')->str_event_date($start_date, $end_date));
         }
 
         if( $section == "daily" ){
@@ -50,6 +49,12 @@ class reports extends Controller {
         if( $section == "clocking" ){
             $results = array();
         }
+
+        $this->view->setData('month', $month);
+        $this->view->setData('period', $period);
+        $this->view->setData('start_date', $start_date);
+        $this->view->setData('end_date', $end_date);
+        $this->view->setData('periodStr', $this->fn->q('time')->str_event_date($start_date, $end_date));
 
         $this->view->setData('results', $results);
         $this->view->setPage('title', 'รายงาน');
@@ -62,7 +67,7 @@ class reports extends Controller {
 
         $section = "masseuse";
 
-        $month = isset($_REQUEST["month"]) ? date("m", strtotime($_REQUEST["month"])) : date('m');
+        $month = isset($_REQUEST["month"]) ? $_REQUEST["month"] : date('m');
         $period = isset($_REQUEST["period"]) ? $_REQUEST["period"] : 1;
 
         if( $period == 1 ){
@@ -87,14 +92,15 @@ class reports extends Controller {
         $options = array(
             'orders'=>true,
             'start_date'=> date("Y-m-d", strtotime($start_date)),
-            'end_date'=> date("Y-m-d", strtotime($end_date))
+            'end_date'=> date("Y-m-d", strtotime($end_date)),
+            'unlimit'=>true,
+            'package'=>$id,
         );
         $masseuse = $this->model->query('masseuse')->lists( $options );
 
         $data = array();
-
-        $options["package"] = $id;
         foreach ($masseuse['lists'] as $key => $value) {
+
             $time = $this->model->query('orders')->get_times_masseuse($value['id'], $options);
             if( !empty($time) ){
                 $qty = 0;
@@ -106,8 +112,11 @@ class reports extends Controller {
                 }
             }
         }
+        $empty = $this->model->query('orders')->get_times_masseuse(null,$options);
+        $data['empty']['empty'] = $empty[0]['qty'];
 
-        $this->view->setData('period', $this->fn->q('time')->str_event_date($start_date, $end_date));
+        $this->view->setData('periodStr', $this->fn->q('time')->str_event_date($start_date, $end_date));
+        $this->view->setData('period', $period);
         $this->view->setData('data', $data);
         $this->view->setData('results', $masseuse);
         $this->view->setData('start_date', $start_date);

@@ -131,11 +131,6 @@ class Package_Model extends Model {
 				':pack_id'=>$data['id'],
 			);
 
-			if( !empty($_REQUEST['period_start']) && !empty($_REQUEST['period_end']) ){
-				$options["period_start"] = $_REQUEST["period_start"];
-				$options["period_end"] = $_REQUEST["period_end"];
-			}
-
 			if( (!empty($options['period_start']) && !empty($options['period_end'])) ){
 
 				$where_total .= ' AND (`item_start_date` BETWEEN :startDate AND :endDate)';

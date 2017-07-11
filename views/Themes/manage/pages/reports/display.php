@@ -58,8 +58,8 @@
 		<div role="toolbar" class="cashier-toolbar">
 			<div class="mhl phl ptl clearfix">
 				<h1 style="display: inline-block;"><?=$section_name?> <?=(!empty($this->item['name']) ? '(แผนก'.$this->item['name'].')' : '')?></h1>
-				<?php if( !empty($this->period) ) {
-					echo '<div>ประจำวันที่ '.$this->period.' </div>';
+				<?php if( !empty($this->periodStr) ) {
+					echo '<div>ประจำวันที่ '.$this->periodStr.' </div>';
 				}?>
 			</div>
 		</div>

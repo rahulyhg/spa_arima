@@ -1,4 +1,5 @@
 <?php 
+
 /* Set Month Thai */
 $m[] = array('id'=>1, 'name'=>'มกราคม');
 $m[] = array('id'=>2, 'name'=>'กุมภาพันธ์');
@@ -12,23 +13,40 @@ $m[] = array('id'=>9, 'name'=>'กันยายน');
 $m[] = array('id'=>10, 'name'=>'ตุลาคม');
 $m[] = array('id'=>11, 'name'=>'พฤศจิกายน');
 $m[] = array('id'=>12, 'name'=>'ธันวาคม');
+
+$p[] = array('id'=>1, 'name'=>'1 - 10');
+$p[] = array('id'=>2, 'name'=>'11 - 20 ');
+$p[] = array('id'=>3, 'name'=>'21 - สิ้นเดือน');
+
+$period = "?period=".$this->period."&month=".$this->month;
 ?>
+<form method="get">
+<div role="toolbar" class="pbs pas mbm rfloat">
+	<button type="submit" class="btn btn-blue"><i class="icon-search"></i></button>
+</div>
 <div role="toolbar" class="pbs pas mbm rfloat uiBoxWhite">
 	<select class="" name="period">
-		<option value="">--- เลือกช่วงเวลา ---</option>
-		<option value="1">1 - 10</option>
-		<option value="2">11 - 20</option>
-		<option value="3">21 - สิ้นเดือน</option>
+		<?php foreach ($p as $key => $value) {
+			$sel = "";
+			if( $value['id'] == $this->period ){
+				$sel = ' selected="1"';
+			}
+			echo '<option'.$sel.' value="'.$value['id'].'">'.$value['name'].'</option>';
+		}?>
 	</select>
 </div>
 <div role="toolbar" class="pbs pas mbm rfloat uiBoxWhite">
 	<select class="" name="month">
-		<option value="">--- เลือกเดือน ---</option>
 		<?php foreach ($m as $key => $value) {
-			echo '<option value="'.$value['id'].'">'.$value['name'].'</option>';
+			$selm = "";
+			if( $value['id'] == $this->month ){
+				$selm = ' selected="1"';
+			}
+			echo '<option'.$selm.' value="'.$value['id'].'">'.$value['name'].' '.(date("Y")+543).'</option>';
 		}?>
 	</select>
 </div>
+</form>
 <div>
 	<table class="table table-bordered" width="100%">
 		<thead>
@@ -58,7 +76,7 @@ $m[] = array('id'=>12, 'name'=>'ธันวาคม');
 				<tr>
 					<td class="tac"><?=$i?></td>
 					<td class="tal">
-						<a href="<?=URL?>reports/masseuse/<?=$value['id']?>">แผนก <?=$value['name']?></a>
+						<a href="<?=URL?>reports/masseuse/<?=$value['id']?><?=$period?>">แผนก <?=$value['name']?></a>
 					</td>
 					<td class="tac"><?=(!empty($value['total_balance']) ? $value['total_balance'] : '-')?></td>
 					<td class="tar"><?=(!empty($value['total_wage']) ? $value['total_wage'] : '-')?></td>
