@@ -75,10 +75,10 @@ if( !empty($this->data) ){
 		</tfoot>
 	</table>
 
-	<div class="pas rfloat">
-		<div>
+	<div class="pas">
+		<div class="tac">
 			<label class="label">ไม่พบหมอ : </label>
-			<span class="fwb"><?=$this->data['null']?> ชม.</span>
+			<span class="fwb"><?=($this->data['null']) ? $this->data['null'] : 0?> ชม.</span>
 			<label class="label">รวมเป็นเงิน : </label>
 			<span class="fwb">
 				<?php 
@@ -87,7 +87,7 @@ if( !empty($this->data) ){
 				?>
 			</span>
 		</div>
-		<div class="uiBoxWhite tar">
+		<div class="uiBoxWhite tac">
 			<label>รวมเป็นเงินทั้งหมด : </label>
 			<span class="fwb"><?=number_format($total_empty+$total_price,1)?></span>
 		</div>
@@ -97,3 +97,7 @@ if( !empty($this->data) ){
 	else{
 		echo '<div class="fwb tac">ไม่พบข้อมูล แผนก'.$this->item['name'].'</div>';
 	} ?>
+
+	<div class="rfloat">
+	<a href="<?=URL?>reports/lists/masseuse?period=<?=$this->period?>&month=<?=$this->month?>" class="btn btn-blue">กลับ</a>
+	</div>

@@ -117,6 +117,7 @@ class reports extends Controller {
 
         $this->view->setData('periodStr', $this->fn->q('time')->str_event_date($start_date, $end_date));
         $this->view->setData('period', $period);
+        $this->view->setData('month', $month);
         $this->view->setData('data', $data);
         $this->view->setData('results', $masseuse);
         $this->view->setData('start_date', $start_date);
