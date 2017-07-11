@@ -112,8 +112,8 @@ class reports extends Controller {
                 }
             }
         }
-        $empty = $this->model->query('orders')->get_times_masseuse(null,$options);
-        $data['empty']['empty'] = $empty[0]['qty'];
+        $null = $this->model->query('orders')->get_times_masseuse(null,$options);
+        $data['null'] = $null[0]['qty'];
 
         $this->view->setData('periodStr', $this->fn->q('time')->str_event_date($start_date, $end_date));
         $this->view->setData('period', $period);

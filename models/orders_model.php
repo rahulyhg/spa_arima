@@ -419,7 +419,7 @@ class Orders_Model extends Model {
 			$where_arr[":s"] = $options["start_date"];
 			$where_arr[":e"] = $options["end_date"];
 		}
-		
+
 		return $this->db->select("SELECT {$select} FROM {$table} WHERE {$where_str}", $where_arr);
 	}
 

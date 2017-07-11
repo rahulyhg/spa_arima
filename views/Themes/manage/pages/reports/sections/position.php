@@ -78,11 +78,11 @@ if( !empty($this->data) ){
 	<div class="pas rfloat">
 		<div>
 			<label class="label">ไม่พบหมอ : </label>
-			<span class="fwb"><?=$this->data['empty']['empty']?> ชม.</span>
+			<span class="fwb"><?=$this->data['null']?> ชม.</span>
 			<label class="label">รวมเป็นเงิน : </label>
 			<span class="fwb">
 				<?php 
-				$total_empty = $this->data['empty']['empty'] * $this->item['skill'][0]['price'];
+				$total_empty = $this->data['null'] * $this->item['skill'][0]['price'];
 				echo number_format($total_empty,1);
 				?>
 			</span>
