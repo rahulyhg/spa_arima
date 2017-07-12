@@ -59,7 +59,7 @@
 			<div class="mhl phl ptl clearfix">
 				<h1 style="display: inline-block;"><?=$section_name?> <?=(!empty($this->item['name']) ? '(แผนก'.$this->item['name'].')' : '')?></h1>
 				<?php if( !empty($this->periodStr) ) {
-					if( $section_name == "masseuse" ){
+					if( $this->section == "masseuse" ){
 						echo '<div>ประจำวันที่ '.$this->periodStr.' </div>';
 					}
 					else{

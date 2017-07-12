@@ -66,6 +66,7 @@
 					if( !empty($this->data[$value['id']][$val['id']]) ){
 
 						$balance = $this->data[$value['id']][$val['id']]['balance'];
+
 						$total[$val['id']] += $balance;
 
 						if( !empty($val['skill']) ){

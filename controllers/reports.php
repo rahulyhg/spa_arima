@@ -64,13 +64,20 @@ class reports extends Controller {
                 
                 foreach ($value['items'] as $val) {
 
-                    $data[$value['id']][$val['pack']['id']]['balance'] = $val['balance'];
+                    //sum balance items//
+                    $data[$value['id']][$val['pack']['id']]['balance'] = 
+                    !empty($data[$value['id']][$val['pack']['id']]['balance']) 
+                    ? $data[$value['id']][$val['pack']['id']]['balance']+$val['balance'] 
+                    : $val['balance'];
+
+                    //sum qty orders//
                     $data[$value['id']]['qty'] += $val['qty'];
                     foreach ($val['masseuse'] as $mas) {
                         $data[$value['id']][$val['pack']['id']]['masseuse'][] = $mas['icon_text'];
                         // $data[$value['id']][$val['pack']['id']]['masseuse'][] = $mas['text'];
                     }
 
+                    //get room//
                     if( !empty($val['room_id']) ){
                         $data[$value['id']]['rooms'] = $val['rooms']['name'];
                     }

@@ -113,7 +113,11 @@ foreach ($this->lists['lists'] as $key => $value) {
 
 		<div class="" style="margin: 10px;border-top:1px solid #4b4b4b;border-bottom:1px solid #4b4b4b;padding: 5px 0;">
 			<h3>การทำงานของ พนง.บริการ</h3>
+			<?php if( !empty($this->run['total']) ) { ?>
 			<div class="fsm">ลำดับที่ 1 - <?=$this->run['total']?> จาก <?=$this->run['total']?></div>
+			<?php }else{ ?>
+			<div class="fsm">ไม่มีข้อมูลการทำงาน</div>
+			<?php } ?>
 		</div>
 		<ul>
 			<?php 

@@ -249,7 +249,7 @@ class Masseuse_Model extends Model{
         //Skill
         $data['skill'] = $this->query('employees')->listSkill( $data['id'] );
 
-        if( !empty($options["package"]) ){
+        if( !empty($options["getpackage"]) ){
             $data["package"] = $this->getOrderJob($data["job_id"]);
         }
 
