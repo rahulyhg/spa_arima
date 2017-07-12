@@ -50,7 +50,7 @@
 				<td class="tac"><?=$value['number']?></td>
 				<td><?=(!empty($value['cus']) ? $value['cus']['fullname'] : '')?></td>
 				<td><?=(!empty($value['cus']) ? $value['cus']['code'] : '')?></td>
-				<td><?=$this->data['masseuse_name']?></td>
+				<td><?=$this->data[$value['id']]['masseuse_name']?></td>
 				<td class="tac"><?=date("H:i", strtotime($value['start_date']))?></td>
 				<td class="tac"><?=date("H:i", strtotime($value['end_date']))?></td>
 				<td class="tac">

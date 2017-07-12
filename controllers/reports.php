@@ -58,7 +58,8 @@ class reports extends Controller {
 
             foreach ($results['lists'] as $key => $value) {
 
-                $data['masseuse_name'] = $value['items'][0]['masseuse'][0]['text'];
+                //set masseuse & sum drick & sum total//
+                $data[$value['id']]['masseuse_name'] = $value['items'][0]['masseuse'][0]['text'];
                 $data[$value['id']]['qty'] = 0;
                 $data[$value['id']]['total'] = ($value['balance'] + $value['drink']);
                 
