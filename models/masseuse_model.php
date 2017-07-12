@@ -249,6 +249,10 @@ class Masseuse_Model extends Model{
         //Skill
         $data['skill'] = $this->query('employees')->listSkill( $data['id'] );
 
+        if( !empty($options["package"]) ){
+            $data["package"] = $this->getOrderJob($data["job_id"]);
+        }
+
         $data['permit']['del'] = true;
 
         $view_stype = !empty($options['view_stype']) ? $options['view_stype']:'convert';
@@ -703,5 +707,17 @@ class Masseuse_Model extends Model{
 
     public function is_code( $code=null ){
         return $this->db->count( 'employees', "emp_code=:code", array(':code'=>$code) );
+    }
+
+    public function getOrderJob($id){
+
+        $select = "p.pack_id, p.pack_name, oi.item_start_date, oi.item_end_date";
+        $from = "orders_items_masseuse oim 
+                  LEFT JOIN orders_items oi ON oim.item_id=oi.item_id
+                  LEFT JOIN package p ON oi.item_pack_id=p.pack_id";
+        $where_str = "oim.job_id=:id";
+        $where_arr[":id"] = $id;
+
+        return $this->db->select("SELECT {$select} FROM {$from} WHERE {$where_str}", $where_arr);
     }
 }
