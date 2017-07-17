@@ -15,11 +15,6 @@ d88' `8b   88bP"Y88b   888P"Y88b  "888P"Y88b   888' `88b
 /*----------------------------------------------------------------------------*/
 
 /**/
-/* fonts */
-/**/
-@import url(icon-awesome.css);
-
-/**/
 /* reset */
 /**/
 *,*:before,*:after{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box}
@@ -398,6 +393,7 @@ a.btn-icon:hover{text-decoration:none}
 .model-title .title{font-size:20px;display:inline-block;line-height:30px}
 .model-title .actions{font-size:16px;font-weight:normal}
 .model-body{padding:20px}
+.model-body-warp .model-body{padding:0}
 .model-buttons{padding:8px 20px}
 .model-close{position:absolute;top:10px;right:12px;font-size:20px;color:#aaa}
 .model-close:hover{text-decoration:none;color:#333}
@@ -1232,7 +1228,7 @@ margin-left:2.127659574468085%}
 *zoom:1}
 .container-fluid:before,.container-fluid:after{display:table;line-height:0;content:""}
 .container-fluid:after{clear:both}
- @media (min-width:1200px) {
+@media (min-width:1200px) {
 .row{margin-left:-30px;
 *zoom:1}
 .row:before,.row:after{display:table;line-height:0;content:""}
@@ -1772,7 +1768,7 @@ box-sizing:border-box}
 .ProfileImageComponent.has-empty .ProfileImageComponent_empty{display:block;background-color:#ccc}
 .ProfileImageComponent_overlay>i,.ProfileImageComponent_uploader>div,.ProfileImageComponent_empty>i{left:0;position:absolute;right:0;top:50%;-ms-transform:translateY(-50%);-webkit-transform:translateY(-50%);transform:translateY(-50%)}
 .ProfileImageComponent_uploader{bottom:0;cursor:pointer;left:0;position:absolute;right:0;top:0;display:none;background-color:rgba(0,0,0,.4)}
-
+/*.ProfileImageComponent_overlay>i{left: 50%;margin-left: -14px}*/
 .ProfileImageComponent_overlay input[type=file]{margin:0;opacity:0;padding:0;top:0;position:absolute;left:0;cursor:pointer;z-index:1;height:100%;width:100%}
 .ProfileImageComponent_uploader>div{margin:auto}
 .has-upload.ProfileImageComponent .ProfileImageComponent_overlay{cursor:pointer}
@@ -1789,6 +1785,7 @@ box-sizing:border-box}
 .ProfileImageComponent_remove:hover{cursor: pointer;box-shadow: 0 2px 3px rgba(0,0,0,.3)}
 .ProfileImageComponent_remove:hover{cursor: pointer;box-shadow: 0 2px 3px rgba(0,0,0,.3)}
 .is-remove.has-file.ProfileImageComponent .ProfileImageComponent_remove{display:block}
+
  @-webkit-keyframes post_poof {
  0% {
 opacity:1;
@@ -2036,6 +2033,77 @@ to{opacity:0;margin-top:80px;-webkit-transform:rotate(10deg);transform:rotate(10
 .u-table-control a + a{margin-left: 5px}
 .u-table-control a:hover{text-decoration: none}
 .u-table-control a:hover span{text-decoration:underline}
+
+.table-standard{
+	width: 100%;
+	color: #000;
+	background-color: #fff
+}
+.table-standard th, .table-standard td {
+    padding: 3px 4px;
+    border: 1px solid #ccc;
+}
+.table-standard thead th {
+    background-color: #e9e9e9;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-size: 80%;
+    color: #000;
+    font-weight: bold;
+    font-weight: bold;
+    white-space: nowrap;
+    text-align: left;
+}
+
+.table-standard tr.price td.label{
+	
+}
+.table-standard tr.total td.label,.table-standard tr .int{
+	text-align: right;
+}
+.table-standard tr.total td{
+	font-weight: bold;
+	font-size: 120%;
+	background-color: #f5f5f5
+}
+.table-standard tr .price, .table-standard tr .total {
+    width: 80px;
+    text-align: right;
+}
+.table-standard tr .tense {
+    background-color: #fafafa;
+}
+.table-standard tr .ID{
+	width: 20px;
+	text-align: center;
+	border-right-width: 0;
+}
+.table-standard tr .ID + .name{
+	border-left-width: 0;
+}
+.table-standard.border-black th, .table-standard.border-black td{
+	border-color: #000;
+}
+.table-info-warp td{
+	/*border: 1px solid #ccc;*/
+}
+.table-info-warp td.image{
+	/*background-color: #ccc;*/
+	padding: 10px
+}
+.table-info-warp td.image .avatar{
+	border: 1px dashed rgba(0,0,0,.3);
+	/*border-style: dashed;*/
+}
+.table-info{
+	vertical-align: top;
+}
+.table-info td{
+	/*border: 1px solid #ccc;*/
+	padding: 6px 12px
+}
+.table-info .label{font-weight: bold;width: 80px;white-space: nowrap;color: #666}
+
 .map-wrap{background-color:#fff;border:1px solid #cfcfcf;padding:4px;border-radius:4px}
 .map-wrap #map{border:1px solid #cfcfcf;margin-bottom:3px}
 .media-dropzone{min-height:200px}

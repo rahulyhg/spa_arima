@@ -96,6 +96,17 @@ if( !empty($this->results['lists']) ){
             // preg_match('/[^0-9]*([0-9]+)[^0-9]*/', $value['emp_code'], $regs);
             // $n = intval($regs[1]);
         }
+
+        $display = '-';
+        switch ($item['display']) {
+            case 'enabled':
+                $display = '<span class="ui-status">เปิด</span>';
+                break;
+            
+            case 'disabled':
+                $display = '<span  class="ui-status">ปิด</span>';
+                break;
+        }
         
 
         $tr .= '<tr class="'.$cls.'" data-id="'.$item['id'].'">'.
@@ -115,7 +126,7 @@ if( !empty($this->results['lists']) ){
 
                         '<div class="fullname"><a class="fwb" href="'.URL .'masseuse/'.$item['id'].'">'. $item['fullname'].'</a></div>'.
 
-                        '<div class="fcg fsm">เข้าทำงานล่าสุด: '. $this->fn->q('time')->live($item['updated']).'</div>'.
+                        '<div class="fcg fsm">'.$item['phone_number'].'</div>'.
 
                     '</div>'.
                 '</div></div>'.
@@ -126,9 +137,13 @@ if( !empty($this->results['lists']) ){
                 
             $skill.
 
-            '<td class="phone">'.$item['phone_number'].'</td>'.
+            '<td class="date">'.
+                $this->fn->q('time')->stamp($item['updated']).'<br>'.
+                // '<span>'.date( 'H:s', strtotime( $item['updated']) ).''
+            '</td>'.
 
-            '<td class="note"></td>'.
+            '<td class="status">'. $display .'</td>'.
+            // '<td class="note">'.(!empty($item['note']) ? $item['note']: '').'</td>'.
 
         '</tr>';
         

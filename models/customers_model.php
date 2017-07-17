@@ -168,7 +168,7 @@ class customers_model extends Model
             'pager' => isset($_REQUEST['pager'])? $_REQUEST['pager']:1,
             'limit' => isset($_REQUEST['limit'])? $_REQUEST['limit']:50,
 
-            'sort' => isset($_REQUEST['sort'])? $_REQUEST['sort']: 'created',
+            'sort' => isset($_REQUEST['sort'])? $_REQUEST['sort']: 'updated',
             'dir' => isset($_REQUEST['dir'])? $_REQUEST['dir']: 'DESC',
 
             'time'=> isset($_REQUEST['time'])? $_REQUEST['time']:time(),
@@ -177,11 +177,14 @@ class customers_model extends Model
             'more' => true
         ), $options);
 
-        
-
+    
         if( isset($_REQUEST['view_stype']) ){
             $options['view_stype'] = $_REQUEST['view_stype'];
         }
+        elseif( isset($_REQUEST['view']) ){
+            $options['view'] = $_REQUEST['view'];
+        }
+        
 
         $date = date('Y-m-d H:i:s', $options['time']);
 
@@ -233,13 +236,12 @@ class customers_model extends Model
             $where_arr[':status'] = $options['status'];
         }
 
-
         if( isset($_REQUEST['level']) ){
             $options['level'] = $_REQUEST['level'];
         }
         if( !empty($options['level']) ){
             $where_str .= !empty( $where_str ) ? " AND ":'';
-            $where_str = "`cus_level_id`={$options['level']}";
+            $where_str .= "`cus_level_id`={$options['level']}";
         }
 
         $arr['total'] = $this->db->count($this->_table, $where_str, $where_arr);
@@ -256,6 +258,13 @@ class customers_model extends Model
     }
     public function get($id, $options=array()){
         $select = $this->_field;
+
+        if( isset($_REQUEST['view_stype']) ){
+            $options['view_stype'] = $_REQUEST['view_stype'];
+        }
+        elseif( isset($_REQUEST['view']) ){
+            $options['view_stype'] = $_REQUEST['view'];
+        }
 
         $sth = $this->db->prepare("SELECT {$select} FROM {$this->_table} WHERE {$this->_cutNamefield}id=:id LIMIT 1");
         $sth->execute( array(
@@ -358,6 +367,10 @@ class customers_model extends Model
             "subtext"=>isset($subtext)?$subtext:"",
             "type"=>"customers",
 
+            'discount_value' => $data['level']['discount'],
+            'discount_type' => 'percent',
+            'level_id' => $data['level']['id'],
+
             // "image_url"=>isset($image_url)?$image_url:"",
             // 'status' => isset($status)?$status:"",
             // 'data' => $data,
@@ -408,7 +421,7 @@ class customers_model extends Model
         , level_discount as discount
     ";
     public function level() {
-        return $this->db->select("SELECT {$this->select_level} FROM customers_level");
+        return $this->db->select("SELECT {$this->select_level} FROM customers_level ORDER BY level_sequence ASC");
     }
     public function get_level($id){
         $sth = $this->db->prepare("

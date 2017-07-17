@@ -25,6 +25,7 @@ define('DOCS', URL . 'public/docs/');
 define('VIEW', URL . 'views/');
 define('CSS', URL . 'public/css/');
 define('JS', URL . 'public/js/');
+define('FONTS', URL . 'public/fonts/');
 define('IMAGES', URL . 'public/images/');
 define('UPLOADS', URL . "public/uploads/");
 

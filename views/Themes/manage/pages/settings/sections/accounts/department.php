@@ -41,7 +41,7 @@ $url = URL .'employees/';
 			<?php foreach ($this->access as $key => $value) {
 				$item['access'] = !empty($item['access']) ? $item['access']: array();
 
-			echo '<td class="status"><label class="checkbox"><input disabled class="disabled" type="checkbox" name="'.$value['id'].'"'.( in_array($value['id'], $item['access']) ?' checked="1"' :'').'></label></td>';
+			echo '<td class="status"><label class="checkbox"><input type="checkbox" name="'.$value['id'].'"'.( in_array($value['id'], $item['access']) ?' checked="1"' :'').'></label></td>';
 			}?>
 
 			<td class="actions">

@@ -10,7 +10,8 @@ else{
 	$image = '<div class="avatar lfloat no-avatar mrm"><div class="initials"><i class="icon-user"></i></div></div>';
 }
 
-echo '<div class="navigation-main-bg navigation-trigger"></div><nav class="navigation-main" role="navigation"><a class="btn btn-icon navigation-trigger"><i class="icon-bars"></i></a>';
+echo '<div class="navigation-main-bg navigation-trigger"></div>';
+echo '<nav class="navigation-main" role="navigation"><a class="navigation-btn-trigger navigation-trigger"><span></span></a>';
 
 echo '<div class="navigation-main-header"><div class="anchor clearfix">'.$image.'<div class="content"><div class="spacer"></div><div class="massages"><div class="fullname">'.$this->me['fullname'].'</div><span class="subname">'.$this->me['dep_name'].'</span></div></div></div></div>';
 

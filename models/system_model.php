@@ -326,11 +326,11 @@ class System_Model extends Model{
 
         $a = array();
         $a[] = array('id'=>'1', 'name'=>'Admin');
-        $a[] = array('id'=>'2', 'name'=>'Manager');
-        $a[] = array('id'=>'3', 'name'=>'Person');
-        $a[] = array('id'=>'4', 'name'=>'Product');
-        $a[] = array('id'=>'5', 'name'=>'Cashier');
-        $a[] = array('id'=>'6', 'name'=>'Masseuse');
+        $a[] = array('id'=>'2', 'name'=>'ผู้จัดการ');
+        $a[] = array('id'=>'3', 'name'=>'บุคคล');
+        $a[] = array('id'=>'4', 'name'=>'Package');
+        $a[] = array('id'=>'5', 'name'=>'แคชเชียร์');
+        $a[] = array('id'=>'6', 'name'=>'พนง.บริการ');
 
         return $a;
     }
@@ -347,6 +347,17 @@ class System_Model extends Model{
         $end = $end->format('Y-m-d 04:00:00');
 
         return array($start, $end);
+    }
+
+
+
+    public function skill_type(){
+
+        $arr = array();
+        $arr[] = array('id'=>1, 'name'=>'เสื้อชมพู');
+        $arr[] = array('id'=>2, 'name'=>'เสื้อขาว');
+
+        return $arr;
     }
 
 }

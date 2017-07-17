@@ -181,9 +181,12 @@ class Controller {
             // 
             $this->setPagePermit();
             $this->_modify();
-        }else {
+        }else{
 
-            $this->login();
+            if( $this->pathName == 'masseuse' && isset($_GET['show']) ){ }
+            else{
+                $this->login();
+            }
         }
     }
     public function error(){
@@ -350,7 +353,7 @@ class Controller {
                 $options['has_menu'] = false;
             }
 
-            $this->system['theme'] = 'pos';
+            $this->system['theme'] = 'POs';
 
             if( $options['has_menu'] ){
                 Session::init();                          
@@ -359,7 +362,7 @@ class Controller {
             }
 
             $this->view->setPage('image_url', !empty( $this->system['image_url'] ) ? $this->system['image_url']: IMAGES.'logo/logo1.gif' );
-            $this->view->setPage('name', !empty( $this->system['name'] ) ? $this->system['name']: 'POS' );
+            $this->view->setPage('name', !empty( $this->system['name'] ) ? $this->system['name']: 'POs' );
 
         }
         elseif( empty($this->system['theme']) ){

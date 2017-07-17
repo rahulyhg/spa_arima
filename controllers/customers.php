@@ -33,6 +33,8 @@ class Customers extends Controller {
         }
         else{
 
+            // print_r($this->model->query('customers')->lists()); die;
+            
             if( $this->format=='json' )
             {
                 $this->view->setData('results', $this->model->query('customers')->lists() );
@@ -40,6 +42,7 @@ class Customers extends Controller {
             }
             else{
 
+                $this->view->setData('level', $this->model->level() );
                 $this->view->setData('status', $this->model->query('customers')->lists_status() );
 
                 $render = "customers/lists/display";
@@ -62,11 +65,20 @@ class Customers extends Controller {
         $item = $this->model->get($id, array('options' => 1));
         if( empty($item) ) $this->error();
 
+        echo json_encode($item);
+
+
+        /*if( empty($this->me) || $this->format!='json' || empty($id) ) $this->error();
+
+        $item = $this->model->get($id, array('options' => 1));
+        if( empty($item) ) $this->error();
+
         $this->view->setData('prefixName', $this->model->prefixName());
         $this->view->setData('customer', $item );
-        $this->view->render("customers/forms/profile");
+        $this->view->render("customers/forms/profile");*/
     }
-    public function _get($id) {
+
+    /*public function _get($id) {
         $id = isset($_REQUEST['id']) ? $_REQUEST['id']:$id;
         if( empty($this->me) || $this->format!='json' || empty($id) ) $this->error();
 
@@ -74,7 +86,7 @@ class Customers extends Controller {
         if( empty($item) ) $this->error();
 
         echo json_encode($item);
-    }
+    }*/
 
     public function add() {
     	if( empty($this->me) ) $this->error();
@@ -645,7 +657,6 @@ class Customers extends Controller {
         $this->view->setPage('path','Themes/manage/forms/level');
         $this->view->render("add");
     }
-
     public function edit_level( $id=null ){
         if( empty($id) || empty($this->me)  || $this->format != 'json') $this->error();
 
@@ -655,7 +666,6 @@ class Customers extends Controller {
         $this->view->setPage('path', 'Themes/manage/forms/level');
         $this->view->render("add");
     }
-
     public function save_level(){
         if( empty($_POST) ) $this->error();
 
@@ -693,7 +703,6 @@ class Customers extends Controller {
 
         echo json_encode($arr);
     }
-
     public function del_level( $id=null ){
         $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : $id;
         if( empty($this->me )|| empty($id) || $this->format!='json' ) $this->error();
@@ -724,11 +733,25 @@ class Customers extends Controller {
             $this->view->render("del");
         }
     }
+    public function sort_level() {
+        if( $this->format!='json' || empty($this->me) ) $this->error();
+        
+        if( !empty($_POST['ids']) ){
+
+            $sequence = 0;
+            foreach ($_POST['ids'] as $id) {
+                $sequence++;
+                $this->model->update_level( $id, array('level_sequence'=>$sequence) );
+            }
+        }
+    }
 
 
     public function invite() {
         
-        $data = $this->model->lists( array('view_stype'=>'bucketed', 'limit' => 20, 'status'=>'run') );
+        if( empty($this->me )|| $this->format!='json' ) $this->error();
+        $data = $this->model->lists( array('view_stype'=>'bucketed', 'limit'=>20, 'status'=>'run', 
+            'sort'=>'updated') );
 
         $results = array();
         $results[] = array(

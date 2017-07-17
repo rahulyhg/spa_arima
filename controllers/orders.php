@@ -85,47 +85,22 @@ class Orders extends Controller {
 
     public function menu() {
 
-    	$type = $_GET['type'];
+    	$type = isset($_GET['type']) ? $_GET['type']: 'package';
 
     	if( $type=='package' ){
     		if( !empty($_GET['id']) ){
     			$data = $this->model->query('package')->get( $_GET['id'] );
 
-                $masseuse = $this->model->query('masseuse')->requireMasseuse($data['skill']);
-                if( !empty($masseuse) ){
-                    $data['masseuse'] = $masseuse;
+                if( !empty($data['has_masseuse']) ){
+                    $masseuse = $this->model->query('masseuse')->requireMasseuse($data['skill']);
+                    if( !empty($masseuse) ){
+                        $data['masseuse'] = $masseuse;
+                    }
                 }
     		}
     		else{
     			$data = $this->model->query('package')->lists();
     		}
-    	}
-    	else{
-
-            if( !empty($_GET['id']) ){
-                $menuset = $this->model->query('promotions')->get( $_GET['id'] );
-
-                $data = array();
-                if( !empty($menuset['invite']['package']) ){
-                    foreach ($menuset['invite']['package'] as $key => $value) {
-
-                        $package = $this->model->query('package')->get( $value['id'] );
-
-                        $data[] = $package;
-                    }
-                }
-
-                foreach ($data as $key => $value) {
-
-                    $masseuse = $this->model->query('masseuse')->requireMasseuse($value['skill']);
-                    if( !empty($masseuse) ){
-                        $data[$key]['masseuse'] = $masseuse;
-                    }
-                }
-            }
-            else{
-                $data = $this->model->query('promotions')->lists();
-            }
     	}
         
     	echo json_encode( $data );
@@ -463,4 +438,219 @@ class Orders extends Controller {
             $this->view->render("pay");
         }
     }
+
+
+    public function setBill() {
+        
+        $type = $_REQUEST['type'];
+
+        if( $type=='member' ){
+            $this->view->setData('level', $this->model->query('customers')->level() );
+        }
+
+        $this->view->setPage('path','Forms/orders');
+        $this->view->render("set_bill_{$type}");
+    }
+
+
+
+
+    /* */
+    /* set list POs */
+    /**/
+    public function _chooseMenu() {
+        
+        if( empty($_REQUEST['package']) ) $this->error();
+
+        $package = $this->model->query('package')->get( $_REQUEST['package'] );
+        if( empty($package) ) $this->error();
+
+        if( !empty($package['has_masseuse']) ){
+            $masseuse = $this->model->query('masseuse')->requireMasseuse($package['skill']);
+            if( !empty($masseuse) ){
+                $package['masseuse'] = $masseuse;
+            }
+        }
+
+        $date = isset($_REQUEST['date']) ? $_REQUEST['date']: date('Y-m-d');
+
+        $this->view->setData('date', $date );
+        $this->view->setData('number', $_REQUEST['number'] );
+        $this->view->setData('package', $package );
+        $this->view->setData('date', isset($_REQUEST['date']) ? $_REQUEST['date']: date('Y-m-d') );
+
+        $order = $this->model->get('number', array(
+            'date' => $date,
+            'number' => $_REQUEST['number']
+        ));
+        $this->view->setData('order', $order );
+
+        if( !empty($order) ){
+
+            $itemID = $this->model->getDetailID($order['id'], $_REQUEST['package']);
+            $this->view->setData('item', $this->model->getDetail( $itemID ) );
+        }
+
+        $this->view->setPage('path','Forms/orders');
+        $this->view->render("set_orderlist_menu");
+    }
+    public function saveMenu()  {
+        
+        if( empty($arr['error']) ){
+
+            $order = $this->model->get( 'number', array(
+                'date' => $_POST['date'],
+                'number' => $_POST['number']
+            ));
+            if( empty($order) ){
+
+                // Insert order
+                $order = array(
+                    'order_date' => $_POST['date'],
+                    'order_number' => $_POST['number'],
+                    'order_emp_id' => $this->me['id'],
+                    'order_start_date' => date('c')
+                );
+
+                $this->model->insertOrder( $order );
+            }
+
+            // set package
+            $itemID = $this->model->getDetailID($order['id'], $_POST['package']);
+
+            $item = array(
+                'item_order_id' => $order['id'],
+                'item_pack_id' => $_POST['package'],
+                'item_qty' => $_POST['time'],
+                // 'item_price' => $_POST['price'],
+                'item_total' => $_POST['total'],
+                'item_discount' => $_POST['discount'],
+                'item_balance' => $_POST['total']-$_POST['discount'],
+                'item_note' => $_POST['note'],
+            );
+            if( !empty($itemID) ){
+                // update
+                $this->model->updateDetail($itemID, $item);
+                $item['id'] = $itemID;
+            }
+            else{
+                // insert 
+                $this->model->insertDetail($item);
+            }
+
+            // del หมอ
+            $this->model->delItemJobMasseuse($item['id']);
+
+            // save หมอ
+            if( !empty($_REQUEST['masseuse']) ){
+                foreach ($_REQUEST['masseuse'] as $value) {
+                    
+                    $job_id = 0;
+                    if( isset($value['job']) ){
+                        $job_id = $value['job'];
+                    }
+                    else{
+
+                        $job = $this->model->query('masseuse')->getJob( $value['id'], array('status'=>'on', 'date'=>$_POST['date']) );
+                        if( !empty($job) ){
+                            $job_id = $job['job_id'];
+                        }
+                    }
+
+                    $this->model->itemJobMasseuse(array(
+                        'item_id' => $item['id'],
+                        'masseuse_id' => $value['id'],
+                        'job_id' => $job_id,
+                        'date' => $_POST['date']
+                    ));
+                }
+            }
+            
+            $arr['message'] = 'บันทึกเรียบร้อย';
+            $arr['url'] = 'refresh';
+
+        }
+
+        echo json_encode($arr);
+    }
+
+
+    public function _drink() {
+
+        $date = isset($_REQUEST['date']) ? $_REQUEST['date']: date('Y-m-d');
+        $number = isset($_REQUEST['number']) ? $_REQUEST['number']: 0;
+        if( empty($number) ) $this-> error();
+        
+        $order = $this->model->get('number', array(
+            'date' => $date,
+            'number' => $number
+        ));
+
+        if( !empty($_POST) ){
+
+            if( empty($order) ){
+                $order = array(
+                    'order_date' => $date,
+                    'order_number' => $number,
+                    'order_emp_id' => $this->me['id'],
+                    'order_start_date' => date('c'),
+                );
+
+                $this->model->insertOrder( $order );
+
+                $order['balance'] = 0;
+            }
+
+            $drink = intval($_POST['drink']);
+            $this->model->updateOrder( $order['id'], array(
+                'order_drink' => $drink,
+                'order_balance' =>$order['balance'] + $drink
+            ) );
+
+            $arr['message'] = 'บันทึกเรียบร้อย';
+            echo json_encode($arr);
+            
+        }
+        else{
+            $this->view->setData('order', $order );
+            $this->view->setData('date', $date );
+            $this->view->setData('number', $number );
+
+            $this->view->setPage('path','Forms/orders');
+            $this->view->render("set_orderlist_drink");
+
+        } 
+    }
+
+    public function delItem($id=null) {
+        
+        $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : $id;
+        if( empty($this->me) || empty($id) ) $this->error();
+
+        $item = $this->model->getDetail( $id );
+        if( empty($item) ) $this->error();
+
+        if (!empty($_POST)) {
+
+            if ( !empty($item['permit']['del']) || 1==1 ) {
+
+                $this->model->delItemJobMasseuse($id);
+                $this->model->delDetail($id);
+                
+                $arr['message'] = 'ลบข้อมูลเรียบร้อย';
+            } else {
+                $arr['message'] = 'ไม่สามารถลบข้อมูลได้';
+            }
+
+            $arr['url'] = isset($_REQUEST['next']) ? $_REQUEST['next']:'refresh';
+            echo json_encode($arr);
+        }
+        else{
+            $this->view->item = $item;
+            $this->view->setPage('path','Forms/orders');
+            $this->view->render("item_del");
+        }
+    }
+
+    
 }

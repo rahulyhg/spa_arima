@@ -5,7 +5,7 @@ require 'init.php';
 ?><div class="pal" style="max-width: 720px">
 
 <div class="setting-header cleafix">
-	<div class="setting-title"><?=$this->lang->translate('Profile')?></div>
+	<!-- <div class="setting-title"><?=$this->lang->translate('Profile')?></div> -->
     <nav class="setting-header-taps"><?php
 
     $max_width = '420px';

@@ -94,6 +94,9 @@ class Theme extends View{
 
 
         $this   ->css( VIEW ."Themes/{$this->getPage('theme')}/assets/css/main.css", true )
+        
+                ->css( FONTS . 'font-awesome/css/font-awesome.min.css', true)
+
                 ->css('bootstrap')
 
                 ->js( VIEW ."Themes/{$this->getPage('theme')}/assets/js/main.js", true )

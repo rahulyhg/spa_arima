@@ -245,28 +245,26 @@ class Masseuse_Model extends Model{
             "category"=> $category,
             "subtext"=> '', //!empty($data['phone_number']) ? $data['phone_number']:"",
             "image_url"=>!empty($data['image_url']) ? $data['image_url']:"",
-            "type"=>"employees",
+            "type"=> !empty($data['job_type']) ? $data['job_type'] : "massager",
 
             "image_url"=>!empty($data['image_url']) ? $data['image_url']:"",
             'icon_text' => $data['code'],
-            'skill' => $data['skill']
-            // 'status' => isset($status)?$status:"",
-            // 'data' => $data,
+            'code' => $data['code'],
+            'skill' => $data['skill'],
         );
 
         if( !empty( $data['job_id'] ) ){
-
             $fdata['job_id'] = $data['job_id'];
-            // j.job_id
-            // , j.job_sequence
+        }
+
+        if( !empty( $data['job_sequence']) ){
+            $fdata['job_sequence'] = $data['job_sequence'];
         }
 
         return $fdata;
     }
     public function vInvite($data , $options=array()) {
         $category = '';
-
-        
 
         // $category .= $data['fullname'];
 
@@ -301,7 +299,7 @@ class Masseuse_Model extends Model{
 
     public function getCode($code, $options=array()){
 
-        $sth = $this->db->prepare("SELECT {$this->_field} FROM {$this->_table} WHERE emp_code=:code AND d.dep_id=:dep AND emp_code!='' LIMIT 1");
+        $sth = $this->db->prepare("SELECT {$this->_field} FROM {$this->_table} WHERE emp_code=:code AND d.dep_id=:dep AND emp_code!='' AND `emp_display`='enabled' LIMIT 1");
         $sth->execute( array(
             ':code' => $code,
             ':dep' => $this->_dep
@@ -325,7 +323,10 @@ class Masseuse_Model extends Model{
             : array();
     }
     
+
+    /**/
     /* JOB */
+    /**/
     public function listJob( $options=array() ){
 
         $options = array_merge(array(
@@ -404,6 +405,7 @@ class Masseuse_Model extends Model{
             , j.job_date
             , j.job_time
             , j.job_status
+            , j.job_type
             , {$this->_field} FROM {$_table} {$where_str} {$orderby} {$limit}", $where_arr ), $options  );
 
         if( ($options['pager']*$options['limit']) >= $arr['total'] ) $options['more'] = false;
@@ -414,9 +416,7 @@ class Masseuse_Model extends Model{
     public function getJob( $id, $options=array() ){
 
         $options = array_merge(array(
-
             'date'=> isset($_REQUEST['date'])? date('Y-m-d',strtotime($_REQUEST['date'])):date('Y-m-d'),
-
         ), $options);
 
 
@@ -438,37 +438,85 @@ class Masseuse_Model extends Model{
             $where_arr[':status'] = $options['status'];
         }
 
-        $where_str = !empty($where_str) ? "WHERE {$where_str}":'';
 
+        $where_str = !empty($where_str) ? "WHERE {$where_str}":'';
         $sth = $this->db->prepare("SELECT 
               j.job_id
             , j.job_sequence
             , j.job_date
             , j.job_time
             , j.job_status
+            , j.job_type
             , {$this->_field} FROM emp_job_queue j INNER JOIN ($this->_table) ON j.job_emp_id=e.emp_id {$where_str} LIMIT 1");
         $sth->execute( $where_arr );
 
         return $sth->rowCount()==1
-            ? $this->convert( $sth->fetch( PDO::FETCH_ASSOC ) )
+            ? $this->convert( $sth->fetch( PDO::FETCH_ASSOC ), array('view_stype'=>'bucketed') )
             : array();
     }
-
     public function setJob( $id, $options = array() ){
 
         $options = array_merge(array(
             'date'=> isset($_REQUEST['date'])? date('Y-m-d',strtotime($_REQUEST['date'])):date('Y-m-d'),
+            'type' => isset($_REQUEST['type']) ? $_REQUEST['type']: 'massager',
         ), $options);
 
 
-        /*$date = $this->query('system')->working_time( $options['date'] );
-        $where_arr[':s'] = $date[0];
-        $where_arr[':e'] = $date[1];*/
+        // last Sequence
+        $sequence = $this->nextJobSequence( $options );
+        
 
-        // $sequence = $this->getJobSequence( $start, $end );
+        $theDate = new DateTime();
+        $theTime = strtotime($options['date']);
+        $theDate->setDate( date('Y', $theTime), date('n', $theTime), date('j', $theTime));
 
-        $sth = $this->db->prepare("SELECT job_sequence as q FROM emp_job_queue j WHERE (`job_date`=:d) ORDER BY job_sequence DESC LIMIT 1");
-        $sth->execute( array(':d'=>$options['date']) );
+        $job = array(
+            'job_type' => $options['type'],
+            'job_emp_id' => $id,
+            'job_sequence' => $sequence,
+            'job_date' => $options['date'],
+            'job_time' => isset($options['time']) ? date('H:s:i', strtotime($options['time']) ): date('H:s:i', time() ),
+            'job_status' =>'on'
+        );
+
+        $this->db->insert("emp_job_queue", $job);
+    }
+    public function nextJobSequence( $options=array() ) {
+
+        $where_str = "`job_date`=:d";
+        $where_arr[':d'] = $options['date'];
+
+        if( isset($options['type']) ){
+            $where_str .= !empty($where_str) ? " AND ": '';
+            $where_str .= "`job_type`=:type";
+            $where_arr[':type'] = $options['type'];
+        }
+
+        if( !empty($options['status']) ){
+
+            if( is_array($options['status']) ){
+
+                $w = '';
+                foreach ($options['status'] as $key => $value) {
+                    $w .=  !empty($w) ? " OR ": '';
+                    $w .= "`job_status`='{$value}'";
+                }
+
+                $where_str .= !empty($where_str) ? " AND ": '';
+                $where_str .= "({$w})";
+            }
+            else{
+                $where_str .= !empty($where_str) ? " AND ": '';
+                $where_str .= "`job_status`=:status";
+                $where_arr[':status'] = $options['status'];
+            }
+
+        }
+
+        $where_str = !empty($where_str) ? "WHERE {$where_str}":'';
+        
+        $sth = $this->db->prepare("SELECT job_sequence as q FROM emp_job_queue j {$where_str} ORDER BY job_sequence DESC LIMIT 1");
+        $sth->execute( $where_arr );
 
         if( $sth->rowCount()==1 ){
             $fdata = $sth->fetch( PDO::FETCH_ASSOC );
@@ -478,19 +526,7 @@ class Masseuse_Model extends Model{
             $sequence = 1;
         }
 
-        $theDate = new DateTime();
-        $theTime = strtotime($options['date']);
-        $theDate->setDate( date('Y', $theTime), date('n', $theTime), date('j', $theTime));
-
-        $job = array(
-            'job_emp_id' => $id,
-            'job_sequence' => $sequence,
-            'job_date' => $options['date'],
-            'job_time' => isset($options['time']) ? date('H:s:i', strtotime($options['time']) ): date('H:s:i', time() ),
-            'job_status' =>'on'
-        );
-
-        $this->db->insert("emp_job_queue", $job);
+        return $sequence;
     }
 
     public function updateJob($id, $data) {
@@ -501,8 +537,7 @@ class Masseuse_Model extends Model{
         $this->db->delete("emp_job_queue", "`job_id`={$id}");
     }
     
-    public function lastSequence($options=array())
-    {
+    public function lastSequence($options=array()) {
         
         $options = array_merge(array(
             'date'=> isset($_REQUEST['date'])? date('Y-m-d',strtotime($_REQUEST['date'])):date('Y-m-d'),
@@ -514,7 +549,6 @@ class Masseuse_Model extends Model{
         $sth->execute( array(
             ':status1' => 'run',
             ':status2' => 'done',
-            // ':status3' => 'cancel',
             ':d' => $options['date']
         ) );
 
@@ -551,8 +585,7 @@ class Masseuse_Model extends Model{
             if( !empty( $fdata ) ) break;
         }
 
-        return $fdata;
-        
+        return $fdata;     
     }
 
     public function countJob( $id, $options=array() ){
@@ -592,7 +625,6 @@ class Masseuse_Model extends Model{
         $input = array();
 
         foreach ($data as $key => $value) {
-
             if( $key == 'id' ) continue;
             $input[$cutNamefield.$key] = $value;
         }
@@ -656,5 +688,20 @@ class Masseuse_Model extends Model{
 
     public function deleteTime( $id ){
         $this->db->delete("`emp_clocking`", "`clock_id`={$id}");
+    }
+
+
+    public function sortAll($did, $pid) {
+        
+
+        $data = $this->db->select( "SELECT emp_id as id, emp_code as code FROM employees WHERE `emp_dep_id`={$did} AND`emp_pos_id`={$pid}" );
+
+        foreach ($data as $key => $value) {
+            
+            preg_match('/[^0-9]*([0-9]+)[^0-9]*/', $value['code'], $regs);
+            $n = intval($regs[1]);
+
+            $this->db->update( "employees", array('emp_code_order'=>$n), "`emp_id`={$value['id']}" );
+        }
     }
 }

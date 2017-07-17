@@ -10,87 +10,58 @@ class Pos extends Controller{
         header('Location: '. URL.'pos/orders' );
 	}
 
-    public function orders2() {
-
-        // print_r($this->model->query('orders')->lists(array('has_item'=>1))); die;
-
-        if( $this->format=='json' ) {
-            $this->view->setData('results', $this->model->query('orders')->lists(array('has_item'=>1)) );
-            $this->view->render("orders2/json");
-        }
-        else{
-            $this->view->setPage('on', 'orders');
-            $this->view->render("orders2/display");
-        }
-    }
-
     public function orders(){
         
-        
-        Session::init();
-        if( isset($_REQUEST['style']) ){
-            Session::set('pos_style', $_REQUEST['style']);
-        }
+        $options = Cookie::get('POs');
+        if( !empty($options) ){
 
-        $style = Session::get('pos_style');
+            $options = json_decode($options, 1);
+            
 
-        if( $style==2 ){
-            $this->orders2();
+            if( strtotime($options['date'])!=strtotime(date('Y-m-d')) || $this->fn->q('util')->get_client_ip()!=$options['ip'] ){
+                $has_new = true;
+                Cookie::clear('POs');
+            }
+            else{
+                $options['number']++;
+                $options['queue'] = array();
+                Cookie::set('POs', json_encode($options));
+            }
         }
         else{
-            $this->view->setData('package', $this->model->query('package')->lists());
-            $this->view->setData('promotions', $this->model->query('promotions')->lists());
-            
-            $this->view->setPage('on', 'orders');
-            $this->view->render("orders/display"); 
+            $has_new = true;
         }
 
-    }
+        if( isset($has_new) ){
+            $options['ip'] = $this->fn->q('util')->get_client_ip();
+            $options['number'] = 1;
+            $options['date'] = date('Y-m-d');
+            $options['queue'] = array();
+            Cookie::set('POs', json_encode($options));
+        }
 
-    public function queue() {
-
+        
         $this->view->js('jquery/jquery-ui.min');
         $this->view->js('jquery/jquery.sortable');
 
-        $date = isset($_REQUEST['date']) ? $_REQUEST['date']: date('Y-m-d'); 
-        $start_date = isset($_REQUEST['date']) ? date("{$_REQUEST['date']} H:i:s") : date("Y-m-d H:i:s");
+        $this->view->js( VIEW. 'Themes/POs/assets/js/POsOrder.js', true);
+        $this->view->js( VIEW. 'Themes/POs/assets/js/TableOrder.js', true);
+        $this->view->js( VIEW. 'Themes/POs/assets/js/POs.js', true);
+        $this->view->js( VIEW. 'Themes/POs/assets/js/addorder.js', true);
+        $this->view->js( VIEW. 'Themes/POs/assets/js/summaryOfDaily.js', true);
+        $this->view->js( VIEW. 'Themes/POs/assets/js/setqueue.js', true);
+        $this->view->js( VIEW. 'Themes/POs/assets/js/setmenu.js', true);
 
-        if( !empty($_POST) ){
+        $this->view->setData('package', $this->model->query('package')->lists());
+        // $this->view->setData('promotions', $this->model->query('promotions')->lists());
 
-            $item = $this->model->query('masseuse')->getCode( $_POST['code'] );
 
-            if( !empty($item) ){
-
-                $job = $this->model->query('masseuse')->getJob( $item['id'], array('status'=>'on', 'date'=>$date) );
-                
-                if( !empty($job) ){
-                    $arr['message'] = 'ไม่สามารถ CheckIn ซ้ำได้';
-                } else{
-                    $this->model->query('masseuse')->setJob( $item['id'], array( 'date'=>$date ) );
-
-                    $set = array(
-                        'date'=>$date,
-                        'start_date'=>$start_date,
-                        'emp_id'=>$item['id'],
-                    );
-                    $this->model->query('masseuse')->setTime( $set );
-                }
-            }
-            else{
-                $arr['message'] = 'ไม่พบข้อมูล';
-            }
-        }
-
-        // print_r($this->model->query('masseuse')->listJob( array('date'=>$date, 'unlimit'=>1, 'status'=>'on' ) )); die;
-
-        $this->view->setData('date', $date );
-        $this->view->setData('lists', $this->model->query('masseuse')->listJob( array('date'=>$date, 'unlimit'=>1, 'status'=>'on' ) ) );
-        $this->view->setPage('on', 'queue');
-        $this->view->render("queue/display");
+        $this->view->setPage('on', 'orders');
+        $this->view->render("orders/display"); 
+   
     }
     
     public function settings($tap='basic') {
-
 
         $this->view->setPage('on', 'settings');
         $this->view->setData('tap', $tap);
@@ -98,7 +69,7 @@ class Pos extends Controller{
     }
 
     public function members( $id=null ){
-
+        $this->error();
         $this->view->setPage('on', 'members');
 
         if( !empty($id) ){
@@ -139,5 +110,30 @@ class Pos extends Controller{
         }
 
         $this->view->render( $render );
-    }    
+    }  
+
+
+    public function masseuse(){
+
+        if( $this->format!='json' || empty($this->me) ) $this->error();
+        
+        $date = isset($_REQUEST['date']) ? $_REQUEST['date']: date('Y-m-d'); 
+
+        $results = $this->model->query('masseuse')->listJob( array('date'=>$date, 'unlimit'=>1, 'status'=>'on' ) );
+
+        // print_r($results); die;
+        $this->view->setData('results', $results );
+        $this->view->render("masseuse/display");
+
+        // $this->view->render("settings/display");
+    } 
+
+    public function summary(){
+
+        if( $this->format!='json' || empty($this->me) ) $this->error();
+
+        $date = isset($_REQUEST['date']) ? $_REQUEST['date']: date('Y-m-d');
+        $this->view->setData('date', $date);
+        $this->view->render("summary/display");
+    }
 }

@@ -1,3 +1,5 @@
+/* v.2.2 */
+
 // Utility
 if ( typeof Object.create !== 'function' ) {
 	Object.create = function( obj ) {
@@ -17,6 +19,10 @@ if ( typeof Object.create !== 'function' ) {
 			self.setElem();
 			self.settings = $.extend( {}, $.fn.listpage2.options, options );
 
+			if( Object.prototype.toString.call( self.settings.options ) === '[object Array]' ) {
+				self.settings.options = {};
+			}
+
 			self.data = {
 				total: 0,
 				options: self.settings.options || {},
@@ -29,9 +35,8 @@ if ( typeof Object.create !== 'function' ) {
 			});
 			self.$elem.addClass('on');
 
-			self.ids = [];
+			self.ids = {};
 			self.Events();
-
 		},
 		setElem: function () {
 			var self = this;
@@ -43,6 +48,16 @@ if ( typeof Object.create !== 'function' ) {
 				}
 				
 			});
+
+			$.each(self.$elem.find('[plugin=dropdown]'), function() {
+				var options = $.parseJSON( $(this).attr('data-options') );
+				options.onClick = function (el) {
+					self.action($(el).attr('ajaxify'));
+				}
+
+				$(this).dropdown(options);
+			});
+			
 		},
 		resize: function () {
 			var self = this;
@@ -83,12 +98,12 @@ if ( typeof Object.create !== 'function' ) {
 				// width: fullw,
 				// height: fullh - (offset.top),
 				// overflow:'hidden'
-			});
+			}); 
 
 			self.$tabletitle.css({
 				position: 'fixed',
-				left: offset.left + 20,
-				right: right + 20,
+				left: offset.left,
+				right: right ,
 				zIndex: 20
 			});
 			
@@ -137,7 +152,7 @@ if ( typeof Object.create !== 'function' ) {
 				self.$table.find('.listpage2-table-empty').css( 'padding-top', self.$tabletitle.outerHeight()+headerH );
 			}
 			else{
-				self.$tabletitle.css( 'padding-right', self.$tabletitle.outerWidth() - self.$tablelists.find('table').outerWidth() );
+				self.$tabletitle.css( 'right', self.$tabletitle.outerWidth() - self.$tablelists.find('table').outerWidth() );
 			}
 		},
 
@@ -153,7 +168,7 @@ if ( typeof Object.create !== 'function' ) {
 				self.selection($(this).is(':checked'), 'all');
 			});
 
-			$('input#toggle_checkbox', self.$tablelists).change( function (e) {
+			self.$elem.delegate('input#toggle_checkbox', 'change', function (e) {
 				e.preventDefault();
 				self.selection($(this).is(':checked'), $(this).parents('tr') );
 			});
@@ -177,7 +192,13 @@ if ( typeof Object.create !== 'function' ) {
 				self.refresh( 1 );
 				e.preventDefault();
 			});
-			
+
+			self.$elem.delegate('[ajaxify]', 'click', function (e) {
+				e.preventDefault();
+
+				self.action($(this).attr('ajaxify'));
+			});
+
 			$('a.link-sort', self.$tabletitle).click( function (e) {
 
 				var val = $(this).attr('data-sort') || 'asc';
@@ -236,9 +257,7 @@ if ( typeof Object.create !== 'function' ) {
 				if( closedateOptions.length > 0 ){
 					$closedate.closedate({
 						onComplete: function ( that ) {
-
-							// self.refresh( 1 );
-							console.log( 'Complete', that, this );	
+							// console.log( 'Complete', that, this );	
 						},
 						onChange: function ( that ) {
 
@@ -269,15 +288,15 @@ if ( typeof Object.create !== 'function' ) {
 						self.refresh( 1 );
 					},
 
-					onComplete: function ( d ) { 
+					onComplete: function ( d ) {
 
-						console.log( 'onComplete', d );
 						self.data.options.date = PHP.dateJStoPHP( d );
 						self.refresh( 1 );
 					}
 				});
 			}
 			else{
+
 				self.refresh( 1 );
 			}
 
@@ -289,7 +308,6 @@ if ( typeof Object.create !== 'function' ) {
 				if(e.keyCode == 13 && text!='') {
 					self.search( text );
 				}
-
 			}).keyup(function(e){
 				var text = $.trim( $(this).val() );
 
@@ -309,25 +327,56 @@ if ( typeof Object.create !== 'function' ) {
 
 			
 			if( self.$header ){
-
 				self.$header.find('select[ref=selector]').change(function () {
 
 					self.data.options.pager = 1;
 					self.data.options[ $(this).attr('name') ] = $(this).val();
 
 					self.refresh( 1 );
-				});
+				});		
 			}
-			
 
-			/*self.$elem.delegate('.js-change', 'change', function() {
-				var url = $(this).data('url') || $(this).attr('stringify'),
-					name = $(this).attr('name')
-					val = $(this).val();
+			self.$elem.find('select[role=choose]').change(function () {
 
-				console.log( url, name, val );
-				if( !url ) return false;
-			});*/	
+				if( $(this).data('options') ){
+					$.each($.parseJSON( $(this).attr('data-options') ), function(i, obj) {
+						self.chooseSelect( obj );	
+					});
+				}
+				else{						
+					self.chooseSelect( $(this).data() );						
+				}
+			});
+		},
+		chooseSelect: function (data, callback) {
+			var self = this;
+
+			var $el = self.$elem.find('select[name='+data.id+']'), _get = {};
+
+			$.each( self.$elem.find('select[role=choose][data-id='+data.id+']'), function(index, el) {
+				_get[$(this).attr('name')] = $(this).val();
+			});
+
+			$.get( data.url, _get, function (res) {
+							
+				$el.empty();
+
+				var count = 0;
+				var options = $.map( res, function (obj) {
+
+					count+= parseInt( obj.count );
+					return $('<option>', {
+						value: obj.id,
+						text: obj.name+ ( obj.count ? ' ('+obj.count+')':'' )
+					})[0];
+				});
+
+				$el.append( $('<option>', {
+					value: '',
+					text: 'All' // (' + count + ')
+				}), options);
+
+			},'json');
 		},
 
 		search: function (text) {
@@ -338,7 +387,6 @@ if ( typeof Object.create !== 'function' ) {
 			self.is_search = true;
 			self.refresh( 500 );
 		},
-
 		setSelectedDate: function () {
 			var self = this;
 		},
@@ -374,7 +422,7 @@ if ( typeof Object.create !== 'function' ) {
 			toggle_checkbox.prop('checked', true);
 			el.addClass('has-checked');
 
-			self.ids.push( parseInt(id) );
+			self.ids[ parseInt(id) ] = el;
 			self.active();
 		},
 		cancelItem: function (el) {
@@ -385,15 +433,16 @@ if ( typeof Object.create !== 'function' ) {
 			toggle_checkbox.prop('checked', false);
 			el.removeClass('has-checked');
 
-			self.ids.splice(self.ids.length-1, parseInt(id));
+			delete self.ids[ parseInt(id) ];
 			self.active();
 		},
 		active: function () {
 			var self = this;
 
-			if(self.ids.length > 0){
+			var length = Object.keys(self.ids).length;
+			if( length > 0){
 				self.$actions.addClass('hidden_elem');
-				self.$selection.removeClass('hidden_elem').find('.count-value').text('เลือกแล้ว '+ self.ids.length + ' รายการ');
+				self.$selection.removeClass('hidden_elem').find('.count-value').text( length );
 			}
 			else{
 
@@ -404,7 +453,6 @@ if ( typeof Object.create !== 'function' ) {
 
 			self.resize();
 		},
-
 		refresh: function ( length ) {
 			var self = this;
 
@@ -415,6 +463,18 @@ if ( typeof Object.create !== 'function' ) {
 			self.is_loading = setTimeout(function () {
 				self.fetch().done(function( results ) {
 
+					if( self.$tablelists.parent().hasClass('has-error') ){
+						self.$tablelists.parent().removeClass('has-error');
+					}
+
+					if( results.settings.total === false ){
+						self.$tablelists.parent().addClass('has-error');
+						Event.showMsg({text: 'Data Error' });
+						return false;
+					}
+					
+					Event.hideMsg();
+
 					self.data = $.extend( {}, self.data, results.settings );
 					self.$tablelists.parent().toggleClass( 'has-empty', parseInt(self.data.total)==0 ? true: false );
 					
@@ -422,6 +482,12 @@ if ( typeof Object.create !== 'function' ) {
 
 					if( results.selector ){
 						self.setSelector( results.selector );
+					}
+
+					if( self.data.options.sort ){
+
+						var dir = self.data.options.dir.toLowerCase();
+						self.$tabletitle.find('[data-sort-val=' + self.data.options.sort + ']').attr('data-sort', self.data.options.dir).parent().removeClass( dir=='desc' ? 'asc':'desc' ).addClass( dir );
 					}
 					// self.buildFrag();
 					// console.log( self.data.options.sql );
@@ -431,16 +497,6 @@ if ( typeof Object.create !== 'function' ) {
 		},
 		fetch: function() {
 			var self = this;
-
-			// console.log( self.data.options );
-			// var qLoad = setTimeout( function () {
-			
-			// set url
-			/*var returnLocation = history.location || document.location,
-				href = self.data.url+"?"+$.param(self.data.options),
-				title = "";*/
-			// history.pushState('', title, href);
-			// document.title = title;
 
 			if( self.is_search ) self.$elem.find('.search-input').attr('disabled', true);
 
@@ -476,7 +532,10 @@ if ( typeof Object.create !== 'function' ) {
 			if( self.$elem.hasClass('offline') ){
 				self.$elem.removeClass('offline');
 			}
-			
+
+			// self.$tablelists.find('[data-id]').sortable();
+			// console.log( 1 );
+			// 
 		},
 
 		setMore: function () {
@@ -528,7 +587,6 @@ if ( typeof Object.create !== 'function' ) {
 					: $('<a>', {class: 'next'}).html( $('<i>', {class: 'icon-angle-right'}) )
 			);
 		},
-
 		setSelector: function ( results ) {
 			var self = this;
 
@@ -550,7 +608,74 @@ if ( typeof Object.create !== 'function' ) {
 					
 				}
 			});
-		}
+		},
+
+
+		action: function ( url ) {
+			var self = this;
+
+			if( Object.keys(self.ids).length==0 ) return false;
+			
+			var ids = [];
+			for (var i in self.ids) {
+				var obj = self.ids[i];
+
+				ids.push( i );
+			}
+
+			Dialog.load( url, {
+				ids: ids,
+				callback: 1
+			}, {
+				onSubmit: function ($d) {
+					
+					var $form = $d.$pop.find('form');
+
+					if( $form.hasClass('js-print') ){
+						self.print( $form );
+
+						self.selection(false, 'all');
+						Dialog.close();
+					}
+					else{
+						Event.inlineSubmit( $form ).done(function( result ) {
+							Event.processForm($form, result);
+						});
+					}
+					
+				},
+				onOpen: function () {
+					
+				},
+				onClose: function () {
+					// self.selection(false, 'all');
+				}
+			});
+
+		},
+
+		print: function ($form) {
+	    	var self = this;
+
+	    	var mm_px = 3.779528;
+
+            var h = $(window).height();
+            var w = 210*mm_px;
+
+            var params = 'status=0,title=0,scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width='+w+',height='+h+',left=0,top=0';
+
+            var mapForm = $form[0];
+
+            map = window.open( '', '_print', params );
+
+            if (map) { 
+            	mapForm.submit();
+            	Dialog.close()
+            }
+            else{
+              alert('You must allow popups for this map to work.');
+            }	
+	    },
 	};
 
 	$.fn.listpage2 = function( options ) {
@@ -565,8 +690,6 @@ if ( typeof Object.create !== 'function' ) {
 		options: {
 			pager: 1
 		},
-		/*onOpen: function() {},
-		onClose: function() {}*/
 	};
 	
 })( jQuery, window, document );

@@ -5,7 +5,7 @@ $form = $form->create()
     // set From
     ->addClass('form-insert form-large');
 
-$form   ->hr( '<h2 class="tac mbm">'.$this->lang->translate('DRINK').'</h2>' );
+$form   ->hr( '<div class="tac mbm fwb">'.$this->lang->translate('DRINK').'</div>' );
 
 $form   ->field("drink")
         ->autocomplete('off')
@@ -29,7 +29,7 @@ $arr['body'] = $form->html();
 // $arr['button'] = '<button type="submit" role="submit" class="btn btn-primary btn-submit"><span class="btn-text">'.$this->lang->translate('Save').'</span></button>';
 // $arr['bottom_msg'] = '<a class="btn" role="dialog-close"><span class="btn-text">'.$this->lang->translate('Cancel').'</span></a>';
 
-$arr['is_close_bg'] = 1;
+// $arr['is_close_bg'] = 1;
 $arr['width'] = 200;
 
 echo json_encode($arr);

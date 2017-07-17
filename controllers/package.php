@@ -7,8 +7,6 @@ class Package extends Controller {
     }
 
     public function index(){
-        
-
         if( $this->format=='json' ) {
             $this->view->setData('results', $this->model->lists() );
             $render = "package/lists/json";
@@ -19,6 +17,12 @@ class Package extends Controller {
             $this->view->setData('unit', $this->model->unit() );
             $this->view->setData('status', $this->model->status() );
 
+            $this->view->js('jquery/jquery-ui.min');
+            $this->view->js('jquery/jquery.sortable');
+
+            // $this->view->js( JS. 'jquery/jquery.sortable.js', true);
+            // $this->view->js( VIEW. 'Themes/manage/assets/js/sort.js', true);
+            
             $render = "package/lists/display";
         }
 
@@ -190,8 +194,7 @@ class Package extends Controller {
         echo json_encode($arr);
     }
 
-    public function del($id=null)
-    {
+    public function del($id=null) {
         $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : $id;
         if( empty($this->me) || empty($id) ) $this->error();
 
@@ -218,8 +221,7 @@ class Package extends Controller {
         }
     }
 
-    public function del_image_cover($id=null)
-    {
+    public function del_image_cover($id=null) {
         $id = isset($_REQUEST['id']) ? $_REQUEST['id']: $id;
         if( empty($this->me) || $this->format!='json' || empty($id) ) $this->error();
 
@@ -239,6 +241,34 @@ class Package extends Controller {
             $this->view->setPage('path','Themes/manage/forms/package');
             $this->view->render('del_image_cover');
         }
+    }
+
+    public function sort() {
+        
+
+        if( !empty($_POST) ){
+
+
+            $sequence = 0;
+            foreach ($_POST['id'] as $key => $id) {
+                $sequence++;
+
+                $this->model->update($id, array('pack_sequence'=>$sequence));
+            }
+
+            $arr['url'] = 'refresh';
+            $arr['message'] = 'บันทึกเรียบร้อย';
+            echo json_encode($arr);
+        }
+        else{
+            $this->view->setData('package', $this->model->query('package')->lists());
+
+            $this->view->setPage('path','Themes/manage/forms/package/');
+            $this->view->render('sort');
+
+        }
+        // print_r($this->model->query('package')->lists()); die;
+        
     }
 
 }

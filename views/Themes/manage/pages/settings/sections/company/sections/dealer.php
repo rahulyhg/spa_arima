@@ -15,7 +15,7 @@ $url = URL .'dealer/';
 
 		<?php foreach ($this->data['lists'] as $key => $item) { ?>
 		<tr>
-			<td class="name"><?=$item['name']?></td>
+			<td class="name"><a data-plugins="dialog" href="<?=$url?>edit/<?=$item['id'];?>" class="fwb"><?=$item['name']?></a></td>
 
 			<?php 
 			foreach ($this->paytype['lists'] as $key => $value) {
@@ -30,14 +30,19 @@ $url = URL .'dealer/';
 					}
 				}
 
-				echo '<td class="status"><label class="checkbox"><input'.$sel.' disabled class="disabled" type="checkbox" name=""></label></td>';
+				echo '<td class="status"><label class="checkbox"><input'.$sel.' class="" type="checkbox" name=""></label></td>';
 			}
 			?>
 
 			<td class="actions whitespace">
 				
-				<span class="gbtn"><a data-plugins="dialog" href="<?=$url?>edit/<?=$item['id'];?>" class="btn btn-no-padding"><i class="icon-pencil"></i></a></span>
-				<span class='gbtn'><a data-plugins="dialog" href="<?=$url?>del/<?=$item['id'];?>" class="btn btn-no-padding"><i class="icon-trash"></i></a></span>
+				<div class="group-btn whitespace"><?php 
+					
+					echo '<a data-plugins="dialog" href="'.$url.'edit/'.$item['id'].'" class="btn"><i class="icon-pencil"></i></a>';
+
+					echo '<a data-plugins="dialog" href="'.$url.'del/'.$item['id'].'" class="btn"><i class="icon-trash"></i></a>';
+
+				?></div>
 
 			</td>
 
@@ -45,8 +50,8 @@ $url = URL .'dealer/';
 		<?php } ?>
 	</tbody></table>
 </section>
-<div class="clearfix">
-	<div class="rfloat">
+<div class="clearfix mtl">
+	<div class="lfloat">
 	<span class="gbtn"><a class="btn btn-blue" data-plugins="dialog" href="<?=$url?>add"><i class="icon-plus mrs"></i><span>Add New</span></a>
 	</span>
 	</div>

@@ -89,6 +89,9 @@ class Dashboard extends Controller {
 		/* แปลงวันที่ */
 		$this->view->setData('date_str', $this->fn->q('time')->str_event_date($start, $end) );
 
+		// print_r($this->model->query('reports')->summaryEachPackage( $start, $end )); die;
+		$this->view->setData('summaryEachPackage', $this->model->query('reports')->summaryEachPackage( $start, $end ) );
+
         $this->view->render("dashboard/display");
 	}
 
@@ -96,28 +99,4 @@ class Dashboard extends Controller {
 		
 		$this->view->render("dashboard/demo");
 	}
-
-	/*public function booking() {
-		
-
-		$this->view->setData('tab', "booking");
-		$this->view->render("dashboard/display");
-	}
-
-	public function services(){
-
-		$this->view->setData('tab', "services");
-		$this->view->render("dashboard/display");
-	}
-
-	public function stocks(){
-		
-		$this->view->setData('tab', "stocks");
-		$this->view->render("dashboard/display");
-	}
-
-	public function sales() {
-		$this->view->setData('tab', "sales");
-		$this->view->render("dashboard/display");
-	}*/
 }

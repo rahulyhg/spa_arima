@@ -12,12 +12,12 @@ $title = array( 0 =>
 	0 =>   array('key'=>'ID', 'text'=>'เบอร์', 'sort'=>'code_order','rowspan'=>2)
 
 		 , array('key'=>'name', 'text'=>'ชื่อ-นามสกุล', 'sort'=>'first_name','rowspan'=>2)
-		 , array('key'=>'status', 'text'=>'ชื่อเล่น', 'sort'=>'nickname','rowspan'=>2)
+		 , array('key'=>'status', 'text'=>'ชื่อเล่น','rowspan'=>2)
 
 		 , array('key'=>'status', 'text'=>'ความสามารถในการบริการ','colspan'=> count($skill))
 
-		 , array('key'=>'phone', 'text'=>'เบอร์โทร','rowspan'=>2)
-		 , array('key'=>'note', 'text'=>'หมายเหตุ','rowspan'=>2)
+		 , array('key'=>'date', 'text'=>'ทำงานล่าสุด', 'sort'=>'updated','rowspan'=>2)
+		 , array('key'=>'status', 'text'=>'การใช้งาน','rowspan'=>2)
 	),
 	$skill
 	

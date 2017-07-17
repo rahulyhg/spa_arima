@@ -9,28 +9,6 @@ class Masseuse extends Controller {
 	public function index($id='', $section='services'){
 		$this->view->setPage('on', 'masseuse' );
 
-        // $data = $this->model->db->select( "SELECT emp_id, emp_code, emp_code_order FROM employees WHERE `emp_dep_id`=5 AND`emp_pos_id`=3" );
-        // 
-
-        // $n = 0;
-        // foreach ($data as $key => $value) {
-            // $n++;
-
-            // preg_match('/[^0-9]*([0-9]+)[^0-9]*/', $value['emp_code'], $regs);
-            // $n = intval($regs[1]);
-
-            // $code = 'P'. sprintf("%03d",$n);
-
-            // $n = $value['emp_code']; //substr($value['emp_code'],1);
-
-            // $data[$key]['emp_code_order'] = sprintf("%02d",$n);
-
-            // $this->model->db->update( "employees", array('emp_code_order'=>sprintf("%04d",$n) ), "`emp_id`={$value['emp_id']}" );
-        // }
-
-        // echo count($data); die;
-        // print_r($data); die;
-           
         if( !empty($id) ){
 
             $options = array();
@@ -62,6 +40,10 @@ class Masseuse extends Controller {
             else{
 
                 // $this->view->elem('body')->addClass();
+
+                $this->view->js('jquery/jquery-ui.min');
+                $this->view->js('jquery/jquery.sortable');
+
                 $this->view->setData('position', $this->model->query('employees')->position(5) );
                 $render = "masseuse/lists/display";
             }
@@ -69,6 +51,176 @@ class Masseuse extends Controller {
             $this->view->render($render);
         }
 	}
+
+
+    public function add() {
+        if( empty($this->me) || $this->format!='json' ) $this->error();
+
+        $this->view->setData('dealer', $this->model->query('dealer')->lists() );
+        $this->view->setData('prefixName', $this->model->query('system')->_prefixName());
+        $this->view->setData('city', $this->model->query('system')->city());
+
+        $this->view->setData('position', $this->model->query('employees')->position(5) );
+
+        $this->view->setPage('path','Themes/manage/forms/masseuse');
+        $this->view->render("add");
+    }
+    public function save() {
+        
+        if( empty($_POST) ) $this->error();
+
+        $id = isset($_POST['id']) ? $_POST['id']: null;
+        if( !empty($id) ){
+            $item = $this->model->get($id);
+            if( empty($item) ) $this->error();
+        }
+
+        try {
+            $form = new Form();
+            $form   ->post('emp_dealer_id')->val('is_empty')
+                    ->post('emp_code')->val('is_empty')
+                    ->post('emp_dep_id')->val('is_empty')
+                    ->post('emp_pos_id')->val('is_empty')
+
+                    ->post('emp_prefix_name')
+                    ->post('emp_first_name')->val('is_empty')
+                    ->post('emp_last_name')
+                    ->post('emp_nickname');
+                    /*->post('emp_phone_number')
+                    ->post('emp_email')
+                    ->post('emp_line_id')
+                    ->post('emp_address')
+                    ->post('emp_notes');*/
+
+            $form->submit();
+            $postData = $form->fetch();
+
+            $has_name = true;
+            $has_code = true;
+            if( !empty($id) ){
+
+                if( $item['code']==$item['emp_code'] ){
+                    $has_code = false;
+                }
+
+                if( $postData['emp_first_name']==$item['first_name'] && $postData['emp_last_name']==$item['last_name'] ){
+                    $has_name = false;
+                }
+            }
+
+            if( $this->model->query('employees')->is_name( $postData['emp_first_name'] , $postData['emp_last_name'] ) && $has_name == true ){
+                $arr['error']['emp_name'] = "มีชื่อนี้ ในระบบแล้ว";
+            }
+
+            if( $this->model->query('employees')->is_code($postData['emp_code']) ){
+                $arr['error']['emp_code'] = "เบอร์นี้มีอยู่ในระบบแล้ว";
+            }
+
+            /*$futureDate = date('Y-m-d',strtotime(date("Y-m-d", mktime()) . " -6 year"));
+            $birthday = date("{$_POST['birthday']['year']}-{$_POST['birthday']['month']}-{$_POST['birthday']['date']}");
+            if( strtotime($birthday) > strtotime($futureDate) ){
+                $arr['error']['birthday'] = 'วันเกิดไม่ถูกต้อง';
+            }
+            $postData['emp_birthday'] = $birthday;*/
+
+            if( empty($arr['error']) ){
+
+                if( !empty($item) ){
+                    $this->model->query('employees')->update( $id, $postData );
+                }
+                else{
+                    $this->model->query('employees')->insert( $postData );
+                    $id = $postData['id'];
+                }
+
+                // เรียงลำดับใหม่
+                $this->model->sortAll( $postData['dep_id'], $postData['pos_id'] );
+            
+
+                // upload image 
+                if( !empty($_FILES['file1']) ){
+
+                    $userfile = $_FILES['file1'];
+
+                    if( !empty($item['image_id']) ){
+                        $this->model->query('media')->del($item['image_id']);
+                        $this->model->query('employees')->update( $id, array('emp_image_id'=>0 ) );
+                    }
+
+                    $album = array('album_id'=>1);
+                    
+                    if( empty($structure) ){
+                        $structure = WWW_UPLOADS . $album['album_id'];
+                        if( !is_dir( $structure ) ){
+                            mkdir($structure, 0777, true);
+                        }
+                    }
+
+                    /**/
+                    /* get Data Album */
+                    /**/
+                    $options = array(
+                        'album_obj_type' => isset( $_REQUEST['obj_type'] ) ? $_REQUEST['obj_type']: 'public',
+                        'album_obj_id' => isset( $_REQUEST['obj_id'] ) ? $_REQUEST['obj_id']: 1,
+                        );
+
+                    if( isset( $_REQUEST['album_name'] ) ){
+                        $options['album_name'] = $_REQUEST['album_name'];
+                    }
+                    $album = $this->model->query('media')->searchAlbum( $options );
+
+                    if( empty($album) ){
+                        $this->model->query('media')->setAlbum( $options );
+                        $album = $options;
+                    }
+
+                    // set Media Data
+                    $media = array(
+                        'media_album_id' => $album['album_id'],
+                        'media_type' => isset($_REQUEST['media_type']) ? $_REQUEST['media_type']: strtolower(substr(strrchr($userfile['name'],"."),1))
+                        );
+
+                    $options = array(
+                        'folder' => $album['album_id'],
+                        'has_quad' => true,
+                        );
+
+                    if( !isset($media['media_emp_id']) ){
+                        $media['media_emp_id'] = $this->me['id'];
+                    }
+
+                    $this->model->query('media')->set( $userfile, $media, $options );
+
+                    if( empty($media['error']) ){
+                        $media = $this->model->query('media')->convert($media);
+                    }
+                    $item['image_id'] = $media['id'];
+                    $this->model->query('employees')->update( $id, array('emp_image_id'=>$item['image_id'] ) );
+
+                    // resize   
+                    if( !empty($_POST['cropimage']) && !empty($item['image_id']) ){
+                        $this->model->query('media')->resize($item['image_id'], $_POST['cropimage']);
+                    }
+
+                } // end: upload image 
+
+                $arr['message'] = 'บันทึกเรียบร้อย';
+                $arr['url'] = 'refresh';
+            }
+
+        } catch (Exception $e) {
+            $arr['error'] = $this->_getError($e->getMessage());
+
+            if( !empty($arr['error']['emp_first_name']) ){
+                $arr['error']['name'] = $arr['error']['emp_first_name'];
+            } else if( !empty($arr['error']['emp_last_name']) ){
+                $arr['error']['name'] = $arr['error']['emp_last_name'];
+            }
+        }
+
+        echo json_encode($arr);
+    }
+
 
     public function get($id=null) {
 
@@ -138,7 +290,7 @@ class Masseuse extends Controller {
         );
 
         echo json_encode($results); die;
-        print_r($results); die;
+        // print_r($results); die;
     }
 
     public function update( $id=null , $section=null ){
@@ -233,7 +385,6 @@ class Masseuse extends Controller {
             $this->view->setData('item', $item);
             $this->view->render('masseuse/forms/edit_'.$section);
         }
-
     }
 
     public function skill( $id=null ){
@@ -317,21 +468,20 @@ class Masseuse extends Controller {
         }
     }
 
-    public function monitor() {
+/*    public function monitor() {
         
         $this->view->setPage('theme', 'monitor');
         $this->view->setPage('theme_options', array(
             'has_footer' => false,
             'has_topbar' => false,
             'has_menu' => false,
-            
         ));  
         $date = isset($_REQUEST['date']) ? $_REQUEST['date']: date('Y-m-d'); 
 
         $this->view->setData('date', $date );
         $this->view->setData('lists', $this->model->query('masseuse')->listJob( array('date'=>$date, 'unlimit'=>1, 'status'=>'on' ) ) );
         $this->view->render('masseuse/display');   
-    }
+    }*/
 
     public function edit_time( $id=null ){
         $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : $id;
@@ -398,4 +548,113 @@ class Masseuse extends Controller {
             $this->view->render('masseuse/forms/job_all_cancel');
         }
     }
+
+
+    public function queue() {
+        if( $this->format!='json' || empty($this->me) ) $this->error();
+
+        $date = isset($_REQUEST['date']) ? $_REQUEST['date']: date('Y-m-d');
+        $data = $this->model->listJob( array('date'=>$date, 'unlimit'=>1, 'status'=>'on', 'view_stype'=>'bucketed' ) );
+
+        echo json_encode($data);
+    }
+    public function queue_sort() {
+        if( $this->format!='json' || empty($this->me) ) $this->error();
+
+        $sequence = $this->model->nextJobSequence( array('date'=>$_POST['date'], 'type'=>$_POST['type'], 'status' => array('run', 'done')) );
+
+        foreach ($_POST['ids'] as $id) {
+            $this->model->updateJob( $id, array('job_sequence'=>$sequence) );
+            $sequence++;
+        }
+    }
+    public function queue_card($id=null) {
+        $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : $id;
+        if( $this->format!='json' || empty($this->me) || empty($id) ) $this->error();
+
+        $item = $this->model->get($id);
+        if( empty($item) ) $this->error();
+
+        $date = isset($_REQUEST['date']) ? $_REQUEST['date']: date('Y-m-d'); 
+        $job = $this->model->getJob( $id, array('status'=>'on', 'date'=>$date) );
+
+
+        $this->view->setData('date', $date );
+        $this->view->setData('job', $job);
+
+        $this->view->setData('skill', $this->model->query('employees')->skill());
+        $this->view->setData('item', $item);
+        $this->view->setPage('path', 'Forms/masseuse/');
+        $this->view->render("card");
+    }
+    public function queue_del($id=null) {
+        $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : $id;
+        if( $this->format!='json' || empty($this->me) || empty($id) ) $this->error();
+
+        $item = $this->model->get($id);
+        if( empty($item) ) $this->error();
+
+        $date = isset($_REQUEST['date']) ? $_REQUEST['date']: date('Y-m-d'); 
+        $job = $this->model->getJob( $item['id'], array('status'=>'on', 'date'=>$date) );
+
+        if( !empty($_POST) ){
+
+
+            $this->model->deleteJob($job['job_id']);
+            $arr['message'] = 'ลบเรียบร้อย';
+            $arr['data'] = $job;
+
+            echo json_encode($arr);
+        }
+        else{
+            $this->view->setData('date', $date );
+            $this->view->setData('job', $job);
+
+            $this->view->setData('item', $item);
+            $this->view->setPage('path', 'Forms/masseuse/');
+            $this->view->render("queue_del");
+        }
+        
+    }
+    public function clocking() {
+        
+        $date = isset($_REQUEST['date']) ? $_REQUEST['date']: date('Y-m-d'); 
+        $code = isset($_REQUEST['code']) ? $_REQUEST['code']: '';
+
+        $item = $this->model->query('masseuse')->getCode( $code );
+        if( !empty($item) ){
+
+            $arr['data'] = $this->model->getJob( $item['id'], array('status'=>'on', 'date'=>$date) );
+
+            if( !empty($arr['data']) ){
+                $arr['error'] = 1;
+                $arr['message'] = "เบอร์ {$code} อยู่ในคิวแล้ว";
+            } else{
+
+                switch ($item['pos_id']) {
+                    case '5': case '6':
+                        $type = 'oil';
+                        break;
+                    
+                    default:
+                        $type = 'massager';
+                        break;
+                }
+
+
+                $this->model->setJob( $item['id'], array( 'date'=>$date, 'type'=>$type ) );
+
+                $arr['data'] = $this->model->query('masseuse')->getJob( $item['id'], array('status'=>'on', 'date'=>$date) );
+            }
+        } 
+        else{
+            $arr['error'] = 1;
+            $arr['message'] = 'ไม่พบข้อมูล';
+        }
+
+        echo json_encode($arr);
+    }
+
+    
+   
 }

@@ -4,13 +4,13 @@
 $title = array(
 	0 =>   
 	  array('key'=>'ID', 'text'=>$this->lang->translate('Code'), 'sort'=>'code')
-	, array('key'=>'name', 'text'=>$this->lang->translate('Full Name'),'sort'=>'first_name')
-	, array('key'=>'phone', 'text'=>$this->lang->translate('Nick Name') )
-	, array('key'=>'express', 'text'=>$this->lang->translate('Contact') )
+	, array('key'=>'name', 'text'=>'ชื่อ','sort'=>'first_name')
+	// , array('key'=>'status', 'text'=>'ชื่อเล่น' )
+	, array('key'=>'express', 'text'=>'ข้อมูลการติดต่อ' )
 
-	, array('key'=>'date', 'text'=>$this->lang->translate('Expired Date') )
-
-	, array('key'=>'status', 'text'=>$this->lang->translate('Status') )
+	, array('key'=>'status', 'text'=>'สถานะ' )
+	, array('key'=>'date', 'text'=>'วันหมดอายุ' )
+	, array('key'=>'date', 'text'=>'เข้าใช้บริการล่าสุด' , 'sort'=>'updated')
 	 // , array('key'=>'date', 'text'=>$this->lang->translate('Last Update'))
 	
 );

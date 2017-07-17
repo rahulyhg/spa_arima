@@ -2,7 +2,15 @@
 
 $level = '';
 foreach ($this->level as $key => $value) {
-	$level .= '<option value="'.$value['id'].'">'.$value['name'].'</option>';
+
+	$selected = '';
+	if( !empty($_GET['level']) ){
+		if( $_GET['level']==$value['id'] ){
+			$selected = ' selected';
+		}
+		
+	}
+	$level .= '<option'.$selected.' value="'.$value['id'].'">'.$value['name'].'</option>';
 }
 
 	$form = new Form();
@@ -95,7 +103,9 @@ $arr['width'] = 550;
 
 $arr['title']= "Members";
 
-$arr['button'] = '<button type="submit" role="submit" class="btn btn-primary btn-submit"><span class="btn-text">บันทึก</span></button>';
-$arr['bottom_msg'] = '<a class="btn" role="dialog-close"><span class="btn-text">ยกเลิก</span></a>';
+$arr['button'] = '<button class="btn" type="button" role="cancel"><span class="btn-text">'.$this->lang->translate('Cancel').'</span></button>';
+$arr['button'] .= '<button type="submit" role="submit" class="btn btn-primary btn-submit"><span class="btn-text">'.$this->lang->translate('Save').'</span></button>';
+
+$arr['bottom_msg'] = '<a class="btn" role="dialog-close"><span class="btn-text">ปิด</span></a>';
 
 echo json_encode($arr);

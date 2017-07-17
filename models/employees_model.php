@@ -113,10 +113,20 @@ class Employees_Model extends Model{
         }
 
         if( !empty($options['not_dep_id']) ){
-
-            $where_str .= !empty( $where_str ) ? " AND ":'';
-            $where_str .= "emp_dep_id!=:not_dep_id";
-            $where_arr[':not_dep_id'] = $options['not_dep_id'];
+            if( is_array($options['not_dep_id']) ){
+                $w = '';
+                foreach ($options['not_dep_id'] as $key => $value) {
+                    $w .= !empty( $w ) ? " AND ":'';
+                    $w .= "emp_dep_id!={$value}";
+                }
+                $where_str .= !empty( $where_str ) ? " AND ":'';
+                $where_str .= "({$w})";
+            }
+            else{
+                $where_str .= !empty( $where_str ) ? " AND ":'';
+                $where_str .= "emp_dep_id!=:not_dep_id";
+                $where_arr[':not_dep_id'] = $options['not_dep_id'];
+            }
         }
 
         if( !empty($options['q']) ){
@@ -282,24 +292,11 @@ class Employees_Model extends Model{
         return $sth->rowCount()==1 ? $fdata['id']: false;
     }
     public function is_user($text){
-
-        $c = $this->db->count($this->_objType, "{$this->_cutNamefield}username='{$text}'");
-        if( $c==0 ){
-            $c = $this->db->count("users", "emp_username='{$text}'");
-        }
-
-        return $c;
+        return $this->db->count($this->_objType, "{$this->_cutNamefield}username='{$text}'");
     }
-    /*public function is_name($text) {
-
-        $c = $this->db->count($this->_objType, "{$this->_cutNamefield}name='{$text}'");
-        if( $c==0 ){
-            $c = $this->db->count("users", "emp_name='{$text}'");
-        }
-
-        return $c;
-    }*/
-
+    public function is_code($text) {
+        return $this->db->count($this->_objType, "{$this->_cutNamefield}code='{$text}' AND `emp_display`='enabled'");
+    }
     public function is_checkpass($id, $old_pass) {
         return $this->db->count($this->_objType, "{$this->_cutNamefield}id='{$id}' AND {$this->_cutNamefield}password='{$old_pass}'");
     }
@@ -483,18 +480,31 @@ class Employees_Model extends Model{
     /* Check */
     /**/
     public function is_name( $first_name=null , $last_name=null ){
-        return $this->db->count( 'employees', "emp_first_name=':first_name' AND emp_last_name=':last_name'", array(':first_name'=>$first_name , ':last_name'=>$last_name) );
+        return $this->db->count( 'employees', "emp_first_name=:first_name AND emp_last_name=:last_name", array(':first_name'=>$first_name , ':last_name'=>$last_name) );
     }
 
+
     /**/
-    /* SKILL */
+    /* Skill */
     /**/
     private $select_skill = "
-         skill_id as id
-        ,skill_name as name
+          skill_id as id
+        , skill_name as name
+        , skill_type as type
     ";
     public function skill() {
-        $data = $this->db->select("SELECT {$this->select_skill} FROM emp_skill");
+        $fdata = $this->db->select("SELECT {$this->select_skill} FROM emp_skill ORDER BY skill_sequence ASC");
+
+        $data = array();
+        foreach ($fdata as $key => $value) {
+            $data[] = $this->skill_convert($value);
+        }
+
+        return $data;
+    }
+    public function skill_convert($data) {
+
+        // $data['type'] = json_decode($data['type'], 1);
         return $data;
     }
     public function get_skill($id){
@@ -511,7 +521,7 @@ class Employees_Model extends Model{
         $total_emp = $this->db->count('emp_skill_permit', "`skill_id`={$data['id']}");
         if( $total_emp > 0 ) $data['permit']['del'] = false;
 
-        return $data;
+        return $this->skill_convert($data);
     }
     public function insert_skill(&$data) {
         $this->db->insert( 'emp_skill', $data );

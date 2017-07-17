@@ -5,6 +5,54 @@ class Reports_Model extends Model {
         parent::__construct();
     }
 
+
+    public function summaryEachPackage($start, $end) {
+
+        if( empty($start) || empty($end) ){
+
+            $date = date('Y-m-d');
+
+            $start = date('Y-m-d 00:00:00', strtotime($date));
+            $end = date('Y-m-d 23:59:59', strtotime($date));
+        }
+
+
+        $arr = array();
+        $sth = $this->db->prepare("SELECT SUM(order_room_price) AS amount FROM orders WHERE order_date BETWEEN :s AND :e");
+        $sth->execute(array(':s'=>$start, ':e'=>$end));
+        $fdata = $sth->fetch( PDO::FETCH_ASSOC );
+
+        $arr[] = array(
+            'name' => 'ค่าห้อง V.I.P.',
+            'amount' => $fdata['amount'],
+        );
+
+
+        $package = $this->db->select("SELECT pack_id as id, pack_name as name FROM package ORDER BY pack_sequence ASC");
+        foreach ($package as $key => $value) {
+
+            $sth = $this->db->prepare("SELECT SUM(orders_items.item_balance) AS amount FROM orders_items LEFT JOIN orders ON orders.order_id=orders_items.item_order_id WHERE orders_items.item_pack_id=:id AND orders.order_date BETWEEN :s AND :e");
+            $sth->execute(array(':id'=>$value['id'],':s'=>$start, ':e'=>$end));
+            $fdata = $sth->fetch( PDO::FETCH_ASSOC );
+
+            $arr[] = array(
+                'name' => $value['name'],
+                'amount' => $fdata['amount'],
+            );
+        }
+
+
+        $sth = $this->db->prepare("SELECT SUM(order_drink) AS amount FROM orders WHERE order_date BETWEEN :first AND :last");
+        $sth->execute(array(':first'=>$start, ':last'=>$end));
+        $fdata = $sth->fetch( PDO::FETCH_ASSOC );
+        $arr[] = array(
+            'name' => 'DRINK',
+            'amount' => $fdata['amount'],
+        );
+
+        return $arr;
+    }
+
     public function income($start, $end){
 
     	$end .= ' 23:59:59';
