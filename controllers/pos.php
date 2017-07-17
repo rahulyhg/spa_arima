@@ -1,14 +1,14 @@
 <?php
 
 class Pos extends Controller{
-	
-	function __construct(){
-		parent::__construct();
-	}
+    
+    function __construct(){
+        parent::__construct();
+    }
 
-	public function index() {
+    public function index() {
         header('Location: '. URL.'pos/orders' );
-	}
+    }
 
     public function orders(){
         

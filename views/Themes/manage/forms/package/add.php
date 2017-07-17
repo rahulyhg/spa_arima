@@ -13,16 +13,16 @@ $form   ->field("image")
         !empty($this->item['image_arr']) 
             ? $this->fn->stringify( array_merge( 
                 array( 
-                    'scaledX'=> 1180,
-                    'scaledY'=> 640,
+                    'scaledX'=> 640,
+                    'scaledY'=> 360,
                     'action_url' => URL.'package/del_image_cover/'.$this->item['id'],
                     // 'top_url' => IMAGES_PRODUCTS
                 ), $this->item['image_arr'] ) )
             : $this->fn->stringify( array( 
-                    'scaledX'=> 1180,
-                    'scaledY'=> 640
+                    'scaledX'=> 640,
+                    'scaledY'=> 360
                 ) )
-            ).'"style="width: 329px;height: 201px; margin-left:43px;margin-top:0px">
+            ).'">
         <div class="loader">
         <div class="progress-bar medium"><span class="bar blue" style="width:0"></span></div>
         </div>

@@ -7,7 +7,7 @@ $options = array('load'=> URL .'notes/notes?obj_id='.$this->item['id'].'&obj_typ
 		)
 	);
 
-if( !empty($this->permit['customers']['edit']) || $this->me['id'] == $this->item['emp_id'] ){
+if( $this->has_edit ){
 	
 	$actions[] = array(
 		'text' => 'แก้ไข',
@@ -34,7 +34,7 @@ if( !empty($this->permit['customers']['edit']) || $this->me['id'] == $this->item
 	
 	<div id="posts" class="posts" data-plugins="posts" data-options="<?=$this->fn->stringify( $options )?>">
 		
-		<?php if( !empty($this->permit['customers']['edit']) || $this->me['id'] == $this->item['emp_id'] ){ ?>
+		<?php if( $this->has_edit ){ ?>
 		<form class="post post-form" method="post" action="<?=URL?>notes/save_note">
 			<div class="post-form--loader"></div>
 			<input type="hidden" name="obj_id" value="<?=$this->item['id']?>" />

@@ -4,7 +4,7 @@ $options = array(
 	'url' => URL."media/lists?obj_type=cus_file&obj_id={$this->item['id']}"
 );
 
-if( !empty($this->permit['customers']['edit']) || $this->me['id'] == $this->item['emp_id'] ){
+if( $this->has_edit ){
 	$options['upload_url'] = URL."media/set?obj_type=cus_file&obj_id={$this->item['id']}";
 	$options['remove_url'] = URL."media/del/";
 }
@@ -30,7 +30,7 @@ if( !empty($this->permit['customers']['edit']) || $this->me['id'] == $this->item
 
 		<div class="alert-empty">
 			<div class="alert-empty-text">ไม่มีไฟล์ 
-			<?php if( !empty($this->permit['customers']['edit']) || $this->me['id'] == $this->item['emp_id'] ){ ?>
+			<?php if( $this->has_edit ){ ?>
 			<a class="js-upload">เพิ่มไฟล์ใหม่</a>
 			<?php } ?>
 			</div> 

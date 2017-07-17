@@ -281,6 +281,10 @@ class Orders extends Controller {
             $this->view->setData('package', $this->model->query('package')->get( $_GET['package'] ) );
         }
 
+        if( $type=='vip' ){
+            $this->view->setData('number', $this->model->query('system')->rooms());
+        }
+
         $this->view->setData('date', $date);
         $this->view->setPage('path','Forms/orders');
         $this->view->render("set_bill_{$type}");

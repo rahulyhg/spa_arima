@@ -117,12 +117,12 @@ class System_Model extends Model{
     }
 
     public function get() {
-    	$data = $this->db->select( "SELECT * FROM system_info" );
+        $data = $this->db->select( "SELECT * FROM system_info" );
 
-    	$object = array();
-    	foreach ($data as $key => $value) {
-    		$object[$value['option_name']] = $value['option_value'];
-    	}
+        $object = array();
+        foreach ($data as $key => $value) {
+            $object[$value['option_name']] = $value['option_value'];
+        }
 
         $contacts = $this->db->select( "SELECT contact_type as type, contact_name as name, contact_value as value FROM system_contacts" );
 
@@ -146,7 +146,7 @@ class System_Model extends Model{
             $object['working_time_desc'] = json_decode($object['working_time_desc'], true);
         }
 
-    	return $object;
+        return $object;
     }
 
     public function setContacts($data) {
@@ -348,8 +348,6 @@ class System_Model extends Model{
 
         return array($start, $end);
     }
-
-
 
     public function skill_type(){
 

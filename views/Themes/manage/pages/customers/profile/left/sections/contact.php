@@ -24,7 +24,7 @@ $addr[] = array('label'=>'','key'=>'zip');
 <section class="mbl">
 	<header class="clearfix">
 		<h2 class="title"><i class="icon-map-marker mrs"></i>ข้อมูลการติดต่อ</h2>
-		<?php if( !empty($this->permit['customers']['edit']) || $this->me['id'] == $this->item['emp_id'] ){ ?>
+		<?php if( $this->has_edit ){ ?>
 		<a data-plugins="dialog" href="<?=URL?>customers/edit_contact/<?=$this->item['id']?>" class="btn-icon btn-edit"><i class="icon-pencil"></i></a>
 		<?php } ?>
 	</header>

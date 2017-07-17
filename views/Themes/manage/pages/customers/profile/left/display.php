@@ -28,7 +28,7 @@ $dropdown = array();
 }*/
 
 // $dropdown[] = array( 'type' => 'separator');
-if( !empty($this->permit['customers']['edit']) || $this->me['id'] == $this->item['emp_id'] ){
+if( $this->has_edit ){
     $dropdown[] = array(
         'text' => 'ลบ',
         'href' => URL.'customers/del/'.$this->item['id'],

@@ -1,5 +1,7 @@
 <?php 
 
+$this->has_edit = !empty($this->permit['customers']['edit']) || $this->me['id'] == $this->item['emp']['id'];
+
 $this->tab = isset($this->tab)? $this->tab: '';
 
 $this->tabs = array();

@@ -2,12 +2,12 @@
 
 class Masseuse extends Controller {
 
-	public function __construct() {
-		parent::__construct();
-	}
+    public function __construct() {
+        parent::__construct();
+    }
 
-	public function index($id='', $section='services'){
-		$this->view->setPage('on', 'masseuse' );
+    public function index($id='', $section='services'){
+        $this->view->setPage('on', 'masseuse' );
 
         if( !empty($id) ){
 
@@ -50,7 +50,7 @@ class Masseuse extends Controller {
 
             $this->view->render($render);
         }
-	}
+    }
 
 
     public function add() {
@@ -654,7 +654,5 @@ class Masseuse extends Controller {
 
         echo json_encode($arr);
     }
-
-    
-   
+  
 }

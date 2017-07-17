@@ -3,18 +3,21 @@
 $form = new Form();
 $form = $form->create()
     // set From
-    ->addClass('form-insert form-large');
+    ->addClass('form-insert');
 
-$form   ->hr( '<h2 class="tac mbm">ราคาห้อง</h2>' );
+$form   ->field("room_number")
+        ->label('Number')
+        ->autocomplete('off')
+        ->select( $this->number )
+        ->addClass('inputtext')
+        ->value( isset($_GET['room_number']) ? $_GET['room_number']: 0 );
 
 $form   ->field("room_price")
+        ->label("Price")
         ->autocomplete('off')
         ->type('number')
-        ->attr('autoselect', 1)
-        ->addClass('inputtext tac')
+        ->addClass('inputtext')
         ->value( isset($_GET['room_price']) ? $_GET['room_price']: 0 );
-
-$form   ->hr('<div class="mtm"><button type="submit" role="submit" class="btn btn-large btn-primary btn-submit" style="width:100%"><span class="btn-text">'.$this->lang->translate('Save').'</span></button></div>');
 
 # set form
 $arr['form'] = '<form></form>';
@@ -23,13 +26,13 @@ $arr['form'] = '<form></form>';
 $arr['body'] = $form->html();
 
 # title
-// $arr['title']= '<div>'$this->lang->translate('DRINK');
+$arr['title']= "กำหนดห้อง";
 
 # fotter: button
-// $arr['button'] = '<button type="submit" role="submit" class="btn btn-primary btn-submit"><span class="btn-text">'.$this->lang->translate('Save').'</span></button>';
-// $arr['bottom_msg'] = '<a class="btn" role="dialog-close"><span class="btn-text">'.$this->lang->translate('Cancel').'</span></a>';
+$arr['button'] = '<button type="submit" role="submit" class="btn btn-primary btn-submit"><span class="btn-text">'.$this->lang->translate('Save').'</span></button>';
+$arr['bottom_msg'] = '<a class="btn" role="dialog-close"><span class="btn-text">'.$this->lang->translate('Cancel').'</span></a>';
 
 $arr['is_close_bg'] = 1;
-$arr['width'] = 200;
+$arr['width'] = 350;
 
 echo json_encode($arr);

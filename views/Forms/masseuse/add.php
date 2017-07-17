@@ -1,6 +1,6 @@
 <?php
 
-$title = 'Masseuse';
+$title = $this->lang->translate('Masseuse');
 
 $options = array(
     'url' => URL.'media/set',
@@ -43,22 +43,45 @@ $picture_box = '<div class="anchor"><div class="clearfix">'.
 
 $form = new Form();
 $form = $form->create()
-    // set From
-    ->elem('div')
-    ->addClass('form-insert');
+	// set From
+	->elem('div')
+	->addClass('form-insert form-emp');
 
 $form   ->field("image")
         ->text( $picture_box );
 
-$form   ->field("code")
-        ->label( $this->lang->translate('Code') )
+// Dealer
+if( count($this->dealer['lists'])==1 ){
+    $arr['hiddenInput'][] = array('name'=>'emp_dealer_id','value'=>$this->dealer['lists'][0]['id']);
+}
+else{
+
+    $options = '';
+    foreach ($this->dealer['lists'] as $key => $value) {
+        
+        $selected = '';
+        if( !empty($this->item['dealer_id']) ){
+            if( $this->item['dealer_id']==$value['id'] ){
+                $selected = ' selected="1"';
+            }
+        }
+        $options .= '<option'.$selected.' value="'.$value['id'].'">'.$value['name'].'</option>';
+    }
+
+    $select = '<select class="inputtext" name="emp_dealer_id">'.$options.'</select>';
+    $form   ->field("emp_dealer_id")
+            ->label('Dealer')
+            ->text( $select );
+}
+
+$form   ->field("emp_code")
+        ->label($this->lang->translate('Number').'*')
         ->autocomplete('off')
         ->addClass('inputtext')
-        ->placeholder('')
-        ->value( $this->item['code'] );
+        ->value( !empty($this->item['code'])? $this->item['code']:'' );
 
 $form   ->field("name")
-        ->label('ชื่อ')
+        ->label($this->lang->translate('Name'))
         ->text( $this->fn->q('form')->fullname( !empty($this->item)?$this->item:array(), array('field_first_name'=>'emp_', 'prefix_name'=>$this->prefixName) ) );
 
 $position = '<option value="">-</option>';
@@ -76,7 +99,13 @@ $position = '<select class="inputtext" name="emp_pos_id">'.$position.'</select>'
 $form   ->field("emp_pos_id")
         ->label($this->lang->translate('Position'))
         ->text( $position );
-        
+
+
+$form   ->field("emp_address")
+        ->name('emp[address]')
+        ->label($this->lang->translate('Address'))
+        ->text( $this->fn->q('form')->address( !empty($this->item['address'])? $this->item['address']:array(), array('city'=>$this->city ) ) );
+
 $birthday = array();
 if( !empty($this->item['birthday']) ){
     if( $this->item['birthday'] != '0000-00-00' ){
@@ -85,30 +114,60 @@ if( !empty($this->item['birthday']) ){
 }
 
 $form   ->field("birthday")
-        ->label('วันเกิด')
+        ->label($this->lang->translate('Birthday'))
         ->text( $this->fn->q('form')->birthday( $birthday, array('field_first_name'=>'birthday') ) );
 
+$form   ->field("emp_phone_number")
+        ->label($this->lang->translate('Phone').'*')
+        ->autocomplete('off')
+        ->addClass('inputtext')
+        ->placeholder('')
+        ->value( !empty($this->item['phone_number'])? $this->item['phone_number']:'' );
+
+$form   ->field("emp_email")
+        ->label($this->lang->translate('Email'))
+        ->autocomplete('off')
+        ->addClass('inputtext')
+        ->placeholder('')
+        ->value( !empty($this->item['email'])? $this->item['email']:'' );
+
+$form   ->field("emp_line_id")
+        ->label('Line ID')
+        ->autocomplete('off')
+        ->addClass('inputtext')
+        ->placeholder('')
+        ->value( !empty($this->item['line_id'])? $this->item['line_id']:'' );
+
+$form   ->field("emp_notes")
+        ->label($this->lang->translate('Note'))
+        ->type('textarea')
+        ->autocomplete('off')
+        ->addClass('inputtext')
+        ->attr('data-plugins', 'autosize')
+        ->placeholder('')
+        ->value( !empty($this->item['notes'])? $this->fn->q('text')->textarea($this->item['notes']):'' );
 
 # set form
-$arr['form'] = '<form class="js-submit-form" data-plugins="" method="post" action="'.URL. 'masseuse/update"></form>';
+$arr['form'] = '<form class="js-submit-form" data-plugins="empposition" method="post" action="'.URL. 'masseuse/save"></form>';
 
 # body
 $arr['body'] = $form->html();
 
+$arr['hiddenInput'][] = array('name'=>'emp_dep_id','value'=>$this->dep_id);
+
 # title
 if( !empty($this->item) ){
-    $arr['title']= "ข้อมูลพื้นฐาน";
+    $arr['title']= $title;
     $arr['hiddenInput'][] = array('name'=>'id','value'=>$this->item['id']);
-    $arr['hiddenInput'][] = array('name'=>'section','value'=>'basic');
 }
 else{
-    $arr['title']= "New {$title}";
+    $arr['title']= $title;
 }
 
 # fotter: button
 $arr['button'] = '<button type="submit" class="btn btn-primary btn-submit"><span class="btn-text">Save</span></button>';
 $arr['bottom_msg'] = '<a class="btn" role="dialog-close"><span class="btn-text">Cancel</span></a>';
 
-// $arr['width'] = 782;
+$arr['width'] = 550;
 
 echo json_encode($arr);
