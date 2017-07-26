@@ -1,17 +1,28 @@
-<?php if( !empty($this->item['unlimit']) ) { ?>
-<div class="duration-wrap">
+<?php if( empty($this->item['is_unlimit']) ) { ?>
+<div class="duration-wrap" style="max-width:100%;">
 
     <div class="duration-tubes">
         <ul class="ui-list ui-list-duration" ref="listsbox">
-        <?php foreach ($this->item['expired'] as $key => $value) {?>
+        <?php foreach ($this->item['expired'] as $key => $value) {
 
-            <li class="ui-item ui-item-topBorder">
+            $start_day = date("d");
+            $start_month = date("n");
+            $start_year = date("Y")+543;
+            $startDate = "{$start_day} {$this->fn->q('time')->month( $start_month, true )} {$start_year}";
+
+            $end_day = date("d");
+            $end_month = date("n");
+            $end_year = date("Y")+543;
+            $endDate = "{$end_day} {$this->fn->q('time')->month( $end_month, true )} {$end_year}";
+            ?>
+
+            <li class="ui-item ui-item-topBorder uiBoxWhite">
                 <div class="clearfix ui-item-inner" href="#">
 
                     <ul class="disc ui-list-meta">
                         
                         <li>
-                            <i class="icon-clock-o"></i> <label>Time:</label> <strong><?=$value['start_date']?></strong> <span class="fcg">-</span> <strong><?=$value['end_date']?></strong>
+                            <i class="icon-clock-o"></i> <label>Time:</label> <strong><?=$startDate?></strong> <span class="fcg">-</span> <strong><?=$endDate?></strong>
                         </li>
                         <li>
                             <i class="icon-user-circle-o"></i> <label>Create By:</label> <i class="icon"></i><strong><?=$value['emp']['text']?></strong> <?=$this->fn->q('time')->live( $value['updated'] )?>

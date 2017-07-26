@@ -711,7 +711,7 @@ class Masseuse_Model extends Model{
 
     public function getOrderJob($id){
 
-        $select = "p.pack_id, p.pack_name, oi.item_start_date, oi.item_end_date";
+        $select = "p.pack_id, p.pack_name, p.pack_wage_price, oi.item_start_date, oi.item_end_date";
         $from = "orders_items_masseuse oim 
                   LEFT JOIN orders_items oi ON oim.item_id=oi.item_id
                   LEFT JOIN package p ON oi.item_pack_id=p.pack_id";

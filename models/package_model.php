@@ -123,7 +123,7 @@ class Package_Model extends Model {
 		$data = $this->cut($this->_cutNamefield, $data);
 
 		$data['name'] = $this->lang->translate('package', $data['name']);
-		if( !empty($options['dashboard']) OR !empty($options['reports']) ){
+		if( !empty($options['dashboard']) || !empty($options['reports']) ){
 
 			/* SUM PACKAGE */
 			$where_total = '`item_pack_id`=:pack_id';
@@ -153,23 +153,21 @@ class Package_Model extends Model {
 
 			/* COUNT CUSTOMER */
 			$form = 'orders o LEFT JOIN orders_items oi ON o.order_id = oi.item_order_id';
-			$data['total_customer'] = $this->db->count($form, 'oi.item_pack_id=:pack_id GROUP BY order_cus_id', array(':pack_id'=>$data['id']));
+			$where_customer = array(
+				':pack_id'=>$data['id'],
+				':s' => $options['period_start'],
+				':e' => $options['period_end']
+			);
+			$data['total_customer'] = $this->db->count($form, '(oi.item_start_date BETWEEN :s AND :e) AND oi.item_pack_id=:pack_id GROUP BY o.order_cus_id', $where_customer);
 			/**/
 
 			/* SUM QTY BY SKILL RATE PRICE */
-			$select_skill = "skill_price, ps.skill_id";
-			$form_skill = "package_skill ps LEFT JOIN emp_skill s ON ps.skill_id=s.skill_id";
-			$where_skill = "ps.pack_id=".$data['id'];
-			$skill = $this->db->select("SELECT {$select_skill} FROM {$form_skill} WHERE {$where_skill}");
-
-			$skill[0]['skill_price'] = !empty($skill[0]['skill_price']) ? $skill[0]['skill_price'] : 0;
-
-			$data['total_wage'] = $data['total_qty'] * $skill[0]['skill_price'];
+			$data['total_wage'] = $data['total_qty'] * $data['wage_price'];
 			/**/
 
 			/*SUMMARY PARTTIME*/
 			$data["parttime"] = $this->summaryParttime( $data['id'], $options );
-			$data['parttime']['total_wage'] = $data['parttime']['total_qty'] * $skill[0]['skill_price'];
+			$data['parttime']['total_wage'] = $data['parttime']['total_qty'] * $data['wage_price'];
 			/**/
 		}
 
@@ -247,7 +245,7 @@ class Package_Model extends Model {
 	/**/
 	public function listSkill( $id ){
 
-        $data = $this->db->select("SELECT s.skill_id AS id , s.skill_name AS name , s.skill_price AS price
+        $data = $this->db->select("SELECT s.skill_id AS id , s.skill_name AS name
             FROM emp_skill s
                 LEFT JOIN package_skill p ON s.skill_id = p.skill_id
             WHERE p.pack_id = :id

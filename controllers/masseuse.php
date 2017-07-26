@@ -342,7 +342,8 @@ class Masseuse extends Controller {
                     $form   ->post('emp_prefix_name')
                             ->post('emp_first_name')->val('is_empty')
                             ->post('emp_last_name')
-                            ->post('emp_nickname');
+                            ->post('emp_nickname')
+                            ->post('emp_pos_id');
 
                     $form->submit();
                     $postData = $form->fetch();
@@ -356,6 +357,7 @@ class Masseuse extends Controller {
                         }
                     }
 
+                    $postData['emp_code'] = $_POST["code"];
                     $postData['emp_first_name'] = trim($postData['emp_first_name']);
                     $postData['emp_last_name'] = trim($postData['emp_last_name']);
                     $postData['emp_birthday'] = $birthday;

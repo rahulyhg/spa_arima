@@ -402,11 +402,11 @@ class Orders_Model extends Model {
 		if( !empty($id) ){
 			$where_str = "oim.masseuse_id=:id";
 			$where_arr[":id"] = $id;
-			$select = "oim.date,item_qty";
+			$select = "oim.date,item_qty,item_start_date";
 		}
 		else{
 			$select = "oim.date,SUM(item_qty) AS qty";
-			$where_str = "oim.masseuse_id is Null";
+			$where_str = "(oim.masseuse_id is Null OR oim.masseuse_id = 0)";
 		}
 
 		$table ="orders_items oi LEFT JOIN orders_items_masseuse oim ON oi.item_id=oim.item_id";
@@ -437,12 +437,15 @@ class Orders_Model extends Model {
 		$where_arr = array();
 
 		if( !empty($options['period_start']) && !empty($options['period_end']) ){
-			$where_str = '(order_start_date BETWEEN :startDate AND :endDate)';
+
+			$where_str .= !empty($where_str) ? " AND " : '';
+ 			$where_str .= '(order_start_date BETWEEN :startDate AND :endDate)';
 			$where_arr[':startDate'] = $options['period_start'];
 			$where_arr[':endDate'] = $options['period_end'];
 		}
 		else if( !empty($options['date']) ){
-			$where_str = 'order_date=:d';
+			$where_str .= !empty($where_str) ? " AND " : '';
+			$where_str .= 'order_date=:d';
 			$where_arr[':d'] = $options['date'];
 		}
 

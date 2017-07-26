@@ -66,7 +66,8 @@ $period = "?period=".$this->period."&month=".$this->month;
 			$total_parttime = 0;
 			$wage_parttime = 0;
 			foreach ($this->results['lists'] as $key => $value) { $i++;
-				if( empty($value['skill']) ) continue;
+
+				if( empty($value['wage_price']) ) continue;
 
 				$total += $value['total_balance'];
 				$wage += $value['total_wage'];

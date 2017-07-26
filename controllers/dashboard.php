@@ -26,20 +26,9 @@ class Dashboard extends Controller {
 		$start = date('Y-m-d 00:00:00');
 		$end = date('Y-m-d 23:59:59');
 
-		if( isset($_GET['period']) ){
-			if( $_GET['period'] == 'daily' ){
-				$start = date('Y-m-d 00:00:00');
-				$end = date('Y-m-d 23:59:59');
-			}
-			elseif( $_GET['period'] == 'weekly' ){
-				$date = $this->fn->q('time')->theWeeks( date('c'), 'monday' );
-				$start = $date['start'];
-				$end = $date['end'];
-			}
-			elseif( $_GET['period'] == 'monthly' ){
-				$start = date('Y-m-01 00:00:00');
-				$end = date('Y-m-t 23:59:59');
-			}
+		if( isset($_GET['period_start']) && isset($_GET['period_end']) ){
+			$start = date('Y-m-d 00:00:00', strtotime($_GET['period_start']));
+			$end = date('Y-m-d 23:59:59', strtotime($_GET['period_end']));
 		}
 
 		/* สรุปยอดรายรับ */
@@ -70,12 +59,12 @@ class Dashboard extends Controller {
 		$this->view->setData('customers', $this->model->query('customers')->summary());
 
 		/* ยอด VIP */
-		$room_options = array(
-			'period_start'=>$start,
-			'period_end'=>$end,
-			'type'=>'room',
-		);
-		$this->view->setData('room', $this->model->query('orders')->summary( $room_options ));
+		// $room_options = array(
+		// 	'period_start'=>$start,
+		// 	'period_end'=>$end,
+		// 	'type'=>'room',
+		// );
+		// $this->view->setData('room', $this->model->query('orders')->summary( $room_options ));
 
 		/* Package List */
 		$package_options = array(
@@ -89,7 +78,12 @@ class Dashboard extends Controller {
 		/* แปลงวันที่ */
 		$this->view->setData('date_str', $this->fn->q('time')->str_event_date($start, $end) );
 
-        $this->view->render("dashboard/display");
+        if( isset($_GET['main']) ){
+			$this->view->render('dashboard/sections/main');
+		}
+		else{
+			$this->view->render("dashboard/display");
+		}
 	}
 
 	public function demo(){

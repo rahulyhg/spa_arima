@@ -11,6 +11,7 @@ if( !empty($this->data) ){
 	<table class="table table-bordered" width="100%">
 		<thead>
 			<tr>
+				<th class="id">ลำดับ</th>
 				<th class="tac">No.</th>
 				<th class="tac">ชื่อ</th>
 				<?php 
@@ -19,13 +20,14 @@ if( !empty($this->data) ){
 				}
 				?>
 				<th>รวม</th>
-				<th>ครั้งละ <?=$this->item['skill'][0]['price']?></th>
+				<th>ครั้งละ <?=$this->item['wage_price']?></th>
 				<th>ลายเซ็น</th>
 			</tr>
 		</thead>
 		<tbody>
-			<?php foreach ($this->results['lists'] as $key => $value) { $total = 0;  ?>
+			<?php $i=0; foreach ($this->results['lists'] as $key => $value) { $total = 0; $i++;  ?>
 			<tr>
+				<td><?=$i?></td>
 				<td class="tac"><?=$value['code']?></td>
 				<td class="tac"><?=$value['nickname']?></td>
 				<?php 
@@ -48,7 +50,7 @@ if( !empty($this->data) ){
 				</td>
 				<td class="tar">
 					<?php 
-					$price = $total * $this->item['skill'][0]['price'];
+					$price = $total * $this->item['wage_price'];
 					$total_price += $price;
 
 					echo number_format($price,1);

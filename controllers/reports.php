@@ -147,7 +147,7 @@ class reports extends Controller {
                 $qty = 0;
                 foreach ($time as $key => $val) {
                     $qty += $val['item_qty'];
-                    $day = date("d", strtotime($val['date']));
+                    $day = date("d", strtotime($val['item_start_date']));
 
                     $data[$value['id']][$day] = $qty;
                 }

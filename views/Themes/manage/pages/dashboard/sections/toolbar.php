@@ -1,26 +1,11 @@
 <div role="toolbar" class="pbs ptl mhl">
-	<ul class="ui-list ui-list-horizontal clearfix">
+	<ul class="ui-list ui-list-horizontal clearfix" ref="actions">
 		<li class="ui-item"><h2>Dashboard</h2></li>
-		<li class="ui-item"><select selector="closedate" name="closedate" class="inputtext" onchange="window.location = '<?=URL?>dashboard?period=' + this.value  ">
-
-			<?php 
-			$a = array();
-			$a[] = array('id'=>'daily','name'=>'วันนี้');
-			$a[] = array('id'=>'weekly','name'=>'สัปดาห์นี้');
-			$a[] = array('id'=>'monthly','name'=>'เดือนนี้');
-			foreach ($a as $key => $value) {
-				
-				$selected = '';
-				if( isset($_GET['period']) ){
-					if( $_GET['period']==$value['id'] ){
-						$selected = ' selected';
-					}
-				}
-				
-				echo '<option'.$selected.' value="'.$value['id'].'">'.$value['name'].'</option>';
-			}
-			?>
-        </select></li>
+		<li class="ui-item plm">
+			<div class="uiBoxWhite">
+				<select selector="closedate" name="closedate" class="inputtext"></select>
+			</div>
+		</li>
 	</ul>
 	 
 	<?php if( !empty($this->tabs) ) { ?>
