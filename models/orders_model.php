@@ -80,7 +80,7 @@ class Orders_Model extends Model {
 
 		return $data;
 	}
-	public function get($id, $options=array()){
+	public function get($id, $options=array() ){
 
 		$select = $this->_field;
 		if( !empty($options['select']) ){
@@ -96,10 +96,20 @@ class Orders_Model extends Model {
 			}
 		}
 
-		$sth = $this->db->prepare("SELECT {$select} FROM {$this->_table} WHERE {$this->_cutNamefield}id=:id LIMIT 1");
-		$sth->execute( array(
-			':id' => $id
-			) );
+
+		if( $id=='number' ){
+			$where = "order_date=:d AND order_number=:number";
+			$arr[':d'] = $options['date'];
+			$arr[':number'] = $options['number'];
+
+		}
+		else{
+			$where = "{$this->_cutNamefield}id=:id";
+			$arr[':id'] = $id;
+		}
+
+		$sth = $this->db->prepare("SELECT {$select} FROM {$this->_table} WHERE {$where} LIMIT 1");
+		$sth->execute( $arr );
 
 		return  $sth->rowCount()==1
 		? $this->convert( $sth->fetch( PDO::FETCH_ASSOC ), $options )
@@ -110,6 +120,14 @@ class Orders_Model extends Model {
 		$data = $this->cut($this->_cutNamefield, $data);
 
 		$data['number_str'] = sprintf("%03d",$data['number']);
+
+		if( $data['start_date']!='0000-00-00 00:00:00' ){
+			$data['start_time'] = date('H:i', strtotime($data['start_date']));
+		}
+
+		if( $data['end_date']!='0000-00-00 00:00:00' ){
+			$data['end_time'] = date('H:i', strtotime($data['end_date']));
+		}
 
 		if( !empty($options['has_item']) ){
 			$data['items'] = $this->getItems( $data['id'] );
@@ -191,6 +209,7 @@ class Orders_Model extends Model {
 		return $data;
 	}
 
+
 	/* check */
 	/**/
 	public function is_name($brand,$text) {
@@ -227,6 +246,82 @@ class Orders_Model extends Model {
 		$this->db->delete('orders', "`order_id`={$id}");
 	}
 
+	/**/
+	/* Detail */
+	/**/
+	public function getDetail($id) {
+		
+		$sth = $this->db->prepare("SELECT 
+			  item_id
+			, item_created
+			, item_updated
+			, item_emp_id
+	
+			, item_room_id
+			, item_bed_id
+			, item_room_price
+
+			, item_start_date
+			, item_end_date
+
+			, item_status
+			, item_note
+
+			, item_price
+			, item_qty
+			, item_total
+			, item_discount
+			, item_balance
+			, item_job_id
+
+			, pack_id
+			, pack_qty as pack_time
+			, pack_code
+			, pack_unit
+			, pack_name
+			, pack_has_masseuse
+			
+		  FROM orders_items item 
+		  	INNER JOIN package pack ON pack.pack_id=item.item_pack_id
+		  	WHERE item.item_id=:id LIMIT 1");
+
+
+		$sth->execute( array( ':id' => $id ) );
+		$data = $sth->fetch( PDO::FETCH_ASSOC );
+
+		if( !empty($data) ){
+			$data['masseuse'] = $this->query('masseuse')->buildFrag( $this->db->select("SELECT 
+				  item.job_id
+				, mae.emp_id as id
+				, mae.emp_code as code
+	            , mae.emp_prefix_name as prefix_name
+	            , mae.emp_first_name as first_name
+	            , mae.emp_last_name as last_name
+	            , mae.emp_nickname as nickname
+	            , mae.emp_image_id as image_id
+
+			 FROM orders_items_masseuse item LEFT JOIN employees mae ON item.masseuse_id=mae.emp_id WHERE item_id=:id", array(':id'=>$data['item_id'])), array('view_stype'=>'bucketed'));
+		}
+
+		return $data;
+	}
+	public function getDetailID( $oid, $pid ) {
+		
+		$sth = $this->db->prepare("SELECT item_id as id FROM orders_items WHERE `item_order_id`=:id AND `item_pack_id`=:pid LIMIT 1");
+
+		$sth->execute( array(
+			':id' => $oid,
+			':pid' => $pid
+		) );
+
+		if( $sth->rowCount()==1 ){
+			$fdata = $sth->fetch( PDO::FETCH_ASSOC );
+			return $fdata['id'];
+		}
+		else{
+			return '';
+		}
+	}
 	public function insertDetail(&$data) {
 		
 		if( empty($data['item_created']) ){
@@ -241,12 +336,15 @@ class Orders_Model extends Model {
 		$this->db->insert('orders_items', $data);
 		$data['id'] = $this->db->lastInsertId();
 	}
+	public function updateDetail($id, $data) {
+		if( empty($data['item_updated']) ){
+			$data['item_updated'] = date('c');
+		}
 
-	public function updateDetail($id, $data)
-	{
 		$this->db->update('orders_items', $data, "`item_id`={$id}");
 	}
 	public function delDetail($id) {
+		
 		$this->db->delete('orders_items', "`item_id`={$id}");
 	}
 	public function removeDetail($id) {
@@ -259,13 +357,25 @@ class Orders_Model extends Model {
 		$this->db->delete('orders_items', "`item_order_id`={$id}", count($items));
 	}
 
-
+	/**/
+	/* JobMasseuse */
+	/**/
 	public function itemJobMasseuse($data){
 		$this->db->insert('orders_items_masseuse', $data);
+
+		// update queue
+		$this->db->update('emp_job_queue', array('job_status'=>'run'), "`job_id`={$data['job_id']} AND `job_date`='{$data['date']}' AND `job_emp_id`={$data['masseuse_id']}");
 	}
 	public function delItemJobMasseuse($id) {
-		
-		$this->db->delete('orders_items_masseuse', "`item_id`={$id}", $this->db->count('orders_items_masseuse', "`item_id`=:id", array(':id'=>$id)));
+		// update queue
+		$masseuse = $this->db->select("SELECT * FROM orders_items_masseuse WHERE `item_id`=:id", array(':id'=>$id));
+		foreach ($masseuse as $mas) {
+			
+			$this->db->update('emp_job_queue', array('job_status'=>'on'), "`job_id`={$mas['job_id']} AND `job_date`='{$mas['date']}' AND `job_emp_id`={$mas['masseuse_id']}");
+			
+		}
+
+		$this->db->delete('orders_items_masseuse', "`item_id`={$id}", count($masseuse));
 	}
 	
 
@@ -526,4 +636,5 @@ class Orders_Model extends Model {
 	public function package() {
 		return $this->db->select("SELECT pack_id as id, pack_name as name FROM package ORDER BY pack_sequence ASC");
 	}
+
 }

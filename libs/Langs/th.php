@@ -47,6 +47,13 @@ class th extends Langs {
 		$data['cancel'] = 'ยกเลิก';
 		$data['save'] = 'บันทึก';
 		$data['hide'] = 'ปิด';
+		$data['log out'] = 'ออกจากระบบ';
+		$data['skill'] = 'ความสามารถ';
+		$data['department'] = 'แผนก';
+		$data['customer'] = 'ลูกค้า';
+		$data['customers'] = 'ลูกค้า';
+		$data['position'] = 'ตำแหน่ง';
+		$data['level'] = 'ระดับ';
 
 		$str = strtolower($text);
 		return !empty($data[$str]) ? $data[$str]: $text;

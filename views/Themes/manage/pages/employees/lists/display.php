@@ -47,44 +47,4 @@
 <!-- end: container -->
 <script type="text/javascript">
 	
-	self.$('[ref=table]').delegate('.js-change-skill', 'change', function() {
-		var url = $(this).data('url') || $(this).attr('stringify'),
-			name = $(this).attr('name')
-			val = $(this).val(),
-			box = $(this).closest('[data-id]');
-
-		var formData = new FormData();
-
-		// set field
-		$.each(box.find(':input.js-change-skill'), function (index, field) {
-
-			if( $(this).prop('checked') ){
-				formData.append('value[]', field.value );
-			} 
-        });
-
-		return $.ajax({
-			type: "POST",
-			url: Event.URL + 'masseuse/set/'+box.data('id')+'/skill',
-			data: formData,
-			dataType: 'json',
-			processData: false,
-    		contentType: false,
-		}).done(function (res) {
-			// console.log( res );
-		}).always(function() {
-		}).fail(function(  ) {
-
-		});
-	});
-
-
-	if( $(window).width() < 1600 ){
-		$('body').removeClass('is-pushed-left');
-
-		setTimeout(function () {
-			$('body').addClass('is-overlay-left');
-		}, 200);
-			
-	}
 </script>

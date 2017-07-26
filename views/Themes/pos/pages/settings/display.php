@@ -4,12 +4,12 @@ $taps = array();
 $taps[] = array('id'=>'account', 'name'=>$this->lang->translate('Account'));
 $taps[] = array('id'=>'basic', 'name'=>$this->lang->translate('Basic Information'));
 $taps[] = array('id'=>'password', 'name'=>$this->lang->translate('Password'));
+$taps[] = array('id'=>'pin_password', 'name'=>$this->lang->translate('PIN Password'));
 
 ?><div id="mainContainer" class="clearfix" data-plugins="main">
 
 	<div role="content">
 		
-
 		<div role="main">
 
 			<div class="settings multi">
@@ -43,16 +43,3 @@ $taps[] = array('id'=>'password', 'name'=>$this->lang->translate('Password'));
 		</div>
 	</div>
 </div>
-<script type="text/javascript">
-	$('.settingsListLink').click( function () {
-		
-		var $parent = $(this).parent();
-
-		if( $parent.hasClass('openPanel') ){
-			$parent.removeClass('openPanel');
-		}
-		else{
-			$parent.addClass('openPanel').siblings().removeClass('openPanel');
-		}
-	} )
-</script>

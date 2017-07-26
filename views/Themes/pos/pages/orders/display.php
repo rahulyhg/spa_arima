@@ -1,51 +1,32 @@
+<div id="POsOrder" class="clearfix hasLeft POsOrder" data-plugins="POsOrder">
+
+	<div role="main" class="POsOrder-main" style="overflow: hidden;">
+		
+		<!-- <div class="ui-effect-top" data-global="POs" plugin="POs">
+			<?php //require "sections/Pos.php"; ?>
+		</div> -->
+
+		<div class="ui-effect-top" data-global="lists" plugin="TableOrder">
+		<?php require "sections/lists.php"; ?>
+		</div>
+
+	</div>
+	
+</div>
+
 <?php
 
-require 'init.php';
-
-?><div id="mainContainer" class="clearfix hasLeft"><div id="order" data-plugins="order" data-options="<?=$this->fn->stringify( array( 
-	'lang'=>$this->lang->getCode(),
-) )?>">
-
-	<div role="left" data-w-percent="50">
-	<?php 
-
-		$a = array();
-		$a[] = array('id'=>'lists','name'=>'');
-		$a[] = array('id'=>'bill','name'=>'');
-		foreach ($a as $key => $value) {
-			
-			echo '<div class="ui-effect-top" data-global="'.$value['id'].'">';
-			require "sections/{$value['id']}.php";
-			echo '</div>';
-		}
-		 
-		// require 'sections/bill.php'; ?>
-	</div>
-
-	<div role="content" class="" style="position:relative;">
+/*
+<!-- <div class="ui-effect-top" data-global="menu">
+			<?php require "sections/menu.php"; ?>
+		</div>
 		
+		<div class="ui-effect-top" data-global="pay">
+			<?php require "sections/pay.php"; ?>
+		</div>
+		
+		<div class="ui-effect-top" data-global="detail">
+			<?php require "sections/detail.php"; ?>
+		</div> -->
 
-		<div role="main"><?php
-
-		$a = array();
-		$a[] = array('id'=>'summary','name'=>'');
-		$a[] = array('id'=>'invoice','name'=>'');
-		$a[] = array('id'=>'menu','name'=>'');
-		$a[] = array('id'=>'detail','name'=>'');
-		$a[] = array('id'=>'pay','name'=>'');
-
-		foreach ($a as $key => $value) {
-			
-			echo '<div class="ui-effect-top" data-global="'.$value['id'].'">';
-			require "sections/{$value['id']}.php";
-			echo '</div>';
-		}
-
-
-		?></div>
-		<!-- end: main -->
-
-	</div>
-	<!-- end: content -->
-
-</div></div>
+*/

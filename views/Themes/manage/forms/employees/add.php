@@ -74,12 +74,6 @@ else{
             ->text( $select );
 }
 
-$form   ->field("emp_code")
-        ->label($this->lang->translate('Number').'*')
-        ->autocomplete('off')
-        ->addClass('inputtext')
-        ->value( !empty($this->item['code'])? $this->item['code']:'' );
-
 $form   ->field("emp_username")
         ->label($this->lang->translate('Username').'*')
         ->autocomplete('off')
@@ -102,46 +96,36 @@ $form   ->field("name")
         ->text( $this->fn->q('form')->fullname( !empty($this->item)?$this->item:array(), array('field_first_name'=>'emp_', 'prefix_name'=>$this->prefixName) ) );
 
 
-$department = '<option value="">-</option>';
+$department = array();
 foreach ($this->department as $key => $value) {
     
-    $selected = '';
-    if( !empty($this->item['dep_id']) ){
-        if( $this->item['dep_id']==$value['id'] ){
-            $selected = ' selected="1"';
-        }
-    }
-
-    $department .= '<option'.$selected.' value="'.$value['id'].'">'.$value['name'].'</option>';
+    if( in_array($value['id'], array(1,5))  ) continue;
+    $department[] = $value;
 }
 
-
-$department = '<select class="inputtext" name="emp_dep_id">'.$department.'</select>';
 $form   ->field("emp_dep_id")
-        ->label($this->lang->translate('Department'))
-        ->text( $department );
+        ->label($this->lang->translate('Department').'*')
+        ->autocomplete('off')
+        ->addClass('inputtext')
+        ->select( $department )
+        ->value( !empty($this->item['dep_id']) ? $this->item['dep_id']: '' );
 
-$position = '<option value="">-</option>';
-foreach ($this->position as $key => $value) {
-    $selected = '';
-    if( !empty($this->item['pos_id']) ){
-        if( $this->item['pos_id']==$value['id'] ){
-            $selected = ' selected="1"';
-        }
-    }
 
-    $position .= '<option'.$selected.' value="'.$value['id'].'">'.$value['name'].'</option>';
-}
-$position = '<select class="inputtext" name="emp_pos_id">'.$position.'</select>';
 $form   ->field("emp_pos_id")
-        ->label($this->lang->translate('Position'))
-        ->text( $position );
+        ->label($this->lang->translate('Position').'*')
+        ->autocomplete('off')
+        ->addClass('inputtext')
+        ->select( array() )
+        ->value( !empty($this->item['pos_id']) ? $this->item['pos_id']: '' );
 
-
+/*
 $form   ->field("emp_address")
-        ->name('emp[address]')
         ->label($this->lang->translate('Address'))
-        ->text( $this->fn->q('form')->address( !empty($this->item['address'])? $this->item['address']:array(), array('city'=>$this->city ) ) );
+        ->type('textarea')
+        ->autocomplete('off')
+        ->addClass('inputtext')
+        ->attr('data-plugins', 'autosize')
+        ->value( !empty($this->item['address'])? $this->fn->q('text')->textarea($this->item['address']):'' );
 
 $birthday = array();
 if( !empty($this->item['birthday']) ){
@@ -182,7 +166,7 @@ $form   ->field("emp_notes")
         ->addClass('inputtext')
         ->attr('data-plugins', 'autosize')
         ->placeholder('')
-        ->value( !empty($this->item['notes'])? $this->fn->q('text')->textarea($this->item['notes']):'' );
+        ->value( !empty($this->item['notes'])? $this->fn->q('text')->textarea($this->item['notes']):'' );*/
 
 # set form
 $arr['form'] = '<form class="js-submit-form" data-plugins="empposition" method="post" action="'.URL. 'employees/save"></form>';

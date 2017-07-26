@@ -31,7 +31,7 @@ $form = new Form();
 				// '<div class="rfloat"><a class="js-selected-all">เลือกทั้งหมด</a></div>'.
 			'</header>'.
 
-			'<div class="form-search"><input type="text" name="q" class="inputtext input-search" act="inputsearch"><button type="button" class="btn-search"><i class="icon-search"></i></button></div>'.	
+			'<div class="form-search"><input type="text" name="q" class="inputtext input-search" act="inputsearch" autofocus><button type="button" class="btn-search"><i class="icon-search"></i></button></div>'.	
 
 		'</div>'.
 	'</div>'.

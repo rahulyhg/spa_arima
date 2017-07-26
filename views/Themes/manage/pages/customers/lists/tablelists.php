@@ -18,6 +18,9 @@ if( !empty($this->results['lists']) ){
 
                 $startDateStr = date('j', $startDate) .' ' . $this->fn->q('time')->month( date('n', $startDate) ) .' '. ( date('Y', $startDate)+543 );
                 $endDateStr = date('j', $endDate) .' ' . $this->fn->q('time')->month( date('n', $endDate) ) .' '. ( date('Y', $endDate)+543 );
+
+                // $startDateStr = date('j/m', $startDate).'/'.( date('Y', $startDate)+543 );
+                // $endDateStr = date('j/m', $endDate).'/'.( date('Y', $endDate)+543 );
             }
 
             $dateNow = date("Y-m-d");
@@ -34,31 +37,33 @@ if( !empty($this->results['lists']) ){
                 $strDate = $this->fn->q('time')->DateDiff( $dateNow, $item['expired'][0]['end_date'] ).' วัน';
             }
 
-            $tr_date = $startDateStr.' - '.$endDateStr.' ('.$strDate.')';
+            $expDate = '<a href="'.URL.'customers/set_extend/'.$item['id'].'" data-plugins="dialog">'.$endDateStr.'</a><div class="fsm fcg"> ('.$strDate.')</div>';
         }
         else{
             $strDate = '';
-            $tr_date = '<span class="fwb">ไม่มีวันหมดอายุ</span>';
+            $expDate = '<div class="tac">-</div>';
         }
         /**/
 
         /* Status */
         $status = '';
-        if( $item['status'] == 'run' ){
-            $status = '<span class="ui-status" style="background-color: rgb(11, 195, 57);">RUN</span>';
+        $status = '<span class="ui-status" style="background-color: rgb(11, 195, 57);">'.$item['level']['name'].'</span>';
+
+        /*if( $item['status'] == 'run' ){
+            
         }
         else{
-            $status = '<a href="'.URL.'customers/set_extend/'.$item['id'].'" data-plugins="dialog"><span class="ui-status" style="background-color: rgb(219, 21, 6);">EXPIRED</span></a>';
-        }
+            $status = '<a href="'.URL.'customers/set_extend/'.$item['id'].'" data-plugins="dialog"><span class="ui-status" style="background-color: rgb(219, 21, 6);">หมดอายุ</span></a>';
+        }*/
         /**/
 
         // $item = $item;
         $cls = $i%2 ? 'even' : "odd";
         // set Name
 
-        /*$updatedTime = strtotime( $item['updated'] );
-        $updatedStr = date('j/m/Y', $updatedTime);
-        $updatedStr .= '<div class="fsm fcg">' .date('H:i:s').'</div>';*/
+        $updatedTime = strtotime( $item['updated'] );
+        $updatedStr = date('j', $updatedTime) .' ' . $this->fn->q('time')->month( date('n', $updatedTime) ) .' '. ( date('Y', $updatedTime)+543 );
+        $updatedStr .= '<div class="fsm fcg">' .date('H:i', $updatedTime).'</div>';
 
         /*$created = strtotime( $item['created'] );
         $createdStr = date('j', $created) .' ' . $this->fn->q('time')->month( date('n', $created) ) .' '. ( date('Y', $created)+543 );*/
@@ -89,7 +94,7 @@ if( !empty($this->results['lists']) ){
             $subtext .= !empty($subtext) ? ', ':'';
             $subtext.='<i class="icon-envelope-o mrs"></i>'. $item['email'];
 
-             $express .= '<li><i class="icon-envelope mrs"></i><a href="mailto:'.$item['email'].'" title="'.$item['email'].'">'.$item['email'].'</a></li>';
+            $express .= '<li><i class="icon-envelope mrs"></i><a href="mailto:'.$item['email'].'" title="'.$item['email'].'">'.$item['email'].'</a></li>';
         }
 
         if( !empty($item['lineID']) ){
@@ -110,25 +115,26 @@ if( !empty($this->results['lists']) ){
             // '<td class="check-box"><label class="checkbox"><input id="toggle_checkbox" type="checkbox" value="'.$item['id'].'"></label></td>'.
 
             
-            '<td class="ID">'.$item['code']. '</td>'.
+            '<td class="ID">'. (!empty($item['code']) ? $item['code']:'-') . '</td>'.
 
             '<td class="name">'.
                 '<div class="anchor clearfix">'.
                     $image.
                     '<div class="content"><div class="spacer"></div><div class="massages">'.
                         '<div class="fullname"><a class="fwb" href="'.URL .'customers/'.$item['id'].'">'. $item['fullname'].'</a></div>'.
-                        '<div class="subname fsm meta fcg">Last Date: '.$this->fn->q('time')->live( $item['updated'] ).'</div>'.
+                        '<div class="subname fsm meta fcg">'.$item['nickname'].'</div>'.
                     '</div>'.
                 '</div></div>'.
             '</td>'.
 
-            '<td class="phone">'.$item['nickname'].'</td>'.
+            // '<td class="status">'.$item['nickname'].'</td>'.
 
             '<td class="express"><ul class="fsm">'.$express.'</ul></td>'.
-
-            '<td class="date">'.$tr_date.'</td>'.
-            
             '<td class="status">'.$status.'</td>'.
+
+            '<td class="date">'.$expDate.'</td>'.
+            '<td class="date">'.$updatedStr.'</td>'.
+            
 
         '</tr>';
         

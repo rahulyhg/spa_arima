@@ -1,6 +1,6 @@
 <?php
 
-$title = $this->lang->translate('Skill of').' '.$this->lang->translate('Employees');
+$title = 'ความสามารถ';
 
 $form = new Form();
 $form = $form->create()
@@ -8,8 +8,15 @@ $form = $form->create()
 	->elem('div')
 	->addClass('form-insert');
 
+$form   ->field("skill_type")
+        ->label($this->lang->translate('Type'))
+        ->addClass('inputtext')
+        ->autocomplete("off")
+        ->select( $this->type )
+        ->value( !empty($this->item['type']) ? $this->item['type']:'' );
+
 $form   ->field("skill_name")
-        ->label($this->lang->translate('Skill'))
+        ->label($this->lang->translate('Name'))
         ->addClass('inputtext')
         ->required(true)
         ->autocomplete("off")

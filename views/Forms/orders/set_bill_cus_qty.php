@@ -5,11 +5,12 @@ $form = $form->create()
     // set From
     ->addClass('form-insert form-large');
 
-$form   ->hr( '<h2 class="tac mbm">จำนวนลูกค้า</h2>' );
+$form   ->hr( '<div class="tac mbm fwb">จำนวนลูกค้า</div>' );
 
 $form   ->field("cus_qty")
         ->autocomplete('off')
         ->type('number')
+        ->attr('autofocus', 1)
         ->attr('autoselect', 1)
         ->addClass('inputtext tac')
         ->value( isset($_GET['value']) ? $_GET['value']: 1 );
@@ -23,7 +24,7 @@ $arr['form'] = '<form></form>';
 $arr['body'] = $form->html();
 
 
-$arr['is_close_bg'] = 1;
+// $arr['is_close_bg'] = 1;
 $arr['width'] = 200;
 
 echo json_encode($arr);

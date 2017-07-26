@@ -226,11 +226,20 @@ var Dialog = {
 			}
 		});
 
+		$('[role=cancel]', self.$model).click(function(e){
+			e.preventDefault();
+			
+			if( typeof self.settings.onCancel === 'function' ){
+				self.settings.onCancel( self, $.data( self.$pop.find('.model-content')[0]) );
+			}
+		});
+
 		
 		if( self.$pop.find(':input[autofocus]').first().length==1 ){
 			self.$pop.find(':input[autofocus]').first().focus();
 		}
-		else if( self.$pop.find(':input[autoselect]').first().length==1 ){
+		
+		if( self.$pop.find(':input[autoselect]').first().length==1 ){
 			self.$pop.find(':input[autoselect]').first().select();
 		}
 	},

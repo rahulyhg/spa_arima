@@ -84,34 +84,13 @@ class Dashboard extends Controller {
 		else{
 			$this->view->render("dashboard/display");
 		}
+		
+		// print_r($this->model->query('reports')->summaryEachPackage( $start, $end )); die;
+		$this->view->setData('summaryEachPackage', $this->model->query('reports')->summaryEachPackage( $start, $end ) );
 	}
 
 	public function demo(){
 		
 		$this->view->render("dashboard/demo");
 	}
-
-	/*public function booking() {
-		
-
-		$this->view->setData('tab', "booking");
-		$this->view->render("dashboard/display");
-	}
-
-	public function services(){
-
-		$this->view->setData('tab', "services");
-		$this->view->render("dashboard/display");
-	}
-
-	public function stocks(){
-		
-		$this->view->setData('tab', "stocks");
-		$this->view->render("dashboard/display");
-	}
-
-	public function sales() {
-		$this->view->setData('tab', "sales");
-		$this->view->render("dashboard/display");
-	}*/
 }

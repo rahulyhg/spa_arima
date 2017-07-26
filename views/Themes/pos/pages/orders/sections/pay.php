@@ -57,6 +57,8 @@
 					<li><a class="js-enter-pay btn" data-event="next" data-value="9">9</a></li>
 					 
 					<li><a class="js-enter-pay btn btn-blue" data-event="plus" data-value="50">฿20</a></li>
+
+					<li class="clear"></li>
 					 
 					<li><a class="js-enter-pay btn" data-event="next" data-value="4">4</a></li>
 					 
@@ -65,6 +67,7 @@
 					<li><a class="js-enter-pay btn" data-event="next" data-value="6">6</a></li>
 					 
 					<li><a class="js-enter-pay btn btn-blue" data-event="plus" data-value="20">฿100</a></li>
+					<li class="clear"></li>
 					 
 					<li><a class="js-enter-pay btn" data-event="next" data-value="1">1</a></li>
 					 
@@ -73,6 +76,7 @@
 					<li><a class="js-enter-pay btn" data-event="next" data-value="3">3</a></li>
 					 
 					<li><a class="js-enter-pay btn btn-blue" data-event="plus" data-value="50">฿500</a></li>
+					<li class="clear"></li>
 					 
 					<li><a class="js-enter-pay btn" data-event="clear" data-value="1">C</a></li>
 					 
@@ -96,7 +100,9 @@
 			</div>
 			<div class="payment-footer-left">
 				<ul class="clearfix">
-					<li><div class="gbtn"><a class="btn btn-large btn-blue" data-id="1">Cash</a></div></li><li><div class="gbtn"><a class="btn btn-large" data-id="2">Credit</a></div></li><li><div class="gbtn"><a class="btn btn-large" data-id="3">Check</a></div></li>
+					<li><div class="gbtn"><a class="btn btn-large btn-blue active" data-id="1">เงินสด</a></div></li>
+
+					<!-- <li><div class="gbtn"><a class="btn btn-large" data-id="2">Credit</a></div></li><li><div class="gbtn"><a class="btn btn-large" data-id="3">Check</a></div></li> -->
 				</ul>
 			</div>
 			

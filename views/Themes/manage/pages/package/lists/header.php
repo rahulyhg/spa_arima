@@ -14,6 +14,8 @@
 
 				<li class="mt"><a class="btn btn-blue" data-plugins="dialog" href="<?=URL?>package/add"><i class="icon-plus mrs"></i><span><?=$this->lang->translate('Add New')?></span></a></li>
 
+				<li class="mt"><a class="btn" data-plugins="dialog" href="<?=URL?>package/sort"><i class="icon-list mrs"></i><span>เรียงลำดับ</span></a></li>
+
 			</ul>
 			
 			<ul class="lfloat selection hidden_elem" ref="selection">

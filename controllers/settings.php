@@ -137,9 +137,6 @@ class Settings extends Controller {
             $this->view->setData('display', $this->model->query('employees')->display() );
             $data = array();
         }
-        elseif($tap=='skill'){
-            $data = $this->model->query('employees')->skill();
-        }
         else{
             $this->error();
         }
@@ -195,6 +192,10 @@ class Settings extends Controller {
 
 
         if( $tap == 'level' ){
+
+            $this->view->js('jquery/jquery-ui.min');
+            $this->view->js('jquery/jquery.sortable');
+            
             $data = $this->model->query('customers')->level();
         }
         else{
@@ -204,6 +205,31 @@ class Settings extends Controller {
         $this->view->setData('data', $data);
         $this->view->render( $render );
 
+    }
+
+
+    public function masseuse($tap='skill') {
+        
+        $this->view->setPage('on', 'settings' );
+        $this->view->setData('section', 'masseuse');
+        $this->view->setData('tap', $tap);
+        $render = 'settings/display';
+
+        if($tap=='skill'){
+
+            // print_r($this->model->query('employees')->skill()); die;
+            $this->view->setData('type', $this->model->query('system')->skill_type() );
+            $data = $this->model->query('employees')->skill();
+
+            $this->view->js('jquery/jquery-ui.min');
+            $this->view->js('jquery/jquery.sortable');
+        }
+        else{
+            $this->error();
+        }
+
+        $this->view->setData('data', $data);
+        $this->view->render( $render );
     }
 
 }

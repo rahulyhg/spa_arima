@@ -15,7 +15,7 @@
 	<?php require 'header.php'; ?>
 
 	<!-- table -->
-	<div ref="table" class="listpage2-table table-mg">
+	<div ref="table" class="listpage2-table border">
 		<div ref="tabletitle"><?php require 'tabletitle.php'; echo $tabletitle; ?></div>
 		<div ref="tablelists"></div>
                 
@@ -87,4 +87,6 @@
 		}, 200);
 			
 	}
+
+
 </script>

@@ -5,7 +5,7 @@
 
 <?php require_once 'init.php'; ?>
 
-<div class="listpage2 has-loading offline listpage2-mg" data-plugins="listpage2" data-options="<?= $this->fn->stringify( array(
+<div class="listpage2 has-loading offline" data-plugins="listpage2" data-options="<?= $this->fn->stringify( array(
 		'url' => $this->getURL
 	) )?>">
 
@@ -13,7 +13,7 @@
 	<?php require 'header.php'; ?>
 
 	<!-- table -->
-	<div ref="table" class="listpage2-table table-mg">
+	<div ref="table" class="listpage2-table">
 		<div ref="tabletitle"><?php require 'tabletitle.php'; echo $tabletitle; ?></div>
 		<div ref="tablelists"></div>
 

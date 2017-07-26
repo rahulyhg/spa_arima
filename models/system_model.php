@@ -15,22 +15,19 @@ class System_Model extends Model{
 
         // Settings
         $arr = array( 
-            // 'notifications' => array('view'=>1),
-            // 'calendar' => array('view'=>1),
+            'notifications' => array('view'=>1),
+            'calendar' => array('view'=>1),
 
             'my' => array('view'=>1,'edit'=>1),
 
             'customers' => array('view'=>1, 'add'=>1),
-            'employees' => $permit,
             'masseuse' => array('view'=>1, 'add'=>1),
 
             'package' => array('view'=>1),
             'promotions' => array('view'=>1),
-            'coupon'=>$permit,
+            'coupon'=>array('view'=>1),
 
-            'pos'=> $permit,
-
-            // 'tasks' => array('view'=>1, 'add'=>1), 
+            'tasks' => array('view'=>1, 'add'=>1), 
         );
 
         // is admin 
@@ -58,9 +55,8 @@ class System_Model extends Model{
             $arr['promotions'] = array('view'=>1,'edit'=>1,'del'=>1, 'add'=>1);
             $arr['coupon'] = array('view'=>1,'edit'=>1,'del'=>1, 'add'=>1);
 
-            // $arr['tasks'] = array('view'=>1,'edit'=>1, 'del'=>1, 'add'=>1);    
+            $arr['tasks'] = array('view'=>1,'edit'=>1, 'del'=>1, 'add'=>1);    
             $arr['reports'] = array('view'=>1);
-            $arr['pos'] = array('view'=>1,'edit'=>1, 'del'=>1, 'add'=>1); 
         }
 
         /* Manage */
@@ -75,9 +71,8 @@ class System_Model extends Model{
             $arr['package'] = array('view'=>1,'edit'=>1,'del'=>1, 'add'=>1);
             $arr['promotions'] = array('view'=>1,'edit'=>1,'del'=>1, 'add'=>1);
 
-            // $arr['tasks'] = array('view'=>1,'edit'=>1, 'del'=>1, 'add'=>1);
+            $arr['tasks'] = array('view'=>1,'edit'=>1, 'del'=>1, 'add'=>1);
             $arr['reports'] = array('view'=>1);
-            $arr['pos'] = array('view'=>1,'edit'=>1, 'del'=>1, 'add'=>1); 
         }
 
 
@@ -122,12 +117,12 @@ class System_Model extends Model{
     }
 
     public function get() {
-    	$data = $this->db->select( "SELECT * FROM system_info" );
+        $data = $this->db->select( "SELECT * FROM system_info" );
 
-    	$object = array();
-    	foreach ($data as $key => $value) {
-    		$object[$value['option_name']] = $value['option_value'];
-    	}
+        $object = array();
+        foreach ($data as $key => $value) {
+            $object[$value['option_name']] = $value['option_value'];
+        }
 
         $contacts = $this->db->select( "SELECT contact_type as type, contact_name as name, contact_value as value FROM system_contacts" );
 
@@ -151,7 +146,7 @@ class System_Model extends Model{
             $object['working_time_desc'] = json_decode($object['working_time_desc'], true);
         }
 
-    	return $object;
+        return $object;
     }
 
     public function setContacts($data) {
@@ -193,13 +188,13 @@ class System_Model extends Model{
         $a = array();
 
         $a[] = array('key'=>'dashboard', 'name'=>'Dashboard');
-        $a[] = array('key'=>'customers', 'name'=>'สมาชิก');
-        $a[] = array('key'=>'employees', 'name'=>'พนักงาน');
-        $a[] = array('key'=>'masseuse', 'name'=>'พนง.ผู้บริการ');
-        $a[] = array('key'=>'package', 'name'=>'Package');
-        $a[] = array('key'=>'promotions', 'name'=>'โปรโมชั่น');
-        $a[] = array('key'=>'coupon', 'name'=>'คูปอง');
-        $a[] = array('key'=>'pos', 'name'=>'Pos');
+        // $a[] = array('key'=>'calendar', 'name'=>'นัดหมาย');
+        $a[] = array('key'=>'customers', 'name'=>'ประวัติลูกค้า');
+        $a[] = array('key'=>'booking', 'name'=>'รายการจองรถยนต์');
+        $a[] = array('key'=>'stocks', 'name'=>'สต็อกรถยนต์');
+        $a[] = array('key'=>'sales', 'name'=>'Sales');
+        $a[] = array('key'=>'services', 'name'=>'งานบริการ');
+        $a[] = array('key'=>'reports', 'name'=>'รายงาน');
         
         return $a;
     }
@@ -331,11 +326,11 @@ class System_Model extends Model{
 
         $a = array();
         $a[] = array('id'=>'1', 'name'=>'Admin');
-        $a[] = array('id'=>'2', 'name'=>'Manager');
-        $a[] = array('id'=>'3', 'name'=>'Person');
-        $a[] = array('id'=>'4', 'name'=>'Product');
-        $a[] = array('id'=>'5', 'name'=>'Cashier');
-        $a[] = array('id'=>'6', 'name'=>'Masseuse');
+        $a[] = array('id'=>'2', 'name'=>'ผู้จัดการ');
+        $a[] = array('id'=>'3', 'name'=>'บุคคล');
+        $a[] = array('id'=>'4', 'name'=>'Package');
+        $a[] = array('id'=>'5', 'name'=>'แคชเชียร์');
+        $a[] = array('id'=>'6', 'name'=>'พนง.บริการ');
 
         return $a;
     }
@@ -354,48 +349,13 @@ class System_Model extends Model{
         return array($start, $end);
     }
 
-    public function rooms(){
+    public function skill_type(){
 
-        $number[] = array('id'=>'1', 'name'=>'V 3-1');
-        $number[] = array('id'=>'2', 'name'=>'V 3-2');
-        $number[] = array('id'=>'3', 'name'=>'V 3-3');
-        $number[] = array('id'=>'4', 'name'=>'V 3-4');
-        $number[] = array('id'=>'5', 'name'=>'V 3-5');
-        $number[] = array('id'=>'6', 'name'=>'V 3-6');
-        $number[] = array('id'=>'7', 'name'=>'V 3-7');
-        $number[] = array('id'=>'8', 'name'=>'V 3-8');
-        $number[] = array('id'=>'9', 'name'=>'V 3-9');
-        $number[] = array('id'=>'10', 'name'=>'V 3-10');
-        $number[] = array('id'=>'11', 'name'=>'V 3-11');
-        $number[] = array('id'=>'12', 'name'=>'V 3-12');
-        $number[] = array('id'=>'13', 'name'=>'V 5-1');
-        $number[] = array('id'=>'14', 'name'=>'V 5-2');
-        $number[] = array('id'=>'15', 'name'=>'V 5-3');
-        $number[] = array('id'=>'16', 'name'=>'V 5-4');
-        $number[] = array('id'=>'17', 'name'=>'V 5-5');
-        $number[] = array('id'=>'18', 'name'=>'V 5-6');
-        $number[] = array('id'=>'19', 'name'=>'V 5-7');
-        $number[] = array('id'=>'20', 'name'=>'V 5-8');
-        $number[] = array('id'=>'21', 'name'=>'V 5-9');
-        $number[] = array('id'=>'22', 'name'=>'V 5-10');
-        $number[] = array('id'=>'23', 'name'=>'V 5-11');
-        $number[] = array('id'=>'24', 'name'=>'V 6-1');
-        $number[] = array('id'=>'25', 'name'=>'V 6-2');
-        $number[] = array('id'=>'26', 'name'=>'V 6-3');
+        $arr = array();
+        $arr[] = array('id'=>1, 'name'=>'เสื้อชมพู');
+        $arr[] = array('id'=>2, 'name'=>'เสื้อขาว');
 
-        return $number;
+        return $arr;
     }
 
-    public function getRooms($id){
-
-        $data = array();
-        foreach ($this->rooms() as $key => $value) {
-            if( $id == $value['id'] ){
-                $data = $value;
-                break;
-            }
-        }
-
-        return $data;
-    }
 }

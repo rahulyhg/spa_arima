@@ -103,6 +103,18 @@ class reports extends Controller {
         $this->view->render("reports/display");
     }
 
+
+    public function SummaryOfDaily() {
+
+        $date = isset($_REQUEST['date']) ? $_REQUEST['date']: date('Y-m-d');
+
+        $start = date('Y-m-d 00:00:00', strtotime($date));
+        $end = date('Y-m-d 23:59:59', strtotime($date));
+
+        echo json_encode($this->model->summaryEachPackage( $start, $end ));
+
+    }
+
     public function masseuse($id=null){
         if( empty($id) || empty($this->me) ) $this->error();
 
@@ -167,5 +179,6 @@ class reports extends Controller {
         $this->view->setData('item', $item);
         $this->view->setData( 'section', $section );
         $this->view->render("reports/display");
+
     }
 }

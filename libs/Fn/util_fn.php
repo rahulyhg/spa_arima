@@ -36,7 +36,7 @@ class Util_Fn extends _function {
 	    else if(isset($_SERVER['REMOTE_ADDR']))
 	        $ipaddress = $_SERVER['REMOTE_ADDR'];
 	    else
-	        $ipaddress = 'UNKNOWN';
+	        $ipaddress = '127.0.0.1'; // 'UNKNOWN';
 	    return $ipaddress;
 	}
 }

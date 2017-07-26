@@ -21,7 +21,7 @@ class Employees extends Controller {
         else{
 
             if( $this->format=='json' ) {
-                $this->view->setData('results', $this->model->query('employees')->lists( array('not_dep_id'=>5) ) );
+                $this->view->setData('results', $this->model->query('employees')->lists( array('not_dep_id'=> array(1,5) ) ) );
                 $render = "employees/lists/json";
             }
             else{
@@ -876,9 +876,10 @@ class Employees extends Controller {
         echo json_encode($arr);
     }
 
-    /**/
-    /* skill */
-    /**/
+
+    /*-----------------------------------------------*/
+    # skill
+    /*-----------------------------------------------*/
     public function add_skill(){
         if( empty($this->me) || $this->format!='json' ) $this->error();
 
@@ -893,8 +894,8 @@ class Employees extends Controller {
 
         $item = $this->model->get_skill($id);
         if( empty($item) ) $this->error();
-        // print_r($item); die;
 
+        $this->view->setData('type', $this->model->query('system')->skill_type() );
         $this->view->setData('item', $item);
         $this->view->setPage('path','Themes/manage/forms/skill');
         $this->view->render("add");
@@ -946,7 +947,19 @@ class Employees extends Controller {
 
         echo json_encode($arr);
     }
-    
+    public function sort_skill() {
+
+        if( $this->format!='json' || empty($this->me) ) $this->error();
+        
+        if( !empty($_POST['ids']) ){
+
+            $sequence = 0;
+            foreach ($_POST['ids'] as $id) {
+                $sequence++;
+                $this->model->update_skill( $id, array('skill_sequence'=>$sequence) );
+            }
+        }
+    }
     public function del_skill($id=null){
         $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : $id;
         if( empty($this->me) || empty($id) || $this->format!='json' ) $this->error();
@@ -976,6 +989,24 @@ class Employees extends Controller {
             $this->view->setPage('path','Themes/manage/forms/skill');
             $this->view->render("del");
         }   
+    }
+    public function update_skill($id=null) {
+
+        $id = isset($_REQUEST['id']) ? $_REQUEST['id']: $id;
+        if( $this->format!='json' || empty($this->me) || empty($id) ) $this->error();
+
+        if( !empty($_POST) ){
+
+            $fields = array();
+            foreach ($_POST as $field => $value) {
+
+                if( $field=='id' ) continue;
+                $fields[$field] = trim($value);
+            }
+            // print_r($fields); die;
+
+            $this->model->update_skill( $id, $fields );
+        }
     }
     public function set_skill($id=null){
         $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : $id;

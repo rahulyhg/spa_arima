@@ -19,6 +19,9 @@ if ( typeof Object.create !== 'function' ) {
 
 			self.setElem();
 			self.resize();
+			$(window).resize(function() {
+				self.resize();
+			});
 		},
 
 		setElem: function () {
@@ -31,6 +34,11 @@ if ( typeof Object.create !== 'function' ) {
 
 		resize: function () {
 			var self = this;
+
+			console.log( $(window).height() );
+			self.$elem.find('.table-model-2-warp').css({
+				minHeight: $(window).height()-(68+10+$('.actions-wrap').height())
+			});
 
 			self.$tbody.children().css({
 				paddingTop: self.$thead.height(),
@@ -83,24 +91,18 @@ if ( typeof Object.create !== 'function' ) {
 			self.$tfoot.find('.amount').width( wT - 5 );
 
 
-			self.$tfoot.find('[data-col=4]').width( (self.$tbody.find('table tr:first>td[data-col=3]').outerWidth()+self.$tbody.find('table tr:first>td[data-col=4]').outerWidth())-4 );
+			$.each(self.$tfoot.find('[data-col]'), function(index, el) {
 
-			self.$tfoot.find('[data-col=6]').width( (self.$tbody.find('table tr:first>td[data-col=5]').outerWidth()+self.$tbody.find('table tr:first>td[data-col=6]').outerWidth())-4 );
+				var col = parseInt($(this).data('col'));
+				var width = self.$thead.find('[data-col='+ col +']').outerWidth();
 
-			self.$tfoot.find('[data-col=8]').width( (self.$tbody.find('table tr:first>td[data-col=7]').outerWidth()+self.$tbody.find('table tr:first>td[data-col=8]').outerWidth())-4 );
-
-			self.$tfoot.find('[data-col=10]').width( (self.$tbody.find('table tr:first>td[data-col=9]').outerWidth()+self.$tbody.find('table tr:first>td[data-col=10]').outerWidth())-4 );
-
-			self.$tfoot.find('[data-col=12]').width( (self.$tbody.find('table tr:first>td[data-col=11]').outerWidth()+self.$tbody.find('table tr:first>td[data-col=12]').outerWidth())-4 );
-
-			self.$tfoot.find('[data-col=14]').width( (self.$tbody.find('table tr:first>td[data-col=13]').outerWidth()+self.$tbody.find('table tr:first>td[data-col=14]').outerWidth()) -4 );
-
-			self.$tfoot.find('[data-col=16]').width( (self.$tbody.find('table tr:first>td[data-col=15]').outerWidth()+self.$tbody.find('table tr:first>td[data-col=16]').outerWidth())-4 );
-
-			self.$tfoot.find('[data-col=18]').width( (self.$tbody.find('table tr:first>td[data-col=17]').outerWidth()+self.$tbody.find('table tr:first>td[data-col=18]').outerWidth()) - 4 );
-
-			// self.$tfoot.find('[data-col=4], [data-col=6], [data-col=8], [data-col=10], [data-col=12], [data-col=14], [data-col=16], [data-col=18]').width( 78 );
-			
+				if( col < 20 ){
+					width += self.$thead.find('[data-col='+ (col-1) +']').outerWidth()-5;
+					$(this).width( width );
+				}
+				
+			});
+				
 		}
 
 		
