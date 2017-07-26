@@ -77,16 +77,16 @@ class Dashboard extends Controller {
 
 		/* แปลงวันที่ */
 		$this->view->setData('date_str', $this->fn->q('time')->str_event_date($start, $end) );
+		
+		// print_r($this->model->query('reports')->summaryEachPackage( $start, $end )); die;
+		$this->view->setData('summaryEachPackage', $this->model->query('reports')->summaryEachPackage( $start, $end ) );
 
-        if( isset($_GET['main']) ){
+		if( isset($_GET['main']) ){
 			$this->view->render('dashboard/sections/main');
 		}
 		else{
 			$this->view->render("dashboard/display");
 		}
-		
-		// print_r($this->model->query('reports')->summaryEachPackage( $start, $end )); die;
-		$this->view->setData('summaryEachPackage', $this->model->query('reports')->summaryEachPackage( $start, $end ) );
 	}
 
 	public function demo(){
