@@ -186,9 +186,9 @@ class Orders_Model extends Model {
 
 			 FROM orders_items_masseuse item LEFT JOIN employees mae ON item.masseuse_id=mae.emp_id WHERE item_id=:id", array(':id'=>$value['item_id'])), array('view_stype'=>'bucketed'));
 
-			if( !empty($value['item_room_id']) ){
-				$value['rooms'] = $this->query('system')->getRooms($value['item_room_id']);
-			}
+			// if( !empty($value['item_room_id']) ){
+			// 	$value['rooms'] = $this->query('system')->getRooms($value['item_room_id']);
+			// }
 
 			$data[$i] = $this->cut('item_', $value);
 

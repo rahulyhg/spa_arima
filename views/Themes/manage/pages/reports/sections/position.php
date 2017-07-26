@@ -11,7 +11,6 @@ if( !empty($this->data) ){
 	<table class="table table-bordered" width="100%">
 		<thead>
 			<tr>
-				<th class="id">ลำดับ</th>
 				<th class="tac">No.</th>
 				<th class="tac">ชื่อ</th>
 				<?php 
@@ -25,9 +24,8 @@ if( !empty($this->data) ){
 			</tr>
 		</thead>
 		<tbody>
-			<?php $i=0; foreach ($this->results['lists'] as $key => $value) { $total = 0; $i++;  ?>
+			<?php foreach ($this->results['lists'] as $key => $value) { $total = 0;  ?>
 			<tr>
-				<td><?=$i?></td>
 				<td class="tac"><?=$value['code']?></td>
 				<td class="tac"><?=$value['nickname']?></td>
 				<?php 
@@ -84,7 +82,7 @@ if( !empty($this->data) ){
 			<label class="label">รวมเป็นเงิน : </label>
 			<span class="fwb">
 				<?php 
-				$total_empty = $this->data['null'] * $this->item['skill'][0]['price'];
+				$total_empty = $this->data['null'] * $this->item['wage_price'];
 				echo number_format($total_empty,1);
 				?>
 			</span>
@@ -101,5 +99,5 @@ if( !empty($this->data) ){
 	} ?>
 
 	<div class="rfloat">
-	<a href="<?=URL?>reports/lists/masseuse?period=<?=$this->period?>&month=<?=$this->month?>" class="btn btn-blue">กลับ</a>
+		<a href="<?=URL?>reports/lists/masseuse?period=<?=$this->period?>&month=<?=$this->month?>" class="btn btn-blue">กลับ</a>
 	</div>

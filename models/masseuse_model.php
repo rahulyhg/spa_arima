@@ -76,6 +76,7 @@ class Masseuse_Model extends Model{
 
         $where_str = "";
         $where_arr = array();
+        $groupby = "";
         
         $where_str .= !empty( $where_str ) ? " AND ":'';
         $where_str .= "d.dep_id=:dep";
@@ -116,13 +117,35 @@ class Masseuse_Model extends Model{
             }
         }
 
+        if( !empty($options['orders']) ){
+
+            $this->_table .= " LEFT JOIN orders_items_masseuse oim ON oim.masseuse_id=e.emp_id
+                              LEFT JOIN orders_items oi ON oim.item_id=oi.item_id";
+
+            if( !empty($options['start_date']) && !empty($options['end_date']) ){
+                $where_str .= !empty( $where_str ) ? " AND ":'';
+                $where_str .= "(oi.item_start_date BETWEEN :s AND :e)";
+                $where_arr[':s'] = $options['start_date'];
+                $where_arr[':e'] = $options['end_date'];
+            }
+
+            if( !empty($options['package']) ){
+                $where_str .= !empty( $where_str ) ? " AND ":'';
+                $where_str .= "oi.item_pack_id=:package";
+                $where_arr[':package'] = $options["package"];
+            }
+
+            $groupby = "GROUP BY oim.masseuse_id";
+        }
+
         $arr['total'] = $this->db->count($this->_table, $where_str, $where_arr);
 
         $where_str = !empty($where_str) ? "WHERE {$where_str}":'';
         $orderby = $this->orderby( $this->_cutNamefield.$options['sort'], $options['dir'] );
         $limit = $this->limited( $options['limit'], $options['pager'] );
+        if( !empty($options['unlimit']) ) $limit = '';
 
-        $arr['lists'] = $this->buildFrag( $this->db->select("SELECT {$this->_field} FROM {$this->_table} {$where_str} {$orderby} {$limit}", $where_arr ), $options  );
+        $arr['lists'] = $this->buildFrag( $this->db->select("SELECT {$this->_field} FROM {$this->_table} {$where_str} {$groupby} {$orderby} {$limit}", $where_arr ), $options  );
 
         if( ($options['pager']*$options['limit']) >= $arr['total'] ) $options['more'] = false;
         $arr['options'] = $options;

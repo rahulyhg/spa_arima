@@ -79,9 +79,9 @@ class reports extends Controller {
                     }
 
                     //get room//
-                    if( !empty($val['room_id']) ){
-                        $data[$value['id']]['rooms'] = $val['rooms']['name'];
-                    }
+                    // if( !empty($val['room_id']) ){
+                    //     $data[$value['id']]['rooms'] = $val['rooms']['name'];
+                    // }
                 }
             }
 
@@ -166,7 +166,9 @@ class reports extends Controller {
             }
         }
         $null = $this->model->query('orders')->get_times_masseuse(null,$options);
-        $data['null'] = $null[0]['qty'];
+        if( !empty($null[0]['qty']) ){
+            $data['null'] = $null[0]['qty'];
+        }
 
         $this->view->setData('periodStr', $this->fn->q('time')->str_event_date($start_date, $end_date));
         $this->view->setData('period', $period);
@@ -179,6 +181,10 @@ class reports extends Controller {
         $this->view->setData('item', $item);
         $this->view->setData( 'section', $section );
         $this->view->render("reports/display");
+
+    }
+
+    public function p($type=null, $date=null){
 
     }
 }

@@ -1,11 +1,12 @@
 <div role="toolbar" class="pbs pas mbm">
 	<form class="form-insert uiBoxWhite">
-		<input type="date" name="date" data-plugins="datepicker" class="inputtext" value="<?=$this->date?>" >
+		<input type="date" name="date" data-plugins="datepicker" class="inputtext" value="<?=$_REQUEST['date']?>" >
 		<button type="submit" class="btn btn-blue"><i class="icon-search"></i></button>
 	</form>
 </div>
 <div>
 <?php if( !empty($this->results['lists']) ) { ?>
+<div class="rfloat"><a href="<?=URL?>reports/print?type=daily&date=<?=$this->date?>"><i class="icon-print"></i> Print</a></div>
 <table class="table table-bordered" width="100%">
 	<thead>
 		<tr>
@@ -45,6 +46,8 @@
 			$total['drink'] += $value['drink'];
 			$total['qty'] += $this->data[$value['id']]['qty'];
 			$total['vip'] += $value['room_price'];
+
+			$room_price = round($value['room_price']);
 			?>
 			<tr>
 				<td class="tac"><?=$value['number']?></td>
@@ -53,11 +56,9 @@
 				<td><?=$this->data[$value['id']]['masseuse_name']?></td>
 				<td class="tac"><?=date("H:i", strtotime($value['start_date']))?></td>
 				<td class="tac"><?=date("H:i", strtotime($value['end_date']))?></td>
-				<td class="tac">
-					<?=(!empty($this->data[$value['id']]['rooms']) ? $this->data[$value['id']]['rooms'] : '-')?>
-				</td>
+				<td class="tac"><?=(!empty($value['room_name']) ? $value['room_name'] : '-')?></td>
 				<td class="tac"><?=(!empty($this->data[$value['id']]['qty']) ? $this->data[$value['id']]['qty'] : '-')?></td>
-				<td class="tac"><?=(!empty($value['room_price']) ? number_format($value['room_price'],0) : '-')?></td>
+				<td class="tac"><?=(!empty($room_price) ? number_format($value['room_price'],0) : '-')?></td>
 
 				<?php 
 				// PACKAGE //
@@ -102,7 +103,7 @@
 		<tr>
 			<th colspan="6" class="tar"><?=$total['qty']?> ชม.</th>
 			<th class="tac">ยอดรวม</th>
-			<th colspan="2" class="tac"><?=$total['vip']?></th>
+			<th colspan="2" class="tac"><?=(!empty($total['vip']) ? $total['vip'] : '-')?></th>
 			<?php 
 			foreach ($this->package['lists'] as $val) {
 				$col = 1;
