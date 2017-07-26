@@ -44,11 +44,11 @@ class Package_Model extends Model {
             $options['view_stype'] = $_REQUEST['view_stype'];
         }
 
-        if( isset($_REQUEST['period_start']) && isset($_REQUEST['period_end']) ){
+        // if( isset($_REQUEST['period_start']) && isset($_REQUEST['period_end']) ){
 
-        	$options['period_start'] = $_REQUEST['period_start'];
-        	$options['period_end'] = $_REQUEST['period_end'];
-        }
+        // 	$options['period_start'] = $_REQUEST['period_start'];
+        // 	$options['period_end'] = $_REQUEST['period_end'];
+        // }
 
 		if( !empty($options['q']) ){
 

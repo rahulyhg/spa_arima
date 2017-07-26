@@ -7,6 +7,8 @@ $total_time=0;
 $total_price=0;
 
 if( !empty($this->data) ){
+
+	$null = !empty($this->data['null']) ? $this->data['null'] : 0;
 	?>
 	<table class="table table-bordered" width="100%">
 		<thead>
@@ -78,11 +80,11 @@ if( !empty($this->data) ){
 	<div class="pas">
 		<div class="tac">
 			<label class="label">ไม่พบหมอ : </label>
-			<span class="fwb"><?=($this->data['null']) ? $this->data['null'] : 0?> ชม.</span>
+			<span class="fwb"><?=$null?> ชม.</span>
 			<label class="label">รวมเป็นเงิน : </label>
 			<span class="fwb">
 				<?php 
-				$total_empty = $this->data['null'] * $this->item['wage_price'];
+				$total_empty = $null * $this->item['wage_price'];
 				echo number_format($total_empty,1);
 				?>
 			</span>
