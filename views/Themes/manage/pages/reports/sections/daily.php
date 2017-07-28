@@ -6,14 +6,14 @@
 </div>
 <div>
 <?php if( !empty($this->results['lists']) ) { ?>
-<div class="rfloat"><a href="<?=URL?>reports/print?type=daily&date=<?=$this->date?>"><i class="icon-print"></i> Print</a></div>
+<div class="rfloat"><a href="<?=URL?>reports/p?type=daily&date=<?=$this->date?>"><i class="icon-print"></i> Print</a></div>
 <table class="table table-bordered" width="100%">
 	<thead>
 		<tr>
 			<th class="tac">ลำดับ</th>
 			<th class="tac">ชื่อลูกค้า</th>
 			<th class="tac">สมาชิก</th>
-			<th class="tac" class="tac">พนง.ผู้บริการ</th>
+			<th class="tac">พนง.ผู้บริการ</th>
 			<th class="tac">เวลาเริ่ม</th>
 			<th class="tac">เวลาออก</th>
 			<th class="tac">ห้อง/เตียง</th>

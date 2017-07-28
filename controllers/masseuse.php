@@ -470,7 +470,7 @@ class Masseuse extends Controller {
         }
     }
 
-/*    public function monitor() {
+    public function _monitor() {
         
         $this->view->setPage('theme', 'monitor');
         $this->view->setPage('theme_options', array(
@@ -479,11 +479,38 @@ class Masseuse extends Controller {
             'has_menu' => false,
         ));  
         $date = isset($_REQUEST['date']) ? $_REQUEST['date']: date('Y-m-d'); 
-
         $this->view->setData('date', $date );
+
         $this->view->setData('lists', $this->model->query('masseuse')->listJob( array('date'=>$date, 'unlimit'=>1, 'status'=>'on' ) ) );
+        $this->view->setData('run', $this->model->query('masseuse')->listJob( array('date'=>$date, 'limit'=>12, 'status'=>'run', 'getpackage'=>true, 'sort'=>'time' ) ) );
         $this->view->render('masseuse/display');   
-    }*/
+    }
+
+    public function monitor(){
+        $this->view->setPage('theme', 'monitor');
+        $this->view->setPage('theme_options', array(
+            'has_footer' => false,
+            'has_topbar' => false,
+            'has_menu' => false,
+        ));  
+        $date = isset($_REQUEST['date']) ? $_REQUEST['date']: date('Y-m-d'); 
+        $this->view->setData('date', $date );
+
+        if( isset($_GET["main"]) ){
+            if( $_GET["main"] == "masseuse" ){
+                $this->view->setData('lists', $this->model->query('masseuse')->listJob( array('date'=>$date, 'unlimit'=>1, 'status'=>'on' ) ) );
+                $this->view->render('masseuse/mainMasseuse');
+            }
+
+            if( $_GET["main"] == "run" ){
+                $this->view->setData('run', $this->model->query('masseuse')->listJob( array('date'=>$date, 'limit'=>12, 'status'=>'run', 'getpackage'=>true, 'sort'=>'time', 'dir'=>'DESC' ) ) );
+                $this->view->render('masseuse/mainRun');
+            }
+        }
+        else{
+            $this->view->render('masseuse/display'); 
+        }
+    }
 
     public function edit_time( $id=null ){
         $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : $id;
