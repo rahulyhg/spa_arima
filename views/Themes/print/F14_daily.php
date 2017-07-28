@@ -42,8 +42,32 @@ $page_total = ($this->results['total'] / 20);
 			float: right;
 		}
 	</style>
+	<script type="text/javascript">
+		(function() {
+
+			var beforePrint = function() {};
+
+			var afterPrint = function() {
+				window.top.close();
+			};
+
+			if (window.matchMedia) {
+				var mediaQueryList = window.matchMedia('print');
+				mediaQueryList.addListener(function(mql) {
+					if (mql.matches) {
+						beforePrint();
+					} else {
+						afterPrint();
+					}
+				});
+			}
+
+			window.onbeforeprint = beforePrint;
+			window.onafterprint = afterPrint;
+
+		}());
+	</script>
 </head>
-<!-- onload="window.print();" -->
 <body onload="window.print();">
 	<div class="tac">
 		<span ><strong>รายงานรายรับประจำวัน</strong></span>
@@ -248,28 +272,3 @@ $page_total = ($this->results['total'] / 20);
 	</table>
 </body>
 </html>
-<script type="text/javascript">
-	(function() {
-
-		var beforePrint = function() {};
-
-		var afterPrint = function() {
-			window.top.close();
-		};
-
-		if (window.matchMedia) {
-			var mediaQueryList = window.matchMedia('print');
-			mediaQueryList.addListener(function(mql) {
-				if (mql.matches) {
-					beforePrint();
-				} else {
-					afterPrint();
-				}
-			});
-		}
-
-		window.onbeforeprint = beforePrint;
-		window.onafterprint = afterPrint;
-
-	}());
-</script>

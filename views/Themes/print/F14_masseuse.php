@@ -9,14 +9,12 @@ $total_price=0;
 $number_total = 0;
 $page = 1;
 $page_total = $this->results['total'] / 50;
+$total_page = round($page_total)==0 ? 1 : round($page_total);
 ?>
 <!DOCTYPE html>
 <html>
 <head>
 	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title></title>
-	<link rel="stylesheet" href="">
 	<style type="text/css">
 		@page {
 			size: 8.5in 13in;
@@ -63,35 +61,59 @@ $page_total = $this->results['total'] / 50;
 			text-align: center;
 		}
 	</style>
+	<script type="text/javascript">
+		(function() {
+
+			var beforePrint = function() {};
+
+			var afterPrint = function() {
+				window.top.close();
+			};
+
+			if (window.matchMedia) {
+				var mediaQueryList = window.matchMedia('print');
+				mediaQueryList.addListener(function(mql) {
+					if (mql.matches) {
+						beforePrint();
+					} else {
+						afterPrint();
+					}
+				});
+			}
+
+			window.onbeforeprint = beforePrint;
+			window.onafterprint = afterPrint;
+
+		}());
+	</script>
 </head>
-<!-- onload="window.print();" -->
 <body onload="window.print();">
 	<div>
 		<span class="pull-left"><strong>แผนก<?=$this->item['name']?></strong></span>
-		<span class="pull-right"><strong>แผ่นที่ </strong><?=$page?>/<?=round($page_total)?></span>
+		<span class="pull-right"><strong>แผ่นที่ </strong><?=$page?>/<?=$total_page?></span>
 	</div>
 	<div class="text-center"><strong>ประจำวันที่ <?=$this->periodStr.' '.$year?></strong></div>
 	<div>
 		<table class="table-bordered" width="100%">
 			<thead>
 				<tr>
-					<th class="tac" width="5%">No.</th>
-					<th class="tac" width="10%">ชื่อ</th>
+					<th class="tac" width="2%">No.</th>
+					<th class="tac" width="15%">ชื่อ</th>
 					<?php 
 					for($i=$start; $i<=$end; $i++){
-						echo '<th class="tac fwb" width="2%">'.intval($i).'</th>';
+						echo '<th class="tac fwb" width="5%">'.intval($i).'</th>';
 					}
 					?>
 					<th width="10%">รวม</th>
 					<th width="10%"><?=$this->item['name']?></th>
-					<th width="10%">ผู้รับเงิน</th>
+					<th width="13%">ผู้รับเงิน</th>
 				</tr>
 			</thead>
 			<tbody>
 				<?php $number=0; foreach ($this->results['lists'] as $key => $value) { $total = 0;  ?>
 				<tr>
 					<td class="tac"><?=$value['code']?></td>
-					<td class="tac"><?=$value['nickname']?></td>
+					<td class="tac"><?=(!empty($value['nickname']) ? $value['nickname'] : $value['first_name'])?></td>
 					<?php 
 					for($i=$start; $i<=$end; $i++){
 
@@ -134,12 +156,13 @@ $page_total = $this->results['total'] / 50;
 					<?php 
 					for($z=$start; $z<=$end; $z++){
 						$day = sprintf("%02d",$z);
-						echo '<th class="tar"><strong>'.$sum[$day].'</strong></th>';
+						$sum_day = !empty($sum[$day]) ? number_format($sum[$day],1) : '-';
+						echo '<th class="tar"><strong>'.$sum_day.'</strong></th>';
 						$sum[$day] = 0;
 					}
 					?>
-					<th><?=(!empty($total_time) ? number_format($total_time,1) : '-')?></th>
-					<th><?=(!empty($total_price) ? number_format($total_price,1) : '-')?></th>
+					<th class="tar"><?=(!empty($total_time) ? number_format($total_time,1) : '-')?></th>
+					<th class="tar"><?=(!empty($total_price) ? number_format($total_price,1) : '-')?></th>
 					<th></th>
 				</tr>
 			</tfoot>
@@ -157,16 +180,16 @@ $page_total = $this->results['total'] / 50;
 		<table class="table-bordered" width="100%">
 			<thead>
 				<tr>
-					<th class="tac" width="5%">No.</th>
-					<th class="tac" width="10%">ชื่อ</th>
+					<th class="tac" width="2%">No.</th>
+					<th class="tac" width="15%">ชื่อ</th>
 					<?php 
 					for($i=$start; $i<=$end; $i++){
-						echo '<th class="tac fwb" width="2%">'.intval($i).'</th>';
+						echo '<th class="tac fwb" width="5%">'.intval($i).'</th>';
 					}
 					?>
 					<th width="10%">รวม</th>
 					<th width="10%"><?=$this->item['name']?></th>
-					<th width="10%">ผู้รับเงิน</th>
+					<th width="13%">ผู้รับเงิน</th>
 				</tr>
 			</thead>
 				<?php 
@@ -186,11 +209,12 @@ $page_total = $this->results['total'] / 50;
 					<?php 
 					for($z=$start; $z<=$end; $z++){
 						$day = sprintf("%02d",$z);
-						echo '<th class="tar"><strong>'.$sum[$day].'</strong></th>';
+						$sum_day = !empty($sum[$day]) ? number_format($sum[$day],1) : '-';
+						echo '<th class="tar"><strong>'.$sum_day.'</strong></th>';
 					}
 					?>
-					<th><?=(!empty($total_time) ? number_format($total_time,1) : '-')?></th>
-					<th><?=(!empty($total_price) ? number_format($total_price,1) : '-')?></th>
+					<th class="tar"><?=(!empty($total_time) ? number_format($total_time,1) : '-')?></th>
+					<th class="tar"><?=(!empty($total_price) ? number_format($total_price,1) : '-')?></th>
 					<th></th>
 				</tr>
 			</tfoot>

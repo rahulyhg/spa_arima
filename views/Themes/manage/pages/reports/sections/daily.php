@@ -6,7 +6,7 @@
 </div>
 <div>
 <?php if( !empty($this->results['lists']) ) { ?>
-<div class="rfloat"><a href="<?=URL?>reports/p?type=daily&date=<?=$this->date?>"><i class="icon-print"></i> Print</a></div>
+<div class="rfloat"><a href="<?=URL?>reports/p?type=daily&date=<?=$this->date?>" class="btn btn-blue" target="_blank"><i class="icon-print"></i> Print</a></div>
 <table class="table table-bordered" width="100%">
 	<thead>
 		<tr>

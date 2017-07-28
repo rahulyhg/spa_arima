@@ -46,12 +46,36 @@
 		}
 		p{ font-size: 22pt; }
 	</style>
+	<script type="text/javascript">
+		(function() {
+
+			var beforePrint = function() {};
+
+			var afterPrint = function() {
+				window.top.close();
+			};
+
+			if (window.matchMedia) {
+				var mediaQueryList = window.matchMedia('print');
+				mediaQueryList.addListener(function(mql) {
+					if (mql.matches) {
+						beforePrint();
+					} else {
+						afterPrint();
+					}
+				});
+			}
+
+			window.onbeforeprint = beforePrint;
+			window.onafterprint = afterPrint;
+
+		}());
+	</script>
 </head>
-<!-- onload="window.print();" -->
 <body onload="window.print();">
 	<div align="center">
 		<p><strong>ใบเปรียบเทียบรายได้กับค่าจ้างหมอเปอร์เซ็นต์ ร้านอะริมะ</strong></p>
-		<p><strong>ประจำวันที่ <?=$this->periodStr?></strong></p>
+		<p><strong>ประจำวันที่ <?=$this->periodStr.' '.(date("Y")+543)?></strong></p>
 	</div>
 	<table width="100%" align="center" class="table-bordered">
 		<thead>
