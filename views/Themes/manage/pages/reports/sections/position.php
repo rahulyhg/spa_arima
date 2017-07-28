@@ -10,6 +10,9 @@ if( !empty($this->data) ){
 
 	$null = !empty($this->data['null']) ? $this->data['null'] : 0;
 	?>
+	<div class="rfloat">
+		<a href="<?=URL?>reports/p?type=masseuse&id=<?=$this->id?>&period=<?=$this->period?>&month=<?=$this->month?>" class="btn btn-blue" target="_blank"><i class="icon-print"></i> Print</a>
+	</div>
 	<table class="table table-bordered" width="100%">
 		<thead>
 			<tr>

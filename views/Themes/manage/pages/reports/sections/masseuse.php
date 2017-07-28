@@ -47,6 +47,9 @@ $period = "?period=".$this->period."&month=".$this->month;
 	</select>
 </div>
 </form>
+<div class="rfloat">
+	<a href="<?=URL?>reports/p?type=summary&period=<?=$this->period?>&month=<?=$this->month?>" class="btn btn-blue" target="_blank"><i class="icon-print"></i> Print</a>
+</div>
 <div>
 	<table class="table table-bordered" width="100%">
 		<thead>

@@ -4,6 +4,7 @@ $end = date("d", strtotime($this->end_date));
 $year = date("Y", strtotime($this->start_date))+543;
 
 $sum = array();
+$total_all_price = 0;
 $total_time=0; 
 $total_price=0;
 $number_total = 0;
@@ -145,6 +146,7 @@ $total_page = round($page_total)==0 ? 1 : round($page_total);
 				<?php 
 				$number++;
 				$number_total++;
+				$total_all_price += $price;
 				if( $number == 50 && $number_total < $this->results['total'] ){ 
 					$page++;
 				?>
@@ -219,6 +221,23 @@ $total_page = round($page_total)==0 ? 1 : round($page_total);
 				</tr>
 			</tfoot>
 		</table>
+	</div>
+	<div class="pas">
+		<div class="tac">
+			<label class="label">ไม่พบหมอ : </label>
+			<span class="fwb"><?=$null?> ชม.</span>
+			<label class="label">รวมเป็นเงิน : </label>
+			<span class="fwb">
+				<?php 
+				$total_empty = $null * $this->item['wage_price'];
+				echo number_format($total_empty,1);
+				?>
+			</span>
+		</div>
+		<div class="uiBoxWhite tac">
+			<label>รวมเป็นเงินทั้งหมด : </label>
+			<span class="fwb"><?=number_format($total_empty+$total_all_price,1)?></span>
+		</div>
 	</div>
 </body>
 </html>
